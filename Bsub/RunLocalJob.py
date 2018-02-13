@@ -24,6 +24,9 @@ def main() :
     parser.add_argument("-j", "--JarFile",   help="Jar file for jobs.")
     parser.add_argument("-o", "--outputFile",   help="Output File.")
     parser.add_argument("-s", "--steeringFile",   help="Steering File.")
+    parser.add_argument("-n", "--nFiles",   help="Number of Files per command.")
+    parser.add_argument("-t", "--opt",   help="List of options.")
+    parser.add_argument("-W", "--time",   help="Time of job for batch.")
 
     args = parser.parse_args()
 
@@ -32,6 +35,16 @@ def main() :
     if args.input_list is None : 
         print "A list of lcio files needs to be specified." 
         sys.exit(2)
+
+    #Time of each batch job. Default is no batch job submitted
+    bsub = ""
+    if(args.time is not None):
+        bsub = "bsub -W " + args.time
+
+    #Number of Files per batch job. Default is 1
+    n = 1
+    if(args.nFiles is not None):
+        n = int(args.nFiles)
 
     # Open the file containing the list of stdhep files to process
     try : 
@@ -42,17 +55,20 @@ def main() :
 
     files = ""
 
+    file_max = 0
+    m = 0
     for line in file_list : 
 	    files = files + " -i " + line.strip()
-        
-    print "Processing file: " + str(line.strip())
-
-    # Output file name
-    print "Writing lcio and root file: " + args.outputFile
-
-    # Command that will be submitted to the batch system
-    command = "java -jar " + args.JarFile + " " + args.steeringFile  + " " + files + " -DoutputFile=" + args.outputFile
-    subprocess.Popen(command, shell=True).wait() 
+        file_max = file_max + 1
+        print "Processing file: " + str(line.strip())
+        if(n == file_max):
+            m = m + 1
+            # Command that will be submitted to the batch system
+            output = args.outputFile + str(m)
+            command = bsub + " java -jar " + args.JarFile + " " + args.steeringFile  + " " + files + " -DoutputFile=" + output + " " + opt
+            subprocess.Popen(command, shell=True).wait() 
+            file_max = 0
+            print "Writing output file: " + output
 
 if __name__ == "__main__" : 
     main() 
