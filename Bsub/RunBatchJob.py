@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 # 
-# Run local java job using the batch or not
+# Submit Batch Job general script
 #
 #       author: Matt Solt
 #
@@ -21,11 +21,9 @@ def main() :
     # Parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input_list", help="List lcio files to process.")
-    parser.add_argument("-j", "--JarFile",   help="Jar file for jobs.")
     parser.add_argument("-o", "--outputFile",   help="Output File.")
-    parser.add_argument("-s", "--steeringFile",   help="Steering File.")
     parser.add_argument("-n", "--nFiles",   help="Number of Files per command.")
-    parser.add_argument("-t", "--opt",   help="List of options.")
+    parser.add_argument("-c", "--com",   help="Input command.")
     parser.add_argument("-W", "--time",   help="Time of job for batch.")
 
     args = parser.parse_args()
@@ -36,14 +34,14 @@ def main() :
         print "A list of lcio files needs to be specified." 
         sys.exit(2)
 
+    if args.com is None : 
+        print "A command needs to be specified." 
+        sys.exit(2)
+
     #Time of each batch job. Default is no batch job submitted
     bsub = ""
     if(args.time is not None):
         bsub = "bsub -W " + args.time
-
-    options = ""
-    if(args.opt is None):
-        options = ""
 
     # Open the file containing the list of stdhep files to process
     try : 
@@ -62,14 +60,14 @@ def main() :
     file_n = 0
     m = 0
     for line in file_list : 
-        files = files + " -i " + line.strip()
+        files = files + " " + line.strip()
         file_n = file_n + 1
         print "Processing file: " + str(line.strip())
         if(file_n % n == 0 or n_files == file_n):
             m = m + 1
             # Command that will be submitted to the batch system
             output = args.outputFile + str(m)
-            command = bsub + " java -jar " + args.JarFile + " " + args.steeringFile  + " " + files + " -DoutputFile=" + output + " " + options
+            command = bsub + " " + args.com + " " + output + " " + files
             subprocess.Popen(command, shell=True).wait() 
             print "Writing output file: " + output
             files = ""
