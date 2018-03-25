@@ -37,7 +37,7 @@ def getFunction(histo,funcName):
 	return func
 
 def tupleToHisto(events,inHisto,histo,nBins,minX,maxX):
-	{0}.format(events).Draw("{0}>>{1}({2},{3},{4})".format(inHisto,histo,nBIns,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	return histo
 
@@ -75,6 +75,6 @@ def drawHisto(histo,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0):
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
 
-def saveHisto(histo,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,outfile,canvas):
+def saveHisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0):
 	drawHisto(histo,XaxisTitle,YaxisTitle,plotTitle,stats)
 	canvas.Print(outfile+".pdf")
