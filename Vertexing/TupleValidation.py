@@ -133,15 +133,17 @@ def getMaxY(string):
 
 nBins = 50
 minVZ = -20
-maxVZ = 140
+maxVZ = 50
 
 outfile = remainder[0]
-infile = TFile(remainder[1])
 
-events = infile.Get("ntuple")
+events = TChain("ntuple")
+for i in range(1,len(remainder)):
+    events.Add(remainder[i])
 
 plots = []
 plots.append("uncVZ -20 150")
+plots.append("uncM 0 0.1")
 plots.append("uncP 0 1.6")
 plots.append("uncChisq 0 20")
 plots.append("bscChisq 0 20")
