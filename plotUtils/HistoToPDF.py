@@ -48,7 +48,7 @@ openPDF(outfile,c)
 infile.cd()
 for h in infile.GetListOfKeys():
 	h = h.ReadObj()
-	if(h.ClassName() != "TH1F" or h.ClassName() != "TH1D"): continue
+	if(h.ClassName() != "TH1F" or h.ClassName() != "TH1D" or h.ClassName() != "TH2F" or h.ClassName() != "TH2D"): continue
 	savehisto2D(h,outfile,c,"","",h.GetName())
 
 closePDF(outfile,c)
