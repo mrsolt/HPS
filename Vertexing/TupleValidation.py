@@ -10,28 +10,32 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-t: use full truth plots'
+    print '\t-m: minimum uncVZ'
+    print '\t-n: maximum uncVZ'
     print '\t-h: this help message'
     print
 
 fullTruth = False
+minVZ = -20
+maxVZ = 120
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'th')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'tm:n:h')
 
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-t':
 			fullTruth = True
+		if opt=='-m':
+			minVZ = float(arg)
+		if opt=='-n':
+			maxVZ = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
 
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
-
-#def tupleToHisto(events,inHisto,histo,nBins,minX,maxX):
-#	events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,histo,nBins,minX,maxX))
-#	histo = ROOT.gROOT.FindObject(histo)
-#	return histo
 
 def saveTuplePlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBins,minX,maxX))
@@ -63,34 +67,6 @@ def openPDF(outfile,canvas):
 
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
-
-#def getHisto(histoTitle,infile):
-#	histo = infile.Get(histoTitle)
-#	return histo
-
-#def buildLegend(entries,options):
-#	legend = TLegend()
-#	legend = TLegend(.68,.66,.92,.87)
-#	legend.SetBorderSize(0)
-#	legend.SetFillColor(0)
-#	legend.SetFillStyle(0)
-#	legend.SetTextFont(42)
-#	legend.SetTextSize(0.035)
-#	legend.AddEntry(Histo1,"L0L0","LP")
-#	return legend
-
-#def drawHisto(histo,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0):
-#	histo.Draw("")
-	#histo.GetXaxis().SetRangeUser(-5,150)
-	#histo.GetYaxis().SetRangeUser(0,1.1)
-#	histo.SetTitle(plotTitle)
-#	histo.GetXaxis().SetTitle(XaxisTitle)
-#	histo.GetYaxis().SetTitle(YaxisTitle)
-#	histo.SetStats(stats)
-
-#def saveHisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0):
-#	drawHisto(histo,XaxisTitle,YaxisTitle,plotTitle,stats)
-#	canvas.Print(outfile+".pdf")
 
 def getPlot(string):
 	arr = string.split(" ")
@@ -132,8 +108,6 @@ def getMaxY(string):
 	else: return float(arr[5])
 
 nBins = 50
-minVZ = -20
-maxVZ = 50
 
 outfile = remainder[0]
 
@@ -142,12 +116,12 @@ for i in range(1,len(remainder)):
     events.Add(remainder[i])
 
 plots = []
-plots.append("uncVZ -20 150")
+plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("uncM 0 0.1")
 plots.append("uncP 0 1.6")
 plots.append("uncChisq 0 20")
 plots.append("bscChisq 0 20")
-plots.append("sqrt(uncCovZZ) 0 10")
+plots.append("sqrt(uncCovZZ) 0 30")
 plots.append("eleClT 20 80")
 plots.append("posClT 20 80")
 plots.append("eleClE 0 1.6")
@@ -178,6 +152,14 @@ plots.append("eleTrkExtrpYErrorSensorAxialBotL1 0 2")
 plots.append("posTrkExtrpYErrorSensorAxialBotL1 0 2")
 plots.append("eleTrkExtrpYErrorSensorStereoBotL1 0 2")
 plots.append("posTrkExtrpYErrorSensorStereoBotL1 0 2")
+plots.append("eleTrkExtrpYSensorAxialTopL1 -25 -10")
+plots.append("posTrkExtrpYSensorAxialTopL1 -25 -10")
+plots.append("eleTrkExtrpYSensorStereoTopL1 10 25")
+plots.append("posTrkExtrpYSensorStereoTopL1 10 25")
+plots.append("eleTrkExtrpYSensorAxialBotL1 -25 -10")
+plots.append("posTrkExtrpYSensorAxialBotL1 -25 -10")
+plots.append("eleTrkExtrpYSensorStereoBotL1 10 25")
+plots.append("posTrkExtrpYSensorStereoBotL1 10 25")
 
 if(fullTruth):
 	plots.append("eleE 0 1.6")
@@ -227,6 +209,7 @@ if(fullTruth):
 
 
 plots2D = []
+plots2D.append("uncM uncVZ 0 0.1 {0} {1}".format(minVZ,maxVZ))
 plots2D.append("eleTrkExtrpXAxialTopL1 eleTrkExtrpYAxialTopL1 -40 40 -20 20")
 plots2D.append("posTrkExtrpXAxialTopL1 posTrkExtrpYAxialTopL1 -40 40 -20 20")
 plots2D.append("eleTrkExtrpXStereoTopL1 eleTrkExtrpYStereoTopL1 -40 40 -20 20")

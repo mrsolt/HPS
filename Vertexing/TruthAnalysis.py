@@ -71,6 +71,7 @@ def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,o
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	histo.Write(plotTitle)
 	del histo
 
 def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
@@ -81,6 +82,7 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	histo.Write(plotTitle)
 	del histo
 
 L1L2 = False
@@ -108,10 +110,10 @@ minX = ""
 maxX = ""
 minY = ""
 maxY = ""
-minTheta = -0.05
 maxTheta = 0.05
+minTheta = -maxTheta
 minVZ = -50
-maxVZ = 130
+maxVZ = 70
 
 plots = []
 plots.append("uncM uncVZ 0 0.1 {0} {1}".format(minVZ,maxVZ))
@@ -237,84 +239,14 @@ if(L1L2):
 else:
 	cuts.append("eleHasTruthMatch&&posHasTruthMatch")
 	cuts.append("!eleHasTruthMatch&&posHasTruthMatch")
+	cuts.append("eleHasTruthMatch&&!posHasTruthMatch")
 	cuts.append("!eleHasTruthMatch&&!posHasTruthMatch")
+	cuts.append("elePurity>0.99&&posPurity>0.99")
+	cuts.append("elePurity<0.99&&posPurity>0.99")
+	cuts.append("elePurity>0.99&&posPurity<0.99")
+	cuts.append("elePurity<0.99&&posPurity<0.99")
 
-nevents = events.GetEntries()
-uncVZ = array('d',[0])
-
-eleL1tthetaY = array('d',[0])
-eleL2tthetaY = array('d',[0])
-eleL3tthetaY = array('d',[0])
-eleL4tthetaY = array('d',[0])
-eleL1bthetaY = array('d',[0])
-eleL2bthetaY = array('d',[0])
-eleL3bthetaY = array('d',[0])
-eleL4bthetaY = array('d',[0])
-
-eleL1tInthetaY = array('d',[0])
-eleL2tInthetaY = array('d',[0])
-eleL3tInthetaY = array('d',[0])
-eleL4tInthetaY = array('d',[0])
-eleL1bInthetaY = array('d',[0])
-eleL2bInthetaY = array('d',[0])
-eleL3bInthetaY = array('d',[0])
-eleL4bInthetaY = array('d',[0])
-
-posL1tthetaY = array('d',[0])
-posL2tthetaY = array('d',[0])
-posL3tthetaY = array('d',[0])
-posL4tthetaY = array('d',[0])
-posL1bthetaY = array('d',[0])
-posL2bthetaY = array('d',[0])
-posL3bthetaY = array('d',[0])
-posL4bthetaY = array('d',[0])
-
-posL1tInthetaY = array('d',[0])
-posL2tInthetaY = array('d',[0])
-posL3tInthetaY = array('d',[0])
-posL4tInthetaY = array('d',[0])
-posL1bInthetaY = array('d',[0])
-posL2bInthetaY = array('d',[0])
-posL3bInthetaY = array('d',[0])
-posL4bInthetaY = array('d',[0])
-
-events.Branch("uncVZ",uncVZ,"uncVZ")
-
-events.Branch("eleL1tthetaY",eleL1tthetaY,"eleL1tthetaY/D")
-events.Branch("eleL2tthetaY",eleL2tthetaY,"eleL2tthetaY/D")
-events.Branch("eleL3tthetaY",eleL3tthetaY,"eleL3tthetaY/D")
-events.Branch("eleL4tthetaY",eleL4tthetaY,"eleL4tthetaY/D")
-events.Branch("eleL1bthetaY",eleL1bthetaY,"eleL1bthetaY/D")
-events.Branch("eleL2bthetaY",eleL2bthetaY,"eleL2bthetaY/D")
-events.Branch("eleL3bthetaY",eleL3bthetaY,"eleL3bthetaY/D")
-events.Branch("eleL4bthetaY",eleL4bthetaY,"eleL4bthetaY/D")
-
-events.Branch("eleL1tInthetaY",eleL1tInthetaY,"eleL1tInthetaY/D")
-events.Branch("eleL2tInthetaY",eleL2tInthetaY,"eleL2tInthetaY/D")
-events.Branch("eleL3tInthetaY",eleL3tInthetaY,"eleL3tInthetaY/D")
-events.Branch("eleL4tInthetaY",eleL4tInthetaY,"eleL4tInthetaY/D")
-events.Branch("eleL1bInthetaY",eleL1bInthetaY,"eleL1bInthetaY/D")
-events.Branch("eleL2bInthetaY",eleL2bInthetaY,"eleL2bInthetaY/D")
-events.Branch("eleL3bInthetaY",eleL3bInthetaY,"eleL3bInthetaY/D")
-events.Branch("eleL4bInthetaY",eleL4bInthetaY,"eleL4bInthetaY/D")
-
-events.Branch("posL1tthetaY",posL1tthetaY,"posL1tthetaY/D")
-events.Branch("posL2tthetaY",posL2tthetaY,"posL2tthetaY/D")
-events.Branch("posL3tthetaY",posL3tthetaY,"posL3tthetaY/D")
-events.Branch("posL4tthetaY",posL4tthetaY,"posL4tthetaY/D")
-events.Branch("posL1bthetaY",posL1bthetaY,"posL1bthetaY/D")
-events.Branch("posL2bthetaY",posL2bthetaY,"posL2bthetaY/D")
-events.Branch("posL3bthetaY",posL3bthetaY,"posL3bthetaY/D")
-events.Branch("posL4bthetaY",posL4bthetaY,"posL4bthetaY/D")
-
-events.Branch("posL1tInthetaY",posL1tInthetaY,"posL1tInthetaY/D")
-events.Branch("posL2tInthetaY",posL2tInthetaY,"posL2tInthetaY/D")
-events.Branch("posL3tInthetaY",posL3tInthetaY,"posL3tInthetaY/D")
-events.Branch("posL4tInthetaY",posL4tInthetaY,"posL4tInthetaY/D")
-events.Branch("posL1bInthetaY",posL1bInthetaY,"posL1bInthetaY/D")
-events.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
-events.Branch("posL3bInthetaY",posL3bInthetaY,"posL3bInthetaY/D")
-events.Branch("posL4bInthetaY",posL4bInthetaY,"posL4bInthetaY/D")
+rootfile = TFile(outfile+".root","recreate")
 
 openPDF(outfile,c)
 
@@ -335,58 +267,175 @@ for i in range(0,len(cuts)):
 	eleposL12tscatter = TH2F("eleposL12tscatter","eleposL12tscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
 	eleposL12bscatter = TH2F("eleposL12bscatter","eleposL12bscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
 
-	for entry in xrange(nevents):
-		events.GetEntry(entry)
-		eleL1t = getScatter(events.eleL1tthetaY,events.eleL1tInthetaY)
-		eleL2t = getScatter(events.eleL2tthetaY,events.eleL2tInthetaY)
-		eleL3t = getScatter(events.eleL3tthetaY,events.eleL3tInthetaY)
-		eleL4t = getScatter(events.eleL4tthetaY,events.eleL4tInthetaY)
-		posL1t = getScatter(events.posL1tthetaY,events.posL1tInthetaY)
-		posL2t = getScatter(events.posL2tthetaY,events.posL2tInthetaY)
-		posL3t = getScatter(events.posL3tthetaY,events.posL3tInthetaY)
-		posL4t = getScatter(events.posL4tthetaY,events.posL4tInthetaY)
-		eleL1b = getScatter(events.eleL1bthetaY,events.eleL1bInthetaY)
-		eleL2b = getScatter(events.eleL2bthetaY,events.eleL2bInthetaY)
-		eleL3b = getScatter(events.eleL3bthetaY,events.eleL3bInthetaY)
-		eleL4b = getScatter(events.eleL4bthetaY,events.eleL4bInthetaY)
-		posL1b = getScatter(events.posL1bthetaY,events.posL1bInthetaY)
-		posL2b = getScatter(events.posL2bthetaY,events.posL2bInthetaY)
-		posL3b = getScatter(events.posL3bthetaY,events.posL3bInthetaY)
-		posL4b = getScatter(events.posL4bthetaY,events.posL4bInthetaY)
+	cutevents = events.CopyTree(cut)
+	neventscut = cutevents.GetEntries()
 
-		eleL1tscatter.Fill(events.uncVZ,-(eleL1t+eleL2t))
-		eleL1bscatter.Fill(events.uncVZ,(eleL1b+eleL2b))
-		eleL12tscatter.Fill(events.uncVZ,-(eleL1t+eleL2t+eleL3t+eleL4t))
-		eleL12bscatter.Fill(events.uncVZ,(eleL1b+eleL2b+eleL3b+eleL4b))
+	uncVZ = array('d',[0])
 
-		posL1tscatter.Fill(events.uncVZ,-(posL1t+posL2t))
-		posL1bscatter.Fill(events.uncVZ,(posL1b+posL2b))
-		posL12tscatter.Fill(events.uncVZ,-(posL1t+posL2t+posL3t+posL4t))
-		posL12bscatter.Fill(events.uncVZ,(posL1b+posL2b+posL3b+posL4b))
+	eleL1tthetaY = array('d',[0])
+	eleL2tthetaY = array('d',[0])
+	eleL3tthetaY = array('d',[0])
+	eleL4tthetaY = array('d',[0])
+	eleL1bthetaY = array('d',[0])
+	eleL2bthetaY = array('d',[0])
+	eleL3bthetaY = array('d',[0])
+	eleL4bthetaY = array('d',[0])
+
+	eleL1tInthetaY = array('d',[0])
+	eleL2tInthetaY = array('d',[0])
+	eleL3tInthetaY = array('d',[0])
+	eleL4tInthetaY = array('d',[0])
+	eleL1bInthetaY = array('d',[0])
+	eleL2bInthetaY = array('d',[0])
+	eleL3bInthetaY = array('d',[0])
+	eleL4bInthetaY = array('d',[0])
+
+	posL1tthetaY = array('d',[0])
+	posL2tthetaY = array('d',[0])
+	posL3tthetaY = array('d',[0])
+	posL4tthetaY = array('d',[0])
+	posL1bthetaY = array('d',[0])
+	posL2bthetaY = array('d',[0])
+	posL3bthetaY = array('d',[0])
+	posL4bthetaY = array('d',[0])
+
+	posL1tInthetaY = array('d',[0])
+	posL2tInthetaY = array('d',[0])
+	posL3tInthetaY = array('d',[0])
+	posL4tInthetaY = array('d',[0])
+	posL1bInthetaY = array('d',[0])
+	posL2bInthetaY = array('d',[0])
+	posL3bInthetaY = array('d',[0])
+	posL4bInthetaY = array('d',[0])
+
+	cutevents.Branch("uncVZ",uncVZ,"uncVZ")
+
+	cutevents.Branch("eleL1tthetaY",eleL1tthetaY,"eleL1tthetaY/D")
+	cutevents.Branch("eleL2tthetaY",eleL2tthetaY,"eleL2tthetaY/D")
+	cutevents.Branch("eleL3tthetaY",eleL3tthetaY,"eleL3tthetaY/D")
+	cutevents.Branch("eleL4tthetaY",eleL4tthetaY,"eleL4tthetaY/D")
+	cutevents.Branch("eleL1bthetaY",eleL1bthetaY,"eleL1bthetaY/D")
+	cutevents.Branch("eleL2bthetaY",eleL2bthetaY,"eleL2bthetaY/D")
+	cutevents.Branch("eleL3bthetaY",eleL3bthetaY,"eleL3bthetaY/D")
+	cutevents.Branch("eleL4bthetaY",eleL4bthetaY,"eleL4bthetaY/D")
+
+	cutevents.Branch("eleL1tInthetaY",eleL1tInthetaY,"eleL1tInthetaY/D")
+	cutevents.Branch("eleL2tInthetaY",eleL2tInthetaY,"eleL2tInthetaY/D")
+	cutevents.Branch("eleL3tInthetaY",eleL3tInthetaY,"eleL3tInthetaY/D")
+	cutevents.Branch("eleL4tInthetaY",eleL4tInthetaY,"eleL4tInthetaY/D")
+	cutevents.Branch("eleL1bInthetaY",eleL1bInthetaY,"eleL1bInthetaY/D")
+	cutevents.Branch("eleL2bInthetaY",eleL2bInthetaY,"eleL2bInthetaY/D")
+	cutevents.Branch("eleL3bInthetaY",eleL3bInthetaY,"eleL3bInthetaY/D")
+	cutevents.Branch("eleL4bInthetaY",eleL4bInthetaY,"eleL4bInthetaY/D")
+
+	cutevents.Branch("posL1tthetaY",posL1tthetaY,"posL1tthetaY/D")
+	cutevents.Branch("posL2tthetaY",posL2tthetaY,"posL2tthetaY/D")
+	cutevents.Branch("posL3tthetaY",posL3tthetaY,"posL3tthetaY/D")
+	cutevents.Branch("posL4tthetaY",posL4tthetaY,"posL4tthetaY/D")
+	cutevents.Branch("posL1bthetaY",posL1bthetaY,"posL1bthetaY/D")
+	cutevents.Branch("posL2bthetaY",posL2bthetaY,"posL2bthetaY/D")
+	cutevents.Branch("posL3bthetaY",posL3bthetaY,"posL3bthetaY/D")
+	cutevents.Branch("posL4bthetaY",posL4bthetaY,"posL4bthetaY/D")
+
+	cutevents.Branch("posL1tInthetaY",posL1tInthetaY,"posL1tInthetaY/D")
+	cutevents.Branch("posL2tInthetaY",posL2tInthetaY,"posL2tInthetaY/D")
+	cutevents.Branch("posL3tInthetaY",posL3tInthetaY,"posL3tInthetaY/D")
+	cutevents.Branch("posL4tInthetaY",posL4tInthetaY,"posL4tInthetaY/D")
+	cutevents.Branch("posL1bInthetaY",posL1bInthetaY,"posL1bInthetaY/D")
+	cutevents.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
+	cutevents.Branch("posL3bInthetaY",posL3bInthetaY,"posL3bInthetaY/D")
+	cutevents.Branch("posL4bInthetaY",posL4bInthetaY,"posL4bInthetaY/D")
+
+	for entry in xrange(neventscut):
+		cutevents.GetEntry(entry)
+		eleL1t = getScatter(cutevents.eleL1tthetaY,cutevents.eleL1tInthetaY)
+		eleL2t = getScatter(cutevents.eleL2tthetaY,cutevents.eleL2tInthetaY)
+		eleL3t = getScatter(cutevents.eleL3tthetaY,cutevents.eleL3tInthetaY)
+		eleL4t = getScatter(cutevents.eleL4tthetaY,cutevents.eleL4tInthetaY)
+		posL1t = getScatter(cutevents.posL1tthetaY,cutevents.posL1tInthetaY)
+		posL2t = getScatter(cutevents.posL2tthetaY,cutevents.posL2tInthetaY)
+		posL3t = getScatter(cutevents.posL3tthetaY,cutevents.posL3tInthetaY)
+		posL4t = getScatter(cutevents.posL4tthetaY,cutevents.posL4tInthetaY)
+		eleL1b = getScatter(cutevents.eleL1bthetaY,cutevents.eleL1bInthetaY)
+		eleL2b = getScatter(cutevents.eleL2bthetaY,cutevents.eleL2bInthetaY)
+		eleL3b = getScatter(cutevents.eleL3bthetaY,cutevents.eleL3bInthetaY)
+		eleL4b = getScatter(cutevents.eleL4bthetaY,cutevents.eleL4bInthetaY)
+		posL1b = getScatter(cutevents.posL1bthetaY,cutevents.posL1bInthetaY)
+		posL2b = getScatter(cutevents.posL2bthetaY,cutevents.posL2bInthetaY)
+		posL3b = getScatter(cutevents.posL3bthetaY,cutevents.posL3bInthetaY)
+		posL4b = getScatter(cutevents.posL4bthetaY,cutevents.posL4bInthetaY)
+
+		eleL1tscatter.Fill(cutevents.uncVZ,-(eleL1t+eleL2t))
+		eleL1bscatter.Fill(cutevents.uncVZ,(eleL1b+eleL2b))
+		eleL12tscatter.Fill(cutevents.uncVZ,-(eleL1t+eleL2t+eleL3t+eleL4t))
+		eleL12bscatter.Fill(cutevents.uncVZ,(eleL1b+eleL2b+eleL3b+eleL4b))
+
+		posL1tscatter.Fill(cutevents.uncVZ,-(posL1t+posL2t))
+		posL1bscatter.Fill(cutevents.uncVZ,(posL1b+posL2b))
+		posL12tscatter.Fill(cutevents.uncVZ,-(posL1t+posL2t+posL3t+posL4t))
+		posL12bscatter.Fill(cutevents.uncVZ,(posL1b+posL2b+posL3b+posL4b))
 
 		if(eleL1t>-9998 and eleL2t>-9998 and posL1b>-9998 and posL2b>-9998):
-			eleposL1tscatter.Fill(events.uncVZ,-(eleL1t+eleL2t)+(posL1b+posL2b))
+			eleposL1tscatter.Fill(cutevents.uncVZ,-(eleL1t+eleL2t)+(posL1b+posL2b))
 		if(eleL1b>-9998 and eleL2b>-9998 and posL1t>-9998 and posL2t>-9998):
-			eleposL1bscatter.Fill(events.uncVZ,-(posL1t+posL2t)+(eleL1b+eleL2b))
+			eleposL1bscatter.Fill(cutevents.uncVZ,-(posL1t+posL2t)+(eleL1b+eleL2b))
 		if(eleL1t>-9998 and eleL2t>-9998 and eleL3t>-9998 and eleL4t>-9998 and posL1b>-9998 and posL2b>-9998 and posL3b>-9998 and posL4b>-9998):
-			eleposL12tscatter.Fill(events.uncVZ,-(eleL1t+eleL2t+eleL3t+eleL4t)+(posL1b+posL2b+posL3b+posL4b))
+			eleposL12tscatter.Fill(cutevents.uncVZ,-(eleL1t+eleL2t+eleL3t+eleL4t)+(posL1b+posL2b+posL3b+posL4b))
 		if(eleL1b>-9998 and eleL2b>-9998 and eleL3b>-9998 and eleL4b>-9998 and posL1t>-9998 and posL2t>-9998 and posL3t>-9998 and posL4t>-9998):
-			eleposL12bscatter.Fill(events.uncVZ,(eleL1b+eleL2b+eleL3b+eleL4b)-(posL1t+posL2t+posL3t+posL4t))
+			eleposL12bscatter.Fill(cutevents.uncVZ,(eleL1b+eleL2b+eleL3b+eleL4b)-(posL1t+posL2t+posL3t+posL4t))
 
-	savehisto2D(eleL1tscatter,outfile,c,"uncVZ","theta","L1t Electron Scatter")
-	savehisto2D(eleL1bscatter,outfile,c,"uncVZ","theta","L1b Electron Scatter")
-	savehisto2D(eleL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron Scatter")
-	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron Scatter")
+	savehisto2D(eleL1tscatter,outfile,c,"uncVZ","theta","L1t Electron Scatter " + cut,1)
+	savehisto2D(eleL1bscatter,outfile,c,"uncVZ","theta","L1b Electron Scatter " + cut,1)
+	savehisto2D(eleL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron Scatter " + cut,1)
+	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron Scatter " + cut,1)
 
-	savehisto2D(posL1tscatter,outfile,c,"uncVZ","theta","L1t Positron Scatter")
-	savehisto2D(posL1bscatter,outfile,c,"uncVZ","theta","L1b Positron Scatter")
-	savehisto2D(posL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Positron Scatter")
-	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Positron Scatter")
+	savehisto2D(posL1tscatter,outfile,c,"uncVZ","theta","L1t Positron Scatter " + cut,1)
+	savehisto2D(posL1bscatter,outfile,c,"uncVZ","theta","L1b Positron Scatter " + cut,1)
+	savehisto2D(posL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Positron Scatter " + cut,1)
+	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Positron Scatter " + cut,1)
 
-	savehisto2D(eleposL1tscatter,outfile,c,"uncVZ","theta","L1t Electron - Positron Scatter")
-	savehisto2D(eleposL1bscatter,outfile,c,"uncVZ","theta","L1b Electron - Positron Scatter")
-	savehisto2D(eleposL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron - Positron Scatter")
-	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron - Positron Scatter")
+	savehisto2D(eleposL1tscatter,outfile,c,"uncVZ","theta","L1t Electron - Positron Scatter " + cut,1)
+	savehisto2D(eleposL1bscatter,outfile,c,"uncVZ","theta","L1b Electron - Positron Scatter " + cut,1)
+	savehisto2D(eleposL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron - Positron Scatter " + cut,1)
+	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron - Positron Scatter " + cut,1)
+
+	del cutevents
+
+	del eleL1tthetaY
+	del eleL2tthetaY
+	del eleL3tthetaY
+	del eleL4tthetaY
+	del eleL1bthetaY
+	del eleL2bthetaY
+	del eleL3bthetaY
+	del eleL4bthetaY
+
+	del eleL1tInthetaY
+	del eleL2tInthetaY
+	del eleL3tInthetaY
+	del eleL4tInthetaY
+	del eleL1bInthetaY
+	del eleL2bInthetaY
+	del eleL3bInthetaY
+	del eleL4bInthetaY
+
+	del posL1tthetaY
+	del posL2tthetaY
+	del posL3tthetaY
+	del posL4tthetaY
+	del posL1bthetaY
+	del posL2bthetaY
+	del posL3bthetaY
+	del posL4bthetaY
+
+	del posL1tInthetaY
+	del posL2tInthetaY
+	del posL3tInthetaY
+	del posL4tInthetaY
+	del posL1bInthetaY
+	del posL2bInthetaY
+	del posL3bInthetaY
+	del posL4bInthetaY
 
 	for j in range(0,len(plots)):
 		x = getPlotX(plots[j])
@@ -403,3 +452,4 @@ for i in range(0,len(cuts)):
 		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,finalcut,1)
 
 closePDF(outfile,c)
+rootfile.Close()
