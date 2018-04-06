@@ -241,10 +241,11 @@ else:
 	cuts.append("!eleHasTruthMatch&&posHasTruthMatch")
 	cuts.append("eleHasTruthMatch&&!posHasTruthMatch")
 	cuts.append("!eleHasTruthMatch&&!posHasTruthMatch")
-	cuts.append("elePurity>0.99&&posPurity>0.99")
-	cuts.append("elePurity<0.99&&posPurity>0.99")
-	cuts.append("elePurity>0.99&&posPurity<0.99")
-	cuts.append("elePurity<0.99&&posPurity<0.99")
+
+cuts.append("elePurity>0.99&&posPurity>0.99")
+cuts.append("elePurity<0.99&&posPurity>0.99")
+cuts.append("elePurity>0.99&&posPurity<0.99")
+cuts.append("elePurity<0.99&&posPurity<0.99")
 
 rootfile = TFile(outfile+".root","recreate")
 
