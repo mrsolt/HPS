@@ -11,6 +11,8 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-m: minimum uncVZ'
+    print '\t-n: maximum uncVZ'
     print '\t-h: this help message'
     print
 
@@ -84,10 +86,17 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 	histo.Write(plotTitle)
 	del histo
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+minVZ = -20
+maxVZ = 120
+
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:h')
 
 # Parse the command line arguments
 for opt, arg in options:
+		if opt=='-m':
+			minVZ = float(arg)
+		if opt=='-n':
+			maxVZ = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -105,8 +114,6 @@ minX = ""
 maxX = ""
 minY = ""
 maxY = ""
-minVZ = -20
-maxVZ = 130
 
 plots = []
 plots.append("uncM uncVZ 0 0.1 {0} {1}".format(minVZ,maxVZ))
@@ -114,8 +121,8 @@ plots.append("elePurity uncVZ 0 1.1 {0} {1}".format(minVZ,maxVZ))
 plots.append("posPurity uncVZ 0 1.1 {0} {1}".format(minVZ,maxVZ))
 plots.append("elePurity eleTrkChisq 0 1.1 0 30")
 plots.append("posPurity posTrkChisq 0 1.1 0 30")
-plots.append("eleTrkChisq uncVZ 0 30 {0} {1}".format(minVZ,maxVZ))
-plots.append("posTrkChisq uncVZ 0 30 {0} {1}".format(minVZ,maxVZ))
+plots.append("eleTrkChisq uncVZ 0 5 {0} {1}".format(minVZ,maxVZ))
+plots.append("posTrkChisq uncVZ 0 5 {0} {1}".format(minVZ,maxVZ))
 plots.append("elePurity eleTrkD0 0 1.1 -10 10")
 plots.append("posPurity posTrkD0 0 1.1 -10 10")
 plots.append("eleTrkD0 uncVZ -10 10 {0} {1}".format(minVZ,maxVZ))
@@ -133,12 +140,12 @@ plots.append("eleP uncVZ 0 1.5 {0} {1}".format(minVZ,maxVZ))
 plots.append("posP uncVZ 0 1.5 {0} {1}".format(minVZ,maxVZ))
 
 cuts = []
-cuts.append("")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5")
 
-cuts.append("elePurity>0.99&&posPurity>0.99")
-cuts.append("elePurity<0.99&&posPurity>0.99")
-cuts.append("elePurity>0.99&&posPurity<0.99")
-cuts.append("elePurity<0.99&&posPurity<0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity>0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity>0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity<0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity<0.99")
 
 rootfile = TFile(outfile+".root","recreate")
 

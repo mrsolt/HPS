@@ -12,6 +12,8 @@ def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
     print '\t-l: is L1L2 (default false)'
+    print '\t-m: minimum uncVZ'
+    print '\t-n: maximum uncVZ'
     print '\t-h: this help message'
     print
 
@@ -86,13 +88,19 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 	del histo
 
 L1L2 = False
+minVZ = -20
+maxVZ = 120
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hl')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:hl')
 
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-l':
 			L1L2 = True
+		if opt=='-m':
+			minVZ = float(arg)
+		if opt=='-n':
+			maxVZ = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -112,8 +120,6 @@ minY = ""
 maxY = ""
 maxTheta = 0.05
 minTheta = -maxTheta
-minVZ = -50
-maxVZ = 70
 
 plots = []
 plots.append("uncM uncVZ 0 0.1 {0} {1}".format(minVZ,maxVZ))
@@ -223,7 +229,7 @@ plots.append("uncVZ -(eleL1tthetaY+eleL2tthetaY+eleL3tthetaY+eleL4tthetaY)+(posL
 plots.append("uncVZ -(eleL1bthetaY+eleL2bthetaY+eleL3bthetaY+eleL4bthetaY)+(posL1tInthetaY+posL2tInthetaY+posL3tthetaY+posL4tthetaY) {0} {1} {2} {3} eleL1bthetaY>-9998&&eleL2bthetaY>-9998&&eleL3bthetaY>-9998&&eleL4bthetaY>-9998&&posL1tInthetaY>-9998&&posL2tInthetaY>-9998&&posL3tthetaY>-9998&&posL4tthetaY>-9998".format(minVZ,maxVZ,minTheta,maxTheta))
 
 cuts = []
-cuts.append("")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5")
 
 if(L1L2):
 	cuts.append("eleHasTruthMatch&&eleHasL1&&posHasTruthMatch&&!posHasL1")
@@ -237,15 +243,15 @@ if(L1L2):
 	cuts.append("!eleHasTruthMatch&&!eleHasL1&&posHasTruthMatch&&posHasL1")
 
 else:
-	cuts.append("eleHasTruthMatch&&posHasTruthMatch")
-	cuts.append("!eleHasTruthMatch&&posHasTruthMatch")
-	cuts.append("eleHasTruthMatch&&!posHasTruthMatch")
-	cuts.append("!eleHasTruthMatch&&!posHasTruthMatch")
+	cuts.append("max(eleTrkChisq,posTrkChisq)<5&&eleHasTruthMatch&&posHasTruthMatch")
+	cuts.append("max(eleTrkChisq,posTrkChisq)<5&&!eleHasTruthMatch&&posHasTruthMatch")
+	cuts.append("max(eleTrkChisq,posTrkChisq)<5&&eleHasTruthMatch&&!posHasTruthMatch")
+	cuts.append("max(eleTrkChisq,posTrkChisq)<5&&!eleHasTruthMatch&&!posHasTruthMatch")
 
-cuts.append("elePurity>0.99&&posPurity>0.99")
-cuts.append("elePurity<0.99&&posPurity>0.99")
-cuts.append("elePurity>0.99&&posPurity<0.99")
-cuts.append("elePurity<0.99&&posPurity<0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity>0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity>0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity<0.99")
+cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity<0.99")
 
 rootfile = TFile(outfile+".root","recreate")
 
