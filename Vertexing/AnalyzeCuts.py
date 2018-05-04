@@ -15,19 +15,18 @@ def print_usage():
     print '\t-y: is L2L2'
     print '\t-z: target position (default 0.5 mm)'
     print '\t-b: use both data and MC files'
-    print '\t- : cut tuples (default true)'
+    print '\t-c : cut tuples (default true)'
     print '\t-h: this help message'
     print
 
 L1L1 = False
 L1L2 = False
 L2L2 = False
-DataMC = False
 zTarg = 0.5
 ebeam = 1.05
 cutTuple = True
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hvxyz:bce:')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hvxyz:ce:')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -41,8 +40,6 @@ for opt, arg in options:
 			zTarg = float(arg)
 		if opt=='-e':
 			ebeam = float(arg)
-		if opt=='-b':
-			DataMC = True
 		if opt=='-c':
 			cutTuple = False
 		if opt=='-h':
@@ -82,17 +79,6 @@ def closePDF(outfile,canvas):
 def getHisto(histoTitle,infile):
 	histo = infile.Get(histoTitle)
 	return histo
-
-def buildLegend(entries,options):
-	legend = TLegend()
-	legend = TLegend(.68,.66,.92,.87)
-	legend.SetBorderSize(0)
-	legend.SetFillColor(0)
-	legend.SetFillStyle(0)
-	legend.SetTextFont(42)
-	legend.SetTextSize(0.035)
-	legend.AddEntry(Histo1,"L0L0","LP")
-	return legend
 
 def drawHisto(histo,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0):
 	histo.Draw("")
@@ -136,24 +122,36 @@ minY = -maxY
 
 
 outfile = remainder[0]
-datafile = TFile(remainder[1])
 
-firstAp = 2
-if(DataMC == True):
-	mcfile = TFile(remainder[2])
-	firstAp = 3
-	mcevents = mcfile.Get("ntuple")
+datafile = open(remainder[1],"r")
+dataFiles = []
 
-dataevents = datafile.Get("ntuple")
+for line in (raw.strip().split() for raw in datafile):
+	dataFiles.append(line[0])
+dataevents = TChain("ntuple")
+for i in range(len(dataFiles)):
+    dataevents.Add(dataFiles[i])
 
+mcfile = open(remainder[2],"r")
+mcFiles = []
+
+for line in (raw.strip().split() for raw in mcfile):
+	mcFiles.append(line[0])
+mcevents = TChain("ntuple")
+for i in range(len(mcFiles)):
+    mcevents.Add(mcFiles[i])
+
+apfile = open(remainder[3],"r")
 apfiles = []
 events = []
 mass = []
 
-for i in range(firstAp,len(remainder)):
-	apfiles.append(TFile(remainder[i]))
-	events.append(apfiles[i-firstAp].Get("ntuple"))
-	events[i-firstAp].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
+for line in (raw.strip().split() for raw in apfile):
+	apfiles.append(TFile(line[0]))
+
+for i in range(len(apfiles)):
+	events.append(apfiles[i].Get("ntuple"))
+	events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
 	dummy = ROOT.gROOT.FindObject("dummy")
 	mass.append(dummy.GetMean())
 	del dummy
@@ -249,8 +247,7 @@ for i in range(len(cuts)):
 		cut = getCut(cuts[i])
 	histos.append(TH1F(cuts[i],cuts[i],nBins,minimum,maximum))
 	saveTuplePlot2D(dataevents,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minimum,maximum,outfile,c,"uncVZ",plot," Data " + plot + " " + cut,cut)
-	if(DataMC == True):
-		saveTuplePlot2D(mcevents,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minimum,maximum,outfile,c,"uncVZ",plot," MC " + plot + " " + cut,cut)
+	saveTuplePlot2D(mcevents,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minimum,maximum,outfile,c,"uncVZ",plot," MC " + plot + " " + cut,cut)
 	for j in range(len(events)):
 		saveTuplePlot2D(events[j],"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minimum,maximum,outfile,c,"uncVZ",plot,str(mass[j]) + " GeV A' " + plot + " " + cut,cut)
 
@@ -258,10 +255,9 @@ saveTuplePlot2D(dataevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg),"uncVY-
 saveTuplePlot2D(dataevents,"bscVX-(bscVZ-{0})*bscPX/bscPZ".format(zTarg),"bscVY-(bscVZ-{0})*bscPY/bscPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"bsc proj x [mm]","bsc proj y [mm]","Data")
 saveTuplePlot2D(dataevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ - (bscVX-(bscVZ-{0})*bscPX/bscPZ)".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ - (bscVY-(bscVZ-{0})*bscPY/bscPZ)".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc - bsc proj x [mm]","unc -bsc proj y [mm]","Data")
 
-if(DataMC == True):
-	saveTuplePlot2D(mcevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc proj x [mm]","unc proj y [mm]","MC")
-	saveTuplePlot2D(mcevents,"bscVX-(bscVZ-{0})*bscPX/bscPZ".format(zTarg),"bscVY-(bscVZ-{0})*bscPY/bscPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"bsc proj x [mm]","bsc proj y [mm]","MC")
-	saveTuplePlot2D(mcevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ - (bscVX-(bscVZ-{0})*bscPX/bscPZ)".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ - (bscVY-(bscVZ-{0})*bscPY/bscPZ)".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc - bsc proj x [mm]","unc -bsc proj y [mm]","MC")
+saveTuplePlot2D(mcevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc proj x [mm]","unc proj y [mm]","MC")
+saveTuplePlot2D(mcevents,"bscVX-(bscVZ-{0})*bscPX/bscPZ".format(zTarg),"bscVY-(bscVZ-{0})*bscPY/bscPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"bsc proj x [mm]","bsc proj y [mm]","MC")
+saveTuplePlot2D(mcevents,"uncVX-(uncVZ-{0})*uncPX/uncPZ - (bscVX-(bscVZ-{0})*bscPX/bscPZ)".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ - (bscVY-(bscVZ-{0})*bscPY/bscPZ)".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc - bsc proj x [mm]","unc -bsc proj y [mm]","MC")
 
 for i in range(len(events)):
 	saveTuplePlot2D(events[i],"uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg),"uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg),nBins,minX,maxX,nBins,minY,maxY,outfile,c,"unc proj x [mm]","unc proj y [mm]",str(mass[i]) + " GeV A' ")
