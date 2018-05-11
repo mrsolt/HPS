@@ -12,13 +12,17 @@ def print_usage():
     print "Arguments: "
     print '\t-z: target position (default 0.5 mm)'
     print '\t-e : ebeam'
+    print '\t-m: minimum uncVZ'
+    print '\t-n: maximum uncVZ'
     print '\t-h: this help message'
     print
 
 zTarg = 0.5
 ebeam = 1.05
+minVZ = -50
+maxVZ = 70
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:e:')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:e:m:n:')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -26,6 +30,10 @@ for opt, arg in options:
 			zTarg = float(arg)
 		if opt=='-e':
 			ebeam = float(arg)
+		if opt=='-m':
+			minVZ = float(arg)
+		if opt=='-n':
+			maxVZ = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -114,8 +122,6 @@ def getLimit(string):
 nBins = 50
 minM = 0
 maxM = 0.1
-minVZ = -50
-maxVZ = 70
 maxZ = maxVZ
 clusterT = 43
 
@@ -179,6 +185,12 @@ cuts.append("eleP 0.788 0")
 cuts.append("uncP 1.21 0")
 cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)) 0 1".format(zTarg))
 cuts.append("uncP 0.84 1")
+cuts.append("(pow((uncVX-(uncVZ-{0})*uncPX/uncPZ-0.1)*cos(-0.2)-(uncVY-(uncVZ-{0})*uncPY/uncPZ)*sin(-0.2),2)/0.64+pow((uncVX-(uncVZ-{0})*uncPX/uncPZ)*sin(-0.2)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)*cos(-0.2),2)/0.16) 1 0".format(zTarg))
+cuts.append("(pow((uncVX-(uncVZ-{0})*uncPX/uncPZ-0.1)*cos(-0.2)-(uncVY-(uncVZ-{0})*uncPY/uncPZ)*sin(-0.2),2)/0.64+pow((uncVX-(uncVZ-{0})*uncPX/uncPZ)*sin(-0.2)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)*cos(-0.2),2)/0.16) 0.555 0".format(zTarg))
+cuts.append("abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3) 0.004 0")
+cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.5 0".format(zTarg))
+cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.3 0".format(zTarg))
+cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.2 0".format(zTarg))
 #cuts.append("sqrt((bscVX-(bscVZ-{0})*bscPX/bscPZ)**2/0.25+(bscVY-(bscVZ-{0})*bscPY/bscPZ)**2/0.125) 1 0".format(zTarg))
 #cuts.append("sqrt((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/0.25) 1 0".format(zTarg))
 
