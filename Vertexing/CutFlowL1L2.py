@@ -171,7 +171,7 @@ for i in range(len(truthapfiles)):
 	truthevents.append(truthapfiles[i].Get("ntuple"))
 
 cuts = []
-cuts.append("((!eleHasL1&&posHasL1&&((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&(eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2))||(eleHasL1&&!posHasL1&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2))&&uncP 9999 0")
+cuts.append("(!eleHasL1&&posHasL1&&((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&(eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2))||(eleHasL1&&!posHasL1&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2))&&uncP 9999 0")
 cuts.append("eleClY*posClY 0 0")
 cuts.append("max(eleMatchChisq,posMatchChisq) 10 0")
 cuts.append("abs(eleClT-posClT) 2 0")
