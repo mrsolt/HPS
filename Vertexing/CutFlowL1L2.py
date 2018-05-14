@@ -171,8 +171,7 @@ for i in range(len(truthapfiles)):
 	truthevents.append(truthapfiles[i].Get("ntuple"))
 
 cuts = []
-#cuts.append("isPair1 0.5 1")
-#cuts.append("eleHasL1&&posHasL1 0.5 1")
+cuts.append("((!eleHasL1&&posHasL1&&((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&(eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2))||(eleHasL1&&!posHasL1&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2))&&uncP 9999 0")
 cuts.append("eleClY*posClY 0 0")
 cuts.append("max(eleMatchChisq,posMatchChisq) 10 0")
 cuts.append("abs(eleClT-posClT) 2 0")
@@ -183,18 +182,11 @@ cuts.append("max(eleTrkChisq/eleNTrackHits,posTrkChisq/posNTrackHits) 5 0")
 cuts.append("abs(eleP-posP)/(eleP+posP) 0.5 0")
 cuts.append("eleP 0.788 0")
 cuts.append("uncP 1.21 0")
-cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)) 0 1".format(zTarg))
+cuts.append("(!eleHasL1&&posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0)||(eleHasL1&&!posHasL1&&min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0)&&uncP 9999 0".format(zTarg))
 cuts.append("uncP 0.84 1")
-cuts.append("(pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ-0.1)*cos(-0.5)-(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*sin(-0.5),2)/0.4356+pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ)*sin(-0.5)+(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*cos(-0.5),2)/0.3249) 1 0")
-#cuts.append("(pow((uncVX-(uncVZ-{0})*uncPX/uncPZ-0.1)*cos(-0.2)-(uncVY-(uncVZ-{0})*uncPY/uncPZ)*sin(-0.2),2)/0.64+pow((uncVX-(uncVZ-{0})*uncPX/uncPZ)*sin(-0.2)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)*cos(-0.2),2)/0.16) 1 0".format(zTarg))
-#cuts.append("(pow((uncVX-(uncVZ-{0})*uncPX/uncPZ-0.1)*cos(-0.2)-(uncVY-(uncVZ-{0})*uncPY/uncPZ)*sin(-0.2),2)/0.64+pow((uncVX-(uncVZ-{0})*uncPX/uncPZ)*sin(-0.2)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)*cos(-0.2),2)/0.16) 0.555 0".format(zTarg))
-cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.4 0".format(zTarg))
+cuts.append("((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2/(0.64)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/(0.64)) 1 0".format(zTarg))
+cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.5 0".format(zTarg))
 cuts.append("abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3) 0.004 0")
-cuts.append("(pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ-0.1)*cos(-0.5)-(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*sin(-0.5),2)/0.4356+pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ)*sin(-0.5)+(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*cos(-0.5),2)/0.3249) 0.55 0")
-#cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.3 0".format(zTarg))
-#cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.2 0".format(zTarg))
-#cuts.append("sqrt((bscVX-(bscVZ-{0})*bscPX/bscPZ)**2/0.25+(bscVY-(bscVZ-{0})*bscPY/bscPZ)**2/0.125) 1 0".format(zTarg))
-#cuts.append("sqrt((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/0.25) 1 0".format(zTarg))
 
 cut = "uncP<9999"
 datahistos = []
