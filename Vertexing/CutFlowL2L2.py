@@ -19,8 +19,8 @@ def print_usage():
 
 zTarg = 0.5
 ebeam = 1.05
-minVZ = -50
-maxVZ = 120
+minVZ = 0
+maxVZ = 150
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:e:m:n:')
 
@@ -171,27 +171,13 @@ for i in range(len(truthapfiles)):
 	truthevents.append(truthapfiles[i].Get("ntuple"))
 
 cuts = []
-cuts.append("isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq,posTrkChisq)<30&&abs(eleP-posP)/(eleP+posP)<0.5&&posTrkD0+{2}*posPX/posP<1.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2&&((!eleHasL1&&posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{2}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{2}*posPY/posP)*sign(posPY))>0)||(eleHasL1&&!posHasL1&&min(eleMinPositiveIso+0.5*(eleTrkZ0+{2}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{2}*posPY/posP)*sign(posPY))>0))&&uncP 0 9999")
-cuts.append("(!eleHasL1&&posHasL1&&((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&(eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2))||(eleHasL1&&!posHasL1&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2))&&uncP 0 9999")
+cuts.append("!eleHasL1&&!posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{2}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{2}*posPY/posP)*sign(posPY))>0&&isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq,posTrkChisq)<30&&abs(eleP-posP)/(eleP+posP)<0.5&&posTrkD0+{2}*posPX/posP<1.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2&&uncP 0 9999")
+cuts.append("(((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&((eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2)&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2)))&&uncP 0 9999")
+cuts.append("!((uncVZ>74.6&&uncVZ<111.4&&uncVY>0)||(uncVZ>95.6&&uncVZ<121.3&&uncVY))&&uncP 0 9999")
+cuts.append("sqrt(((uncVX-(uncVZ-0.5)*uncPX/uncPZ)/(1))**2+((uncVY-(uncVZ-0.5)*uncPY/uncPZ)/(1))**2) 0 1")
 cuts.append("((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2/(0.64)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/(0.64)) 1 0".format(zTarg))
 cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.5 0".format(zTarg))
 cuts.append("abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3) 0.004 0")
-#cuts.append("((!eleHasL1&&posHasL1&&((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&(eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2))||(eleHasL1&&!posHasL1&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2)))&&uncP 9999 0")
-#cuts.append("eleClY*posClY 0 0")
-#cuts.append("max(eleMatchChisq,posMatchChisq) 10 0")
-#cuts.append("abs(eleClT-posClT) 2 0")
-#cuts.append("max(abs(eleClT-eleTrkT-{0}),abs(posClT-posTrkT-{0})) 4 0".format(clusterT))
-#cuts.append("bscChisq 10 0")
-#cuts.append("bscChisq-uncChisq 5 0")
-#cuts.append("max(eleTrkChisq/eleNTrackHits,posTrkChisq/posNTrackHits) 5 0")
-#cuts.append("abs(eleP-posP)/(eleP+posP) 0.5 0")
-#cuts.append("eleP 0.788 0")
-#cuts.append("uncP 1.21 0")
-#cuts.append("((!eleHasL1&&posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0)||(eleHasL1&&!posHasL1&&min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0))&&uncP 9999 0".format(zTarg))
-#cuts.append("uncP 0.84 1")
-#cuts.append("((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2/(0.64)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/(0.64)) 1 0".format(zTarg))
-#cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.5 0".format(zTarg))
-#cuts.append("abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3) 0.004 0")
 
 cut = "uncP<9999"
 datahistos = []
