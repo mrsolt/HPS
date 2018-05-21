@@ -199,7 +199,7 @@ for i in range(len(cuts)):
 	plot = getPlot(cuts[i])
 	cutval = getCut(cuts[i])
 	newcut = ""
-	if(cutval = ""):
+	if(cutval == ""):
 		newcut = plot
 	else:
 		lim = getLimit(cuts[i])
