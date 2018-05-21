@@ -206,8 +206,8 @@ for i in range(len(cuts)):
 		newcut = plot+">"+str(cutval)
 		if(lim == 0):
 			newcut = plot+"<"+str(cutval)
-	cut = cut + "&&" + newcut
 	anticut = cut + "&&!(" + newcut + ")"
+	cut = cut + "&&" + newcut
 	datahistos.append(tupleToHisto(dataevents,"uncVZ","datahisto"+str(i),nBins,minVZ,maxVZ,cut))
 	mchistos.append(tupleToHisto(mcevents,"uncVZ","mchisto"+str(i),nBins,minVZ,maxVZ,cut))
 	#saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data " + newcut,cut)
@@ -252,7 +252,7 @@ legend.AddEntry(dum1,"Data","LP")
 legend.AddEntry(dum2,"MC","LP")
 
 for i in range(len(datahistos)):
-	saveHisto2(datahistos[i],mchistos[i],c,outfile,legend,"uncVZ","","uncVZ " + getPlot(cuts[i]),1,1)
+	saveHisto2(datahistos[i],mchistos[i],c,outfile,legend,"uncVZ","","uncVZ " + getPlot(cuts[i]),1)
 
 legend2 = TLegend(.68,.36,.92,.87)
 legend2.SetBorderSize(0)
