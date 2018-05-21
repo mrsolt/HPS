@@ -38,7 +38,7 @@ for opt, arg in options:
 			print_usage()
 			sys.exit(0)
 
-gStyle.SetOptStat(0)
+#gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 def tupleToHisto(events,inHisto,histo,nBins,minX,maxX,cut=""):
@@ -172,9 +172,9 @@ for i in range(len(truthapfiles)):
 	truthevents.append(truthapfiles[i].Get("ntuple"))
 
 cuts = []
-cuts.append("!eleHasL1&&!posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{2}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{2}*posPY/posP)*sign(posPY))>0&&isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq,posTrkChisq)<30&&abs(eleP-posP)/(eleP+posP)<0.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2&&uncP 0 9999".format(ebeam,clusterT,zTarg))
-cuts.append("(((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&((eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2)&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2)))&&uncP 0 9999")
-cuts.append("!((uncVZ>74.6&&uncVZ<111.4&&uncVY>0.4)||(uncVZ>95.6&&uncVZ<121.3&&uncVY<-0.4))&&uncP 0 9999")
+cuts.append("!eleHasL1&&!posHasL1&&min(eleMinPositiveIsoL2+0.33*(eleTrkZ0+{2}*elePY/eleP)*sign(elePY),posMinPositiveIsoL2+0.33*(posTrkZ0+{2}*posPY/posP)*sign(posPY))>0&&isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq,posTrkChisq)<30&&abs(eleP-posP)/(eleP+posP)<0.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2".format(ebeam,clusterT,zTarg))
+cuts.append("(((eleTrkExtrpYSensorAxialTopL1<-19.2&&eleTrkExtrpYSensorAxialTopL1>-9998)||(eleTrkExtrpYSensorAxialBotL1<-19.2&&eleTrkExtrpYSensorAxialBotL1>-9998))&&((posTrkExtrpYSensorAxialTopL1<-19.2&&posTrkExtrpYSensorAxialTopL1>-9998)||(posTrkExtrpYSensorAxialBotL1<-19.2&&posTrkExtrpYSensorAxialBotL1>-9998))&&((eleTrkExtrpYSensorStereoTopL1>19.2||eleTrkExtrpYSensorStereoBotL1>19.2)&&(posTrkExtrpYSensorStereoTopL1>19.2||posTrkExtrpYSensorStereoBotL1>19.2)))")
+cuts.append("!((uncVZ>74.6&&uncVZ<111.4&&uncVY>0.4)||(uncVZ>95.6&&uncVZ<121.3&&uncVY<-0.4))")
 #cuts.append("sqrt(((uncVX-(uncVZ-0.5)*uncPX/uncPZ)/(1))**2+((uncVY-(uncVZ-0.5)*uncPY/uncPZ)/(1))**2) 0 1")
 cuts.append("((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2/(0.64)+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/(0.64)) 1 0".format(zTarg))
 cuts.append("abs(bscVY-(bscVZ-{0})*bscPY/bscPZ) 0.5 0".format(zTarg))
@@ -198,18 +198,26 @@ effmasscuthistos = []
 for i in range(len(cuts)):
 	plot = getPlot(cuts[i])
 	cutval = getCut(cuts[i])
-	lim = getLimit(cuts[i])
-	newcut = plot+">"+str(cutval)
-	if(lim == 0):
-		newcut = plot+"<"+str(cutval)
+	newcut = ""
+	if(cutval = ""):
+		newcut = plot
+	else:
+		lim = getLimit(cuts[i])
+		newcut = plot+">"+str(cutval)
+		if(lim == 0):
+			newcut = plot+"<"+str(cutval)
 	cut = cut + "&&" + newcut
-	anticut = cut + "&&!" + newcut
+	anticut = cut + "&&!(" + newcut + ")"
 	datahistos.append(tupleToHisto(dataevents,"uncVZ","datahisto"+str(i),nBins,minVZ,maxVZ,cut))
 	mchistos.append(tupleToHisto(mcevents,"uncVZ","mchisto"+str(i),nBins,minVZ,maxVZ,cut))
-	saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data " + newcut,cut,1)
-	saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC " + newcut,cut,1)
-	saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data With " + newcut,anticut,1)
-	saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC With " + newcut,anticut,1)
+	#saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data " + newcut,cut)
+	#saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC " + newcut,cut)
+	#saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data With " + newcut,anticut)
+	#saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC With " + newcut,anticut)
+	saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data " + customlegend[i],cut,1)
+	saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC " + customlegend[i],cut,1)
+	saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," Data Without " + customlegend[i],anticut,1)
+	saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ"," MC Without " + customlegend[i],anticut,1)
 	effhistos = []
 	for j in range(len(events)):
 		events[j].Draw("triEndZ>>histoRecon({0},{1},{2})".format(nBinsAp,zTarg,maxZ),cut)
@@ -305,6 +313,7 @@ for i in range(len(events)):
 	legend2.Draw("same")
 	c.Print(outfile+".pdf")
 
-	
+saveTuplePlot2D(dataevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ","Data",cut,1)
+saveTuplePlot2D(mcevents,"uncM","uncVZ",nBins,minM,maxM,nBins,minVZ,maxVZ,outfile,c,"uncM","uncVZ","MC",cut,1)
 
 closePDF(outfile,c)
