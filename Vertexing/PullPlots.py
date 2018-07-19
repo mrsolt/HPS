@@ -142,7 +142,7 @@ for i in range(len(apfiles)):
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("sqrt(uncCovZZ) 0 10")
-plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -5 5".format(targZ))
+plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -5 5".format(zTarg))
 plots.append("(uncVZ-triEndZ)/sqrt(uncCovZZ) -5 5")
 plots.append("uncTargProjXErr 0 10")
 plots.append("uncTargProjYErr 0 10")
@@ -160,7 +160,7 @@ plots.append("posTrkD0/posTrkD0Err -5 5")
 plots2D = []
 plots2D.append("uncM uncVZ 0 0.1 {0} {1}".format(minVZ,maxVZ))
 plots2D.append("sqrt(uncCovZZ) uncVZ 0 10 {0} {1}".format(minVZ,maxVZ))
-plots2D.append("(uncVZ-{0})/sqrt(uncCovZZ) uncVZ -5 5 {1} {2}".format(targZ,minVZ,maxVZ))
+plots2D.append("(uncVZ-{0})/sqrt(uncCovZZ) uncVZ -5 5 {1} {2}".format(zTarg,minVZ,maxVZ))
 plots2D.append("(uncVZ-triEndZ)/sqrt(uncCovZZ) uncVZ -5 5 {0} {1}".format(minVZ,maxVZ))
 plots2D.append("uncTargProjXErr uncVZ 0 10 {0} {1}".format(minVZ,maxVZ))
 plots2D.append("uncTargProjYErr uncVZ 0 10 {0} {1}".format(minVZ,maxVZ))
