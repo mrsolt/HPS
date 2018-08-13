@@ -8,7 +8,7 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input text file name> <input A' text file>".format(sys.argv[0])
+    print "\nUsage: {0} <output file base name> <input A' text file> <input text file name>".format(sys.argv[0])
     print "Arguments: "
     print '\t-z: target z position'
     print '\t-b: mass bin size'
@@ -17,6 +17,7 @@ def print_usage():
     print '\t-s: save fitted histograms'
     print '\t-m: minimum uncVZ'
     print '\t-n: maximum uncVZ'
+    print '\t-a: no MC Files'
     print '\t-h: this help message'
     print
 
@@ -27,8 +28,9 @@ massBin = 0.002
 nZ = 20
 zBin = 5
 saveFits = False
+doMC = True
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:b:c:d:sm:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:b:c:d:sm:n:ah')
 
 # Parse the command line argumentz
 for opt, arg in options:
@@ -46,6 +48,8 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-a':
+			doMC = False
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -170,16 +174,7 @@ nBins = 50
 
 outfile = remainder[0]
 
-mcfile = open(remainder[1],"r")
-mcFiles = []
-
-for line in (raw.strip().split() for raw in mcfile):
-	mcFiles.append(line[0])
-events = TChain("ntuple")
-for i in range(len(mcFiles)):
-    events.Add(mcFiles[i])
-
-apfile = open(remainder[2],"r")
+apfile = open(remainder[1],"r")
 apfiles = []
 apevents = []
 masses = []
@@ -193,6 +188,16 @@ for i in range(len(apfiles)):
 	dummy = ROOT.gROOT.FindObject("dummy")
 	masses.append(dummy.GetMean())
 	del dummy
+
+events = TChain("ntuple")
+if (doMC):
+	mcfile = open(remainder[2],"r")
+	mcFiles = []
+
+	for line in (raw.strip().split() for raw in mcfile):
+		mcFiles.append(line[0])
+	for i in range(len(mcFiles)):
+    	events.Add(mcFiles[i])
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
@@ -297,28 +302,29 @@ fitplots.append("(0.000193/sqrt(triPosPX**2+triPosPZ**2)-posTrkOmega)/posTrkOmeg
 
 openPDF(outfile,c)
 
-for i in range(len(plots)):
-	plot = getPlot(plots[i])
-	minX = getMinX(plots[i])
-	maxX = getMaxX(plots[i])
-	saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
-	for j in range(len(masses)):
-		mass = masses[j]
-		saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" MC mass = "+str(mass)+" +/- "+str(massBin)+" GeV",mass,massBin)
-		saveTuplePlot(apevents[j],plot,nBins,minX,maxX,outfile,c,plot,"",plot+" A' mass = "+str(mass)+" GeV")
+if(doMC):
+	for i in range(len(plots)):
+		plot = getPlot(plots[i])
+		minX = getMinX(plots[i])
+		maxX = getMaxX(plots[i])
+		saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
+		for j in range(len(masses)):
+			mass = masses[j]
+			saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" MC mass = "+str(mass)+" +/- "+str(massBin)+" GeV",mass,massBin)
+			saveTuplePlot(apevents[j],plot,nBins,minX,maxX,outfile,c,plot,"",plot+" A' mass = "+str(mass)+" GeV")
 
-for i in range(len(plots2D)):
-	plot1 = getPlot(plots2D[i])
-	plot2 = getPlot2D(plots2D[i])
-	minX = getMinX2D(plots2D[i])
-	maxX = getMaxX2D(plots2D[i])
-	minY = getMinY(plots2D[i])
-	maxY = getMaxY(plots2D[i])
-	saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
-	for j in range(len(masses)):
-		mass = masses[j]
-		saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1+" mass = "+str(mass)+" +/- "+str(massBin)+" GeV",mass,massBin)
-		saveTuplePlot2D(apevents[j],plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1+" A' mass = "+str(mass)+" GeV")
+	for i in range(len(plots2D)):
+		plot1 = getPlot(plots2D[i])
+		plot2 = getPlot2D(plots2D[i])
+		minX = getMinX2D(plots2D[i])
+		maxX = getMaxX2D(plots2D[i])
+		minY = getMinY(plots2D[i])
+		maxY = getMaxY(plots2D[i])
+		saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
+		for j in range(len(masses)):
+			mass = masses[j]
+			saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1+" mass = "+str(mass)+" +/- "+str(massBin)+" GeV",mass,massBin)
+			saveTuplePlot2D(apevents[j],plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1+" A' mass = "+str(mass)+" GeV")
 
 for i in range(len(applots)):
 	plot = getPlot(applots[i])
