@@ -197,7 +197,7 @@ if (doMC):
 	for line in (raw.strip().split() for raw in mcfile):
 		mcFiles.append(line[0])
 	for i in range(len(mcFiles)):
-    	events.Add(mcFiles[i])
+		events.Add(mcFiles[i])
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
