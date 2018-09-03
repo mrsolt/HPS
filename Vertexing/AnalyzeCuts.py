@@ -113,8 +113,8 @@ def getCut(string):
 	else: return arr[3]
 
 nBins = 50
-minVZ = -20
-maxVZ = 150
+minVZ = -60
+maxVZ = 60
 maxX = 3
 minX = -maxX
 maxY = 3
@@ -173,8 +173,8 @@ cuts.append("posTrkChisq 0 40")
 #cuts.append("posTrkChisq/posNTrackHits 0 10")
 cuts.append("eleTrkD0 -15 15")
 cuts.append("posTrkD0 -15 15")
-#cuts.append("eleTrkZ0 -15 15")
-#cuts.append("posTrkZ0 -15 15")
+cuts.append("eleTrkZ0 -15 15")
+cuts.append("posTrkZ0 -15 15")
 cuts.append("abs(eleClT-eleTrkT-43) 0 10")
 cuts.append("abs(posClT-posTrkT-43) 0 10")
 cuts.append("abs(eleClT-posClT) 0 10")
