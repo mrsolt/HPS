@@ -14,6 +14,8 @@ def print_usage():
     print '\t-x: is L1L2'
     print '\t-y: is L2L2'
     print '\t-z: target position (default 0.5 mm)'
+    print '\t-m: minimum uncVZ (default -60 mm)'
+    print '\t-n: maximum uncVZ (default 60 mm)'
     print '\t-b: use both data and MC files'
     print '\t-c : cut tuples (default true)'
     print '\t-h: this help message'
@@ -25,8 +27,10 @@ L2L2 = False
 zTarg = 0.5
 ebeam = 1.05
 cutTuple = True
+minVZ = -60
+maxVZ = 60
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hvxyz:ce:')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hvxyz:m:n:ce:')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -38,6 +42,10 @@ for opt, arg in options:
 			L2L2 = True
 		if opt=='-z':
 			zTarg = float(arg)
+		if opt=='-m':
+			minVZ = float(arg)
+		if opt=='-n':
+			maxVZ = float(arg)
 		if opt=='-e':
 			ebeam = float(arg)
 		if opt=='-c':
@@ -113,8 +121,6 @@ def getCut(string):
 	else: return arr[3]
 
 nBins = 50
-minVZ = -60
-maxVZ = 60
 maxX = 3
 minX = -maxX
 maxY = 3
@@ -171,29 +177,29 @@ cuts.append("eleTrkChisq 0 40")
 cuts.append("posTrkChisq 0 40")
 #cuts.append("eleTrkChisq/eleNTrackHits 0 10")
 #cuts.append("posTrkChisq/posNTrackHits 0 10")
-cuts.append("eleTrkD0 -15 15")
-cuts.append("posTrkD0 -15 15")
-cuts.append("eleTrkZ0 -15 15")
-cuts.append("posTrkZ0 -15 15")
+cuts.append("eleTrkD0 -5 5")
+cuts.append("posTrkD0 -5 5")
+cuts.append("eleTrkZ0 -5 5")
+cuts.append("posTrkZ0 -5 5")
 cuts.append("abs(eleClT-eleTrkT-43) 0 10")
 cuts.append("abs(posClT-posTrkT-43) 0 10")
 cuts.append("abs(eleClT-posClT) 0 10")
 cuts.append("abs(eleP-posP)/(eleP+posP) 0 2")
 cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+-5.0*uncElePY/uncEleP)*sign(uncElePY),posMinPositiveIso+0.5*(posTrkZ0+-5.0*uncPosPY/uncPosP)*sign(uncPosPY)) -1 10")
-cuts.append("abs(eleP-posP)/uncP<0.5&&(pow((uncVX-(uncVZ)*uncPX/uncPZ-0.05)*cos(-0.5)-(uncVY-(uncVZ)*uncPY/uncPZ)*sin(-0.5),2)/0.55+pow((uncVX-(uncVZ)*uncPX/uncPZ)*sin(-0.5)+(uncVY-(uncVZ)*uncPY/uncPZ)*cos(-0.5),2)/0.25) 0 2")
+cuts.append("(pow((uncVX-(uncVZ)*uncPX/uncPZ-0.05)*cos(-0.5)-(uncVY-(uncVZ)*uncPY/uncPZ)*sin(-0.5),2)/0.55+pow((uncVX-(uncVZ)*uncPX/uncPZ)*sin(-0.5)+(uncVY-(uncVZ)*uncPY/uncPZ)*cos(-0.5),2)/0.25) 0 2")
 #cuts.append("abs(elePX-posPX)/(elePX+posPX) 0 20")
 #cuts.append("abs(elePY-posPY)/(elePY+posPY) 0 20")
 #cuts.append("abs(sqrt(elePX**2+elePY**2)-sqrt(posPX**2+elePY**2))/(sqrt(elePX**2+elePY**2)+sqrt(posPX**2+elePY**2)) 0 20")
 #cuts.append("abs(sqrt((elePX-posPY)**2+(elePY-posPY)**2))/sqrt((elePX+posPX)**2+(elePY+posPY)**2) 0 2")
 #cuts.append("posTrkD0+{0}*posPX/posP -5 5".format(zTarg))
 #cuts.append("eleTrkD0+{0}*elePX/eleP -5 5".format(zTarg))
-#cuts.append("eleTrkChisq/(2*eleNTrackHits-5)+posTrkChisq/(2*posNTrackHits-5) 0 20")
+cuts.append("eleTrkChisq/(2*eleNTrackHits-5)+posTrkChisq/(2*posNTrackHits-5) 0 20")
 #cuts.append("eleClE/eleP 0 2")
 #cuts.append("posClE/posP 0 2")
 #cuts.append("sqrt((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2) 0 2".format(zTarg))
 #cuts.append("sqrt((uncVX-(uncVZ-{0})*uncPX/uncPZ)**2+(uncVY-(uncVZ-{0})*uncPY/uncPZ)**2/0.25) 0 8".format(zTarg))
 #cuts.append("sqrt((bscVX-(bscVZ-{0})*bscPX/bscPZ)**2+(bscVY-(bscVZ-{0})*bscPY/bscPZ)**2) 0 2".format(zTarg))
-#cuts.append("sqrt((bscVX-(bscVZ-{0})*bscPX/bscPZ)**2/0.25+(bscVY-(bscVZ-{0})*bscPY/bscPZ)**2/0.125) 0 5".format(zTarg))
+cuts.append("sqrt((bscVX-(bscVZ-{0})*bscPX/bscPZ)**2/0.25+(bscVY-(bscVZ-{0})*bscPY/bscPZ)**2/0.125) 0 5".format(zTarg))
 #cuts.append("sqrt(uncVX*uncVX+uncVY*uncVY) 0 2")
 #cuts.append("sqrt(bscVX*bscVX+bscVY*bscVY) 0 2")
 #cuts.append("sqrt((uncVX-(uncVZ-{0})*uncPX/uncPZ-(bscVX-(bscVZ-{0})*bscPX/bscPZ))**2+(uncVY-(uncVZ-{0})*uncPY/uncPZ-(bscVY-(bscVZ-{0})*bscPY/bscPZ))**2) 0 5".format(zTarg))
