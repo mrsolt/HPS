@@ -140,14 +140,19 @@ plots.append("eleP uncVZ 0 1.5 {0} {1}".format(minVZ,maxVZ))
 plots.append("posP uncVZ 0 1.5 {0} {1}".format(minVZ,maxVZ))
 
 cuts = []
-cuts.append("max(eleTrkChisq,posTrkChisq)<5")
+#cuts.append("max(eleTrkChisq,posTrkChisq)<5")
 
-cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity>0.99")
-cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity>0.99")
-cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity<0.99")
-cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity<0.99")
+#cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity>0.99")
+#cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity>0.99")
+#cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity>0.99&&posPurity<0.99")
+#cuts.append("max(eleTrkChisq,posTrkChisq)<5&&elePurity<0.99&&posPurity<0.99")
 
-rootfile = TFile(outfile+".root","recreate")
+cuts.append("elePurity>0.99&&posPurity>0.99")
+cuts.append("elePurity<0.99&&posPurity>0.99")
+cuts.append("elePurity>0.99&&posPurity<0.99")
+cuts.append("elePurity<0.99&&posPurity<0.99")
+
+#rootfile = TFile(outfile+".root","recreate")
 
 openPDF(outfile,c)
 
@@ -168,4 +173,4 @@ for i in range(0,len(cuts)):
 		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,finalcut,1)
 
 closePDF(outfile,c)
-rootfile.Close()
+#rootfile.Close()
