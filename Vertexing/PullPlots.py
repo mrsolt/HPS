@@ -202,6 +202,8 @@ if (doMC):
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("sqrt(uncCovZZ) 0 10")
+plots.append("uncM 0 0.1")
+plots.append("uncMErr 0 0.02")
 plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -5 5".format(zTarg))
 plots.append("uncTargProjXErr 0 1")
 plots.append("uncTargProjYErr 0 1")
@@ -257,6 +259,7 @@ plots2D.append("(0.000075/sqrt(triPosPX**2+triPosPZ**2)+posTrkOmega)/posTrkOmega
 applots = []
 applots.append("(uncVZ-{0})/sqrt(uncCovZZ) -5 50".format(zTarg))
 applots.append("(uncVZ-triEndZ)/sqrt(uncCovZZ) -5 5")
+applots.append("(uncM-triM)/uncMErr -5 5")
 applots.append("(-triEle1PY/triEle1PZ*triEndZ+triEndY-eleTrkZ0)/eleTrkZ0Err -5 5")
 applots.append("(-triPosPY/triPosPZ*triEndZ+triEndY-posTrkZ0)/posTrkZ0Err -5 5")
 applots.append("(-triEle1PX/triEle1PZ*triEndZ+triEndX-0.000075*triEndZ**2-eleTrkD0)/eleTrkD0Err -5 5")
@@ -271,6 +274,7 @@ applots.append("(0.000075/sqrt(triPosPX**2+triPosPZ**2)+posTrkOmega)/posTrkOmega
 applots2D = []
 applots2D.append("(uncVZ-{0})/sqrt(uncCovZZ) triEndZ -5 50 {1} {2}".format(zTarg,minVZ,maxVZ))
 applots2D.append("(uncVZ-triEndZ)/sqrt(uncCovZZ) triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
+applots2D.append("(uncM-triM)/uncMErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 applots2D.append("uncTargProjX/uncTargProjXErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 applots2D.append("uncTargProjY/uncTargProjYErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 applots2D.append("(-triEle1PY/triEle1PZ*triEndZ+triEndY-eleTrkZ0)/eleTrkZ0Err triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
@@ -287,6 +291,7 @@ applots2D.append("(0.000075/sqrt(triPosPX**2+triPosPZ**2)+posTrkOmega)/posTrkOme
 
 fitplots = []
 fitplots.append("(uncVZ-triEndZ)/sqrt(uncCovZZ) triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
+fitplots.append("(uncM-triM)/uncMErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("uncTargProjX/uncTargProjXErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("uncTargProjY/uncTargProjYErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("(-triEle1PY/triEle1PZ*triEndZ+triEndY-eleTrkZ0)/eleTrkZ0Err triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
