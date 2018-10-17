@@ -333,7 +333,7 @@ fitplots.append("(uncPX-triPX)/uncMomXErr triEndZ -5 5 {0} {1}".format(minVZ,max
 fitplots.append("(uncPY-triPY)/uncMomYErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("(uncPZ-triPZ)/uncMomZErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("(uncPZ-triPZ)/(0.000075*(eleTrkOmegaErr/eleTrkOmega^2+posTrkOmegaErr/posTrkOmega^2)) -5 5 {0} {1}".format(minVZ,maxVZ))
-fitplots.append("(uncPZ-triPZ)/(0.000075*sqrt(((eleTrkOmegaErr/eleTrkOmega^2)^2+(posTrkOmegaErr/posTrkOmega^2)^2)) -5 5 {0} {1}".format(minVZ,maxVZ))
+fitplots.append("(uncPZ-triPZ)/(0.000075*sqrt(((eleTrkOmegaErr/eleTrkOmega^2)^2+(posTrkOmegaErr/posTrkOmega^2)^2))) -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("uncTargProjX/uncTargProjXErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("uncTargProjY/uncTargProjYErr triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
 fitplots.append("uncTargProjX/((sqrt(uncCovXX)+(sqrt(uncCovZZ)*uncPX/uncPZ)+(uncVZ-0.5)*(uncMomXErr/uncPZ+uncPX*(0.000075*(eleTrkOmegaErr/eleTrkOmega^2+posTrkOmegaErr/posTrkOmega^2))/uncPZ^2))) triEndZ -5 5 {0} {1}".format(minVZ,maxVZ))
