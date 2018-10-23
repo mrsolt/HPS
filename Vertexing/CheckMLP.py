@@ -100,6 +100,7 @@ plots = []
 plots.append("uncVZ uncVX {0} {1} -3 3".format(minVZ,maxVZ))
 plots.append("uncVZ uncVY {0} {1} -2 2".format(minVZ,maxVZ))
 plots.append("uncVZ uncVZ {0} {1} {0} {1}".format(minVZ,maxVZ))
+plots.append("uncVZ (uncVZ-0.5)/sqrt(uncCovZZ) {0} {1} 0 75".format(minVZ,maxVZ))
 plots.append("uncVZ bscChisq {0} {1} 0 10".format(minVZ,maxVZ))
 plots.append("uncVZ bscChisq-uncChisq {0} {1} 0 5".format(minVZ,maxVZ))
 plots.append("uncVZ sqrt(uncCovZZ) {0} {1} 0 8".format(minVZ,maxVZ))
