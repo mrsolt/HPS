@@ -69,7 +69,7 @@ def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,o
 	del histo
 
 minVZ = -20
-maxVZ = 70
+maxVZ = 50
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:h')
 
@@ -104,7 +104,7 @@ minx = -30
 maxx = -minx
 miny = -8
 maxy = -miny
-maxTheta = 0.05
+maxTheta = 0.03
 minTheta = -maxTheta
 
 plots = []
@@ -120,6 +120,7 @@ plots.append("eleL1tsvthitX eleL1tsvthitY {0} {1} {2} {3} eleL1tIsGoodTruthHit>-
 plots.append("eleL1tInsvthitX eleL1tInsvthitY {0} {1} {2} {3} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1&&eleL1tInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1&&eleL1tsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("eleL1tsvthitY uncVZ {2} {3} {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("eleIsoAxial eleL1tsvthitY -6 6 {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(miny,maxy))
 plots.append("posL1bthetaY+posL2bthetaY uncVZ {2} {3} {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -135,6 +136,7 @@ plots.append("eleL2tsvthitX eleL2tsvthitY {0} {1} {2} {3} eleL2tIsGoodTruthHit>-
 plots.append("eleL2tInsvthitX eleL2tInsvthitY {0} {1} {2} {3} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1&&eleL2tInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1&&eleL2tsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("eleL2tsvthitY uncVZ {2} {3} {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("eleIsoStereo eleL2tsvthitY -6 6 {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1".format(miny,maxy))
 plots.append("posL1bthetaY+posL2bthetaY uncVZ {2} {3} {0} {1} eleL2tIsGoodTruthHit>-9998&&eleL2tIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -150,6 +152,7 @@ plots.append("eleL1bsvthitX eleL1bsvthitY {0} {1} {2} {3} eleL1bIsGoodTruthHit>-
 plots.append("eleL1bInsvthitX eleL1bInsvthitY {0} {1} {2} {3} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1&&eleL1bInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1&&eleL1bsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("eleL1bsvthitY uncVZ {2} {3} {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("eleIsoStereo eleL1bsvthitY -6 6 {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1".format(miny,maxy))
 plots.append("-(posL1tthetaY+posL2tthetaY) uncVZ {2} {3} {0} {1} eleL1bIsGoodTruthHit>-9998&&eleL1bIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -165,6 +168,7 @@ plots.append("eleL2bsvthitX eleL2bsvthitY {0} {1} {2} {3} eleL2bIsGoodTruthHit>-
 plots.append("eleL2bInsvthitX eleL2bInsvthitY {0} {1} {2} {3} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1&&eleL2bInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1&&eleL2bsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("eleL2bsvthitY uncVZ {2} {3} {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("eleIsoAxial eleL2bsvthitY -6 6 {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1".format(miny,maxy))
 plots.append("-(posL1tthetaY+posL2tthetaY) uncVZ {2} {3} {0} {1} eleL2bIsGoodTruthHit>-9998&&eleL2bIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -181,6 +185,7 @@ plots.append("posL1tsvthitX posL1tsvthitY {0} {1} {2} {3} posL1tIsGoodTruthHit>-
 plots.append("posL1tInsvthitX posL1tInsvthitY {0} {1} {2} {3} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1&&posL1tInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1&&posL1tsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("posL1tsvthitY uncVZ {2} {3} {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("posIsoAxial posL1tsvthitY -6 6 {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1".format(miny,maxy))
 plots.append("eleL1bthetaY+eleL2bthetaY uncVZ {2} {3} {0} {1} posL1tIsGoodTruthHit>-9998&&posL1tIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -196,6 +201,7 @@ plots.append("posL2tsvthitX posL2tsvthitY {0} {1} {2} {3} posL2tIsGoodTruthHit>-
 plots.append("posL2tInsvthitX posL2tInsvthitY {0} {1} {2} {3} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1&&posL2tInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1&&posL2tsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("posL2tsvthitY uncVZ {2} {3} {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("posIsoStereo posL2tsvthitY -6 6 {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1".format(miny,maxy))
 plots.append("eleL1bthetaY+eleL2bthetaY uncVZ {2} {3} {0} {1} posL2tIsGoodTruthHit>-9998&&posL2tIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -211,6 +217,7 @@ plots.append("posL1bsvthitX posL1bsvthitY {0} {1} {2} {3} posL1bIsGoodTruthHit>-
 plots.append("posL1bInsvthitX posL1bInsvthitY {0} {1} {2} {3} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1&&posL1bInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("posIsoStereo uncVZ -6 6 {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1&&posL1bsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("posL1bsvthitY uncVZ {2} {3} {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("posIsoStereo posL1bsvthitY -6 6 {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1".format(miny,maxy))
 plots.append("-(eleL1tthetaY+eleL2tthetaY) uncVZ {2} {3} {0} {1} posL1bIsGoodTruthHit>-9998&&posL1bIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
@@ -226,6 +233,7 @@ plots.append("posL2bsvthitX posL2bsvthitY {0} {1} {2} {3} posL2bIsGoodTruthHit>-
 plots.append("posL2bInsvthitX posL2bInsvthitY {0} {1} {2} {3} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1&&posL2bInsvthitY>-9998".format(minVZ,maxVZ))
+plots.append("posIsoAxial uncVZ -6 6 {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1&&posL2bsvthitY>-9998".format(minVZ,maxVZ))
 plots.append("posL2bsvthitY uncVZ {2} {3} {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1".format(minVZ,maxVZ,miny,maxy))
 plots.append("posIsoAxial posL2bsvthitY -6 6 {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1".format(miny,maxy))
 plots.append("-(eleL1tthetaY+eleL2tthetaY) uncVZ {2} {3} {0} {1} posL2bIsGoodTruthHit>-9998&&posL2bIsGoodTruthHit<1".format(minVZ,maxVZ,minTheta,maxTheta))
