@@ -11,20 +11,24 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-n: tuple name (default ntuple)'
     print '\t-h: this help message'
     print
 
+tuplename = "ntuple"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'n:h')
 
 # Parse the command line arguments
 for opt, arg in options:
+		if opt=='-n':
+			tuplename = str(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
 
 outfile = remainder[0]
-events = TChain("ntuple")
+events = TChain("{0}".format(tuplename))
 for i in range(1,len(remainder)):
     events.Add(remainder[i])
 
