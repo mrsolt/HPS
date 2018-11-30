@@ -49,6 +49,18 @@ def saveTuplePlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",Ya
 	canvas.Print(outfile+".pdf")
 	del histo
 
+def saveFitPlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1,logY=0):
+	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBins,minX,maxX))
+	histo = ROOT.gROOT.FindObject("histo")
+	histo.SetTitle(plotTitle)
+	histo.GetXaxis().SetTitle(XaxisTitle)
+	histo.GetYaxis().SetTitle(YaxisTitle)
+	histo.SetStats(stats)
+	histo.Fit("gaus")
+	histo.Draw()
+	canvas.SetLogy(logY)
+	canvas.Print(outfile+".pdf")
+	del histo
 
 def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,inHisto1,nBinsX,minX,maxX,nBinsY,minY,maxY))
@@ -117,6 +129,8 @@ for i in range(1,len(remainder)):
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
+plots.append("uncVY -1 1")
+plots.append("uncVX -1 1")
 plots.append("uncM 0 0.2")
 plots.append("uncP 0 3.2")
 plots.append("uncChisq 0 20")
@@ -241,6 +255,11 @@ if(fullTruth):
 	plots2D.append("eleL1bthetaX eleL1bthetaY -0.01 0.01 -0.01 0.01")
 	plots2D.append("posL1bthetaX posL1bthetaY -0.01 0.01 -0.01 0.01")
 
+fitGaus = []
+fitGaus.append("uncVZ {0} {1}".format(minVZ,maxVZ))
+fitGaus.append("uncVY -1 1")
+fitGaus.append("uncVX -1 1")
+
 openPDF(outfile,c)
 
 for i in range(len(plots)):
@@ -258,5 +277,11 @@ for i in range(len(plots)):
 #	minY = getMinY(plots2D[i])
 #	maxY = getMaxY(plots2D[i])
 #	saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
+
+for i in range(len(fitGaus)):
+	plot = getPlot(fitGaus[i])
+	minX = getMinX(fitGaus[i])
+	maxX = getMaxX(fitGaus[i])
+	saveFitPlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
 
 closePDF(outfile,c)
