@@ -13,14 +13,16 @@ def print_usage():
     print '\t-t: use full truth plots'
     print '\t-m: minimum uncVZ'
     print '\t-n: maximum uncVZ'
+    print '\t-d: make 2D plots'
     print '\t-h: this help message'
     print
 
 fullTruth = False
 minVZ = -60
 maxVZ = 60
+makePlots2D = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'tm:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'tm:n:d:h')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -30,6 +32,8 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-d':
+			makePlots2D = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -47,6 +51,7 @@ def saveTuplePlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",Ya
 	histo.Draw()
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	histo.Write(plotTitle)
 	del histo
 
 def saveFitPlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1,logY=0):
@@ -127,10 +132,12 @@ events = TChain("ntuple")
 for i in range(1,len(remainder)):
     events.Add(remainder[i])
 
+rootfile = TFile(outfile+".root","recreate")
+
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("uncVY -1 1")
-plots.append("uncVX -1 1")
+plots.append("uncVX -3 3")
 plots.append("uncM 0 0.2")
 plots.append("uncP 0 3.2")
 plots.append("uncChisq 0 20")
@@ -258,7 +265,7 @@ if(fullTruth):
 fitGaus = []
 fitGaus.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 fitGaus.append("uncVY -1 1")
-fitGaus.append("uncVX -1 1")
+fitGaus.append("uncVX -3 3")
 
 openPDF(outfile,c)
 
@@ -267,16 +274,18 @@ for i in range(len(plots)):
 	minX = getMinX(plots[i])
 	maxX = getMaxX(plots[i])
 	saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
-	#saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ")
+	if(makePlots2D):
+		saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ")
 
-#for i in range(len(plots2D)):
-#	plot1 = getPlot(plots2D[i])
-#	plot2 = getPlot2D(plots2D[i])
-#	minX = getMinX2D(plots2D[i])
-#	maxX = getMaxX2D(plots2D[i])
-#	minY = getMinY(plots2D[i])
-#	maxY = getMaxY(plots2D[i])
-#	saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
+if(makePlots2D):
+	for i in range(len(plots2D)):
+		plot1 = getPlot(plots2D[i])
+		plot2 = getPlot2D(plots2D[i])
+		minX = getMinX2D(plots2D[i])
+		maxX = getMaxX2D(plots2D[i])
+		minY = getMinY(plots2D[i])
+		maxY = getMaxY(plots2D[i])
+		saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
 
 for i in range(len(fitGaus)):
 	plot = getPlot(fitGaus[i])
@@ -285,3 +294,5 @@ for i in range(len(fitGaus)):
 	saveFitPlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
 
 closePDF(outfile,c)
+
+rootfile.Close()
