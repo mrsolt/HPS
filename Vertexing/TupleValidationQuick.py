@@ -287,6 +287,8 @@ if(makePlots2D):
 		maxY = getMaxY(plots2D[i])
 		saveTuplePlot2D(events,plot1,plot2,nBins,minX,maxX,nBins,minY,maxY,outfile,c,plot1,plot2,plot2+" vs "+plot1)
 
+gStyle.SetOptFit()
+
 for i in range(len(fitGaus)):
 	plot = getPlot(fitGaus[i])
 	minX = getMinX(fitGaus[i])
