@@ -107,7 +107,7 @@ def getMaxY(string):
 	if(len(arr) < 6): return -9999
 	else: return float(arr[5])
 
-nBins = 50
+nBins = 100
 
 outfile = remainder[0]
 
@@ -117,25 +117,25 @@ for i in range(1,len(remainder)):
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
-plots.append("uncM 0 0.1")
-plots.append("uncP 0 1.6")
+plots.append("uncM 0 0.2")
+plots.append("uncP 0 3.2")
 plots.append("uncChisq 0 20")
 plots.append("bscChisq 0 20")
 plots.append("sqrt(uncCovZZ) 0 30")
 plots.append("eleClT 20 80")
 plots.append("posClT 20 80")
-plots.append("eleClE 0 1.6")
-plots.append("posClE 0 1.6")
-plots.append("eleP 0 1.6")
-plots.append("posP 0 1.6")
+plots.append("eleClE 0 3.2")
+plots.append("posClE 0 3.2")
+plots.append("eleP 0 3.2")
+plots.append("posP 0 3.2")
 plots.append("eleTrkChisq 0 50")
 plots.append("posTrkChisq 0 50")
 plots.append("eleTrkT -20 20")
 plots.append("posTrkT -20 20")
 plots.append("eleTrkZ0 -5 5")
 plots.append("posTrkZ0 -5 5")
-plots.append("eleTrkD0 -10 10")
-plots.append("posTrkD0 -10 10")
+plots.append("eleTrkD0 -5 5")
+plots.append("posTrkD0 -5 5")
 plots.append("eleTrkLambda -0.1 0.1")
 plots.append("posTrkLambda -0.1 0.1")
 plots.append("eleHasL1 0 2")
