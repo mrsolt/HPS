@@ -41,7 +41,7 @@ def main() :
     #Time of each batch job. Default is no batch job submitted
     bsub = ""
     if(args.time is not None):
-        bsub = "bsub -W " + args.time
+        bsub = "bsub -W " + args.time + ' -R "rhel60" '
 
     # Open the file containing the list of stdhep files to process
     try : 
