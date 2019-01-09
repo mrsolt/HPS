@@ -145,8 +145,8 @@ for i in range(len(fitGaus)):
 		sigma.append(params[2])
 		sigmaErr.append(params[3])
 		del params
-	saveFitParams(mean,meanErr,pdfFileName,c,"File Number","Fitted Mean [mm]",plot)
-	saveFitParams(sigma,sigmaErr,pdfFileName,c,"File Number","Fitted Sigma [mm]",plot)
+	saveFitParams(mean,meanErr,pdfFileName,c,"Run Number","Fitted Mean [mm]",plot)
+	saveFitParams(sigma,sigmaErr,pdfFileName,c,"Run Number","Fitted Sigma [mm]",plot)
 	del mean
 	del sigma
 	del meanErr
