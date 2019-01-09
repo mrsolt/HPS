@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1
+from ROOT import gROOT, gSystem, TFile, gDirectory, gStyle, TCanvas, TH1
 sys.argv = tmpargv
 
 #List arguments
@@ -27,7 +27,7 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
+def savehisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
@@ -64,11 +64,12 @@ for i in range(len(infiles)-1):
 		histos[j].Add(h)
 		j = j + 1
 
+gSystem.cd(".")
 rootfile = TFile(outfile+".root","recreate")
 
 openPDF(outfile,c)
 for i in range(len(histos)):
-	savehisto2D(histos[i],outfile,c,"","",histos[i].GetName())
+	savehisto(histos[i],outfile,c,histos[i].GetXaxis().GetTitle(),histos[i].GetYaxis().GetTitle(),histos[i].GetTitle())
 
 closePDF(outfile,c)
 

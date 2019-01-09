@@ -48,7 +48,22 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	legend.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
-	#histo.Write(plotTitle)
+
+def savehisto2D(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1,logY=0):
+	histo1.SetTitle(plotTitle+" "+label1)
+	histo1.GetXaxis().SetTitle(XaxisTitle)
+	histo1.GetYaxis().SetTitle(YaxisTitle)
+	histo1.SetStats(stats)
+	histo1.Draw("COLZ")
+	canvas.SetLogy(logY)
+	canvas.Print(outfile+".pdf")
+	histo2.SetTitle(plotTitle+" "+label2)
+	histo2.GetXaxis().SetTitle(XaxisTitle)
+	histo2.GetYaxis().SetTitle(YaxisTitle)
+	histo2.SetStats(stats)
+	histo2.Draw("COLZ")
+	canvas.SetLogy(logY)
+	canvas.Print(outfile+".pdf")
 
 #gStyle.SetOptStat(0)
 gStyle.SetOptStat(110011)
@@ -62,20 +77,29 @@ label2 = remainder[4]
 
 infile1.cd()
 histos1 = []
+histos1_2D = []
 for h in infile1.GetListOfKeys():
 	h = h.ReadObj()
-	if(h.ClassName() != "TH1F" and h.ClassName() != "TH1D"): continue
-	histos1.append(h)
+	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
+		histos1.append(h)
+	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):
+		histos1_2D.append(h)
 
 infile2.cd()
 histos2 = []
+histos2_2D = []
 for h in infile2.GetListOfKeys():
 	h = h.ReadObj()
-	if(h.ClassName() != "TH1F" and h.ClassName() != "TH1D"): continue
-	histos2.append(h)
+	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
+		histos2.append(h)
+	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):
+		histos2_2D.append(h)
 
 openPDF(outfile,c)
 for i in range(len(histos1)):
-	savehisto(histos1[i],histos2[i],label1,label2,outfile,c,"","",histos1[i].GetTitle())
+	savehisto(histos1[i],histos2[i],label1,label2,outfile,c,histos1[i].GetXaxis().GetTitle(),"",histos1[i].GetTitle())
+
+for i in range(len(histos1_2D)):
+	savehisto2D(histos1_2D[i],histos2_2D[i],label1,label2,outfile,c,histos1_2D[i].GetXaxis().GetTitle(),histos1_2D[i].GetYaxis().GetTitle(),histos1_2D[i].GetTitle())
 
 closePDF(outfile,c)
