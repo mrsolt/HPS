@@ -64,8 +64,12 @@ for i in range(len(infiles)-1):
 		histos[j].Add(h)
 		j = j + 1
 
+rootfile = TFile(outfile+".root","recreate")
+
 openPDF(outfile,c)
 for i in range(len(histos)):
 	savehisto2D(histos[i],outfile,c,"","",histos[i].GetName())
 
 closePDF(outfile,c)
+
+rootfile.Close()
