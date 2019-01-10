@@ -145,9 +145,7 @@ for i in range(len(fitGaus)):
 	minX = getMinX(fitGaus[i])
 	maxX = getMaxX(fitGaus[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
-	#textFileName = outfile+"_"+plot+"_params.txt"
 	openPDF(pdfFileName,c)
-	#textFile = open(textFileName,"w")
 	mean = []
 	sigma = []
 	meanErr = []
@@ -162,7 +160,6 @@ for i in range(len(fitGaus)):
 		meanErr.append(params[1])
 		sigma.append(params[2])
 		sigmaErr.append(params[3])
-		#textFile.write(str(event.run) + " " + str(params[0]) + "\n")
 		if(i == 0):
 			Run.append(str(event.run))
 		del params
@@ -176,9 +173,7 @@ for i in range(len(fitGaus)):
 	del sigma
 	del meanErr
 	del sigmaErr
-
 	closePDF(pdfFileName,c)
-	#textFile.close()
 
 textFileName = outfile+"_params.txt"
 textFile = open(textFileName,"w")
