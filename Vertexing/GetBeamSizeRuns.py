@@ -41,7 +41,7 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	f1.SetParameters(fit_gaus.GetParameter(0),fit_gaus.GetParameter(1),fit_gaus.GetParameter(2),fit_gaus.GetParameter(0)/10.,fit_gaus.GetParameter(1),fit_gaus.GetParameter(2)*10)
 	f1.SetParLimits(3,0,fit_gaus.GetParameter(0)/4.)
 	f1.SetParLimits(4,-fit_gaus.GetParameter(1)-2*fit_gaus.GetParameter(2),fit_gaus.GetParameter(1)+2*fit_gaus.GetParameter(2))
-	f1.SetParLimits(5,fit_gaus.GetParameter(2),9999)
+	f1.SetParLimits(5,fit_gaus.GetParameter(2)/4.,9999)
 	histo.Fit("double_gaus")
 	fit = histo.GetFunction("double_gaus")
 	mean = 0
@@ -55,8 +55,8 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 		sigmaErr = fit.GetParError(2)
 	except Exception as ex:
 		print(ex)
-	fit_gaus1 = TF1("gaus","gaus")
-	fit_gaus2 = TF1("gaus","gaus")
+	fit_gaus1 = TF1("gaus","gaus",-100,100)
+	fit_gaus2 = TF1("gaus","gaus",-100,100)
 	fit_gaus1.SetParameters(fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2))
 	fit_gaus2.SetParameters(fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5))
 	fit.SetLineColor(1)
@@ -134,6 +134,9 @@ fitGaus.append("uncVY -1 1")
 fitGaus.append("uncVZ -35 25")
 
 nBins = 100
+beamX = []
+beamY = []
+Run = []
 
 gStyle.SetOptFit()
 
@@ -142,9 +145,9 @@ for i in range(len(fitGaus)):
 	minX = getMinX(fitGaus[i])
 	maxX = getMaxX(fitGaus[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
-	textFileName = outfile+"_"+plot+"_params.txt"
+	#textFileName = outfile+"_"+plot+"_params.txt"
 	openPDF(pdfFileName,c)
-	textFile = open(textFileName,"w")
+	#textFile = open(textFileName,"w")
 	mean = []
 	sigma = []
 	meanErr = []
@@ -159,14 +162,27 @@ for i in range(len(fitGaus)):
 		meanErr.append(params[1])
 		sigma.append(params[2])
 		sigmaErr.append(params[3])
-		textFile.write(str(event.run) + " " + str(params[0]) + "\n")
+		#textFile.write(str(event.run) + " " + str(params[0]) + "\n")
+		if(i == 0):
+			Run.append(str(event.run))
 		del params
 	saveFitParams(mean,meanErr,pdfFileName,c,"Run Number","Fitted Mean [mm]",plot)
 	saveFitParams(sigma,sigmaErr,pdfFileName,c,"Run Number","Fitted Sigma [mm]",plot)
+	if(plot == "uncVX"): 
+		beamX = mean
+	if(plot == "uncVY"):
+		beamY = mean
 	del mean
 	del sigma
 	del meanErr
 	del sigmaErr
 
 	closePDF(pdfFileName,c)
-	textFile.close()
+	#textFile.close()
+
+textFileName = outfile+"_params.txt"
+textFile = open(textFileName,"w")
+for i in range(len(infiles)):
+	textFile.write(Run[i] + " " + str(beamX[0]) + " " + str(beamY[0]) + "\n")
+
+textFile.close()
