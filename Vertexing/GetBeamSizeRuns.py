@@ -2,18 +2,15 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import getopt
+from array import array
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1
 sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
+    print "\nUsage: {0} <output file base name> <input text file name>".format(sys.argv[0])
     print "Arguments: "
-    print '\t-t: use full truth plots'
-    print '\t-m: minimum uncVZ'
-    print '\t-n: maximum uncVZ'
-    print '\t-d: make 2D plots'
     print '\t-h: this help message'
     print
 
@@ -28,17 +25,22 @@ for opt, arg in options:
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
-def saveFitPlot(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1,logY=0):
+f1 = TF1("double_gaus", "gaus(0) + gaus(3)");
+f1.SetParNames("Constant 1", "Mean 1", "Sigma 1",
+               "Constant 2", "Mean 2", "Sigma 2");
+
+def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1,logY=0):
+	events.Draw("{0}>>histo({1},{2},{3})".format(plot,nBins,minX,maxX))
+	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
 	histo.Fit("gaus")
-	fit = histo.GetFunction("gaus")
-	histo.Draw()
-	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
-	fitpar = []
+	fit_gaus = histo.GetFunction("gaus")
+	f1.SetParameters(fit_gaus.GetParameter(0),fit_gaus.GetParameter(1),fit_gaus.GetParameter(2),fit_gaus.GetParameter(0)/10.,fit_gaus.GetParameter(1),fit_gaus.GetParameter(2)*10)
+	histo.Fit("double_gaus")
+	fit = histo.GetFunction("double_gaus")
 	mean = 0
 	meanErr = 0
 	sigma = 0
@@ -50,12 +52,28 @@ def saveFitPlot(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 		sigmaErr = fit.GetParError(2)
 	except Exception as ex:
 		print(ex)
+	fit_gaus1 = TF1("gaus","gaus")
+	fit_gaus2 = TF1("gaus","gaus")
+	fit_gaus1.SetParameters(fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2))
+	fit_gaus2.SetParameters(fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5))
+	fit.SetLineColor(1)
+	histo.Draw()
+	fit_gaus1.SetLineColor(2)
+	fit_gaus1.SetLineColor(4)
+	fit_gaus1.Draw("same")
+	fit_gaus2.Draw("same")
+	canvas.SetLogy(logY)
+	canvas.Print(outfile+".pdf")
+	fitpar = []
 	fitpar.append(mean)
 	fitpar.append(meanErr)
 	fitpar.append(sigma)
 	fitpar.append(sigmaErr)
 	del histo
 	del fit
+	del fit_gaus
+	del fit_gaus1
+	del fit_gaus2
 	return fitpar
 
 def saveFitParams(array,arrayErr,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle=""):
@@ -70,17 +88,6 @@ def saveFitParams(array,arrayErr,outfile,canvas,XaxisTitle="",YaxisTitle="",plot
 	canvas.Print(outfile+".pdf")
 	del histo
 
-def savehisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
-	histo.SetTitle(plotTitle)
-	histo.GetXaxis().SetTitle(XaxisTitle)
-	histo.GetYaxis().SetTitle(YaxisTitle)
-	histo.SetTitle(plotTitle)
-	histo.SetStats(stats)
-	histo.Draw("")
-	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
-	del histo
-
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
 
@@ -90,6 +97,16 @@ def closePDF(outfile,canvas):
 def getPlot(string):
 	arr = string.split(" ")
 	return arr[0]
+
+def getMinX(string):
+	arr = string.split(" ")
+	if(len(arr) < 2): return -9999
+	else: return float(arr[1])
+
+def getMaxX(string):
+	arr = string.split(" ")
+	if(len(arr) < 3): return -9999
+	else: return float(arr[2])
 
 outfile = remainder[0]
 
@@ -106,40 +123,33 @@ for line in (raw.strip().split() for raw in infile):
 	filenames.append(line[0])
 	infiles.append(TFile(line[0]))
 
-infiles[0].cd()
-histos = []
-for h in infiles[0].GetListOfKeys():
-	h = h.ReadObj()
-	if(h.ClassName() != "TH1F" and h.ClassName() != "TH1D"): continue
-	histos.append(h)
-
-for i in range(len(histos)):
-	pdfFileName = outfile+"_"+histos[i].GetTitle()
-	openPDF(pdfFileName,c)
-	for j in range(len(infiles)):
-		histo = infiles[j].Get(histos[i].GetTitle())
-		savehisto(histo,pdfFileName,c,histos[i].GetTitle(),"",filenames[j],1)
-
-	closePDF(pdfFileName,c)
+#infiles[0].cd()
 
 fitGaus = []
-fitGaus.append("uncVZ")
-fitGaus.append("uncVY")
-fitGaus.append("uncVX")
+fitGaus.append("uncVX -2 2")
+fitGaus.append("uncVY -1 1")
+fitGaus.append("uncVZ -35 25")
+
+nBins = 100
 
 gStyle.SetOptFit()
 
 for i in range(len(fitGaus)):
-	pdfFileName = outfile+"_"+fitGaus[i]+"_fit"
 	plot = getPlot(fitGaus[i])
+	minX = getMinX(fitGaus[i])
+	maxX = getMaxX(fitGaus[i])
+	pdfFileName = outfile+"_"+plot+"_fit"
 	openPDF(pdfFileName,c)
 	mean = []
 	sigma = []
 	meanErr = []
 	sigmaErr = []
 	for j in range(len(infiles)):
-		histo = infiles[j].Get(plot)
-		params = saveFitPlot(histo,pdfFileName,c,plot,"",filenames[j])
+		event = infiles[j].Get("ntuple")
+		run = array('d',[0])
+		event.Branch("run",run,"run")
+		event.GetEntry(0)
+		params = saveFitPlot(event,plot,pdfFileName,c,nBins,minX,maxX,plot,"","Run " + str(event.run))
 		mean.append(params[0])
 		meanErr.append(params[1])
 		sigma.append(params[2])
