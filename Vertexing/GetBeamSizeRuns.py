@@ -39,6 +39,9 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	histo.Fit("gaus")
 	fit_gaus = histo.GetFunction("gaus")
 	f1.SetParameters(fit_gaus.GetParameter(0),fit_gaus.GetParameter(1),fit_gaus.GetParameter(2),fit_gaus.GetParameter(0)/10.,fit_gaus.GetParameter(1),fit_gaus.GetParameter(2)*10)
+	f1.SetParLimits(3,0,fit_gaus.GetParameter(0)/4.)
+	f1.SetParLimits(4,-fit_gaus.GetParameter(1)-2*fit_gaus.GetParameter(2),fit_gaus.GetParameter(1)+2*fit_gaus.GetParameter(2))
+	f1.SetParLimits(5,fit_gaus.GetParameter(2),9999)
 	histo.Fit("double_gaus")
 	fit = histo.GetFunction("double_gaus")
 	mean = 0
@@ -139,7 +142,9 @@ for i in range(len(fitGaus)):
 	minX = getMinX(fitGaus[i])
 	maxX = getMaxX(fitGaus[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
+	textFileName = outfile+"_"+plot+"_params.txt"
 	openPDF(pdfFileName,c)
+	textFile = open(textFileName,"w")
 	mean = []
 	sigma = []
 	meanErr = []
@@ -154,6 +159,7 @@ for i in range(len(fitGaus)):
 		meanErr.append(params[1])
 		sigma.append(params[2])
 		sigmaErr.append(params[3])
+		textFile.write(str(event.run) + " " + str(params[0]) + "\n")
 		del params
 	saveFitParams(mean,meanErr,pdfFileName,c,"Run Number","Fitted Mean [mm]",plot)
 	saveFitParams(sigma,sigmaErr,pdfFileName,c,"Run Number","Fitted Sigma [mm]",plot)
@@ -163,3 +169,4 @@ for i in range(len(fitGaus)):
 	del sigmaErr
 
 	closePDF(pdfFileName,c)
+	textFile.close()
