@@ -11,28 +11,21 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input text file name>".format(sys.argv[0])
     print "Arguments: "
-    print '\t-g: use Double Gaus Fit (default single gaussian)'
     print '\t-h: this help message'
     print
 
 useSingleGaus = True
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'gh')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
 
 # Parse the command line arguments
 for opt, arg in options:
-		if opt=='-g':
-			useSingleGaus = False
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
 
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
-
-#f1 = TF1("double_gaus", "gaus(0) + gaus(3)");
-#f1.SetParNames("Constant 1", "Mean 1", "Sigma 1",
-#               "Constant 2", "Mean 2", "Sigma 2");
 
 def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTitle="",plotTitle="",useSingleGaus=True,stats=1,logY=0):
 	events.Draw("{0}>>histo({1},{2},{3})".format(plot,nBins,minX,maxX))
@@ -41,28 +34,8 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
-	#histo.Fit("gaus")
-	#fit_gaus = histo.GetFunction("gaus")
-	#f1.SetParameters(fit_gaus.GetParameter(0),fit_gaus.GetParameter(1),fit_gaus.GetParameter(2),fit_gaus.GetParameter(0)/10.,fit_gaus.GetParameter(1),fit_gaus.GetParameter(2)*10)
-	#f1.SetParLimits(3,0,fit_gaus.GetParameter(0)/4.)
-	#f1.SetParLimits(4,-fit_gaus.GetParameter(1)-2*fit_gaus.GetParameter(2),fit_gaus.GetParameter(1)+2*fit_gaus.GetParameter(2))
-	#f1.SetParLimits(5,fit_gaus.GetParameter(2)/4.,9999)
-	#histo.Fit("double_gaus")
-	#fit = TF1()
-	#if(useSingleGaus):
-	#fit = fit_gaus
-	#histo.Fit("gaus")
-	#else:
-	#	fit = histo.GetFunction("double_gaus")
-	#	histo.Fit("double_gaus")
-	#mean1 = fit_gaus.GetParameter(1)
-	#sigma1 = fit_gaus.GetParameter(2)
 	mean1 = histo.GetMean()
 	sigma1 = histo.GetRMS()
-	print mean1
-	#del fit_gaus
-	#fit = histo.GetFunction("gaus", mean1 - 1.5*sigma1,mean1+1.5*sigma1)
-	#f1 = TF1("gaus1", "gaus", mean1 - 0.5*sigma1,mean1+0.5*sigma1)
 	histo.Fit("gaus","","",mean1 - 1.5*sigma1,mean1+1.5*sigma1)
 	fit = histo.GetFunction("gaus")
 	mean = 0
@@ -79,16 +52,6 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 		print(ex)
 
 	histo.Draw()
-	#fit_gaus1 = TF1("gaus","gaus",-100,100)
-	#fit_gaus2 = TF1("gaus","gaus",-100,100)
-	#if(not useSingleGaus):
-	#	fit_gaus1.SetParameters(fit.GetParameter(0),fit.GetParameter(1),fit.GetParameter(2))
-	#	fit_gaus2.SetParameters(fit.GetParameter(3),fit.GetParameter(4),fit.GetParameter(5))
-	#	fit.SetLineColor(1)
-	#	fit_gaus1.SetLineColor(2)
-	#	fit_gaus1.SetLineColor(4)
-	#	fit_gaus1.Draw("same")
-	#	fit_gaus2.Draw("same")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
 	fitpar = []
@@ -98,10 +61,6 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	fitpar.append(sigmaErr)
 	del histo
 	del fit
-	#del f1
-	#del fit_gaus
-	#del fit_gaus1
-	#del fit_gaus2
 	return fitpar
 
 def saveFitParams(array,arrayErr,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle=""):
@@ -150,8 +109,6 @@ filenames = []
 for line in (raw.strip().split() for raw in infile):
 	filenames.append(line[0])
 	infiles.append(TFile(line[0]))
-
-#infiles[0].cd()
 
 fitGaus = []
 fitGaus.append("uncVX -2 2")
@@ -207,7 +164,7 @@ textFileName = outfile+"_params.txt"
 textFile = open(textFileName,"w")
 for i in range(len(infiles)):
 	textFile.write(Run[i] + " " + str(beamX[i]) + " " + str(beamY[i]) + " " + str(beamZ[i]) + "\n")
-	if(Run[i] == 7782):
+	if(Run[i] == "7782"):
 		textFile.write("7783 " + str(beamX[i]) + " " + str(beamY[i]) + " " + str(beamZ[i]) + "\n")
 
 textFile.close()
