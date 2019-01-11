@@ -41,8 +41,8 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
-	histo.Fit("gaus")
-	fit_gaus = histo.GetFunction("gaus")
+	#histo.Fit("gaus")
+	#fit_gaus = histo.GetFunction("gaus")
 	#f1.SetParameters(fit_gaus.GetParameter(0),fit_gaus.GetParameter(1),fit_gaus.GetParameter(2),fit_gaus.GetParameter(0)/10.,fit_gaus.GetParameter(1),fit_gaus.GetParameter(2)*10)
 	#f1.SetParLimits(3,0,fit_gaus.GetParameter(0)/4.)
 	#f1.SetParLimits(4,-fit_gaus.GetParameter(1)-2*fit_gaus.GetParameter(2),fit_gaus.GetParameter(1)+2*fit_gaus.GetParameter(2))
@@ -55,14 +55,16 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	#else:
 	#	fit = histo.GetFunction("double_gaus")
 	#	histo.Fit("double_gaus")
-	mean1 = fit_gaus.GetParameter(1)
-	sigma1 = fit_gaus.GetParameter(2)
+	#mean1 = fit_gaus.GetParameter(1)
+	#sigma1 = fit_gaus.GetParameter(2)
+	mean1 = histo.GetMean()
+	sigma1 = histo.GetRMS()
 	print mean1
-	del fit_gaus
+	#del fit_gaus
 	#fit = histo.GetFunction("gaus", mean1 - 1.5*sigma1,mean1+1.5*sigma1)
-	f1 = TF1("gaus1", "gaus", mean1 - 0.5*sigma1,mean1+0.5*sigma1)
-	histo.Fit("gaus1")
-	fit = histo.GetFunction("gaus1")
+	#f1 = TF1("gaus1", "gaus", mean1 - 0.5*sigma1,mean1+0.5*sigma1)
+	histo.Fit("gaus","","",mean1 - 1.5*sigma1,mean1+1.5*sigma1)
+	fit = histo.GetFunction("gaus")
 	mean = 0
 	meanErr = 0
 	sigma = 0
@@ -96,7 +98,7 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	fitpar.append(sigmaErr)
 	del histo
 	del fit
-	del f1
+	#del f1
 	#del fit_gaus
 	#del fit_gaus1
 	#del fit_gaus2
@@ -159,6 +161,7 @@ fitGaus.append("uncVZ -35 25")
 nBins = 100
 beamX = []
 beamY = []
+beamZ = []
 Run = []
 
 gStyle.SetOptFit()
@@ -192,6 +195,8 @@ for i in range(len(fitGaus)):
 		beamX = mean
 	if(plot == "uncVY"):
 		beamY = mean
+	if(plot == "uncVZ"):
+		beamZ = mean
 	del mean
 	del sigma
 	del meanErr
@@ -201,8 +206,8 @@ for i in range(len(fitGaus)):
 textFileName = outfile+"_params.txt"
 textFile = open(textFileName,"w")
 for i in range(len(infiles)):
-	textFile.write(Run[i] + " " + str(beamX[i]) + " " + str(beamY[i]) + "\n")
+	textFile.write(Run[i] + " " + str(beamX[i]) + " " + str(beamY[i]) + " " + str(beamZ[i]) + "\n")
 	if(Run[i] == 7782):
-		textFile.write("7783 " + str(beamX[i]) + " " + str(beamY[i]) + "\n")
+		textFile.write("7783 " + str(beamX[i]) + " " + str(beamY[i]) + " " + str(beamZ[i]) + "\n")
 
 textFile.close()
