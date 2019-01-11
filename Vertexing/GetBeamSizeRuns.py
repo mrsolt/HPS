@@ -178,6 +178,6 @@ for i in range(len(fitGaus)):
 textFileName = outfile+"_params.txt"
 textFile = open(textFileName,"w")
 for i in range(len(infiles)):
-	textFile.write(Run[i] + " " + str(beamX[0]) + " " + str(beamY[0]) + "\n")
+	textFile.write(Run[i] + " " + str(beamX[i]) + " " + str(beamY[i]) + "\n")
 
 textFile.close()
