@@ -47,6 +47,7 @@ def saveTuplePlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",Ya
 	histo.Draw()
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	histo.Write(plotTitle)
 	del histo
 
 def fitPlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=1):
@@ -59,6 +60,7 @@ def fitPlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTi
 	histo.Fit("gaus")
 	histo.Draw()
 	canvas.Print(outfile+".pdf")
+	histo.Write(plotTitle)
 	del histo
 
 def openPDF(outfile,canvas):
@@ -90,6 +92,8 @@ events = TChain("ntuple")
 events = TChain("ntuple")
 for i in range(1,len(remainder)):
     events.Add(remainder[i])
+
+rootfile = TFile(outfile+".root","recreate")
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
@@ -151,3 +155,5 @@ for i in range(len(plots)):
 	saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot)
 
 closePDF(outfile,c)
+
+rootfile.Close()
