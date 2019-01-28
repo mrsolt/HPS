@@ -19,13 +19,19 @@ def print_usage():
 zTarg = -4
 minVZ = -35
 maxVZ = 25
+beamX = 0.0
+beamY = 0.0
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:m:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:x:y:m:n:h')
 
 # Parse the command line argumentz
 for opt, arg in options:
 		if opt=='-z':
 			zTarg = float(arg)
+		if opt=='-x':
+			beamX = float(arg)
+		if opt=='-y':
+			beamY = float(arg)
 		if opt=='-m':
 			minVZ = float(arg)
 		if opt=='-n':
@@ -98,15 +104,15 @@ rootfile = TFile(outfile+".root","recreate")
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("sqrt(uncCovZZ) 0 10")
-plots.append("uncVX -1 1")
+plots.append("uncVX-{0} -1 1".format(beamX))
 plots.append("sqrt(uncCovXX) 0 0.5")
-plots.append("uncVY -1 1")
+plots.append("uncVY-{0} -1 1".format(beamY))
 plots.append("sqrt(uncCovYY) 0 0.25")
 plots.append("bscVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("sqrt(bscCovZZ) 0 10")
-plots.append("bscVX -1 1")
+plots.append("bscVX-{0} -1 1".format(beamX))
 plots.append("sqrt(bscCovXX) 0 0.25")
-plots.append("bscVY -1 1")
+plots.append("bscVY-{0} -1 1".format(beamY))
 plots.append("sqrt(bscCovYY) 0 0.25")
 plots.append("bscChisq 0 10")
 plots.append("uncChisq 0 10")
@@ -131,13 +137,13 @@ plots.append("posTrkD0Err 0 1")
 
 fitplots = []
 fitplots.append("(uncVZ-{0})/sqrt(uncCovZZ) -5 5".format(zTarg))
-fitplots.append("(uncVX)/sqrt(uncCovXX) -5 5")
-fitplots.append("(uncVY)/sqrt(uncCovYY) -5 5")
+fitplots.append("(uncVX-{0})/sqrt(uncCovXX) -5 5".format(beamX))
+fitplots.append("(uncVY-{0})/sqrt(uncCovYY) -5 5".format(beamY))
 fitplots.append("(bscVZ-{0})/sqrt(bscCovZZ) -5 5".format(zTarg))
-fitplots.append("(bscVX)/sqrt(bscCovXX) -5 5")
-fitplots.append("(bscVY)/sqrt(bscCovYY) -5 5")
-fitplots.append("uncTargProjX/uncTargProjXErr -5 5")
-fitplots.append("uncTargProjY/uncTargProjYErr -5 5")
+fitplots.append("(bscVX-{0})/sqrt(bscCovXX) -5 5".format(beamX))
+fitplots.append("(bscVY-{0})/sqrt(bscCovYY) -5 5".format(beamY))
+fitplots.append("(uncTargProjX-{0})/uncTargProjXErr -5 5".format(beamX))
+fitplots.append("(uncTargProjY-{0})/uncTargProjYErr -5 5".format(beamY))
 fitplots.append("eleTrkZ0/eleTrkZ0Err -5 5")
 fitplots.append("posTrkZ0/posTrkZ0Err -5 5")
 fitplots.append("eleTrkD0/eleTrkD0Err -5 5")
