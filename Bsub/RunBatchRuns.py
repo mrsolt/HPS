@@ -54,7 +54,7 @@ def main() :
         print "Processing run: " + str(line.strip())
         # Command that will be submitted to the batch system
         output = args.outputFile + "_{0}.log".format(run)
-        command = bsub + " " + args.com.format(run) + " -o " + output
+        command = bsub + " -o " + output + " " + args.com.format(run)
         subprocess.Popen(command, shell=True).wait() 
         print args.com.format(run)
         files = ""
