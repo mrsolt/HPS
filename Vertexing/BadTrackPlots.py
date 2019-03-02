@@ -224,6 +224,7 @@ maxTheta = 0.03
 minTheta = -maxTheta
 #vertcuts = "BaduncP<9999"
 vertcuts = "(pow((BaduncVX-(BaduncVZ-0.5)*BaduncPX/BaduncPZ-0.1)*cos(-0.5)-(BaduncVY-(BaduncVZ-0.5)*BaduncPY/BaduncPZ)*sin(-0.5),2)/0.4356+pow((BaduncVX-(BaduncVZ-0.5)*BaduncPX/BaduncPZ)*sin(-0.5)+(BaduncVY-(BaduncVZ-0.5)*BaduncPY/BaduncPZ)*cos(-0.5),2)/0.3249)<1&&eleBadHasL1&&posBadHasL1&&isPair1&&max(eleBadMatchChisq,posBadMatchChisq)<10&&max(abs(eleBadClT-eleBadTrkT-{1}),abs(posBadClT-posBadTrkT-{1}))<4&&abs(eleBadClT-posBadClT)<2&&eleBadClY*posBadClY<0&&BadbscChisq<10&&BadbscChisq-BaduncChisq<5&&max(eleBadTrkChisq/eleBadNTrackHits,posBadTrkChisq/posBadNTrackHits)<5&&abs(eleBadP-posBadP)/(eleBadP+posBadP)<0.5&&eleBadP<{0}*0.75&&BaduncP<{0}*1.15&&BaduncP>{0}*0.8&&eleBadHasL2&&posBadHasL2&&abs(eleBadPhiKink1)<0.0001&&abs(posBadPhiKink1)<0.0001&&abs(eleBadPhiKink2)<0.002&&abs(posBadPhiKink2)<0.002&&abs(eleBadPhiKink3)<0.002&&abs(posBadPhiKink3)<0.002&&abs(eleBadLambdaKink1)<0.002&&abs(posBadLambdaKink1)<0.002&&abs(eleBadLambdaKink2)<0.004&&abs(posBadLambdaKink2)<0.004&&abs(eleBadLambdaKink3)<0.004&&abs(posBadLambdaKink3)<0.004".format(1.05,43)
+#vertcuts = "BadbscChisq<10&&BadbscChisq-BaduncChisq<5&&max(eleBadTrkChisq/eleBadNTrackHits,posBadTrkChisq/posBadNTrackHits)<5&&abs(eleBadP-posBadP)/(eleBadP+posBadP)<0.5&&eleBadP<{0}*0.75&&BaduncP<{0}*1.15&&BaduncP>{0}*0.8".format(1.05,43)
 
 cuts = []
 cuts.append("BaduncP<9999")
@@ -269,10 +270,18 @@ plots2D.append("eleL1tthetaY+eleL2tthetaY BaduncVZ {0} {1} {2} {3}".format(minTh
 plots2D.append("posL1tthetaY+posL2tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("eleL1tthetaY+eleL2tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("posL1tthetaY+posL2tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("eleL1bthetaY+eleL2bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("posL1bthetaY+posL2bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("eleL1bthetaY+eleL2bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("posL1bthetaY+posL2bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("eleL3tthetaY+eleL4tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("posL3tthetaY+posL4tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("eleL3tthetaY+eleL4tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("posL3tthetaY+posL4tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("eleL3bthetaY+eleL4bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("posL3bthetaY+posL4bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("eleL3bthetaY+eleL4bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+plots2D.append("posL3bthetaY+posL4bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 
 #rootfile = TFile(outfile+".root","recreate")
 
@@ -310,8 +319,10 @@ for i in range(len(cuts)):
 		maxY = getMaxY(plots2D[j])
 		if(i != 0):
 			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cuts[i],cuts[i],1)
+			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" With Vert Cuts "+cuts[i],cuts[i]+"&&"+vertcuts,1)
 		else:
 			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x,cuts[i],1)
+			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" With Vert Cuts",cuts[i]+"&&"+vertcuts,1)
 
 closePDF(outfile,c)
 #rootfile.Close()
