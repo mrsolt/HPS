@@ -88,6 +88,7 @@ def plotVert(events,inHisto,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,Xax
 	histoBad.SetTitle(plotTitle)
 	histoBad.GetXaxis().SetTitle(XaxisTitle)
 	histoBad.SetStats(stats)
+	histoBad.Draw()
 	canvas.SetLogy(logY)
 	histoTruth.SetLineColor(2)
 	histoTruth.Draw("same")
@@ -207,8 +208,8 @@ miny = -8
 maxy = -miny
 maxTheta = 0.03
 minTheta = -maxTheta
-vertcuts = "BaduncP<9999"
-vertCutL1L1 = "eleHasL1&&posHasL1&&isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq/eleNTrackHits,posTrkChisq/posNTrackHits)<5&&abs(eleP-posP)/(eleP+posP)<0.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2&&abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3)<0.004".format(2.3,55)
+#vertcuts = "BaduncP<9999"
+vertcuts = "(pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ-0.1)*cos(-0.5)-(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*sin(-0.5),2)/0.4356+pow((uncVX-(uncVZ-0.5)*uncPX/uncPZ)*sin(-0.5)+(uncVY-(uncVZ-0.5)*uncPY/uncPZ)*cos(-0.5),2)/0.3249)<1&&eleHasL1&&posHasL1&&isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&eleClY*posClY<0&&bscChisq<10&&bscChisq-uncChisq<5&&max(eleTrkChisq/eleNTrackHits,posTrkChisq/posNTrackHits)<5&&abs(eleP-posP)/(eleP+posP)<0.5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2&&abs(elePhiKink1)<0.0001&&abs(posPhiKink1)<0.0001&&abs(elePhiKink2)<0.002&&abs(posPhiKink2)<0.002&&abs(elePhiKink3)<0.002&&abs(posPhiKink3)<0.002&&abs(eleLambdaKink1)<0.002&&abs(posLambdaKink1)<0.002&&abs(eleLambdaKink2)<0.004&&abs(posLambdaKink2)<0.004&&abs(eleLambdaKink3)<0.004&&abs(posLambdaKink3)<0.004".format(2.3,55)
 
 cuts = []
 cuts.append("BaduncP<9999")
