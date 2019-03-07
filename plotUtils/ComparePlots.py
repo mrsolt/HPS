@@ -34,6 +34,10 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	#histo.SetStats(stats)
 	histo1.Scale(1/histo1.GetEntries())
 	histo2.Scale(1/histo2.GetEntries())
+	maximum = histo1.GetMaximum()
+	if(histo2.GetMaximum() > maximum):
+		maximum = histo2.GetMaximum()
+	histo1.GetYaxis().SetRangeUser(0,1.2*maximum)
 	histo1.Draw("")
 	histo2.SetLineColor(2)
 	histo2.Draw("same")
@@ -80,6 +84,17 @@ histos1 = []
 histos1_2D = []
 for h in infile1.GetListOfKeys():
 	h = h.ReadObj()
+	plotHisto = True
+	for i in range(len(histos1)):
+		if(histos1[i].GetTitle() == h.GetTitle()): 
+			plotHisto = False
+			continue
+	for i in range(len(histos1_2D)):
+		if(histos1_2D[i].GetTitle() == h.GetTitle()):
+			plotHisto = False
+			continue
+	if(not plotHisto): continue
+	h.GetListOfFunctions().Remove(h.GetFunction("gaus"))
 	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
 		histos1.append(h)
 	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):
@@ -90,6 +105,17 @@ histos2 = []
 histos2_2D = []
 for h in infile2.GetListOfKeys():
 	h = h.ReadObj()
+	plotHisto = True
+	for i in range(len(histos2)):
+		if(histos2[i].GetTitle() == h.GetTitle()):
+			plotHisto = False
+			continue
+	for i in range(len(histos2_2D)):
+		if(histos2_2D[i].GetTitle() == h.GetTitle()):
+			plotHisto = False
+			continue
+	if(not plotHisto): continue
+	h.GetListOfFunctions().Remove(h.GetFunction("gaus"))
 	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
 		histos2.append(h)
 	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):

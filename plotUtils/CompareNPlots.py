@@ -31,13 +31,17 @@ def savehisto(histos,labels,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle
 	histos[0].SetTitle(plotTitle)
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
+	maximum = histo[0].GetMaximum()
 	for i in range(len(histos)):
 		histos[i].Scale(1/histos[i].GetEntries())
+		if(histo[i].GetMaximum() > maximum):
+			maximum = histo[i].GetMaximum()
 		histos[i].SetLineColor(i+1)
 		if(i == 0):
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
+	histo[0].GetYaxis().SetRangeUser(0,1.2*maximum)
 	legend = TLegend(.68,.66,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
