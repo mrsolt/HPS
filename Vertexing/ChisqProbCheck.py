@@ -57,7 +57,7 @@ def saveTuplePlot(events,inHisto,nBins,minX,maxX,outfile,canvas,XaxisTitle="",Ya
 	del histo
 
 def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
-	events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY))
+	events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,inHisto1,nBinsX,minX,maxX,nBinsY,minY,maxY))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
