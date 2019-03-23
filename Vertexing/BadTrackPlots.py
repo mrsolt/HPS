@@ -13,6 +13,9 @@ def print_usage():
     print "Arguments: "
     print '\t-m: minimum uncVZ'
     print '\t-n: maximum uncVZ'
+    print '\t-z: target z position'
+    print '\t-x: is L1L2'
+    print '\t-y: is L2L2'
     print '\t-h: this help message'
     print
 
@@ -72,6 +75,18 @@ def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,o
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
+	histo.SetStats(stats)
+	histo.Draw("COLZ")
+	canvas.SetLogy(logY)
+	canvas.Print(outfile+".pdf")
+	del histo
+
+
+def saveplot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",plotTitle="",cut="",stats=1,logY=0):
+	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBinsX,minX,maxX),cut)
+	histo = ROOT.gROOT.FindObject("histo")
+	histo.SetTitle(plotTitle)
+	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.SetStats(stats)
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
@@ -186,8 +201,11 @@ minVZ = -30
 maxVZ = 80
 maxTheta = 0.03
 minTheta = -maxTheta
+zTarg = 0.5
+isL1L2 = False
+isL2L2 = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:z:xyh')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -195,9 +213,19 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-z':
+			zTarg = float(arg)
+		if opt=='-x':
+			isL1L2 = True
+		if opt=='-y':
+			isL2L2 = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
+
+if(isL1L2 and isL2L2):
+	print "L1L2 and L2L2 can't both be true!"
+	sys.exit(0)	
 
 gStyle.SetOptStat(110011)
 c = TCanvas("c","c",800,600)
@@ -208,31 +236,76 @@ for i in range(1,len(remainder)):
     events.Add(remainder[i])
 
 nBins = 100
-minX = ""
-maxX = ""
-minY = ""
-maxY = ""
+#minX = ""
+#maxX = ""
+#minY = ""
+#maxY = ""
 
-isoEle = "eleMinPositiveIso+0.5*(eleTrkZ0+0.5*elePY/eleP)*sign(elePY)"
-isoPos = "posMinPositiveIso+0.5*(posTrkZ0+0.5*posPY/posP)*sign(posPY)"
+isoEle = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
+isoPos = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
 
-minx = -30
-maxx = -minx
-miny = -8
-maxy = -miny
+#minx = -30
+#maxx = -minx
+#miny = -8
+#maxy = -miny
 maxTheta = 0.03
 minTheta = -maxTheta
-#vertcuts = "BaduncP<9999"
-vertcuts = "(pow((BaduncVX-(BaduncVZ-0.5)*BaduncPX/BaduncPZ-0.1)*cos(-0.5)-(BaduncVY-(BaduncVZ-0.5)*BaduncPY/BaduncPZ)*sin(-0.5),2)/0.4356+pow((BaduncVX-(BaduncVZ-0.5)*BaduncPX/BaduncPZ)*sin(-0.5)+(BaduncVY-(BaduncVZ-0.5)*BaduncPY/BaduncPZ)*cos(-0.5),2)/0.3249)<1&&eleBadHasL1&&posBadHasL1&&eleBadClY*posBadClY<0&&BadbscChisq<10&&BadbscChisq-BaduncChisq<5&&max(eleBadTrkChisq/eleBadNTrackHits,posBadTrkChisq/posBadNTrackHits)<5&&abs(eleBadP-posBadP)/(eleBadP+posBadP)<0.5&&eleBadP<{0}*0.75&&BaduncP<{0}*1.15&&BaduncP>{0}*0.8&&eleBadHasL2&&posBadHasL2&&abs(eleBadPhiKink1)<0.0001&&abs(posBadPhiKink1)<0.0001&&abs(eleBadPhiKink2)<0.002&&abs(posBadPhiKink2)<0.002&&abs(eleBadPhiKink3)<0.002&&abs(posBadPhiKink3)<0.002&&abs(eleBadLambdaKink1)<0.002&&abs(posBadLambdaKink1)<0.002&&abs(eleBadLambdaKink2)<0.004&&abs(posBadLambdaKink2)<0.004&&abs(eleBadLambdaKink3)<0.004&&abs(posBadLambdaKink3)<0.004".format(1.05,43)
-#vertcuts = "BadbscChisq<10&&BadbscChisq-BaduncChisq<5&&max(eleBadTrkChisq/eleBadNTrackHits,posBadTrkChisq/posBadNTrackHits)<5&&abs(eleBadP-posBadP)/(eleBadP+posBadP)<0.5&&eleBadP<{0}*0.75&&BaduncP<{0}*1.15&&BaduncP>{0}*0.8".format(1.05,43)
+
+cut = "(((!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)||(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit))&&elePurity>0.8&&posPurity>0.8)"
 
 cuts = []
-cuts.append("BaduncP<9999")
-#cuts.append("BaduncP>0.8")
-#cuts.append("elePurity<0.99||posPurity<0.99")
-#cuts.append("elePurity>0.99&&posPurity<0.99")
-#cuts.append("elePurity<0.99&&posPurity>0.99")
-#cuts.append("elePurity<0.99&&posPurity<0.99")
+cuts.append("elePurity<0.99||posPurity<0.99")
+cuts.append("elePurity>0.99&&posPurity<0.99")
+cuts.append("elePurity<0.99&&posPurity>0.99")
+cuts.append("elePurity<0.99&&posPurity<0.99")
+cuts.append("elePurity>0.99&&posPurity<0.99&&posPurity>0.79")
+cuts.append("elePurity<0.99&&posPurity>0.99&&elePurity>0.79")
+cuts.append("elePurity<0.99&&posPurity<0.99&&elePurity>0.79&&posPurity>0.79")
+
+if(not isL1L2 and not isL2L2):
+	cuts.append("(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)")
+	cuts.append("(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)")
+	cuts.append("(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)")
+	cuts.append("(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)")
+	cuts.append("(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)&&elePurity>0.8")
+	cuts.append("(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)&&posPurity>0.8")
+	cuts.append("(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)&&elePurity>0.8")
+	cuts.append("(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)&&posPurity>0.8")
+	cuts.append("(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)&&(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)&&elePurity>0.8&&posPurity>0.8")
+	cuts.append("((!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)||(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit))&&elePurity>0.8&&posPurity>0.8")
+
+if(isL1L2):
+	cuts.append("eleBadHasL1&&(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)")
+	cuts.append("posBadHasL1&&(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)")
+	cuts.append("eleBadHasL1&&(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)")
+	cuts.append("posBadHasL1&&(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)")
+	cuts.append("!eleBadHasL1&&(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)")
+	cuts.append("!posBadHasL1&&(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)")
+	cuts.append("!eleBadHasL1&&(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)")
+	cuts.append("!posBadHasL1&&(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)")
+	cuts.append("eleBadHasL1&&(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("posBadHasL1&&(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("eleBadHasL1&&(!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("posBadHasL1&&(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("!eleBadHasL1&&(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("!posBadHasL1&&(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("!eleBadHasL1&&(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("!posBadHasL1&&(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("(eleBadHasL1&&((!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)||(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)))||(posBadHasL1&&((!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)||(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)))&&elePurity>0.79&&posPurity>0.79")
+	cut = "((eleBadHasL1&&((!eleL1tIsGoodTruthHit||!eleL2tIsGoodTruthHit||!eleL1bIsGoodTruthHit||!eleL2bIsGoodTruthHit)||(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)))||(posBadHasL1&&((!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)||(!posL1tIsGoodTruthHit||!posL2tIsGoodTruthHit||!posL1bIsGoodTruthHit||!posL2bIsGoodTruthHit)))&&elePurity>0.79&&posPurity>0.79)"
+
+if(isL2L2):
+	cuts.append("(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)")
+	cuts.append("(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)")
+	cuts.append("(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)")
+	cuts.append("(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)")
+	cuts.append("(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)&&elePurity>0.79")
+	cuts.append("(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)&&posPurity>0.79")
+	cuts.append("(!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)&&(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit)&&elePurity>0.79&&posPurity>0.79")
+	cuts.append("((!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)||(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit))&&elePurity>0.79&&posPurity>0.79")
+	cut = "(((!eleL3tIsGoodTruthHit||!eleL4tIsGoodTruthHit||!eleL3bIsGoodTruthHit||!eleL4bIsGoodTruthHit)||(!posL3tIsGoodTruthHit||!posL4tIsGoodTruthHit||!posL3bIsGoodTruthHit||!posL4bIsGoodTruthHit))&&elePurity>0.79&&posPurity>0.79)" 
 
 plotsvert = []
 plotsvert.append("uncVZ {0} {1}".format(minVZ,maxVZ))
@@ -249,21 +322,56 @@ plotsvert.append("uncTargProjY -1 1")
 plotspart = []
 plotspart.append("TrkChisq 0 50")
 plotspart.append("TrkZ0 -5 5")
-plotspart.append("MinPositiveIso 0 10")
+plotspart.append("P 0 1.5")
 #plotspart.append("LambdaKink0 -0.01 0.01")
 plotspart.append("LambdaKink1 -0.01 0.01")
 plotspart.append("LambdaKink2 -0.01 0.01")
 plotspart.append("LambdaKink3 -0.01 0.01")
-#plotspart.append("LambdaKink4 -0.01 0.01")
-#plotspart.append("LambdaKink5 -0.01 0.01")
-#plotspart.append("LambdaKink6 -0.01 0.01")
-#plotspart.append("PhiKink0 -0.01 0.01")
+if(isL1L2 or isL2L2):
+	plotspart.append("LambdaKink4 -0.01 0.01")
+	plotspart.append("LambdaKink5 -0.01 0.01")
+	plotspart.append("LambdaKink6 -0.01 0.01")
+	plotspart.append("PhiKink0 -0.01 0.01")
 plotspart.append("PhiKink1 -0.01 0.01")
 plotspart.append("PhiKink2 -0.01 0.01")
 plotspart.append("PhiKink3 -0.01 0.01")
-#plotspart.append("PhiKink4 -0.01 0.01")
-#plotspart.append("PhiKink5 -0.01 0.01")
-#plotspart.append("PhiKink6 -0.01 0.01")
+if(isL1L2 or isL2L2):
+	plotspart.append("PhiKink4 -0.01 0.01")
+	plotspart.append("PhiKink5 -0.01 0.01")
+	plotspart.append("PhiKink6 -0.01 0.01")
+
+othercuts = []
+othercuts.append("BaduncP<9999")
+othercuts.append("otherEleP<-9998&&othereleTrackP<-9998")
+othercuts.append("otherEleP>-9998&&othereleTrackP<-9998")
+othercuts.append("otherEleP<-9998&&othereleTrackP>-9998")
+othercuts.append("otherEleP>-9998&&othereleTrackP>-9998")
+othercuts.append("otherPosP<-9998&&otherposTrackP<-9998")
+othercuts.append("otherPosP>-9998&&otherposTrackP<-9998")
+othercuts.append("otherPosP<-9998&&otherposTrackP>-9998")
+othercuts.append("otherPosP>-9998&&otherposTrackP>-9998")
+
+otherplots = []
+otherplots.append("otherEleP 0 1.5")
+otherplots.append("otherPosP 0 1.5")
+otherplots.append("othereleTrackP 0 1.5")
+otherplots.append("otherposTrackP 0 1.5")
+otherplots.append("otherElepdgid -25 25")
+otherplots.append("otherPospdgid -25 25")
+otherplots.append("otherEleparentID -25 650")
+otherplots.append("otherPosparentID -25 650")
+otherplots.append("otherEleP+eleP+posP 0 2.5")
+otherplots.append("otherPosP+eleP+posP 0 2.5")
+otherplots.append("otherEleP+eleBadP+posBadP 0 2.5")
+otherplots.append("otherPosP+eleBadP+posBadP 0 2.5")
+otherplots.append("otherEleP+eleTruthP+posTruthP 0 2.5")
+otherplots.append("otherPosP+eleTruthP+posTruthP 0 2.5")
+otherplots.append("othereleTrackP+eleBadP+posBadP 0 2.5")
+otherplots.append("otherposTrackP+eleBadP+posBadP 0 2.5")
+otherplots.append("othereleTrackP+eleTruthP+posTruthP 0 2.5")
+otherplots.append("otherposTrackP+eleTruthP+posTruthP 0 2.5")
+otherplots.append("othereleTrackP-otherEleP -2.5 2.5")
+otherplots.append("otherposTrackP-otherPosP -2.5 2.5")
 
 plots2D = []
 plots2D.append("eleL1tthetaY+eleL2tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
@@ -282,47 +390,61 @@ plots2D.append("eleL3bthetaY+eleL4bthetaY BaduncVZ {0} {1} {2} {3}".format(minTh
 plots2D.append("posL3bthetaY+posL4bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("eleL3bthetaY+eleL4bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 plots2D.append("posL3bthetaY+posL4bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+if(isL1L2 or isL2L2):
+	plots2D.append("eleL5tthetaY+eleL6tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("posL5tthetaY+posL6tthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("eleL5tthetaY+eleL6tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("posL5tthetaY+posL6tthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("eleL5bthetaY+eleL6bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("posL5bthetaY+posL6bthetaY BaduncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("eleL5bthetaY+eleL6bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
+	plots2D.append("posL5bthetaY+posL6bthetaY TruthuncVZ {0} {1} {2} {3}".format(minTheta,maxTheta,minVZ,maxVZ))
 
 #rootfile = TFile(outfile+".root","recreate")
 
 openPDF(outfile,c)
 
 for i in range(len(cuts)):
-	for j in range(len(plotsvert)):
-		plot = getPlotX(plotsvert[j])
-		minX = getMin(plotsvert[j])
-		maxX = getMax(plotsvert[j])
-		if(i != 0):
-			plotVert(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" "+cuts[i],cuts[i])
-			plotVert(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" With Vert Cuts "+cuts[i],cuts[i]+"&&"+vertcuts)
-		else:
-			plotVert(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot,cuts[i])
-			plotVert(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" With Vert Cuts",cuts[i]+"&&"+vertcuts)
+	saveTuplePlot2D(events,"BaduncM","BaduncVZ",nBins,0,0.1,nBins,minVZ,maxVZ,outfile,c,"uncM [GeV]","uncVZ [mm]","Bad "+cuts[i],cuts[i],1)
+	saveTuplePlot2D(events,"TruthuncM","TruthuncVZ",nBins,0,0.1,nBins,minVZ,maxVZ,outfile,c,"uncM [GeV]","uncVZ [mm]","Truth "+cuts[i],cuts[i],1)
 
-	for j in range(len(plotspart)):
-		plot = getPlotX(plotspart[j])
-		minX = getMin(plotspart[j])
-		maxX = getMax(plotspart[j])
-		if(i != 0):
-			plotPart(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" "+cuts[i],cuts[i])
-			plotPart(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" With Vert Cuts "+cuts[i],cuts[i]+"&&"+vertcuts)
-		else:
-			plotPart(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot,cuts[i])
-			plotPart(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot+" With Vert Cuts",cuts[i]+"&&"+vertcuts)
+for j in range(len(plotsvert)):
+	plot = getPlotX(plotsvert[j])
+	minX = getMin(plotsvert[j])
+	maxX = getMax(plotsvert[j])
+	plotVert(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot,cut)
 
-	for j in range(0,len(plots2D)):
-		x = getPlotX(plots2D[j])
-		y = getPlotY(plots2D[j])
-		minX = getMinX(plots2D[j])
-		maxX = getMaxX(plots2D[j])
-		minY = getMinY(plots2D[j])
-		maxY = getMaxY(plots2D[j])
-		if(i != 0):
-			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cuts[i],cuts[i],1)
-			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" With Vert Cuts "+cuts[i],cuts[i]+"&&"+vertcuts,1)
-		else:
-			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x,cuts[i],1)
-			saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" With Vert Cuts",cuts[i]+"&&"+vertcuts,1)
+for i in range(len(plotspart)):
+	plot = getPlotX(plotspart[i])
+	minX = getMin(plotspart[i])
+	maxX = getMax(plotspart[i])
+	plotPart(events,plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,plot,plot,cut)
+
+for i in range(0,len(plots2D)):
+	x = getPlotX(plots2D[i])
+	y = getPlotY(plots2D[i])
+	minX = getMinX(plots2D[i])
+	maxX = getMaxX(plots2D[i])
+	minY = getMinY(plots2D[i])
+	maxY = getMaxY(plots2D[i])
+	saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x,cut)
+
+for i in range(len(othercuts)):
+	saveTuplePlot2D(events,"BaduncM","BaduncVZ",nBins,0,0.1,nBins,minVZ,maxVZ,outfile,c,"uncM [GeV]","uncVZ [mm]","Bad "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"TruthuncM","TruthuncVZ",nBins,0,0.1,nBins,minVZ,maxVZ,outfile,c,"uncM [GeV]","uncVZ [mm]","Truth "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherEleP","BaduncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherEleP [GeV]","uncVZ [mm]","Bad "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherEleP","TruthuncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherEleP [GeV]","uncVZ [mm]","Truth "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"othereleTrackP","BaduncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"othereleTrackP [GeV]","uncVZ [mm]","Bad "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"othereleTrackP","TruthuncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"othereleTrackP [GeV]","uncVZ [mm]","Truth "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherPosP","BaduncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherPosP [GeV]","uncVZ [mm]","Bad "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherPosP","TruthuncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherPosP [GeV]","uncVZ [mm]","Truth "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherposTrackP","BaduncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherposTrackP [GeV]","uncVZ [mm]","Bad "+othercuts[i],cut+"&&"+othercuts[i],1)
+	saveTuplePlot2D(events,"otherposTrackP","TruthuncVZ",nBins,0,1.5,nBins,minVZ,maxVZ,outfile,c,"otherposTrackP [GeV]","uncVZ [mm]","Truth "+othercuts[i],cut+"&&"+othercuts[i],1)
+	for j in range(len(otherplots)):
+		plot = getPlotX(otherplots[j])
+		minX = getMin(otherplots[j])
+		maxX = getMax(otherplots[j])
+		saveplot(events,plot,nBins,minX,maxX,outfile,c,plot,plot+" "+othercuts[i],cut+"&&"+othercuts[i])
 
 closePDF(outfile,c)
 #rootfile.Close()
