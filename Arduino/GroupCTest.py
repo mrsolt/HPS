@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 import tweepy
 import Tkinter
 
-consumer_key = 'o0Qh6trNUgILN5VggUUJ7zVzM'
-consumer_secret = 'LbijWX7i4I8vhXTtIaQwRaYbpUuDisvHNTwBb3ebv2u6l6kZ57'
-access_token = '1111079435434770433-xjp9tZxCRJaNUazvKWQOtmKW5tPcFp'
-access_token_secret = 'H3e9mwunZg3gZbXBkjJGqPA6Ash6bXc8228X5dydntRal'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
