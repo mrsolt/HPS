@@ -220,8 +220,6 @@ def find_sensor_intersection(sensor,module_basis,edge_y,x):
 
 def find_sensor_residuals(module_basis,sensor,points):
 	npoints = points.shape[0]
-	#print npoints
-	#print points
 	transformed_points = transform_pts(module_basis,sensor,points)
 	residuals = np.empty([npoints,2])
 	for i in range(0,npoints):
@@ -230,18 +228,10 @@ def find_sensor_residuals(module_basis,sensor,points):
 		residuals[i,0] = sensor_y - math.copysign(20.17,sensor_y)
 		residuals[i,1] = transformed_points[i,2]- ( sensor[2][0]*sensor_x*sensor_x + sensor[2][1]*sensor_y*sensor_y + sensor[2][2]*sensor_x*sensor_y)
 
-	#print transformed_points
 	residuals_surveyframe = np.zeros([npoints,3])
 	residuals_surveyframe[:,1] = residuals[:,0]
 	residuals_surveyframe[:,2] = residuals[:,1]
-	#print residuals
-	#temp = np.array([[0,0,1]])
-	#print temp
-	#print transform_pts(sensor,module_basis,temp)
-	#print residuals_surveyframe
 	residuals_surveyframe = transform_vecs(sensor,module_basis,residuals_surveyframe)
-	#print residuals_surveyframe
-	print residuals_surveyframe[:,1:3].T
 	return residuals
 
 def project_point_to_plane(point,plane_point,normal):
@@ -251,7 +241,6 @@ def project_point_to_plane(point,plane_point,normal):
 
 def getAvg(arr):
 	sum = 0
-	print len(arr)
 	for i in range(len(arr)):
 		sum = sum + arr[i]
 	return sum/len(arr)
