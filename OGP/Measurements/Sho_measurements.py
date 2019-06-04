@@ -118,6 +118,18 @@ def get_L3_stereo_bottom_origin():
 	L3_stereo_bottom_origin[2] = 0000.6187
 	return L3_stereo_bottom_origin
 
+def get_top_wire_y_wrt_L1():
+	return 7.978
+
+def get_bot_wire_y_wrt_L1():
+	return 7.840
+
+def get_top_wire_y_ubasis():
+	return get_top_wire_y_wrt_L1()+8.0295
+
+def get_bot_wire_y_ubasis():
+	return get_bot_wire_y_wrt_L1()+7.9645
+
 def make_uch_basis(holeupst,holedownst,slotupst,slotdownst):
 	upst_mid = (holeupst+slotupst)/2.0
 	downst_mid = (holedownst+slotdownst)/2.0
@@ -145,18 +157,11 @@ def make_uch_basis(holeupst,holedownst,slotupst,slotdownst):
 uchannel_basis_top_sho = make_uch_basis(get_L1_hole_ball_top(),get_L3_hole_ball_top(),get_L1_slot_ball_top(),get_L3_slot_ball_top())
 uchannel_basis_top = Al_utils.make_uch_basis(get_L1_hole_ball_top(),get_L3_hole_ball_top(),get_L1_slot_ball_top(),get_L3_slot_ball_top())
 
-print uchannel_basis_top
-print uchannel_basis_top_sho
-
 uchannel_basis_bot_sho = make_uch_basis(get_L1_hole_ball_bottom(),get_L3_hole_ball_bottom(),get_L1_slot_ball_bottom(),get_L3_slot_ball_bottom())
 uchannel_basis_bot = Al_utils.make_uch_basis(get_L1_hole_ball_bottom(),get_L3_hole_ball_bottom(),get_L1_slot_ball_bottom(),get_L3_slot_ball_bottom())
 
 uchannel_basis_top_shift = Al_utils.transform_basis(uchannel_basis_top_sho,null_basis,uchannel_basis_top)
 uchannel_basis_bot_shift = Al_utils.transform_basis(uchannel_basis_bot_sho,null_basis,uchannel_basis_bot)
-
-print uchannel_basis_top_shift 
-
-print str((uchannel_basis_top_sho[1].dot((get_L2_axial_top_origin() - uchannel_basis_top_sho[0]))).dot(uchannel_basis_top_shift[1])+uchannel_basis_top_shift[0])
 
 def get_L2_axial_top():
 	return Al_utils.transform_pt(uchannel_basis_top_shift,uchannel_basis_top,get_L2_axial_top_origin())
@@ -181,13 +186,3 @@ def get_L3_axial_bot():
 
 def get_L3_stereo_bot():
 	return Al_utils.transform_pt(uchannel_basis_bot_shift,uchannel_basis_bot,get_L3_stereo_bottom_origin())
-
-print get_L2_axial_top()
-print get_L2_stereo_top()
-print get_L3_axial_top()
-print get_L3_stereo_top()
-
-print get_L2_axial_bot()
-print get_L2_stereo_bot()
-print get_L3_axial_bot()
-print get_L3_stereo_bot()

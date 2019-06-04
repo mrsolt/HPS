@@ -161,8 +161,3 @@ def get_L1_top_hole_pin():
 	L1_top_hole_pin[1] = 0.013
 	L1_top_hole_pin[2] = -43.447
 	return change_to_uchannel_basis(L1_top_hole_pin)
-
-print get_L1_bottom_slot_cone()
-print get_L1_bottom_hole_cone()
-print get_L3_bottom_slot_cone()
-print get_L3_bottom_hole_cone()
