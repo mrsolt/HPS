@@ -88,12 +88,12 @@ outfile_simp = remainder[0] + "_simp"
 outfile_ap = remainder[0] + "_ap"
 
 simp_files = []
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/125_75_10_truth.root")
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/125_75_42_truth.root")
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/200_75_42_truth.root")
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/250_225_10_truth.root")
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/375_225_10_truth.root")
-simp_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/375_225_125_truth.root")
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/125_75_10_truth.root"))
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/125_75_42_truth.root"))
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/200_75_42_truth.root"))
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/250_225_10_truth.root"))
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/375_225_10_truth.root"))
+simp_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/simps/tuple/375_225_125_truth.root"))
 
 simp_mass = []
 simp_mass.append("125 75 10")
@@ -104,8 +104,8 @@ simp_mass.append("375 225 10")
 simp_mass.append("375 225 125")
 
 ap_files = []
-ap_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/ap/slic_tuple/225/ap_225_MeV_slic.root")
-ap_files.append("/nfs/slac/g/hps3/data/TriggerStudies2019/ap/slic_tuple/75/ap_75_MeV_slic.root")
+ap_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/ap/slic_tuple/225/ap_225_MeV_slic.root"))
+ap_files.append(TFile("/nfs/slac/g/hps3/data/TriggerStudies2019/ap/slic_tuple/75/ap_75_MeV_slic.root"))
 
 ap_mass = []
 ap_mass.append("75")
