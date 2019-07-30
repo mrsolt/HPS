@@ -149,9 +149,9 @@ for j in range(len(simp_events)):
 	    maxX = getMaxX2D(plots2D[i])
 	    minY = getMinY(plots2D[i])
 	    maxY = getMaxY(plots2D[i])
-	    mass = GetMass1(simp_mass[i])
-	    Vmass = GetMass2(simp_mass[i])
-	    Pimass = GetMass3(simp_mass[i])
+	    mass = getMass1(simp_mass[i])
+	    Vmass = getMass2(simp_mass[i])
+	    Pimass = getMass3(simp_mass[i])
 	    saveTuplePlot2D(simp_events[j],plot1,plot2,nBins,minX,maxX,maxY,minY,maxY,outfile,c,plot1,plot2,"A' " + str(mass) + " MeV;  V " + str(Vmass) + " MeV;  Pion " + str(Pimass) + " MeV",cut)
 
 closePDF(outfile_simp,c)
@@ -166,7 +166,7 @@ for j in range(len(ap_events)):
 	    maxX = getMaxX2D(plots2D[i])
 	    minY = getMinY(plots2D[i])
 	    maxY = getMaxY(plots2D[i])
-	    mass = GetMass1(ap_mass[i])
+	    mass = getMass1(ap_mass[i])
 	    saveTuplePlot2D(ap_events[j],plot1,plot2,nBins,minX,maxX,maxY,minY,maxY,outfile,c,plot1,plot2,"A' " + str(mass) + " MeV",cut)
 
 closePDF(outfile_ap,c)
