@@ -43,6 +43,20 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
+def getMass1(string):
+    arr = string.split(" ")
+    return arr[0]
+
+def getMass2(string):
+    arr = string.split(" ")
+    if(len(arr) < 2): return ""
+    else: return arr[1]
+
+def getMass3(string):
+    arr = string.split(" ")
+    if(len(arr) < 3): return ""
+    else: return arr[2]
+
 def getPlot(string):
 	arr = string.split(" ")
 	return arr[0]
