@@ -25,6 +25,7 @@ def main() :
     parser.add_argument("-n", "--nFiles",   help="Number of Files per command.")
     parser.add_argument("-c", "--com",   help="Input command.")
     parser.add_argument("-W", "--time",   help="Time of job for batch.")
+    parser.add_argument("-l", "--log",   help="Log directory")
 
     args = parser.parse_args()
 
@@ -67,7 +68,7 @@ def main() :
             m = m + 1
             # Command that will be submitted to the batch system
             output = args.outputFile + str(m)
-            command = bsub + " " + args.com + " " + output + " " + files
+            command = bsub + " -o " + args.log + output + ".log " + args.com + " " + output + " " + files
             subprocess.Popen(command, shell=True).wait() 
             print "Writing output file: " + output
             files = ""
