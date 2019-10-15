@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 from array import array
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH2F
+from ROOT import TFile, TChain
 sys.argv = tmpargv
 import csv
 import numpy as np
@@ -154,6 +154,7 @@ with open(outfile+'.csv', mode='w') as output_file:
         eleChisqDOF = events.eleTrkChisq / (2 * events.eleTrkHits - 5)
         posChisqDOF = events.posTrkChisq / (2 * events.posTrkHits - 5)
         eleZ0 = events.eleTrkZ0 - zTarg * events.eleTrkTanLambda
+        posZ0 = events.posTrkZ0 - zTarg * events.posTrkTanLambda
         
         if(not fulltruth):
             file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), str(events.uncP), str(events.uncChisq), 
