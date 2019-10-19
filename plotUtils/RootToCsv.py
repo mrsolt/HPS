@@ -136,10 +136,18 @@ events.Branch("posL2bthetaY",posL2bthetaY,"posL2bthetaY")
 
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    file_writer.writerow("truthZ","vx","vy","vz","vxPull","vyPull",
+    	"vzPull","uncP","uncChisq","uncM","projX","projY","projXPull",
+    	"projYPull","bscChisq","tarChisq","eleP","eleChisqDOF","eleTrkD0",
+    	"eleTrkTanLambda","eleZ0","eleTrkD0Err","eleTrkTanLambdaErr",
+    	"eleTrkZ0Err","posP","posChisqDOF","posTrkD0","posTrkTanLambda",
+    	"posZ0","posTrkD0Err","posTrkTanLambdaErr","posTrkZ0Err","signal")
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
         truthZ = 0
-        #if(isSignal):
+        signal = "0"
+        if(isSignal):
+        	signal = "1"
         #	truthZ = events.
         vx = events.uncVX - xBeam
         vy = events.uncVY - yBeam
@@ -161,15 +169,15 @@ with open(outfile+'.csv', mode='w') as output_file:
             	str(events.uncM), str(projX), str(projY), str(projXPull), str(projYPull), str(events.bscChisq), str(events.tarChisq),
             	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkTanLambda), str(eleZ0), 
             	str(events.eleTrkD0Err), str(events.eleTrkTanLambdaErr), str(events.eleTrkZ0Err),
-            	str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
-            	str(events.posTrkD0Err), str(events.posTrkTanLambdaErr), str(events.posTrkZ0Err)])
+            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
+            	str(events.posTrkD0Err), str(events.posTrkTanLambdaErr), str(events.posTrkZ0Err),signal])
 
         else:
     	    file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), str(events.uncP), str(events.uncChisq), 
             	str(events.uncM), str(projX), str(projY), str(projXPull), str(projYPull), str(events.bscChisq), str(events.tarChisq),
             	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkTanLambda), str(eleZ0), 
             	str(events.eleTrkD0Err), str(events.eleTrkTanLambdaErr), str(events.eleTrkZ0Err),
-            	str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
+            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
             	str(events.posTrkD0Err), str(events.posTrkTanLambdaErr), str(events.posTrkZ0Err),
             	str(events.eleL1tthetaY), str(events.eleL2tthetaY), str(events.eleL1bthetaY), str(events.eleL2bthetaY), 
             	str(events.posL1tthetaY), str(events.posL2tthetaY), str(events.posL1bthetaY), str(events.posL2bthetaY)])
