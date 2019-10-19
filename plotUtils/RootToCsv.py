@@ -136,12 +136,12 @@ events.Branch("posL2bthetaY",posL2bthetaY,"posL2bthetaY")
 
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    file_writer.writerow("truthZ","vx","vy","vz","vxPull","vyPull",
+    file_writer.writerow(["truthZ","vx","vy","vz","vxPull","vyPull",
     	"vzPull","uncP","uncChisq","uncM","projX","projY","projXPull",
     	"projYPull","bscChisq","tarChisq","eleP","eleChisqDOF","eleTrkD0",
     	"eleTrkTanLambda","eleZ0","eleTrkD0Err","eleTrkTanLambdaErr",
     	"eleTrkZ0Err","posP","posChisqDOF","posTrkD0","posTrkTanLambda",
-    	"posZ0","posTrkD0Err","posTrkTanLambdaErr","posTrkZ0Err","signal")
+    	"posZ0","posTrkD0Err","posTrkTanLambdaErr","posTrkZ0Err","signal"])
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
         truthZ = 0
