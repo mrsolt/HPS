@@ -26,6 +26,7 @@ def main() :
     parser.add_argument("-c", "--com",   help="Input command.")
     parser.add_argument("-W", "--time",   help="Time of job for batch.")
     parser.add_argument("-l", "--log",   help="Log file")
+    parser.add_argument("-a", "--add",   help="Log file")
 
     args = parser.parse_args()
 
@@ -51,6 +52,10 @@ def main() :
         print "Unable to open file " + str(args.input_list)
         sys.exit(2)
 
+    addon = ""
+    if args.add is not None:
+        addon = args.add
+
     #Number of Files per batch job. Default is all input files
     n_files = sum(1 for line in open(args.input_list))
     n = n_files
@@ -68,7 +73,7 @@ def main() :
             m = m + 1
             # Command that will be submitted to the batch system
             output = args.outputFile + str(m)
-            command = bsub + " -o " + args.log + str(m) + ".log " + args.com + " " + output + " " + files
+            command = bsub + " -o " + args.log + str(m) + ".log " + args.com + " " + output + addon + " " + files
             subprocess.Popen(command, shell=True).wait() 
             print "Writing output file: " + output
             files = ""
