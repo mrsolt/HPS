@@ -36,15 +36,20 @@ def main() :
     bsub = ""
     if(args.time is not None):
         bsub = "bsub -W " + args.time + ' -R "rhel60" '
+    else:
+        bsub = 'bsub -W 4:00 -R "rhel60" '
 
     # Open the file containing the list of stdhep files to process
     try : 
         file_list = open(args.input_list, 'r')
-    except IOError : 
+    except IOError :
         print "Unable to open file " + str(args.input_list)
         sys.exit(2)
 
     addon = ".root"
+    outputfile = "/nfs/slac/g/hps_data2/tuple/2pt3/data/"
+    if(args.time is not None):
+        outputfile = args.outputFile
     com = "/nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/tuple/makeTree.py "
     for line in file_list : 
         file = line.strip()
@@ -52,8 +57,8 @@ def main() :
         # Command that will be submitted to the batch system
         output = file.replace('.txt','')
         output = output.replace('/nfs/slac/g/hps_data2/data/physrun2016/pass4v0FullPass/tuple/','')
-        log = args.outputFile + "logs/" + output + ".log "
-        output = args.outputFile + output + addon + " "
+        log = outputfile + "logs/" + output + ".log "
+        output = outputfile + output + addon + " "
         command = bsub + " -o " + log + com  + output + file
         subprocess.Popen(command, shell=True).wait() 
         print "Writing output file: " + output
@@ -61,4 +66,3 @@ def main() :
 
 if __name__ == "__main__" : 
     main() 
-
