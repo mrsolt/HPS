@@ -42,7 +42,7 @@ def main() :
     # Open the file containing the list of stdhep files to process
     try : 
         file_list = open(args.input_list, 'r')
-    except IOError : q
+    except IOError :
         print "Unable to open file " + str(args.input_list)
         sys.exit(2)
 
