@@ -1,0 +1,54 @@
+Create tuple text files
+
+python ../../../HPS/Bsub/RunLocalJob.py -i tritrig-wab-beam_recon0<>_files.txt -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/0<>/text/tritrig-wab-beam_ -n 10 -j hps-distribution-4.5-SNAPSHOT-bin.jar -s ../../../hps-java/steering-files/src/main/resources/org/hps/steering/analysis/MakeTuplesFullTruthMC.lcsim -W 12:00 -l log0<>/tritrig-wab-beam_text_
+
+Create tuple files
+
+python /nfs/slac/g/hps2/mrsolt/hps/HPS/Bsub/RunBatchJob.py -a ".root" -n 1 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/tuple/makeTree.py " -W 4:00 -l log0<>/tritrig-wab-beam_tuple_ -i tritrig-wab-beam_text0<>_files.txt -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/0<>/tritrig-wab-beam_
+
+
+Create tuple files data
+
+python ../../../HPS/Bsub/bsub_MakeDataTuple.py -i <>_passc_files.txt
+
+
+Create truth refit files (tuple text and lcio)
+
+
+Basic cleanup cuts for MC 
+L1L1
+python ../../../HPS/Bsub/RunBatchJob.py -n 10 -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -f " -i tritrig-wab-beam_tuple0<>_files.txt -l log0<>/tritrig-wab-beam_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/0<>/L1L1/tritrig-wab-beam_L1L1_cleanup_ -a ".root"
+L1L2
+python ../../../HPS/Bsub/RunBatchJob.py -n 10 -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -g " -i tritrig-wab-beam_tuple0<>_files.txt -l log0<>/tritrig-wab-beam_cleanup_L1L2_ -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/0<>/L1L2/tritrig-wab-beam_L1L2_cleanup_ -a ".root"
+L2L2
+python ../../../HPS/Bsub/RunBatchJob.py -n 10 -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -i " -i tritrig-wab-beam_tuple0<>_files.txt -l log0<>/tritrig-wab-beam_cleanup_L2L2_ -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/0<>/L2L2/tritrig-wab-beam_L2L2_cleanup_ -a ".root"
+
+Basic cleanup cuts for A' MC
+L1L1
+python ../../../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -f " -i ap_<>MeV_tuple_files.txt -l log/ap_<>MeV_L1L1_cleanup -o /nfs/slac/g/hps3/data/hpsrun2016/mc/pass4/ap_recon/<>/fulltruth/ap_<>MeV_L1L1_cleanup -a ".root"
+L1L2
+python ../../../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -g " -i ap_<>MeV_tuple_files.txt -l log/ap_<>MeV_L1L2_cleanup -o /nfs/slac/g/hps3/data/hpsrun2016/mc/pass4/ap_recon/<>/fulltruth/ap_<>MeV_L1L2_cleanup -a ".root"
+L2L2
+python ../../../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -i " -i ap_<>MeV_tuple_files.txt -l log/ap_<>MeV_L2L2_cleanup -o /nfs/slac/g/hps3/data/hpsrun2016/mc/pass4/ap_recon/<>/fulltruth/ap_<>MeV_L2L2_cleanup -a ".root"
+
+Basic cleanup cuts for data
+L1L1
+python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -f " -i files/<XXXX>_tuple_10per_files.txt -l logData/<XXXX>_10per_L1L1_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L1L1/<XXXX>_10per_L1L1_cleanup_ -a ".root"
+python ../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../Golden_Runs.dat -l logData/sub_10per_L1L1_cleanup -c ' python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -f " -i files/{0}_tuple_10per_files.txt -l logData/{0}_10per_L1L1_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L1L1/{0}_10per_L1L1_cleanup_ -a ".root" '
+L1L2
+python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -g " -i files/<XXXX>_tuple_10per_files.txt -l logData/<XXXX>_10per_L1L2_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L1L2/<XXXX>_10per_L1L2_cleanup_ -a ".root"
+python ../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../Golden_Runs.dat -l logData/sub_10per_L1L2_cleanup -c ' python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -g " -i files/{0}_tuple_10per_files.txt -l logData/{0}_10per_L1L2_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L1L2/{0}_10per_L1L2_cleanup_ -a ".root" '
+L2L2
+python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -i " -i files/<XXXX>_tuple_10per_files.txt -l logData/<XXXX>_10per_L2L2_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/<XXXX>_10per_L2L2_cleanup_ -a ".root"
+python ../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../Golden_Runs.dat -l logData/sub_10per_L2L2_cleanup -c ' python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -i " -i files/{0}_tuple_10per_files.txt -l logData/{0}_10per_L2L2_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/{0}_10per_L2L2_cleanup_ -a ".root" '
+
+Plot basic plots
+
+
+Full truth plots
+
+
+Refit plots
+
+
+
