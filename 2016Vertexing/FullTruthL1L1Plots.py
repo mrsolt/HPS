@@ -100,8 +100,8 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 	del histo
 
 L1L2 = False
-minVZ = -20
-maxVZ = 50
+minVZ = -30
+maxVZ = 30
 clusterT = 43
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:m:n:h')
@@ -131,9 +131,9 @@ minX = ""
 maxX = ""
 minY = ""
 maxY = ""
-maxTheta = 0.03
+maxTheta = 0.04
 minTheta = -maxTheta
-maxKink = 0.01
+maxKink = 0.005
 minKink = -maxKink
 
 plots = []
@@ -361,17 +361,17 @@ for i in range(0,len(cuts)):
 	savehisto2D(eleL1tscatter,outfile,c,"uncVZ","theta","L1t Electron Scatter " + cut,1)
 	savehisto2D(eleL1bscatter,outfile,c,"uncVZ","theta","L1b Electron Scatter " + cut,1)
 	savehisto2D(eleL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron Scatter " + cut,1)
-	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron Scatter " + cut,1)
+	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron Scatter " + cut,1)
 
 	savehisto2D(posL1tscatter,outfile,c,"uncVZ","theta","L1t Positron Scatter " + cut,1)
 	savehisto2D(posL1bscatter,outfile,c,"uncVZ","theta","L1b Positron Scatter " + cut,1)
 	savehisto2D(posL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Positron Scatter " + cut,1)
-	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Positron Scatter " + cut,1)
+	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Positron Scatter " + cut,1)
 
 	savehisto2D(eleposL1tscatter,outfile,c,"uncVZ","theta","L1t Electron - Positron Scatter " + cut,1)
 	savehisto2D(eleposL1bscatter,outfile,c,"uncVZ","theta","L1b Electron - Positron Scatter " + cut,1)
 	savehisto2D(eleposL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron - Positron Scatter " + cut,1)
-	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2t Electron - Positron Scatter " + cut,1)
+	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron - Positron Scatter " + cut,1)
 
 	del cutevents
 
