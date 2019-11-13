@@ -187,19 +187,19 @@ plots2D.append("uncVZ posL1bthetaY {0} {1} {2} {3}".format(minVZ,maxVZ,minTheta,
 plots2D.append("uncVZ posL2bthetaY {0} {1} {2} {3}".format(minVZ,maxVZ,minTheta,maxTheta))
 plots2D.append("uncVZ posL3bthetaY {0} {1} {2} {3}".format(minVZ,maxVZ,minTheta,maxTheta))
 plots2D.append("uncVZ posL4bthetaY {0} {1} {2} {3}".format(minVZ,maxVZ,minTheta,maxTheta))
-plots2D.append("eleLambdaKink0 eleL1tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
+#plots2D.append("eleLambdaKink0 eleL1tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
 plots2D.append("eleLambdaKink1 eleL2tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
-plots2D.append("eleLambdaKink0 eleL1bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
+#plots2D.append("eleLambdaKink0 eleL1bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
 plots2D.append("eleLambdaKink1 eleL2bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
-plots2D.append("posLambdaKink0 posL1tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
+#plots2D.append("posLambdaKink0 posL1tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
 plots2D.append("posLambdaKink1 posL2tthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
-plots2D.append("posLambdaKink0 posL1bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
+#plots2D.append("posLambdaKink0 posL1bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
 plots2D.append("posLambdaKink1 posL2bthetaY {0} {1} {2} {3}".format(minKink,maxKink,minTheta,maxTheta))
 
 
 cuts = []
 cuts.append("")
-cuts.append("elePurity<0.99||posPurity<0.99")
+#cuts.append("elePurity<0.99||posPurity<0.99")
 
 rootfile = TFile(outfile+".root","recreate")
 
@@ -241,7 +241,8 @@ for i in range(0,len(cuts)):
 	eleposL12tscatter = TH2F("eleposL12tscatter","eleposL12tscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
 	eleposL12bscatter = TH2F("eleposL12bscatter","eleposL12bscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
 
-	cutevents = events.CopyTree(cut)
+	#cutevents = events.CopyTree(cut)
+	cutevents = events
 	neventscut = cutevents.GetEntries()
 
 	uncVZ = array('d',[0])
