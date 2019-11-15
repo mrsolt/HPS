@@ -28,10 +28,20 @@ def getPlotY(string):
 
 def getMinX(string):
 	arr = string.split(" ")
+	if(len(arr) < 2): return -9999
+	else: return float(arr[1])
+
+def getMaxX(string):
+	arr = string.split(" ")
 	if(len(arr) < 3): return -9999
 	else: return float(arr[2])
 
-def getMaxX(string):
+def getMinX2D(string):
+	arr = string.split(" ")
+	if(len(arr) < 3): return -9999
+	else: return float(arr[2])
+
+def getMaxX2D(string):
 	arr = string.split(" ")
 	if(len(arr) < 4): return -9999
 	else: return float(arr[3])
@@ -63,7 +73,7 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-def saveTuplePlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",plotTitle="",cut="",stats=0,logY=0):
+def saveTuplePlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",plotTitle="",cut="",stats=0,logY=0,savePDF=False):
 	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBinsX,minX,maxX),cut)
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle(plotTitle)
@@ -71,11 +81,12 @@ def saveTuplePlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",p
 	histo.SetStats(stats)
 	histo.Draw()
 	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
+	if(savePDF):
+	    canvas.Print(outfile+".pdf")
 	histo.Write(plotTitle)
 	del histo
 
-def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",cut="",stats=0,logY=0):
+def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",cut="",stats=0,logY=0,savePDF=False):
 	events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,inHisto1,nBinsX,minX,maxX,nBinsY,minY,maxY),cut)
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle(plotTitle)
@@ -84,18 +95,20 @@ def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,o
 	histo.SetStats(stats)
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
+	if(savePDF):
+	    canvas.Print(outfile+".pdf")
 	histo.Write(plotTitle)
 	del histo
 
-def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
+def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0,savePDF=False):
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
+	if(savePDF):
+	    canvas.Print(outfile+".pdf")
 	histo.Write(plotTitle)
 	del histo
 
@@ -103,8 +116,9 @@ L1L2 = False
 minVZ = -30
 maxVZ = 30
 clusterT = 43
+savePDF = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:m:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:m:n:ph')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -114,6 +128,8 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-p':
+			savePDF = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -166,8 +182,6 @@ plots.append("eleTrkLambda -0.1 0.1")
 plots.append("posTrkLambda -0.1 0.1")
 plots.append("eleMatchChisq 0 20")
 plots.append("posMatchChisq 0 20")
-plots.append("eleMinPositiveIsoL2 uncVZ 0 10 {0} {1}".format(minVZ,maxVZ))
-plots.append("posMinPositiveIsoL2 uncVZ 0 10 {0} {1}".format(minVZ,maxVZ))
 
 plots2D = []
 plots2D.append("uncM uncVZ 0 0.2 {0} {1}".format(minVZ,maxVZ))
@@ -203,7 +217,8 @@ cuts.append("")
 
 rootfile = TFile(outfile+".root","recreate")
 
-openPDF(outfile,c)
+if(savePDF):
+    openPDF(outfile,c)
 
 for i in range(0,len(cuts)):
 	cut = cuts[i]
@@ -214,17 +229,17 @@ for i in range(0,len(cuts)):
 		maxX = getMaxX(plots[j])
 		minY = minVZ
 		maxY = maxVZ
-		saveTuplePlot(events,x,nBins,minX,maxX,outfile,c,x,x+" "+cut,cut,1)
-		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,cut,1)
+		saveTuplePlot(events,x,nBins,minX,maxX,outfile,c,x,x+" "+cut,cut,1,savePDF=savePDF)
+		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,cut,1,savePDF=savePDF)
 
 	for j in range(0,len(plots2D)):
 		x = getPlotX(plots2D[j])
 		y = getPlotY(plots2D[j])
-		minX = getMinX(plots2D[j])
-		maxX = getMaxX(plots2D[j])
+		minX = getMinX2D(plots2D[j])
+		maxX = getMaxX2D(plots2D[j])
 		minY = getMinY(plots2D[j])
 		maxY = getMaxY(plots2D[j])
-		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,cut,1)
+		saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,cut,1,savePDF=savePDF)
 
 	eleL1tscatter = TH2F("eleL1tscatter","eleL1tscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
 	eleL1bscatter = TH2F("eleL1bscatter","eleL1bscatter",nBins,minVZ,maxVZ,nBins,minTheta,maxTheta)
@@ -359,20 +374,20 @@ for i in range(0,len(cuts)):
 		if(eleL1b>-9998 and eleL2b>-9998 and eleL3b>-9998 and eleL4b>-9998 and posL1t>-9998 and posL2t>-9998 and posL3t>-9998 and posL4t>-9998):
 			eleposL12bscatter.Fill(cutevents.uncVZ,(eleL1b+eleL2b+eleL3b+eleL4b)-(posL1t+posL2t+posL3t+posL4t))
 
-	savehisto2D(eleL1tscatter,outfile,c,"uncVZ","theta","L1t Electron Scatter " + cut,1)
-	savehisto2D(eleL1bscatter,outfile,c,"uncVZ","theta","L1b Electron Scatter " + cut,1)
-	savehisto2D(eleL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron Scatter " + cut,1)
-	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron Scatter " + cut,1)
+	savehisto2D(eleL1tscatter,outfile,c,"uncVZ","theta","L1t Electron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleL1bscatter,outfile,c,"uncVZ","theta","L1b Electron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron Scatter " + cut,1,savePDF=savePDF)
 
-	savehisto2D(posL1tscatter,outfile,c,"uncVZ","theta","L1t Positron Scatter " + cut,1)
-	savehisto2D(posL1bscatter,outfile,c,"uncVZ","theta","L1b Positron Scatter " + cut,1)
-	savehisto2D(posL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Positron Scatter " + cut,1)
-	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Positron Scatter " + cut,1)
+	savehisto2D(posL1tscatter,outfile,c,"uncVZ","theta","L1t Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(posL1bscatter,outfile,c,"uncVZ","theta","L1b Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(posL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(posL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Positron Scatter " + cut,1,savePDF=savePDF)
 
-	savehisto2D(eleposL1tscatter,outfile,c,"uncVZ","theta","L1t Electron - Positron Scatter " + cut,1)
-	savehisto2D(eleposL1bscatter,outfile,c,"uncVZ","theta","L1b Electron - Positron Scatter " + cut,1)
-	savehisto2D(eleposL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron - Positron Scatter " + cut,1)
-	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron - Positron Scatter " + cut,1)
+	savehisto2D(eleposL1tscatter,outfile,c,"uncVZ","theta","L1t Electron - Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleposL1bscatter,outfile,c,"uncVZ","theta","L1b Electron - Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleposL12tscatter,outfile,c,"uncVZ","theta","L1t + L2t Electron - Positron Scatter " + cut,1,savePDF=savePDF)
+	savehisto2D(eleposL12bscatter,outfile,c,"uncVZ","theta","L1b + L2b Electron - Positron Scatter " + cut,1,savePDF=savePDF)
 
 	del cutevents
 
@@ -412,5 +427,6 @@ for i in range(0,len(cuts)):
 	del posL3bInthetaY
 	del posL4bInthetaY
 
-closePDF(outfile,c)
+if(savePDF):
+    closePDF(outfile,c)
 rootfile.Close()
