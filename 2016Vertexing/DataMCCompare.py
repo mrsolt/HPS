@@ -167,7 +167,7 @@ plots.append("uncVY -1 1")
 plots.append("uncVX -3 3")
 plots.append("uncM 0 {0}".format(0.1*energy))
 plots.append("uncPX -0.1 0.1")
-plots.append("uncPY -0.0 0.1")
+plots.append("uncPY -0.1 0.1")
 plots.append("uncPZ 0 {0}".format(1.6*energy))
 plots.append("uncP 0 {0}".format(1.6*energy))
 plots.append("uncChisq 0 20")
@@ -205,6 +205,7 @@ plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -10 10".format(targZ))
 openPDF(outfile,c)
 
 #Loop over list of plots
+saveTuplePlot2D(events,"uncVZ","uncM",nBins,minVZ,maxVZ,nBins,0.0,0.1*energy,outfile,c,"uncVZ","uncM","uncM vs uncVZ",nentries,cuts=cuts)
 for i in range(len(plots)):
 	plot = getPlot(plots[i]) #variable to be plotted
 	minX = getMinX(plots[i])
