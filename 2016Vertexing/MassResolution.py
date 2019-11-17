@@ -57,9 +57,12 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	for i in range(nbins):
 		zmin = zTarg + i * zbin
 		zmax = zmin + zbin
+		print zmin
+		print zmax
 		z.append(zmin + zbin/2.)
 		events.Draw("{0}>>histo2({1},{2},{3}),triEndZ>{4}&&triEndZ<{5}".format(inHisto,nBins,minX,maxX,zmin,zmax))
 		histo2 = ROOT.gROOT.FindObject("histo2")
+		print histo2
 		mean, sigma, meanerror, sigmaerror = getFitZ(histo2)
 		fittedmean.append(mean)
 		fittedsigma.append(sigma)
@@ -71,7 +74,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_sigma = TGraphErrors(len(z),z,fittedsigma,masserror,fittedsigmaerror)
 
 	gr_mean.Draw("ALP")
-	gr_mean.SetTitle("Fitted Mass Mean - Truth Mass Mean {0} MeV A'".format(mass))
+	gr_mean.SetTitle("Fitted Mass - Truth Mass Mean {0} MeV A'".format(mass))
 	gr_mean.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 	canvas.Print(outfile+".pdf")
@@ -87,6 +90,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 def getFitZ(histo):
 	f1 = TF1("f1","gaus")
 	histo.Fit("f1")
+	print f1
 	if(f1 != None):
 		return f1.GetParameter(1), f1.GetParameter(2), f1.GetParError(1), f1.GetParError(2)
 	else:
