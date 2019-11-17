@@ -61,10 +61,10 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 		zmax = zmin + zbin
 		z.append(zmin + zbin/2.)
 		mean, sigma, meanerror, sigmaerror = getFitZ(histo2)
-		fittedmean.append(mean*1000)
-		fittedsigma.append(sigma*1000)
-		fittedmeanerror.append(meanerror*1000)
-		fittedsigmaerror.append(sigmaerror*1000)
+		fittedmean.append(mean)
+		fittedsigma.append(sigma)
+		fittedmeanerror.append(meanerror)
+		fittedsigmaerror.append(sigmaerror)
 
 	gr_mean = TGraphErrors(len(z),z,fittedmean,masserror,fittedmeanerror)
 	gr_sigma = TGraphErrors(len(z),z,fittedsigma,masserror,fittedsigmaerror)
@@ -102,7 +102,7 @@ def closePDF(outfile,canvas):
 
 
 nBins = 50
-maxX = 0.015
+maxX = 15.
 minX = -maxX
 
 outfile = remainder[0]
@@ -132,12 +132,12 @@ fittedsigmaerror = array.array('d')
 
 openPDF(outfile,c)
 for i in range(len(mass)):
-	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"uncM-{0}".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
-	saveTupleFitPlotsZ(events[i],"uncM-{0}".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
-	fittedmean.append(mean*1000)
-	fittedsigma.append(sigma*1000)
-	fittedmeanerror.append(meanerror*1000)
-	fittedsigmaerror.append(sigmaerror*1000)
+	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM-{0})*1000".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
+	saveTupleFitPlotsZ(events[i],"(uncM-{0})*1000".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
+	fittedmean.append(mean)
+	fittedsigma.append(sigma)
+	fittedmeanerror.append(meanerror)
+	fittedsigmaerror.append(sigmaerror)
 
 gr_mean = TGraphErrors(len(mass),mass,fittedmean,masserror,fittedmeanerror)
 gr_sigma = TGraphErrors(len(mass),mass,fittedsigma,masserror,fittedsigmaerror)
