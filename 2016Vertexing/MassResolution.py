@@ -102,7 +102,7 @@ def closePDF(outfile,canvas):
 
 
 nBins = 50
-maxX = 15.
+maxX = 0.015
 minX = -maxX
 
 outfile = remainder[0]
@@ -132,8 +132,8 @@ fittedsigmaerror = array.array('d')
 
 openPDF(outfile,c)
 for i in range(len(mass)):
-	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM-{0})*1000".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
-	saveTupleFitPlotsZ(events[i],"(uncM-{0})*1000".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
+	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM-{0})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
+	saveTupleFitPlotsZ(events[i],"(uncM-{0})".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
 	fittedmean.append(mean)
 	fittedsigma.append(sigma)
 	fittedmeanerror.append(meanerror)
