@@ -43,10 +43,11 @@ canvs = []
 for key in inputFiles[0].GetListOfKeys():
     histos = []
     key = key.ReadObj()
-    print key.GetTitle()
+    print key.GetName()
     c = r.TCanvas()
     for i_f in range(0,len(inputFiles)):
-        histos.append(inputFiles[i_f].Get(key.GetTitle()))
+        #histos.append(inputFiles[i_f].Get(key.GetName()))
+        histos.append(key)
         histos[i_f].SetMarkerColor(colors[i_f])
         histos[i_f].SetLineColor(colors[i_f])
         pass
