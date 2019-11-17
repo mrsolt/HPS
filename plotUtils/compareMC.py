@@ -48,13 +48,16 @@ for key in inputFiles[0].GetListOfKeys():
     for i_f in range(0,len(inputFiles)):
         #histos.append(inputFiles[i_f].Get(key.GetName()))
         histos.append(key)
+        histos[i_f].SetName(key.GetTitle())
         histos[i_f].SetMarkerColor(colors[i_f])
         histos[i_f].SetLineColor(colors[i_f])
         pass
     canvs.append(utils.MakePlot(key.GetName(),outdir,histos,legends,".png",LogY=True,RatioType="Sequential",Normalise=True))
     pass
 
-outF = r.TFile("slicSingleMu_compMC.root","RECREATE")
+outF = r.TFile("10per_L1L1_cleanup_nPos_compareplots.root","RECREATE")
+#outF = r.TFile("10per_L1L2_cleanup_nPos_compareplots.root","RECREATE")
+#outF = r.TFile("10per_L2L2_cleanup_nPos_compareplots.root","RECREATE")
 outF.cd()
 for canv in canvs: canv.Write()
 outF.Close()
