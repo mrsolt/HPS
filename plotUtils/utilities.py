@@ -365,7 +365,6 @@ def MakePlot(name,outdir,histos,legends,oFext,xtitle="",ytitle="",ymin=0,ymax=1,
     line.DrawLine(reference.GetXaxis().GetXmin(),1,reference.GetXaxis().GetXmax(),1)
     
     can.SaveAs(outdir+"/"+name+oFext)
-    can.Print(outdir+".pdf")
     return deepcopy(can)
     
 
