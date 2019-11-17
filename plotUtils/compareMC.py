@@ -42,14 +42,15 @@ for ifile in inFileList:
 canvs = []
 for key in inputFiles[0].GetListOfKeys():
     histos = []
+    key = key.ReadObj()
     print key.GetName()
     c = r.TCanvas()
     for i_f in range(0,len(inputFiles)):
-        histos.append(inputFiles[i_f].Get(key.GetTitle()))
+        histos.append(inputFiles[i_f].Get(key.GetName()))
         histos[i_f].SetMarkerColor(colors[i_f])
         histos[i_f].SetLineColor(colors[i_f])
         pass
-    canvs.append(utils.MakePlot(key.GetName(),outdir,histos,legends,".png",LogY=True,RatioType="Sequential"))
+    canvs.append(utils.MakePlot(key.GetName(),outdir,histos,legends,".png",LogY=True,RatioType="Sequential",Normalise=True))
     pass
 
 outF = r.TFile("slicSingleMu_compMC.root","RECREATE")
