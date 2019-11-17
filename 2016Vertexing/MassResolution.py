@@ -41,15 +41,13 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	return f1.GetParameter(1), f1.GetParameter(2), f1.GetParError(1), f1.GetParError(2)
 
 def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfile,canvas):
-	events.Draw("{0}:triEndZ>>histo({1},{2},{3})".format(inHisto,nBins,minX,maxX))
+	events.Draw("{0}:triEndZ>>histo({1},{2},{3},{1},{4},{5})".format(inHisto,nBins,zTarg,maxZ,minX,maxX))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle("Reconstructed Mass {0} MeV A' vs Truth Z".format(mass))
 	histo.GetXaxis().SetTitle("Truth Z (mm)")
 	histo.GetYaxis().SetTitle("Reconstructed Mass (MeV)")
 	histo.Draw("COLZ")
 	canvas.Print(outfile+".pdf")
-	events.Draw("{0}>>histo2({1},{2},{3})".format(inHisto,nBins,minX,maxX))
-	histo2 = ROOT.gROOT.FindObject("histo2")
 	z = array.array('d')
 	fittedmean = array.array('d')
 	fittedsigma = array.array('d')
@@ -60,11 +58,14 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 		zmin = zTarg + i * zbin
 		zmax = zmin + zbin
 		z.append(zmin + zbin/2.)
+		events.Draw("{0}>>histo2({1},{2},{3}),triEndZ>{4}&&triEndZ<{5}".format(inHisto,nBins,minX,maxX,zmin,zmax))
+		histo2 = ROOT.gROOT.FindObject("histo2")
 		mean, sigma, meanerror, sigmaerror = getFitZ(histo2)
 		fittedmean.append(mean)
 		fittedsigma.append(sigma)
 		fittedmeanerror.append(meanerror)
 		fittedsigmaerror.append(sigmaerror)
+		del histo2
 
 	gr_mean = TGraphErrors(len(z),z,fittedmean,masserror,fittedmeanerror)
 	gr_sigma = TGraphErrors(len(z),z,fittedsigma,masserror,fittedsigmaerror)
@@ -79,10 +80,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_sigma.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_sigma.GetYaxis().SetTitle("Sigma (MeV)")
 	canvas.Print(outfile+".pdf")
-
-	canvas.Print(outfile+".pdf")
 	del histo
-	del histo2
 	del gr_mean
 	del gr_sigma
 
@@ -143,7 +141,7 @@ gr_mean = TGraphErrors(len(mass),mass,fittedmean,masserror,fittedmeanerror)
 gr_sigma = TGraphErrors(len(mass),mass,fittedsigma,masserror,fittedsigmaerror)
 
 gr_mean.Draw("AP")
-gr_mean.SetTitle("Fitted Mass Mean - Truth Mass Mean")
+gr_mean.SetTitle("Fitted Mass - Truth Mass Mean")
 gr_mean.GetXaxis().SetTitle("Truth Mass (MeV)")
 gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 c.Print(outfile+".pdf")
