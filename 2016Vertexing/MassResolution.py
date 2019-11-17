@@ -49,6 +49,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	histo.Draw("COLZ")
 	canvas.Print(outfile+".pdf")
 	events.Draw("{0}>>histo2({1},{2},{3})".format(inHisto,nBins,minX,maxX))
+	histo2 = ROOT.gROOT.FindObject("histo2")
 	z = array.array('d')
 	fittedmean = array.array('d')
 	fittedsigma = array.array('d')
