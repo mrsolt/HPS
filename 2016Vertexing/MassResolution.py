@@ -102,7 +102,7 @@ def closePDF(outfile,canvas):
 
 
 nBins = 50
-maxX = 0.015
+maxX = 15.
 minX = -maxX
 
 outfile = remainder[0]
@@ -132,8 +132,8 @@ fittedsigmaerror = array.array('d')
 
 openPDF(outfile,c)
 for i in range(len(mass)):
-	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM-{0})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
-	saveTupleFitPlotsZ(events[i],"(uncM-{0})".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
+	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM*1000-{0})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
+	saveTupleFitPlotsZ(events[i],"(uncM*1000-{0})".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
 	fittedmean.append(mean)
 	fittedsigma.append(sigma)
 	fittedmeanerror.append(meanerror)
@@ -142,12 +142,12 @@ for i in range(len(mass)):
 gr_mean = TGraphErrors(len(mass),mass,fittedmean,masserror,fittedmeanerror)
 gr_sigma = TGraphErrors(len(mass),mass,fittedsigma,masserror,fittedsigmaerror)
 
-gr_mean.Draw("ALP")
+gr_mean.Draw("AP")
 gr_mean.SetTitle("Fitted Mass Mean - Truth Mass Mean")
 gr_mean.GetXaxis().SetTitle("Truth Mass (MeV)")
 gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 c.Print(outfile+".pdf")
-gr_sigma.Draw("ALP")
+gr_sigma.Draw("AP")
 gr_sigma.SetTitle("Fitted Mass Resolution")
 gr_sigma.GetXaxis().SetTitle("Truth Mass (MeV)")
 gr_sigma.GetYaxis().SetTitle("Sigma (MeV)")
