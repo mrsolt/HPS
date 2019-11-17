@@ -48,6 +48,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	histo.GetYaxis().SetTitle("Reconstructed Mass (MeV)")
 	histo.Draw("COLZ")
 	canvas.Print(outfile+".pdf")
+	events.Draw("{0}>>histo2({1},{2},{3})".format(inHisto,nBins,minX,maxX))
 	z = array.array('d')
 	fittedmean = array.array('d')
 	fittedsigma = array.array('d')
@@ -58,11 +59,11 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 		zmin = zTarg + i * zbin
 		zmax = zmin + zbin
 		z.append(zmin + zbin/2.)
-		mean, sigma, meanerror, sigmaerror = getFitZ(histo)
-		fittedmean.append(mean)
-		fittedsigma.append(sigma)
-		fittedmeanerror.append(meanerror)
-		fittedsigmaerror.append(sigmaerror)
+		mean, sigma, meanerror, sigmaerror = getFitZ(histo2)
+		fittedmean.append(mean*1000)
+		fittedsigma.append(sigma*1000)
+		fittedmeanerror.append(meanerror*1000)
+		fittedsigmaerror.append(sigmaerror*1000)
 
 	gr_mean = TGraphErrors(len(z),z,fittedmean,masserror,fittedmeanerror)
 	gr_sigma = TGraphErrors(len(z),z,fittedsigma,masserror,fittedsigmaerror)
@@ -80,6 +81,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 
 	canvas.Print(outfile+".pdf")
 	del histo
+	del histo2
 	del gr_mean
 	del gr_sigma
 
@@ -117,7 +119,7 @@ for i in range(len(apfiles)):
 	events.append(apfiles[i].Get("ntuple"))
 	events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
 	dummy = ROOT.gROOT.FindObject("dummy")
-	mass.append(dummy.GetMean())
+	mass.append(dummy.GetMean()*1000)
 	masserror.append(0.0)
 	del dummy
 
@@ -131,10 +133,10 @@ openPDF(outfile,c)
 for i in range(len(mass)):
 	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"uncM-{0}".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	saveTupleFitPlotsZ(events[i],"uncM-{0}".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
-	fittedmean.append(mean)
-	fittedsigma.append(sigma)
-	fittedmeanerror.append(meanerror)
-	fittedsigmaerror.append(sigmaerror)
+	fittedmean.append(mean*1000)
+	fittedsigma.append(sigma*1000)
+	fittedmeanerror.append(meanerror*1000)
+	fittedsigmaerror.append(sigmaerror*1000)
 
 gr_mean = TGraphErrors(len(mass),mass,fittedmean,masserror,fittedmeanerror)
 gr_sigma = TGraphErrors(len(mass),mass,fittedsigma,masserror,fittedsigmaerror)
