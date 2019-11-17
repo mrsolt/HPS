@@ -58,11 +58,11 @@ for key in inputFiles[0].GetListOfKeys():
 outfile = "10per_L1L1_cleanup_nPos_compareplots"
 #outfile = "10per_L1L2_cleanup_nPos_compareplots"
 #outfile = "10per_L2L2_cleanup_nPos_compareplots"
-c.Print(outfile+".pdf[")
+canvs[0].Print(outfile+".pdf[")
 outF = r.TFile(outifle+".root","RECREATE")
 outF.cd()
 for canv in canvs: 
     canv.Write()
     c.Print(oanvutfile+".pdf")
 outF.Close()
-c.Print(outfile+".pdf]")
+canvs[0].Print(outfile+".pdf]")
