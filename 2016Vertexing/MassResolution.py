@@ -38,7 +38,12 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	histo.Draw()
 	canvas.Print(outfile+".pdf")
 	del histo
-	return f1.GetParameter(1), f1.GetParameter(2), f1.GetParError(1), f1.GetParError(2)
+	mean = f1.GetParameter(1)
+	sigma = f1.GetParameter(2)
+	meanerror = f1.GetParError(1)
+	sigmaerror = f1.GetParError(2)
+	del f1
+	return mean, sigma, meanerror, sigmaerror
 
 def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfile,canvas):
 	events.Draw("{0}:triEndZ>>histo({1},{2},{3},{1},{4},{5})".format(inHisto,nBins,zTarg,maxZ,minX,maxX))
@@ -92,8 +97,14 @@ def getFitZ(histo):
 	histo.Fit("f1")
 	print f1
 	if(f1 != None):
-		return f1.GetParameter(1), f1.GetParameter(2), f1.GetParError(1), f1.GetParError(2)
+		mean = f1.GetParameter(1)
+		sigma = f1.GetParameter(2)
+		meanerror = f1.GetParError(1)
+		sigmaerror = f1.GetParError(2)
+		del f1
+		return mean, sigma, meanerror, sigmaerror
 	else:
+		del f1
 		return 0, 0, 0, 0
 	
 def openPDF(outfile,canvas):
