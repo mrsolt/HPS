@@ -111,19 +111,19 @@ events.Branch("eleP",eleP,"eleP")
 events.Branch("eleTrkChisq",eleTrkChisq,"eleTrkChisq")
 events.Branch("eleTrkHits",eleTrkHits,"eleTrkHits")
 events.Branch("eleTrkD0",eleTrkD0,"eleTrkD0")
-events.Branch("eleTrkTanLambda",eleTrkTanLambda,"eleTrkTanLambda")
+events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda")
 events.Branch("eleTrkZ0",eleTrkZ0,"eleTrkZ0")
 events.Branch("eleTrkD0Err",eleTrkD0Err,"eleTrkD0Err")
-events.Branch("eleTrkTanLambdaErr",eleTrkTanLambdaErr,"eleTrkTanLambdaErr")
+events.Branch("eleTrkLambdaErr",eleTrkLambdaErr,"eleTrkLambdaErr")
 events.Branch("eleTrkZ0Err",eleTrkZ0Err,"eleTrkZ0Err")
 events.Branch("posP",posP,"posP")
 events.Branch("posTrkChisq",posTrkChisq,"posTrkChisq")
 events.Branch("posTrkHits",posTrkHits,"posTrkHits")
 events.Branch("posTrkD0",posTrkD0,"posTrkD0")
-events.Branch("posTrkTanLambda",posTrkTanLambda,"posTrkTanLambda")
+events.Branch("posTrkLambda",posTrkLambda,"posTrkLambda")
 events.Branch("posTrkZ0",posTrkZ0,"posTrkZ0")
 events.Branch("posTrkD0Err",posTrkD0Err,"posTrkD0Err")
-events.Branch("posTrkTanLambdaErr",posTrkTanLambdaErr,"posTrkTanLambdaErr")
+events.Branch("posTrkLambdaErr",posTrkLambdaErr,"posTrkLambdaErr")
 events.Branch("posTrkZ0Err",posTrkZ0Err,"posTrkZ0Err")
 events.Branch("eleL1tthetaY",eleL1tthetaY,"eleL1tthetaY")
 events.Branch("eleL2tthetaY",eleL2tthetaY,"eleL2tthetaY")
@@ -161,23 +161,23 @@ with open(outfile+'.csv', mode='w') as output_file:
         projYPull = (events.uncTargProjY - yBeam) / events.uncTargProjXErr
         eleChisqDOF = events.eleTrkChisq / (2 * events.eleTrkHits - 5)
         posChisqDOF = events.posTrkChisq / (2 * events.posTrkHits - 5)
-        eleZ0 = events.eleTrkZ0 - zTarg * events.eleTrkTanLambda
-        posZ0 = events.posTrkZ0 - zTarg * events.posTrkTanLambda
+        eleZ0 = events.eleTrkZ0 - zTarg * events.eleTrkLambda
+        posZ0 = events.posTrkZ0 - zTarg * events.posTrkLambda
         
         if(not fulltruth):
             file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), str(events.uncP), str(events.uncChisq), 
             	str(events.uncM), str(projX), str(projY), str(projXPull), str(projYPull), str(events.bscChisq), str(events.tarChisq),
-            	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkTanLambda), str(eleZ0), 
-            	str(events.eleTrkD0Err), str(events.eleTrkTanLambdaErr), str(events.eleTrkZ0Err),
-            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
-            	str(events.posTrkD0Err), str(events.posTrkTanLambdaErr), str(events.posTrkZ0Err),signal])
+            	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkLambda), str(eleZ0), 
+            	str(events.eleTrkD0Err), str(events.eleTrkLambdaErr), str(events.eleTrkZ0Err),
+            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkLambda), str(posZ0), 
+            	str(events.posTrkD0Err), str(events.posTrkLambdaErr), str(events.posTrkZ0Err),signal])
 
         else:
     	    file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), str(events.uncP), str(events.uncChisq), 
             	str(events.uncM), str(projX), str(projY), str(projXPull), str(projYPull), str(events.bscChisq), str(events.tarChisq),
-            	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkTanLambda), str(eleZ0), 
-            	str(events.eleTrkD0Err), str(events.eleTrkTanLambdaErr), str(events.eleTrkZ0Err),
-            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkTanLambda), str(posZ0), 
-            	str(events.posTrkD0Err), str(events.posTrkTanLambdaErr), str(events.posTrkZ0Err),
+            	str(events.eleP), str(eleChisqDOF), str(events.eleTrkD0), str(events.eleTrkLambda), str(eleZ0), 
+            	str(events.eleTrkD0Err), str(events.eleTrkLambdaErr), str(events.eleTrkZ0Err),
+            	str(events.posP), str(posChisqDOF), str(events.posTrkD0), str(events.posTrkLambda), str(posZ0), 
+            	str(events.posTrkD0Err), str(events.posTrkLambdaErr), str(events.posTrkZ0Err),
             	str(events.eleL1tthetaY), str(events.eleL2tthetaY), str(events.eleL1bthetaY), str(events.eleL2bthetaY), 
             	str(events.posL1tthetaY), str(events.posL2tthetaY), str(events.posL1bthetaY), str(events.posL2bthetaY)])
