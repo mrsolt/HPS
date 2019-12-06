@@ -145,27 +145,16 @@ for entry in xrange(events1.GetEntries()):
     eleTrkTanLambda_sig.append(events1.eleTrkLambda)
     posTrkTanLambda_sig.append(events1.eleTrkLambda)
 
-np.random.shuffle(vz_bck)
-np.random.shuffle(vzPull_bck)
-np.random.shuffle(vy_bck)
-np.random.shuffle(vyPull_bck)
-np.random.shuffle(uncM_bck)
-np.random.shuffle(eleZ0_bck)
-np.random.shuffle(posZ0_bck)
-np.random.shuffle(projY_bck)
-np.random.shuffle(eleTrkTanLambda_bck)
-np.random.shuffle(posTrkTanLambda_bck)
+def sync_shuffle(i0, i1, i2, i3, i4, i5, i6, i7, i8, i9):
+     n_elem = i0.shape[0]
+     indeces = np.random.permutation(n_elem)
+     return i0[indeces], i1[indeces], i2[indeces], i3[indeces], i4[indeces], i5[indeces], 
+         i6[indeces], i7[indeces], i8[indeces], i9[indeces]
 
-np.random.shuffle(vz_sig)
-np.random.shuffle(vzPull_sig)
-np.random.shuffle(vy_sig)
-np.random.shuffle(vyPull_sig)
-np.random.shuffle(uncM_sig)
-np.random.shuffle(eleZ0_sig)
-np.random.shuffle(posZ0_sig)
-np.random.shuffle(projY_sig)
-np.random.shuffle(eleTrkTanLambda_sig)
-np.random.shuffle(posTrkTanLambda_sig)
+vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck = 
+    sync_shuffle(vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck)
+vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig = 
+    sync_shuffle(vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig)
         
 
 with open(outfile+'_train.csv', mode='w') as output_file:
