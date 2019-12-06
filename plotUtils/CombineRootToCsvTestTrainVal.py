@@ -146,16 +146,12 @@ for entry in xrange(events1.GetEntries()):
     posTrkTanLambda_sig.append(events1.eleTrkLambda)
 
 def sync_shuffle(i0, i1, i2, i3, i4, i5, i6, i7, i8, i9):
-     n_elem = i0.shape[0]
-     indeces = np.random.permutation(n_elem)
-     return i0[indeces], i1[indeces], i2[indeces], i3[indeces], i4[indeces], i5[indeces], 
-        i6[indeces], i7[indeces], i8[indeces], i9[indeces]
+    n_elem = i0.shape[0]
+    indeces = np.random.permutation(n_elem)
+    return i0[indeces], i1[indeces], i2[indeces], i3[indeces], i4[indeces], i5[indeces], i6[indeces], i7[indeces], i8[indeces], i9[indeces]
 
-vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck = 
-    sync_shuffle(vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck)
-vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig = 
-    sync_shuffle(vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig)
-        
+vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck = sync_shuffle(vz_bck,vzPull_bck,vy_bck,vyPull_bck,uncM_bck,eleZ0_bck,posZ0_bck,projY_bck,eleTrkTanLambda_bck,posTrkTanLambda_bck)
+vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig = sync_shuffle(vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTrkTanLambda_sig,posTrkTanLambda_sig)
 
 with open(outfile+'_train.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
