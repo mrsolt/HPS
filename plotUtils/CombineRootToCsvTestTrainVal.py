@@ -41,11 +41,11 @@ for opt, arg in options:
 
 np.random.seed(1)
 
-nTrainBck = 120000
+nTrainBck = 60000
 nTrainSig = 60000
-nValBck = 40000
+nValBck = 20000
 nValSig = 20000
-nTestBck = 40000
+nTestBck = 20000
 nTestSig = 19962
 
 outfile = remainder[0]
