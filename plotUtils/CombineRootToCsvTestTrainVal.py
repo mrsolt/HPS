@@ -41,12 +41,19 @@ for opt, arg in options:
 
 np.random.seed(1)
 
-nTrainBck = 60000
-nTrainSig = 60000
-nValBck = 20000
-nValSig = 20000
-nTestBck = 20000
-nTestSig = 19962
+#nTrainBck = 60000
+#nTrainSig = 60000
+#nValBck = 20000
+#nValSig = 20000
+#nTestBck = 20000
+#nTestSig = 19962
+
+nTrainBck = 65536
+nTrainSig = 65536
+nValBck = 16384
+nValSig = 16384
+nTestBck = 16384
+nTestSig = 16384
 
 outfile = remainder[0]
 file0 = TFile(remainder[1])
