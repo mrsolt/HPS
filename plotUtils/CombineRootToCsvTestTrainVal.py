@@ -41,12 +41,12 @@ for opt, arg in options:
 
 np.random.seed(1)
 
-nTrainBck = 160000
-nTrainSig = 80000
+nTrainBck = 120000
+nTrainSig = 60000
 nValBck = 40000
 nValSig = 20000
 nTestBck = 40000
-nTestSig = 20000
+nTestSig = 19962
 
 outfile = remainder[0]
 file0 = TFile(remainder[1])
@@ -109,6 +109,7 @@ projY_sig = []
 eleTrkTanLambda_sig = []
 posTrkTanLambda_sig = []
 
+i = 0
 for entry in xrange(events0.GetEntries()):
     events0.GetEntry(entry)
     vz_bck.append(events0.uncVZ - zTarg)
@@ -121,6 +122,8 @@ for entry in xrange(events0.GetEntries()):
     projY_bck.append(events0.uncTargProjY - yBeam)
     eleTrkTanLambda_bck.append(events0.eleTrkLambda)
     posTrkTanLambda_bck.append(events0.eleTrkLambda)
+    i = i + 1
+    if(i > nTrainBck + nValBck + nTestBck): break
 
 for entry in xrange(events1.GetEntries()):
     events1.GetEntry(entry)
