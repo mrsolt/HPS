@@ -146,7 +146,7 @@ for entry in xrange(events1.GetEntries()):
     posTrkTanLambda_sig.append(events1.eleTrkLambda)
 
 def sync_shuffle(i0, i1, i2, i3, i4, i5, i6, i7, i8, i9):
-    n_elem = i0.shape[0]
+    n_elem = len(i0)
     indeces = np.random.permutation(n_elem)
     return i0[indeces], i1[indeces], i2[indeces], i3[indeces], i4[indeces], i5[indeces], i6[indeces], i7[indeces], i8[indeces], i9[indeces]
 
