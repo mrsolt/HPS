@@ -119,7 +119,7 @@ for entry in xrange(events0.GetEntries()):
     eleTrkTanLambda_bck.append(events0.eleTrkLambda)
     posTrkTanLambda_bck.append(events0.eleTrkLambda)
     i = i + 1
-    if(nData): break
+    if(nData+1): break
 
 for entry in xrange(events1.GetEntries()):
     events1.GetEntry(entry)
