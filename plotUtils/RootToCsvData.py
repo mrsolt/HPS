@@ -154,12 +154,11 @@ vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTr
 
 with open(outfile+'_data.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    for i in range(nTrainBck):
+    for i in range(nData):
         file_writer.writerow([str(vz_bck[i]),str(vzPull_bck[i]),  str(vy_bck[i]), str(vyPull_bck[i]),
             str(uncM_bck[i]), str(eleZ0_bck[i]), str(posZ0_bck[i]), str(projY_bck[i]),
             str(eleTrkTanLambda_bck[i]), str(posTrkTanLambda_bck[i]), '0'])
-    for i in range(nTrainSig):
+    for i in range(nSig):
         file_writer.writerow([str(vz_sig[i]),str(vzPull_sig[i]),  str(vy_sig[i]), str(vyPull_sig[i]),
             str(uncM_sig[i]), str(eleZ0_sig[i]), str(posZ0_sig[i]), str(projY_sig[i]),
             str(eleTrkTanLambda_sig[i]), str(posTrkTanLambda_sig[i]), '1'])
-        if(nSig): break
