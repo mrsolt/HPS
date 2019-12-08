@@ -41,8 +41,8 @@ for opt, arg in options:
 
 np.random.seed(1)
 
-nData = 130972
-nSig = 100
+nData = 65536
+nSig = 65536
 
 outfile = remainder[0]
 file0 = TFile(remainder[1])
