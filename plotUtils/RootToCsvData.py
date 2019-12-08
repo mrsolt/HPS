@@ -118,9 +118,11 @@ for entry in xrange(events0.GetEntries()):
     projY_bck.append(events0.uncTargProjY - yBeam)
     eleTrkTanLambda_bck.append(events0.eleTrkLambda)
     posTrkTanLambda_bck.append(events0.eleTrkLambda)
+    print(i)
     i = i + 1
     if(nData+1): break
 
+i = 0
 for entry in xrange(events1.GetEntries()):
     events1.GetEntry(entry)
     vz_sig.append(events1.uncVZ - zTarg)
@@ -155,6 +157,7 @@ vz_sig,vzPull_sig,vy_sig,vyPull_sig,uncM_sig,eleZ0_sig,posZ0_sig,projY_sig,eleTr
 with open(outfile+'_data.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for i in range(nData):
+        print(i)
         file_writer.writerow([str(vz_bck[i]),str(vzPull_bck[i]),  str(vy_bck[i]), str(vyPull_bck[i]),
             str(uncM_bck[i]), str(eleZ0_bck[i]), str(posZ0_bck[i]), str(projY_bck[i]),
             str(eleTrkTanLambda_bck[i]), str(posTrkTanLambda_bck[i]), '0'])
