@@ -161,8 +161,8 @@ if(not useMC):
 
 else:
     for i in xrange(0,n):
-        print events[i]["event"]
         if events[i]["event"]!=currentevent:
+            print events[i]["event"]
             candidates.sort(key=lambda x:events[x]["bscChisq"],reverse=False)
             rank=1
             for j in candidates:
