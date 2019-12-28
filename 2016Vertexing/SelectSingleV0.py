@@ -79,40 +79,19 @@ branchlist=["event",
     "posFirstHitX",
     "nPos"]
 
-#if useMC:
-#    branchlist.append("triP")
-    #branchlist.append("triPair1P")
-    #branchlist.append("triM")
-#    branchlist.append("triEndZ")
+if useMC:
+    branchlist.append("triP")
+    branchlist.append("triPair1P")
+    branchlist.append("triM")
+    branchlist.append("triEndZ")
 events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple")
 
 n = events.size
 
 cut = events["uncP"]>0.0
     #cut = numpy.row_stack((#events["isPair1"]==1,
-        #events["eleHasL1"]==1,
-        #events["posHasL1"]==1,
-        #events["eleHasL2"]==1,
-        #events["posHasL2"]==1,
-        #events["eleMatchChisq"]<10,
-        #events["posMatchChisq"]<10,
-        #abs(events["eleClT"]-events["eleTrkT"]-43)<4,
-        #abs(events["posClT"]-events["posTrkT"]-43)<4,
-        #abs(events["eleClT"]-events["posClT"])<2,
-        #events["eleClY"]*events["posClY"]<0,
-        #events["bscChisq"]<10,
-        #events["eleTrkChisq"]<30,
-        #events["posTrkChisq"]<30,
-        #abs(events["bscPY"]/events["bscP"])<0.01,
-        #abs(events["bscPX"]/events["bscP"])<0.01,
-        #events["minPositiveIso"]-0.02*events["bscChisq"]>0.5,
-        #abs(events["eleFirstHitX"]-events["posFirstHitX"]+2)<7,
-        #abs((events["eleP"]-events["posP"])/(events["eleP"]+events["posP"]))<0.4,
-        #events["posTrkD0"]<1.5,
-        #events["eleP"]<0.75*ebeam,
-        #events["uncP"]<1.15*ebeam,
-    #    events["uncP"]>0.8*ebeam)).all(0)
-    #print cut
+        #events["uncP"]>0.8*ebeam)).all(0)
+
 names = ["run",
         "event",
         "eleHasL1",
@@ -120,11 +99,11 @@ names = ["run",
         "uncP",
         "uncM",
         "uncVZ"]
-#if useMC:
-#    names.append("triP")
-    #names.append("triPair1P")
-#    names.append("triM")
-#    names.append("triEndZ")
+if useMC:
+    names.append("triP")
+    names.append("triPair1P")
+    names.append("triM")
+    names.append("triEndZ")
 
 stuff = [[events[i],(i,events.dtype[i])] for i in names]
 stuff.append([cut,("cut",numpy.int8)])
@@ -139,42 +118,20 @@ candidates = []
 mccandidates = []
 
 duplicates = 0
-if(not useMC):
-    for i in xrange(0,n):
-        print events[i]["event"] 
-        #currenttupleevent = -1
-        #if events[i]["event"]!=currentevent:
-        #    candidates.sort(key=lambda x:events[x]["tupleevent"],reverse=False)
-        #    if candidates[i]["tupleevent"]!=currenttupleevent:
-        #        for j in candidates:
-        #            candidates[j]["tupleevent"] - candidates[j+1]["tupleevent"] - 1 == 0
-        #            mccandidates.sort(key=lambda x:candidates[x]["bscChiq"],reverse=False)
-        #            rank=1
-        #            for k in mccandidates:
-        #                output[k]["nPass"]=len(mccandidates)
-        #                output[k]["rank"]=rank
-        #                rank+=1
-        #        del mccandidates[:]
-        #    del candidates[:]
-        #    currentevent = events[i]["event"]
-        #if output[i]["cut"]!=0:
-        #    candidates.append(i)
-
-else:
-    for i in xrange(0,n):
-        if events[i]["event"]!=currentevent:
-            candidates.sort(key=lambda x:events[x]["bscChisq"],reverse=False)
-            rank=1
-            for j in candidates:
-                output[j]["nPass"]=len(candidates)
-                output[j]["rank"]=rank
-                rank+=1
-                if(rank>2):
-                    duplicates = duplicates + 1
-            del candidates[:]
-            currentevent = events[i]["event"]
-        if output[i]["cut"]!=0:
-            candidates.append(i)
+for i in xrange(0,n):
+    if events[i]["event"]!=currentevent:
+        candidates.sort(key=lambda x:events[x]["bscChisq"],reverse=False)
+        rank=1
+        for j in candidates:
+            output[j]["nPass"]=len(candidates)
+            output[j]["rank"]=rank
+            rank+=1
+            if(rank>2):
+                duplicates = duplicates + 1
+        del candidates[:]
+        currentevent = events[i]["event"]
+    if output[i]["cut"]!=0:
+        candidates.append(i)
 
 if cutOutput:
     output = output[output["cut"]!=0]
@@ -183,6 +140,6 @@ if onlyBest:
 if onlyOnly:
     output = output[output["nPass"]==1]
 
-print duplicates
-print n
+print("Number of events with a duplicate V0 = {0}".format(duplicates))
+print("Total Number of V0s = {0}".format(n))
 root_numpy.array2root(output,remainder[0],mode="recreate",treename="ntuple")
