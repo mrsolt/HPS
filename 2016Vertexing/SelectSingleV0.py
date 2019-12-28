@@ -159,6 +159,7 @@ if(not useMC):
         #if output[i]["cut"]!=0:
         #    candidates.append(i)
 
+duplicates = 0
 else:
     for i in xrange(0,n):
         if events[i]["event"]!=currentevent:
@@ -168,12 +169,12 @@ else:
                 output[j]["nPass"]=len(candidates)
                 output[j]["rank"]=rank
                 rank+=1
+                if(rank>2):
+                    duplicates = duplicates + 1
             del candidates[:]
             currentevent = events[i]["event"]
         if output[i]["cut"]!=0:
             candidates.append(i)
-        else:
-            print events[i]["event"]
 
 if cutOutput:
     output = output[output["cut"]!=0]
@@ -182,5 +183,6 @@ if onlyBest:
 if onlyOnly:
     output = output[output["nPass"]==1]
 
+print duplicates
 print n
 root_numpy.array2root(output,remainder[0],mode="recreate",treename="ntuple")
