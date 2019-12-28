@@ -88,7 +88,7 @@ events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple
 
 n = events.size
 
-cut = events["uncP"]>0.8*ebeam
+cut = events["uncP"]>0.0
     #cut = numpy.row_stack((#events["isPair1"]==1,
         #events["eleHasL1"]==1,
         #events["posHasL1"]==1,
@@ -162,7 +162,6 @@ if(not useMC):
 else:
     for i in xrange(0,n):
         if events[i]["event"]!=currentevent:
-            print events[i]["event"]
             candidates.sort(key=lambda x:events[x]["bscChisq"],reverse=False)
             rank=1
             for j in candidates:
@@ -173,6 +172,8 @@ else:
             currentevent = events[i]["event"]
         if output[i]["cut"]!=0:
             candidates.append(i)
+        else:
+            print events[i]["event"]
 
 if cutOutput:
     output = output[output["cut"]!=0]
