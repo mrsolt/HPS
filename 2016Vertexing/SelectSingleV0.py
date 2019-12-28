@@ -138,6 +138,7 @@ currentevent = 0
 candidates = []
 mccandidates = []
 
+duplicates = 0
 if(not useMC):
     for i in xrange(0,n):
         print events[i]["event"] 
@@ -159,7 +160,6 @@ if(not useMC):
         #if output[i]["cut"]!=0:
         #    candidates.append(i)
 
-duplicates = 0
 else:
     for i in xrange(0,n):
         if events[i]["event"]!=currentevent:
