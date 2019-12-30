@@ -4,6 +4,8 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import root_numpy, numpy
+import ROOT
+from ROOT import TLegend, TH1, TH1F, gROOT, gStyle, TFile, TTree, TCanvas
 sys.argv = tmpargv
 
 def print_usage():
@@ -58,8 +60,8 @@ branchlist=["event",
     "uncVY",
     "uncVZ",
     "uncChisq",
-    "uncTargX",
-    "uncTargY",
+    #"uncTargX",
+    #"uncTargY",
     "bscChisq",
     "eleP",
     "posP",
@@ -116,8 +118,8 @@ names = ["event",
     "uncVY",
     "uncVZ",
     "uncChisq",
-    "uncTargX",
-    "uncTargY",
+    #"uncTargX",
+    #"uncTargY",
     "bscChisq",
     "eleP",
     "posP",
@@ -197,3 +199,46 @@ if onlyOnly:
 print("Number of events with a duplicate V0 = {0}".format(duplicates))
 print("Total Number of V0s = {0}".format(n))
 root_numpy.array2root(output,remainder[0],mode="recreate",treename="ntuple")
+
+if(makePlots):
+    gStyle.SetOptStat(0)
+    c = TCanvas("c","c",800,600)
+    c.Print(remainder[0]+".pdf[")
+    infile = TFile(remainder[1])
+    outfile = TFile(remainder[0])
+    events_in = infile.Get("ntuple")
+    events_out = outfile.Get("ntuple")
+    nBins = 50
+    plots = []
+    plots.append("uncVZ")
+    plots.append("uncM")
+    minimums = []
+    minimums.append(-60)
+    minimums.append(0)
+    maximums = []
+    maximums.append(60)
+    maximums.append(0.1*ebeam)
+    for i in range(len(plots)):
+        plot = plots[i]
+        minX = minimums[i]
+        maxX = maximums[i]
+        events_in.Draw("{0}>>{1}({2},{3},{4})".format(plot,"histo_in",nBins,minX,maxX))
+        histo_in = ROOT.gROOT.FindObject("histo_in")
+        events_out.Draw("{0}>>{1}({2},{3},{4})".format(plot,"histo_out",nBins,minX,maxX))
+        histo_out = ROOT.gROOT.FindObject("histo_out")
+        histo_in.Draw()
+        histo_in.GetXaxis().SetTitle(plot)
+        histo_in.SetTitle(plot)
+        histo_out.SetLineColor(2)
+        histo_out.Draw("same")
+        legend = TLegend(.68,.66,.92,.87)
+        legend.SetBorderSize(0)
+        legend.SetFillColor(0)
+        legend.SetFillStyle(0)
+        legend.SetTextFont(42)
+        legend.SetTextSize(0.035)
+        legend.AddEntry(histo_in,"Before Single V0s","LP")
+        legend.AddEntry(histo_out,"Single V0s","LP")
+        legend.Draw("same")
+        c.Print(remainder[0]+".pdf")
+    c.Print(remainder[0]+".pdf]")

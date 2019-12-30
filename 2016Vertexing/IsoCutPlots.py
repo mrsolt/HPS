@@ -13,7 +13,7 @@ def print_usage():
     print "Arguments: "
     print '\t-z: target position (default -4.3 mm)'
     print '\t-m: minimum uncVZ (default -60 mm)'
-    print '\t-n: maximum uncVZ (default 60 mm)'
+    print '\t-n: maximum uncVZ (default 80 mm)'
     print '\t-e: beam energy (default 2.3 GeV)'
     print '\t-b: number of bins (default 50)'
     print '\t-d: do not use data file (default use)'
@@ -25,7 +25,7 @@ def print_usage():
 zTarg = -4.3
 ebeam = 2.3
 minVZ = -60
-maxVZ = 60
+maxVZ = 80
 nBins = 50
 useData = True
 useMC = True
@@ -123,7 +123,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
-	legend = TLegend(.18,.46,.52,.87)
+	legend = TLegend(.08,.46,.42,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
