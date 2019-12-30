@@ -30,6 +30,7 @@ nBins = 50
 useData = True
 useMC = True
 useAp = True
+clusterT = 56
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:m:n:e:b:dca')
 
@@ -86,7 +87,7 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 	histo1.Draw("same")
 	histo2.SetLineColor(6)
 	histo2.Draw("same")
-	legend = TLegend(.68,.66,.92,.87)
+	legend = TLegend(.58,.46,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -127,14 +128,18 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
 	histos[0].SetStats(stats)
+	color = 1
 	for i in range(len(histos)):
-		histos[i].SetLineColor(i+1)
+		if(color == 5 or color == 10):
+			color = color + 1
+		histos[i].SetLineColor(color)
+		color = color + 1
 		histos[i].Scale(1.0)
 		if(i == 0):
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
-	legend = TLegend(.68,.66,.92,.87)
+	legend = TLegend(.58,.46,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -149,14 +154,18 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
 	histos2[0].SetStats(stats)
+	color = 1
 	for i in range(len(histos2)):
-		histos2[i].SetLineColor(i+1)
+		if(color == 5 or color == 10):
+			color = color + 1
+		histos2[i].SetLineColor(color)
+		color = color + 1
 		histos2[i].Scale(1.0)
 		if(i == 0):
 			histos2[i].Draw("")
 		else:
 			histos2[i].Draw("same")
-	legend2 = TLegend(.68,.66,.92,.87)
+	legend2 = TLegend(.58,.46,.92,.87)
 	legend2.SetBorderSize(0)
 	legend2.SetFillColor(0)
 	legend2.SetFillStyle(0)
@@ -237,41 +246,39 @@ plotlabels.append("V0 Momentum [GeV]")
 
 cuts = []
 cuts.append("uncP<9999")
-#cuts.append("eleClY*posClY -10000 10000")
-#cuts.append("uncP 0 1.4")
-#cuts.append("eleP 0 1.4")
-#cuts.append("uncChisq 0 20")
-#cuts.append("bscChisq<10")
-#cuts.append("bscChisq-uncChisq<5")
-#cuts.append("eleMatchChisq 0 20")
-#cuts.append("posMatchChisq 0 20")
-#cuts.append("abs(eleClT-eleTrkT-43) 0 10")
-#cuts.append("abs(posClT-posTrkT-43) 0 10")
-#cuts.append("abs(eleClT-posClT) 0 10")
-#cuts.append("eleTrkChisq/(2*eleNTrackHits-5)+posTrkChisq/(2*posNTrackHits-5) 0 20")
+cuts.append("eleHasL1&&posHasL1")
+cuts.append("eleHasL2&&posHasL2")
+cuts.append("eleMatchChisq<10&&posMatchChisq<10")
+cuts.append("abs(eleClT-posClT)<2")
+cuts.append("abs(eleClT-eleTrkT-{0})<2".format(clusterT))
+cuts.append("abs(posClT-posTrkT-{0})<2".format(clusterT))
+cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6")
+cuts.append("posTrkChisq/(2*posNTrackHits-5)<6")
+cuts.append("uncChisq<10")
 
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-1.0".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-1.0".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.8".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.8".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.6".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.6".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.4".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.4".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.2".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.2".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.0".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.0".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.2".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.2".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.4".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.4".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.6".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.6".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.8".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.8".format(zTarg))
-cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>1.0".format(zTarg))
-cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>1.0".format(zTarg))
+
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-1.0".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-1.0".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.8".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.8".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.6".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.6".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.4".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.4".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>-0.2".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>-0.2".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.0".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.0".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.2".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.2".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.4".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.4".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.6".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.6".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>0.8".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>0.8".format(zTarg))
+#cuts.append("eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)>1.0".format(zTarg))
+#cuts.append("posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)>1.0".format(zTarg))
 
 label = []
 label.append("Preprossessing")
