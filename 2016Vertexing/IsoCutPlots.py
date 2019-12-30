@@ -123,7 +123,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
-	legend = TLegend(.58,.46,.92,.87)
+	legend = TLegend(.18,.46,.52,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -222,6 +222,7 @@ cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),pos
 cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>1.0".format(zTarg))
 cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>1.5".format(zTarg))
 cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>2.0".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>999".format(zTarg))
 
 label = []
 label.append("No Iso Cut")
@@ -238,6 +239,7 @@ label.append("Iso Cut > 0.8 mm")
 label.append("Iso Cut > 1.0 mm")
 label.append("Iso Cut > 1.5 mm")
 label.append("Iso Cut > 2.0 mm")
+label.append("No Additional L1 Hit")
 
 openPDF(outfile,c)
 
