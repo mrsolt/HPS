@@ -87,7 +87,7 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 	histo1.Draw("same")
 	histo2.SetLineColor(6)
 	histo2.Draw("same")
-	legend = TLegend(.58,.46,.92,.87)
+	legend = TLegend(.58,.66,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -163,8 +163,12 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos2[i].Scale(1.0)
 		if(i == 0):
 			histos2[i].Draw("")
+			maximum = histos2[0].GetMaximum()
 		else:
 			histos2[i].Draw("same")
+			if(histos2[i].GetMaximum() > maximum):
+				maximum = histos2[i].GetMaximum()
+	histos2[0].GetYaxis().SetRangeUser(0,1.2*maximum)
 	legend2 = TLegend(.58,.46,.92,.87)
 	legend2.SetBorderSize(0)
 	legend2.SetFillColor(0)
