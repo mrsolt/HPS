@@ -249,14 +249,20 @@ plotlabels.append("Reconstructed z [mm]")
 plotlabels.append("Reconstructed Mass [GeV]")
 plotlabels.append("V0 Momentum [GeV]")
 
+setlog = []
+setlog.append(1)
+setlog.append(1)
+setlog.append(0)
+
 cuts = []
 cuts.append("uncP<9999")
 cuts.append("eleHasL1&&posHasL1")
 cuts.append("eleHasL2&&posHasL2")
 cuts.append("eleMatchChisq<10&&posMatchChisq<10")
 cuts.append("abs(eleClT-posClT)<2")
-cuts.append("abs(eleClT-eleTrkT-{0})<2".format(clusterT))
-cuts.append("abs(posClT-posTrkT-{0})<2".format(clusterT))
+cuts.append("abs(eleClT-eleTrkT-{0})<4".format(clusterT))
+cuts.append("abs(posClT-posTrkT-{0})<4".format(clusterT))
+cuts.append("eleTrkP<2.1")
 cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6")
 cuts.append("posTrkChisq/(2*posNTrackHits-5)<6")
 cuts.append("uncChisq<10")
@@ -298,12 +304,12 @@ for i in range(len(plots)):
 	maximum = getMax(plots[i])
 	plotlabel = plotlabels[i]
 	if(useData):
-		saveCutFlow(dataevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " Data",stats=0,logY=0)
+		saveCutFlow(dataevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " Data",stats=0,logY=setlog[i])
 	if(useMC):
-		saveCutFlow(mcevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " MC",stats=0,logY=0)
+		saveCutFlow(mcevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " MC",stats=0,logY=setlog[i])
 	if(useAp):
 		for j in range(len(mass)):
-			saveCutFlow(events[j],plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ ' Ap {0:.0f} MeV'.format(mass[j]*1000),stats=0,logY=0)
+			saveCutFlow(events[j],plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ ' Ap {0:.0f} MeV'.format(mass[j]*1000),stats=0,logY=setlog[i])
 
 if(useData and useMC and useAp):
 	for i in range(len(plots)):
@@ -330,7 +336,7 @@ if(useData and useMC and useAp):
 				masscut = "uncM>{0}&&uncM<{1}".format(mass[k]-mass_range,mass[k]+mass_range)
 				cut1 = cut_tot + "&&" + masscut
 				cut2 = cuts_1 + "&&" + masscut
-				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Inclusive {0}".format(label[j]),cut=cut1,stats=0,logY=0)
-				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Exclusive {0}".format(label[j]),cut=cut2,stats=0,logY=0)
+				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Inclusive {0}".format(label[j]),cut=cut1,stats=0,logY=setlog[i])
+				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Exclusive {0}".format(label[j]),cut=cut2,stats=0,logY=setlog[i])
 
 closePDF(outfile,c)
