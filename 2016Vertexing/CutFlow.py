@@ -227,12 +227,13 @@ mass = []
 for line in (raw.strip().split() for raw in apfile):
 	apfiles.append(TFile(line[0]))
 
-for i in range(len(apfiles)):
-	events.append(apfiles[i].Get("ntuple"))
-	events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
-	dummy = ROOT.gROOT.FindObject("dummy")
-	mass.append(dummy.GetMean())
-	del dummy
+if(useAp):
+	for i in range(len(apfiles)):
+		events.append(apfiles[i].Get("ntuple"))
+		events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
+		dummy = ROOT.gROOT.FindObject("dummy")
+		mass.append(dummy.GetMean())
+		del dummy
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
