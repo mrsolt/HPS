@@ -105,26 +105,10 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 
 def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	histos = []
-	histos2 = []
-	cut_tot = ""
 	for i in range(len(cuts)):
-		cut = cuts[i]
-		cuts_1 = ""
-		if(i == 0):
-			cut_tot = cut
-		else:
-			cut_tot = cut_tot + "&&" + cut
-		for j in range(len(cuts)):
-			if(j != i):
-				if(cuts_1 != ""):
-					cuts_1 = cuts_1 + "&&" + cuts[j]
-				else:
-					cuts_1 = cuts[j]
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cut_tot)
+		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cuts[i])
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
-		histos2.append(ROOT.gROOT.FindObject("histo2{0}".format(i)))
-	histos[0].SetTitle(plotTitle + " Inclusive")
+	histos[0].SetTitle(plotTitle)
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
 	histos[0].SetStats(stats)
@@ -150,38 +134,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	legend.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
-	histos2[0].SetTitle(plotTitle + " Exclusive")
-	histos2[0].GetXaxis().SetTitle(XaxisTitle)
-	histos2[0].GetYaxis().SetTitle(YaxisTitle)
-	histos2[0].SetStats(stats)
-	color = 1
-	for i in range(len(histos2)):
-		if(color == 5 or color == 10):
-			color = color + 1
-		histos2[i].SetLineColor(color)
-		color = color + 1
-		histos2[i].Scale(1.0)
-		if(i == 0):
-			histos2[i].Draw("")
-			maximum = histos2[0].GetMaximum()
-		else:
-			histos2[i].Draw("same")
-			if(histos2[i].GetMaximum() > maximum):
-				maximum = histos2[i].GetMaximum()
-	histos2[0].GetYaxis().SetRangeUser(0,1.2*maximum)
-	legend2 = TLegend(.58,.46,.92,.87)
-	legend2.SetBorderSize(0)
-	legend2.SetFillColor(0)
-	legend2.SetFillStyle(0)
-	legend2.SetTextFont(42)
-	legend2.SetTextSize(0.035)
-	for i in range(len(labels)):
-		legend2.AddEntry(histos2[i],labels[i],"LP")
-	legend2.Draw("")
-	canvas.SetLogy(logY)
-	canvas.Print(outfile+".pdf")
 	del histos
-	del histos2
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
@@ -242,35 +195,49 @@ if(useAp):
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
 plots.append("uncM {0} {1}".format(0.0,0.1*ebeam))
-plots.append("uncP {0} {1}".format(0,1.2*ebeam))
+#plots.append("uncP {0} {1}".format(0,1.2*ebeam))
 
 plotlabels = []
 plotlabels.append("Reconstructed z [mm]")
 plotlabels.append("Reconstructed Mass [GeV]")
-plotlabels.append("V0 Momentum [GeV]")
+#plotlabels.append("V0 Momentum [GeV]")
 
 setlog = []
 setlog.append(1)
 setlog.append(1)
-setlog.append(0)
+#setlog.append(0)
 
 cuts = []
 cuts.append("uncP<9999")
-cuts.append("eleHasL1&&posHasL1")
-cuts.append("eleHasL2&&posHasL2")
-cuts.append("eleMatchChisq<10&&posMatchChisq<10")
-cuts.append("abs(eleClT-posClT)<2")
-cuts.append("abs(eleClT-eleTrkT-{0})<4".format(clusterT))
-cuts.append("abs(posClT-posTrkT-{0})<4".format(clusterT))
-cuts.append("eleP<1.75")
-cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6")
-cuts.append("posTrkChisq/(2*posNTrackHits-5)<6")
-cuts.append("uncChisq<10")
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>-1.0".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>-0.8".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>-0.6".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>-0.4".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>-0.2".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0.0".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0.2".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0.4".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0.6".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0.8".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>1.0".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>1.5".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>2.0".format(zTarg))
 
 label = []
-label.append("Preprossessing")
-for i in range(1,len(cuts)):
-	label.append(cuts[i])
+label.append("No Iso Cut")
+label.append("Iso Cut > -1.0 mm")
+label.append("Iso Cut > -0.8 mm")
+label.append("Iso Cut > -0.6 mm")
+label.append("Iso Cut > -0.4 mm")
+label.append("Iso Cut > -0.2 mm")
+label.append("Iso Cut > 0.0 mm")
+label.append("Iso Cut > 0.2 mm")
+label.append("Iso Cut > 0.4 mm")
+label.append("Iso Cut > 0.6 mm")
+label.append("Iso Cut > 0.8 mm")
+label.append("Iso Cut > 1.0 mm")
+label.append("Iso Cut > 1.5 mm")
+label.append("Iso Cut > 2.0 mm")
 
 openPDF(outfile,c)
 
@@ -297,22 +264,9 @@ if(useData and useMC and useAp):
 		mass_range = 0.005
 		for j in range(len(cuts)):
 			cut = cuts[j]
-			cuts_1 = ""
-			if(j == 0):
-				cut_tot = cut
-			else:
-				cut_tot = cut_tot + "&&" + cut
-			for k in range(len(cuts)):
-				if(j != k):
-					if(cuts_1 != ""):
-						cuts_1 = cuts_1 + "&&" + cuts[k]
-					else:
-						cuts_1 = cuts[k]
 			for k in range(len(mass)):
 				masscut = "uncM>{0}&&uncM<{1}".format(mass[k]-mass_range,mass[k]+mass_range)
-				cut1 = cut_tot + "&&" + masscut
-				cut2 = cuts_1 + "&&" + masscut
-				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Inclusive {0}".format(label[j]),cut=cut1,stats=0,logY=setlog[i])
-				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " Exclusive {0}".format(label[j]),cut=cut2,stats=0,logY=setlog[i])
+				cut1 = cut + "&&" + masscut
+				comparePlot(events[k],mcevents,dataevents,plot,nBins,minimum,maximum,outfile,c,'Ap {0:.0f} MeV'.format(mass[k]*1000),"MC","Data",XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel + " {0}".format(label[j]),cut=cut1,stats=0,logY=setlog[i])
 
 closePDF(outfile,c)
