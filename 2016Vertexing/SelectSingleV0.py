@@ -14,17 +14,18 @@ def print_usage():
     print '\t-b: only keep best candidate'
     print '\t-o: only keep candidate if it\'s the only one'
     print '\t-m: use MC information'
+    print '\t-p: make Plots'
     print '\t-h: this help message'
     print
 
 ebeam=2.3
-
 cutOutput = False
 onlyBest = False
 onlyOnly = False
 useMC = False
+makePlots = False #Todo make plots
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomh')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomhp')
 # Parse the command line arguments
 for opt, arg in options:
         if opt=='-e':
@@ -37,6 +38,8 @@ for opt, arg in options:
             onlyOnly = True
         if opt=='-m':
             useMC = True
+        if opt=='-p':
+            makePlots = True
         if opt=='-h':
             print_usage()
             sys.exit(0)
@@ -51,16 +54,27 @@ branchlist=["event",
     "run",
     "uncP",
     "uncM",
+    "uncVX",
+    "uncVY",
     "uncVZ",
+    "uncChisq",
+    "uncTargX",
+    "uncTargY",
     "bscChisq",
     "eleP",
     "posP",
     "elePX",
     "posPX",
+    "elePY",
+    "posPY",
+    "elePZ",
+    "posPZ",
     "eleMatchChisq",
     "posMatchChisq",
     "eleTrkChisq",
     "posTrkChisq",
+    "eleNTrackHits",
+    "posNTrackHits",
     "eleTrkT",
     "posTrkT",
     "eleClY",
@@ -69,19 +83,21 @@ branchlist=["event",
     "posClT",
     "minIso",
     "minPositiveIso",
+    "eleTrkZ0",
+    "posTrkZ0",
+    "eleTrkD0",
     "posTrkD0",
-    "bscP",
+    "eleTrkLambda",
+    "posTrkLambda",
     "eleHasL1",
     "posHasL1",
     "eleHasL2",
     "posHasL2",
-    "eleFirstHitX",
-    "posFirstHitX",
     "nPos"]
 
 if useMC:
     branchlist.append("triP")
-    branchlist.append("triPair1P")
+#    branchlist.append("triPair1P")
     branchlist.append("triM")
     branchlist.append("triEndZ")
 events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple")
@@ -92,16 +108,54 @@ cut = events["uncP"]>0.0
     #cut = numpy.row_stack((#events["isPair1"]==1,
         #events["uncP"]>0.8*ebeam)).all(0)
 
-names = ["run",
-        "event",
-        "eleHasL1",
-        "posHasL1",
-        "uncP",
-        "uncM",
-        "uncVZ"]
+names = ["event",
+    "run",
+    "uncP",
+    "uncM",
+    "uncVX",
+    "uncVY",
+    "uncVZ",
+    "uncChisq",
+    "uncTargX",
+    "uncTargY",
+    "bscChisq",
+    "eleP",
+    "posP",
+    "elePX",
+    "posPX",
+    "elePY",
+    "posPY",
+    "elePZ",
+    "posPZ",
+    "eleMatchChisq",
+    "posMatchChisq",
+    "eleTrkChisq",
+    "posTrkChisq",
+    "eleNTrackHits",
+    "posNTrackHits",
+    "eleTrkT",
+    "posTrkT",
+    "eleClY",
+    "posClY",
+    "eleClT",
+    "posClT",
+    "minIso",
+    "minPositiveIso",
+    "eleTrkZ0",
+    "posTrkZ0",
+    "eleTrkD0",
+    "posTrkD0",
+    "eleTrkLambda",
+    "posTrkLambda",
+    "eleHasL1",
+    "posHasL1",
+    "eleHasL2",
+    "posHasL2",
+    "nPos"]
+
 if useMC:
     names.append("triP")
-    names.append("triPair1P")
+#    names.append("triPair1P")
     names.append("triM")
     names.append("triEndZ")
 
