@@ -109,17 +109,18 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	cut_tot = ""
 	for i in range(len(cuts)):
 		cut = cuts[i]
-		cuts_1 = ""
 		if(i == 0):
 			cut_tot = cut
+			cuts_1 = cut
 		else:
 			cut_tot = cut_tot + "&&" + cut
-		for j in range(len(cuts)):
-			if(j != i):
-				if(cuts_1 != ""):
-					cuts_1 = cuts_1 + "&&" + cuts[j]
-				else:
-					cuts_1 = cuts[j]
+			cuts_1 = ""
+			for j in range(len(cuts)):
+				if(j != i):
+					if(cuts_1 != ""):
+						cuts_1 = cuts_1 + "&&" + cuts[j]
+					else:
+						cuts_1 = cuts[j]
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cut_tot)
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
