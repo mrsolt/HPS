@@ -16,7 +16,7 @@ def print_usage():
 
 zbin = 5.
 zTarg =-4.3
-maxZ = 50
+maxZ = 100
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
 
 # Parse the command line arguments
@@ -26,6 +26,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 gStyle.SetOptStat(0)
+gStyle.SetOptFit(1011)
 c = TCanvas("c","c",800,600)
 
 def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
@@ -35,14 +36,14 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
 	f1 = TF1("f1","gaus",histo.GetMean()-1*histo.GetRMS(),histo.GetMean()+1*histo.GetRMS())
 	histo.Fit("f1","R")
-	histo.Draw()
+	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
-	del histo
 	mean = f1.GetParameter(1)
 	sigma = f1.GetParameter(2)
 	meanerror = f1.GetParError(1)
 	sigmaerror = f1.GetParError(2)
 	del f1
+	del histo
 	return mean, sigma, meanerror, sigmaerror
 
 def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfile,canvas):
@@ -64,13 +65,10 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 		zmin = zTarg + i * zbin
 		zmax = zmin + zbin
 		zErr.append(zbin)
-		print zmin
-		print zmax
 		z.append(zmin + zbin/2.)
 		events.Draw("{0}>>histo2({1},{2},{3})".format(inHisto,nBins,minX,maxX),"triEndZ>{0}&&triEndZ<{1}".format(zmin,zmax))
 		histo2 = ROOT.gROOT.FindObject("histo2")
 		mean, sigma, meanerror, sigmaerror = getFitZ(histo2)
-		print mean
 		fittedmean.append(mean)
 		fittedsigma.append(sigma)
 		fittedmeanerror.append(meanerror)
@@ -80,12 +78,12 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_mean = TGraphErrors(len(z),z,fittedmean,zErr,fittedmeanerror)
 	gr_sigma = TGraphErrors(len(z),z,fittedsigma,zErr,fittedsigmaerror)
 
-	gr_mean.Draw("ALP")
+	gr_mean.Draw("AP")
 	gr_mean.SetTitle("Fitted Mass - Truth Mass Mean {0:.0f} MeV A'".format(mass))
 	gr_mean.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 	canvas.Print(outfile+".pdf")
-	gr_sigma.Draw("ALP")
+	gr_sigma.Draw("AP")
 	gr_sigma.SetTitle("Fitted Mass Resolution {0:.0f} MeV A'".format(mass))
 	gr_sigma.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_sigma.GetYaxis().SetTitle("Sigma (MeV)")
@@ -99,7 +97,6 @@ def getFitZ(histo):
 	histo.Fit(f1,"R")
 	if(f1 != None):
 		mean = f1.GetParameter(1)
-		print mean
 		sigma = f1.GetParameter(2)
 		meanerror = f1.GetParError(1)
 		sigmaerror = f1.GetParError(2)
