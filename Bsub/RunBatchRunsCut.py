@@ -25,6 +25,7 @@ def main() :
     parser.add_argument("-o", "--outputFiles",   help="Output files.")
     parser.add_argument("-f", "--inputFiles",   help="Input files.")
     parser.add_argument("-c", "--clT",   help="cluster time shift.")
+    parser.add_argument("-t", "--scriptcut",   help="cut from script.")
     parser.add_argument("-W", "--time",   help="Time of job for batch.")
 
     args = parser.parse_args()
@@ -47,7 +48,7 @@ def main() :
         print "Unable to open file " + str(args.inputFiles)
         sys.exit(2)
 
-    cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {2} -m {3} -n {4} -o {5} -p {6} -a {7} -b {8} "
+    cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {2} -m {3} -n {4} -o {5} -p {6} -a {7} -b {8} -{10} "
     for line in run_list : 
         #run = line.strip()
         linesplit = line.split()
@@ -64,7 +65,7 @@ def main() :
         # Command that will be submitted to the batch system
         log = args.logFile + "_{0}.log".format(run)
         outFile = args.outputFiles + "_{0}.root".format(run)
-        cut = cutcommand.format(args.clT,uncVX,uncVXSig,uncVY,uncVYSig,uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig)
+        cut = cutcommand.format(args.clT,uncVX,uncVXSig,uncVY,uncVYSig,uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,args.scriptcut)
         command = bsub + " -o " + log + cut + outFile + " " + args.inputDir.format(run)
         subprocess.Popen(command, shell=True).wait() 
         print command
