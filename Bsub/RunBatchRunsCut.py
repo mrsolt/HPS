@@ -49,7 +49,16 @@ def main() :
     cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {3} -m {4} -n {5} -o {6} -p {7} -a {8} -b {9} "
     for line in run_list : 
         #run = line.strip()
-        run, uncVX, uncVXSig, uncVY, uncVYSig, uncTargProjX, uncTargProjXSig, uncTargProjY, uncTargProjYSig = line.split()
+        linesplit = line.split()
+        run = linesplit[0]
+        uncVX = linesplit[1]
+        uncVXSig = linesplit[2]
+        uncVY = linesplit[3]
+        uncVYSig = linesplit[4]
+        uncTargProjX = linesplit[7]
+        uncTargProjXSig = linesplit[8]
+        uncTargProjY = linesplit[9]
+        uncTargProjYSig = linesplit[10]
         print "Processing run: " + str(line.strip())
         # Command that will be submitted to the batch system
         log = args.logFile + "_{0}.log".format(run)
