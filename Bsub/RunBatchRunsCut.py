@@ -20,6 +20,7 @@ def main() :
 
     # Parse command line arguments
     parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--inputDir",   help="Input directory name.")
     parser.add_argument("-l", "--logFile",   help="Output Logs.")
     parser.add_argument("-o", "--outputFiles",   help="Output files.")
     parser.add_argument("-f", "--inputFiles",   help="Input files.")
@@ -62,9 +63,8 @@ def main() :
         print "Processing run: " + str(line.strip())
         # Command that will be submitted to the batch system
         log = args.logFile + "_{0}.log".format(run)
-        uncVX = 0
         cut = cutcommand.format(args.clT,uncVX,uncVXSig,uncVY,uncVYSig,uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig)
-        command = bsub + " -o " + log + cut + args.outputFiles.format(run) + " " + args.inputFiles.format(run)
+        command = bsub + " -o " + log + cut + args.outputFiles.format(run) + ".root " + args.inputDir.format(run)
         subprocess.Popen(command, shell=True).wait() 
         print command
         files = ""
