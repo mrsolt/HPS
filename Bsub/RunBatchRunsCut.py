@@ -65,7 +65,7 @@ def main() :
         log = args.logFile + "_{0}.log".format(run)
         outFile = args.outputFiles + "_{0}.root".format(run)
         cut = cutcommand.format(args.clT,uncVX,uncVXSig,uncVY,uncVYSig,uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig)
-        command = bsub + " -o " + log + cut + outFile + args.inputDir.format(run)
+        command = bsub + " -o " + log + cut + outFile + " " + args.inputDir.format(run)
         subprocess.Popen(command, shell=True).wait() 
         print command
         files = ""
