@@ -34,10 +34,6 @@ def main() :
         print "A list of lcio files needs to be specified." 
         sys.exit(2)
 
-    if args.com is None : 
-        print "A command needs to be specified." 
-        sys.exit(2)
-
     #Time of each batch job. Default is no batch job submitted
     bsub = ""
     if(args.time is not None):
