@@ -151,11 +151,15 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	legend.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
-	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
 	histos2[0].SetStats(stats)
 	color = 1
+	for i in range(len(histos2)):
+		histos2[i].SetTitle(plotTitle + " " + cuts[i] + " Exclusive")
+		histos2[i].Draw("")
+		canvas.Print(outfile+".pdf")
+	histos2[0].SetTitle(plotTitle + " Exclusive")
 	for i in range(len(histos2)):
 		if(color == 5 or color == 10):
 			color = color + 1
