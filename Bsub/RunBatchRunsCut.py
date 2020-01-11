@@ -30,7 +30,7 @@ def main() :
 
     # If a list of input files has not been specified, warn the user and 
     # exit the application.
-    if args.input_list is None : 
+    if args.inputFiles is None : 
         print "A list of lcio files needs to be specified." 
         sys.exit(2)
 
@@ -47,7 +47,7 @@ def main() :
     try : 
         run_list = open(args.inputFiles, 'r')
     except IOError : 
-        print "Unable to open file " + str(args.input_list)
+        print "Unable to open file " + str(args.inputFiles)
         sys.exit(2)
 
     cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {3} -m {4} -n {5} -o {6} -p {7} -a {8} -b {9} "
