@@ -48,7 +48,7 @@ def main() :
         print "Unable to open file " + str(args.inputFiles)
         sys.exit(2)
 
-    cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {2} -m {3} -n {4} -o {5} -p {6} -a {7} -b {8} -{10} "
+    cutcommand = " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c {0} -j {1} -k {2} -m {3} -n {4} -o {5} -p {6} -a {7} -b {8} -{9} "
     for line in run_list : 
         #run = line.strip()
         linesplit = line.split()
