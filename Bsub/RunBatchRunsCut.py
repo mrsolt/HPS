@@ -20,7 +20,6 @@ def main() :
 
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input_list", help="List of runs to process.")
     parser.add_argument("-l", "--logFile",   help="Output Logs.")
     parser.add_argument("-o", "--outputFiles",   help="Output files.")
     parser.add_argument("-f", "--inputFiles",   help="Input files.")
@@ -46,7 +45,7 @@ def main() :
 
     # Open the file containing the list of stdhep files to process
     try : 
-        run_list = open(args.input_list, 'r')
+        run_list = open(args.inputFiles, 'r')
     except IOError : 
         print "Unable to open file " + str(args.input_list)
         sys.exit(2)
