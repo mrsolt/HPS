@@ -31,7 +31,7 @@ for opt, arg in options:
     if opt=='-z':
         zcut_val = float(arg)
     if opt=='-s':
-        s = float(arg)
+        scale = float(arg)
     if opt=='-h':
         print_usage()
         sys.exit(0)
