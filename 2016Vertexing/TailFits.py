@@ -25,7 +25,7 @@ for opt, arg in options:
         sys.exit(0)
 
 
-def getZCut(zcut_val=0.5,scale=1.0,zBin=0.001,minZ=-60,maxZ=60):
+def getZCut(zcut_val=0.5,scale=1.0,zBin=0.01,minZ=-60,maxZ=60):
     iMax = int((maxZ-minZ)/zBin)
     for i in range(iMax):
         z = maxZ - zBin*i
@@ -55,11 +55,16 @@ c.Print(remainder[0]+".pdf")
 #fitfunc.SetParName(3,"Tail Z")
 #fitfunc.SetParName(4,"Tail length")
 
-fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))")#,-60,60)
-fitfunc.SetParName(0,"Amplitude")
-fitfunc.SetParName(1,"Mean")
-fitfunc.SetParName(2,"Sigma")
-fitfunc.SetParName(3,"Tail Z")
+fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
+#fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))")#,-60,60)
+#fitfunc.SetParName(0,"Amplitude")
+#fitfunc.SetParName(1,"Mean")
+#fitfunc.SetParName(2,"Sigma")
+#fitfunc.SetParName(3,"Tail Z")
+
+fitfunc.SetParName(0,"Mean")
+fitfunc.SetParName(1,"Sigma")
+fitfunc.SetParName(2,"Tail Z")
 
 massarray=array.array('d')
 zeroArr=array.array('d')
@@ -84,6 +89,7 @@ mres_p0 = 0.005
 mres_p1 = 0
 masscut_nsigma = 2.80
 scale = 1
+zcut_val = 0.5
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
@@ -93,7 +99,7 @@ for i in range(0,n_massbins):
     c.Clear()
     c.Divide(1,2)
     c.cd(1)
-    events.Draw("uncVZ:{0}>>hnew2d(100,0,0.1,100,-50,50)".format(massVar),"abs({0}-{1})<{2}/2*({3}+{4}*{0})".format(massVar,mass,masscut_nsigma,mres_p0,mres_p1),"colz")
+    events.Draw("uncVZ:{0}>>hnew2d(100,0,0.2,100,-50,50)".format(massVar),"abs({0}-{1})<{2}/2*({3}+{4}*{0})".format(massVar,mass,masscut_nsigma,mres_p0,mres_p1),"colz")
     c.cd(2)
     gPad.SetLogy(1)
     events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*({3}+{4}*{0})".format(massVar,mass,masscut_nsigma,mres_p0,mres_p1),"")
@@ -108,16 +114,16 @@ for i in range(0,n_massbins):
     sigma=fit.Get().Parameter(2)
     fitfunc.SetParameters(peak,mean,sigma,3*sigma,5);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
-    meanarray.append(fit.Get().Parameter(1))
-    sigmaarray.append(fit.Get().Parameter(2))
-    breakzarray.append(fit.Get().Parameter(3))
+    meanarray.append(fit.Get().Parameter(0))
+    sigmaarray.append(fit.Get().Parameter(1))
+    breakzarray.append(fit.Get().Parameter(2))
     #lengtharray.append(fit.Get().Parameter(4))
-    meanErr.append(fit.Get().ParError(1))
-    sigmaErr.append(fit.Get().ParError(2))
-    breakzErr.append(fit.Get().ParError(3))
+    meanErr.append(fit.Get().ParError(0))
+    sigmaErr.append(fit.Get().ParError(1))
+    breakzErr.append(fit.Get().ParError(2))
     #lengthErr.append(fit.Get().ParError(4))
-    zcut = getZCut()
-    zcut_scaled = getZCut(scale=scale)
+    zcut = getZCut(zcut_val=zcut_val)
+    zcut_scaled = getZCut(zcut_val=zcut_val,scale=scale)
     zcutarray.append(zcut)
     #zcutErr.append(0)
     zcutscaledarray.append(zcut_scaled)
@@ -170,7 +176,7 @@ c.Print(remainder[0]+".pdf","Title:tailz")
 graph=TGraph(len(massarray),massarray,zcutarray)
 #graph=TGraphErrors(len(massarray),massarray,zcutarray,zeroArr,zcutErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut at 1/2 Background")
+graph.SetTitle("Zcut at {0:.1f} Background".format(zcut_val))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
 graph.Fit("pol3")
@@ -180,7 +186,7 @@ c.Print(remainder[0]+".pdf","Title:zcut")
 graph=TGraph(len(massarray),massarray,zcutscaledarray)
 #graph=TGraphErrors(len(massarray),massarray,zcutscaledarray,zeroArr,zcutscaledErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut Scaled x{0:.2f} at 1/2 Background".format(scale))
+graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background".format(scale,zcut_val))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
 graph.Fit("pol3")
