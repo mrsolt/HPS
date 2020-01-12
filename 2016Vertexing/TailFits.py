@@ -77,8 +77,8 @@ breakzErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
 n_massbins=50
-minmass=0.04/2.
-maxmass=0.12/2.
+minmass=0.04
+maxmass=0.12
 
 mres_p0 = 0.005
 mres_p1 = 0
