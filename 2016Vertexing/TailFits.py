@@ -12,14 +12,26 @@ def frange(x, y, jump):
 def print_usage():
     print "\nUsage: {0} <output basename> <input ROOT file>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-n: width of mass bins in nsigma (default is 2.80)'
+    print '\t-a: scale factor (default is 1)'
+    print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'n:z:s:h')
 
 massVar = "uncM"
+masscut_nsigma = 2.80
+scale = 1.
+zcut_val = 0.5
 
 for opt, arg in options:
+    if opt=='-n':
+        n = float(arg)
+    if opt=='-z':
+        zcut_val = float(arg)
+    if opt=='-s':
+        s = float(arg)
     if opt=='-h':
         print_usage()
         sys.exit(0)
@@ -45,26 +57,14 @@ outfile = TFile(remainder[0]+".root","RECREATE")
 inFile = TFile(remainder[1])
 events = inFile.Get("ntuple")
 
-events.Draw("uncVZ:{0}>>hnew(100,0,0.1,100,-50,50)".format(massVar),"","colz")
+events.Draw("uncVZ:{0}>>hnew(100,0,0.2,100,-50,50)".format(massVar),"","colz")
 c.Print(remainder[0]+".pdf")
 
-#fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))")
-#fitfunc.SetParName(0,"Amplitude")
-#fitfunc.SetParName(1,"Mean")
-#fitfunc.SetParName(2,"Sigma")
-#fitfunc.SetParName(3,"Tail Z")
-#fitfunc.SetParName(4,"Tail length")
-
-fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
-#fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))")#,-60,60)
-#fitfunc.SetParName(0,"Amplitude")
-#fitfunc.SetParName(1,"Mean")
-#fitfunc.SetParName(2,"Sigma")
-#fitfunc.SetParName(3,"Tail Z")
-
-fitfunc.SetParName(0,"Mean")
-fitfunc.SetParName(1,"Sigma")
-fitfunc.SetParName(2,"Tail Z")
+fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
+fitfunc.SetParName(0,"Amplitude")
+fitfunc.SetParName(1,"Mean")
+fitfunc.SetParName(2,"Sigma")
+fitfunc.SetParName(3,"Tail Z")
 
 massarray=array.array('d')
 zeroArr=array.array('d')
@@ -87,9 +87,6 @@ maxmass=0.12
 
 mres_p0 = 0.005
 mres_p1 = 0
-masscut_nsigma = 2.80
-scale = 1
-zcut_val = 0.5
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
@@ -114,13 +111,13 @@ for i in range(0,n_massbins):
     sigma=fit.Get().Parameter(2)
     fitfunc.SetParameters(peak,mean,sigma,3*sigma,5);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
-    meanarray.append(fit.Get().Parameter(0))
-    sigmaarray.append(fit.Get().Parameter(1))
-    breakzarray.append(fit.Get().Parameter(2))
+    meanarray.append(fit.Get().Parameter(1))
+    sigmaarray.append(fit.Get().Parameter(2))
+    breakzarray.append(fit.Get().Parameter(3))
     #lengtharray.append(fit.Get().Parameter(4))
-    meanErr.append(fit.Get().ParError(0))
-    sigmaErr.append(fit.Get().ParError(1))
-    breakzErr.append(fit.Get().ParError(2))
+    meanErr.append(fit.Get().ParError(1))
+    sigmaErr.append(fit.Get().ParError(2))
+    breakzErr.append(fit.Get().ParError(3))
     #lengthErr.append(fit.Get().ParError(4))
     zcut = getZCut(zcut_val=zcut_val)
     zcut_scaled = getZCut(zcut_val=zcut_val,scale=scale)
