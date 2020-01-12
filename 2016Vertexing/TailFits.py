@@ -109,7 +109,7 @@ for i in range(0,n_massbins):
     fit=h1d.Fit("gaus","QS","",mean-3*sigma,mean+3*sigma)
     mean=fit.Get().Parameter(1)
     sigma=fit.Get().Parameter(2)
-    fitfunc.SetParameters(peak,mean,sigma,3*sigma,5);
+    fitfunc.SetParameters(peak,mean,sigma,3*sigma);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
