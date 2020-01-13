@@ -12,36 +12,54 @@ def print_usage():
     print 'Note: Even when not using a data, MC, or Ap file, you must feed a dummy text file'
     print "Arguments: "
     print '\t-z: target position (default -4.3 mm)'
-    print '\t-m: minimum uncVZ (default -60 mm)'
-    print '\t-n: maximum uncVZ (default 60 mm)'
+    print '\t-g: minimum uncVZ (default -60 mm)'
+    print '\t-i: maximum uncVZ (default 80 mm)'
     print '\t-e: beam energy (default 2.3 GeV)'
-    print '\t-b: number of bins (default 50)'
+    print '\t-b: number of bins (default 140)'
     print '\t-t: cluster time offset (default 56 ns)'
+    print '\t-j: uncVX mean (default 0)'
+    print '\t-k: uncVX sigma (default 9999)'
+    print '\t-m: uncVY mean (default 0)'
+    print '\t-n: uncVY sigma (default 9999)'
+    print '\t-o: uncTargProjX mean (default 0)'
+    print '\t-p: uncTargProjX sigma (default 9999)'
+    print '\t-a: uncTargProjY mean (default 0)'
+    print '\t-b: uncTargProjY sigma (default 9999)'
+    print '\t-f: use preprocessing cuts and labels (default false)'
     print '\t-d: do not use data file (default use)'
     print '\t-c: do not use MC file (default use)'
-    print '\t-a: do not use Ap file (default use)'
+    print '\t-l: do not use Ap file (default use)'
     print '\t-h: this help message'
     print
 
 zTarg = -4.3
 ebeam = 2.3
 minVZ = -60
-maxVZ = 60
-nBins = 50
+maxVZ = 80
+nBins = 140
 useData = True
 useMC = True
 useAp = True
+preproc = False
 clusterT = 56
+uncVX = 0.
+uncVXSig = 9999.
+uncVY = 0.
+uncVYSig = 9999.
+uncTargProjX = 0.
+uncTargProjXSig = 9999.
+uncTargProjY = 0.
+uncTargProjYSig = 9999.
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:m:n:e:b:t:dca')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:b:t:j:k:m:n:o:p:a:b:fdcl')
 
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-z':
 			zTarg = float(arg)
-		if opt=='-m':
+		if opt=='-g':
 			minVZ = float(arg)
-		if opt=='-n':
+		if opt=='-i':
 			maxVZ = float(arg)
 		if opt=='-e':
 			ebeam = float(arg)
@@ -49,11 +67,29 @@ for opt, arg in options:
 			nBins = float(arg)
 		if opt=='-t':
 			clusterT = float(arg)
+		if opt=='-j':
+			uncVX=float(arg)
+		if opt=='-k':
+			uncVXSig=float(arg)
+		if opt=='-m':
+			uncVY=float(arg)
+		if opt=='-n':
+			uncVYSig=float(arg)
+		if opt=='-o':
+			uncTargProjX=float(arg)
+		if opt=='-p':
+			uncTargProjXSig=float(arg)
+		if opt=='-a':
+			uncTargProjY=float(arg)
+		if opt=='-b':
+			uncTargProjYSig=float(arg)
+		if opt=='-f':
+			preproc = True
 		if opt=='-d':
 			useData = False
 		if opt=='-c':
 			useMC = False
-		if opt=='-a':
+		if opt=='-l':
 			useAp = False
 		if opt=='-h':
 			print_usage()
@@ -90,7 +126,9 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 	histo1.Draw("same")
 	histo2.SetLineColor(6)
 	histo2.Draw("same")
-	legend = TLegend(.58,.66,.92,.87)
+	legend = TLegend(.08,.46,.42,.87)
+	if(inHisto == "uncM"):
+		legend = TLegend(.58,.46,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -124,7 +162,6 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 						cuts_1 = cuts_1 + "&&" + cuts[j]
 					else:
 						cuts_1 = cuts[j]
-		print cuts_1
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cut_tot)
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
@@ -144,7 +181,9 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
-	legend = TLegend(.58,.46,.92,.87)
+	legend = TLegend(.08,.46,.42,.87)
+	if(inHisto == "uncM"):
+		legend = TLegend(.58,.46,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
@@ -157,7 +196,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	canvas.Print(outfile+".pdf")
 	for i in range(len(histos2)):
 		histos2[i].Scale(1.0)
-		histos2[i].SetTitle(plotTitle + " " + cuts[i] + " Exclusive")
+		histos2[i].SetTitle(plotTitle + " " + label[i] + " Exclusive")
 		histos2[i].GetXaxis().SetTitle(XaxisTitle)
 		histos2[i].GetYaxis().SetTitle(YaxisTitle)
 		histos2[i].SetStats(stats)
@@ -182,7 +221,9 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			if(histos2[i].GetMaximum() > maximum):
 				maximum = histos2[i].GetMaximum()
 	histos2[0].GetYaxis().SetRangeUser(0,1.2*maximum)
-	legend2 = TLegend(.58,.46,.92,.87)
+	legend2 = TLegend(.08,.46,.42,.87)
+	if(inHisto == "uncM"):
+		legend2 = TLegend(.58,.46,.92,.87)
 	legend2.SetBorderSize(0)
 	legend2.SetFillColor(0)
 	legend2.SetFillStyle(0)
@@ -267,23 +308,51 @@ setlog.append(1)
 setlog.append(1)
 setlog.append(0)
 
+label = []
 cuts = []
 cuts.append("uncP<9999")
-cuts.append("eleHasL1&&posHasL1")
-cuts.append("eleHasL2&&posHasL2")
-cuts.append("eleMatchChisq<10&&posMatchChisq<10")
-cuts.append("abs(eleClT-posClT)<2")
-cuts.append("abs(eleClT-eleTrkT-{0})<4".format(clusterT))
-cuts.append("abs(posClT-posTrkT-{0})<4".format(clusterT))
-cuts.append("eleP<1.75")
-cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6")
-cuts.append("posTrkChisq/(2*posNTrackHits-5)<6")
-cuts.append("uncChisq<10")
+if(preproc):
+	cuts.append("eleHasL1&&posHasL1")
+	cuts.append("eleHasL2&&posHasL2")
+	cuts.append("eleMatchChisq<10&&posMatchChisq<10")
+	cuts.append("abs(eleClT-posClT)<2")
+	cuts.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterT))
+	cuts.append("eleP<1.75")
+	cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6&&posTrkChisq/(2*posNTrackHits-5)<6")
+	cuts.append("uncChisq<10")
 
-label = []
-label.append("Preprossessing")
-for i in range(1,len(cuts)):
-	label.append(cuts[i])
+	label.append("Preprocessing")
+	label.append("e+e- L1 Hit")
+	label.append("e+e- L2 Hit")
+	label.append("Track/Cluster Match Chisq < 10")
+	label.append("Cluster Time Diff < 2 ns")
+	label.append("Track/Cluster Time Diff < 4 ns")
+	label.append("e- Momentum < 1.75 GeV")
+	label.append("Track Chisq / dof < 6")
+	label.append("Unconstrained Vertex Chisq < 10")
+
+else:
+	cuts.append("uncP< 1.15*2.3")
+	cuts.append("uncChisq<4")
+	cuts.append("abs(uncVX-{0})<3*{1}".format(uncVX,uncVXSig))
+	cuts.append("abs(uncVY-{0})<3*{1}".format(uncVY,uncVYSig))
+	cuts.append("abs(uncTargProjX-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig))
+	cuts.append("abs(uncTargProjY-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig))
+	cuts.append("uncP>0.8*2.3")
+	cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0".format(zTarg))
+
+	label.append("Preselection")
+	label.append("V0 momentum < 1.15 E")
+	label.append("Unconstrained Vertex Chisq < 4")
+	label.append("V0 X 3 sigma")
+	label.append("V0 Y 3 sigma")
+	label.append("V0 Projection X 3 sigma")
+	label.append("V0 Projection Y 3 sigma")
+	label.append("V0 momentum > 0.8 E")
+	label.append("Nominal Isolation Cut")
+
+#for i in range(1,len(cuts)):
+#	label.append(cuts[i])
 
 openPDF(outfile,c)
 
