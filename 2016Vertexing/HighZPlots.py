@@ -237,8 +237,8 @@ if(plotMassSlices):
 			massCut = "abs(uncM-{0})<{1}/2".format(mass,massBin)
 			if(cuts == ""): cut = massCut
 			else: cut = cuts + "&&" + massCut
-			saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" {0:1f} < uncM < {1:1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
-			if(plot2D): saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ {0:1f} < uncM < {1:1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
+			saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" {0:.1f} < uncM < {1:.1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
+			if(plot2D): saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ {0:.1f} < uncM < {1:.1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
 
 closePDF(outfile,c)
 
