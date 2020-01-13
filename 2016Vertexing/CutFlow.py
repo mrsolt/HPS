@@ -16,6 +16,7 @@ def print_usage():
     print '\t-n: maximum uncVZ (default 60 mm)'
     print '\t-e: beam energy (default 2.3 GeV)'
     print '\t-b: number of bins (default 50)'
+    print '\t-t: cluster time offset (default 56 ns)'
     print '\t-d: do not use data file (default use)'
     print '\t-c: do not use MC file (default use)'
     print '\t-a: do not use Ap file (default use)'
@@ -32,7 +33,7 @@ useMC = True
 useAp = True
 clusterT = 56
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:m:n:e:b:dca')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:m:n:e:b:t:dca')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -46,6 +47,8 @@ for opt, arg in options:
 			ebeam = float(arg)
 		if opt=='-b':
 			nBins = float(arg)
+		if opt=='-t':
+			clusterT = float(arg)
 		if opt=='-d':
 			useData = False
 		if opt=='-c':
@@ -121,6 +124,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 						cuts_1 = cuts_1 + "&&" + cuts[j]
 					else:
 						cuts_1 = cuts[j]
+		print cuts_1
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cut_tot)
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
@@ -151,15 +155,19 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	legend.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	for i in range(len(histos2)):
+		histos2[i].Scale(1.0)
+		histos2[i].SetTitle(plotTitle + " " + cuts[i] + " Exclusive")
+		histos2[i].GetXaxis().SetTitle(XaxisTitle)
+		histos2[i].GetYaxis().SetTitle(YaxisTitle)
+		histos2[i].SetStats(stats)
+		histos2[i].Draw("")
+		canvas.Print(outfile+".pdf")
+	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
 	histos2[0].SetStats(stats)
 	color = 1
-	for i in range(len(histos2)):
-		histos2[i].SetTitle(plotTitle + " " + cuts[i] + " Exclusive")
-		histos2[i].Draw("")
-		canvas.Print(outfile+".pdf")
-	histos2[0].SetTitle(plotTitle + " Exclusive")
 	for i in range(len(histos2)):
 		if(color == 5 or color == 10):
 			color = color + 1
