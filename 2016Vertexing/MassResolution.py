@@ -115,9 +115,9 @@ def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
 moller_mass_data = 0.0485*1000
-moller_mass_res_data = 0.002*1000
+moller_mass_res_data = 0.00203*1000
 moller_mass_mc = 0.0485*1000
-moller_mass_res_mc = 0.0015*1000
+moller_mass_res_mc = 0.000999*1000
 
 ratio = moller_mass_res_data / moller_mass_res_mc
 
