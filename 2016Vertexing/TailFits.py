@@ -57,13 +57,13 @@ c.Print(remainder[0]+".pdf")
 
 
 #fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
-fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
+fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
 #fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
 fitfunc.SetParName(0,"Amplitude")
 fitfunc.SetParName(1,"Mean")
 fitfunc.SetParName(2,"Sigma")
 fitfunc.SetParName(3,"Tail Z")
-fitfunc.SetParName(4,"Tail Slope")
+#fitfunc.SetParName(4,"Tail Slope")
 
 #fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))",-50,50)
 #fitfunc.SetParName(0,"Amplitude")
