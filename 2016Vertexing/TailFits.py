@@ -60,11 +60,18 @@ events = inFile.Get("ntuple")
 events.Draw("uncVZ:{0}>>hnew(100,0,0.2,100,-50,50)".format(massVar),"","colz")
 c.Print(remainder[0]+".pdf")
 
-fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
+#fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
+#fitfunc.SetParName(0,"Amplitude")
+#fitfunc.SetParName(1,"Mean")
+#fitfunc.SetParName(2,"Sigma")
+#fitfunc.SetParName(3,"Tail Z")
+
+fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))",-50,50)
 fitfunc.SetParName(0,"Amplitude")
 fitfunc.SetParName(1,"Mean")
 fitfunc.SetParName(2,"Sigma")
 fitfunc.SetParName(3,"Tail Z")
+fitfunc.SetParName(4,"Tail length")
 
 massarray=array.array('d')
 zeroArr=array.array('d')
@@ -85,21 +92,23 @@ n_massbins=50
 minmass=0.04
 maxmass=0.12
 
-mres_p0 = 0.005
-mres_p1 = 0
+mres_p0 = 0.001853
+mres_p1 = 0.03541
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
     massarray.append(mass)
     zeroArr.append(0)
 
+    mres = mres_p0 + mres_p1*mass
+
     c.Clear()
     c.Divide(1,2)
     c.cd(1)
-    events.Draw("uncVZ:{0}>>hnew2d(100,0,0.2,100,-50,50)".format(massVar),"abs({0}-{1})<{2}/2*({3}+{4}*{0})".format(massVar,mass,masscut_nsigma,mres_p0,mres_p1),"colz")
+    events.Draw("uncVZ:{0}>>hnew2d(100,0,0.2,100,-50,50)".format(massVar),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"colz")
     c.cd(2)
     gPad.SetLogy(1)
-    events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*({3}+{4}*{0})".format(massVar,mass,masscut_nsigma,mres_p0,mres_p1),"")
+    events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
 
     h1d = gDirectory.Get("hnew1d")
     fit=h1d.Fit("gaus","QS")
