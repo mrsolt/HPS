@@ -110,6 +110,12 @@ python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ap_masses.dat -l log/ap_L1L1
 
 python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ap_masses.dat -l log/ap_L1L1_tight_iso_singleV0 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS/2016Vertexing/SelectSingleV0.py -o -m /nfs/slac/g/hps_data2/tuple/2pt3/ap-beam/{0}/ap_{0}MeV_L1L1_tight_iso_singleV0.root /nfs/slac/g/hps_data2/tuple/2pt3/ap-beam/{0}/ap_{0}MeV_L1L1_tight_iso.root "
 
+python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../../MC/ap-beam/ap_masses.dat -l log/ap_L1L1_tight_iso_singleV0 -c " python ../../../HPS/2016Vertexing/SelectSingleV0.py -o -p ap-beam_{0}MeV_L1L1_selectSingleV0_cutflow /nfs/slac/g/hps_data2/tuple/2pt3/ap-beam/{0}/ap_{0}MeV_L1L1_tight_iso.root "
+
+python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../../MC/ap-beam/ap_masses.dat -l log/ap_L1L1_preselection -c  " python ../../../HPS/2016Vertexing/CutFlow.py -l -d -f ap-beam_{0}MeV_preselection_L1L1_cutflow ../files/ap-beam_{0}MeV_files.txt ../files/ap-beam_{0}MeV_files.txt ../files/ap-beam_{0}MeV_files.txt "
+
+python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../../MC/ap-beam/ap_masses.dat -l log/ap_L1L1_tight -c  " python ../../../HPS/2016Vertexing/CutFlow.py -l -d -j -0.0917917298574 -k 0.216454502239 -m -0.0768882210741 -n 0.0882479982469 -o -0.222646428161 -p 0.216599169543 -a -0.077248219433 -b 0.0863849895543 ap-beam_{0}MeV_tight_L1L1_cutflow ../files/ap-beam_{0}MeV_preselection_files.txt ../files/ap-beam_{0}MeV_preselection_files.txt ../files/ap-beam_{0}MeV_preselection_files.txt "
+
 L1L2
 python ../../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 43 -g " -i ap-beam_<>MeV_tuple_files.txt -l log/ap_<>MeV_L1L2_cleanup_nPos_ -o /nfs/slac/g/hps_data2/tuple/2pt3/ap-beam/<>/ap_<>MeV_L1L2_cleanup_nPos_ -a ".root"
 python ../../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ap_masses.dat -l log/sub_ap_L1L2 -c ' python ../../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 51 -g " -i ap-beam_{0}MeV_tuple_files.txt -l log/ap_{0}MeV_L1L2_cleanup_nPos_ -o /nfs/slac/g/hps_data2/tuple/2pt3/ap-beam/{0}/ap_{0}MeV_L1L2_cleanup_nPos_ -a ".root" '
@@ -172,7 +178,7 @@ python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt
 python ../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../Golden_Runs.dat -l logData/sub_10per_L2L2_cleanup -c ' python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -i " -i files/{0}_tuple_10per_files.txt -l logData/{0}_10per_L2L2_cleanup_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/{0}_10per_L2L2_cleanup_ -a ".root" '
 
 tight cuts
-python ../../HPS/Bsub/RunBatchRuns.py -W 4:00 -i ../Golden_Runs.dat -l logData/sub_10per_L2L2_preselection -c ' python ../../HPS/Bsub/RunBatchJob.py -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 56 -i " -i files/{0}_tuple_10per_files.txt -l logData/{0}_10per_L2L2_preselection_ -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/{0}_10per_L2L2_preselection_ -a ".root" '
+python ../../HPS/Bsub/RunBatchRunsCut.py -f cut_params.txt -l logData/10per_L2L2_tight -c 56 -W 4:00 -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/10per_L2L2_tight -i /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/{0}_10per_L2L2_preselection_1.root -t t
 
 python ../../HPS/Bsub/RunBatchRunsCut.py -f cut_params.txt -l logData/10per_L2L2_tight_iso -c 56 -W 4:00 -o /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/10per_L2L2_tight_iso -i /nfs/slac/g/hps_data2/tuple/2pt3/data/L2L2/10per_L2L2_tight_{0}.root -t s
 
