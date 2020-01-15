@@ -4,11 +4,6 @@ import getopt
 import ROOT
 from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooGlobalFunc, RooFit, RooAbsReal, RooArgList, gPad
 
-def frange(x, y, jump):
-	while x < y:
-		yield x
-		x += jump
-
 def print_usage():
     print "\nUsage: {0} <output basename> <input ROOT file>".format(sys.argv[0])
     print "Arguments: "
@@ -62,19 +57,19 @@ c.Print(remainder[0]+".pdf")
 
 
 #fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
-fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
+#fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
 #fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
-fitfunc.SetParName(0,"Amplitude")
-fitfunc.SetParName(1,"Mean")
-fitfunc.SetParName(2,"Sigma")
-fitfunc.SetParName(3,"Tail Z")
-
-#fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))",-50,50)
 #fitfunc.SetParName(0,"Amplitude")
 #fitfunc.SetParName(1,"Mean")
 #fitfunc.SetParName(2,"Sigma")
 #fitfunc.SetParName(3,"Tail Z")
-#fitfunc.SetParName(4,"Tail length")
+
+fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))",-50,50)
+fitfunc.SetParName(0,"Amplitude")
+fitfunc.SetParName(1,"Mean")
+fitfunc.SetParName(2,"Sigma")
+fitfunc.SetParName(3,"Tail Z")
+fitfunc.SetParName(4,"Tail length")
 
 massarray=array.array('d')
 zeroArr=array.array('d')
