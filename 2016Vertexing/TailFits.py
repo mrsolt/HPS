@@ -93,7 +93,7 @@ minmass=0.04
 maxmass=0.12
 
 mres_p0 = 0.001853
-mres_p1 = 0.03541*1000
+mres_p1 = 0.03541
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
