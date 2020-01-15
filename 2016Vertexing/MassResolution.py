@@ -82,11 +82,13 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_mean.SetTitle("Fitted Mass - Truth Mass Mean {0:.0f} MeV A'".format(mass))
 	gr_mean.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_mean.GetYaxis().SetTitle("Mean (MeV)")
+	gr_mean.GetYaxis().SetRangeUser(-5,5)
 	canvas.Print(outfile+".pdf")
 	gr_sigma.Draw("AP")
 	gr_sigma.SetTitle("Fitted Mass Resolution {0:.0f} MeV A'".format(mass))
 	gr_sigma.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_sigma.GetYaxis().SetTitle("Sigma (MeV)")
+	gr_sigma.GetYaxis().SetRangeUser(0,8)
 	canvas.Print(outfile+".pdf")
 	del histo
 	del gr_mean
@@ -114,17 +116,17 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-moller_mass_data = 0.0485*1000
-moller_mass_res_data = 0.00203*1000
-moller_mass_mc = 0.0485*1000
-moller_mass_res_mc = 0.000999*1000
+moller_mass_data = 0.04887*1000
+moller_mass_res_data = 0.002704*1000
+moller_mass_mc = 0.04846*1000
+moller_mass_res_mc = 0.001807*1000
 
 ratio = moller_mass_res_data / moller_mass_res_mc
 
-moller_mass_data_err = 0.001*1000
-moller_mass_res_data_err = 0.0002*1000
+moller_mass_data_err = 0.00001*1000
+moller_mass_res_data_err = 0.000007*1000
 moller_mass_mc_err = 0.001*1000
-moller_mass_res_mc_err = 0.0002*1000
+moller_mass_res_mc_err = 0.000003*1000
 
 moller_mass_data_arr = array.array('d')
 moller_mass_res_data_arr = array.array('d')
