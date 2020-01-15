@@ -15,7 +15,7 @@ def print_usage():
     print '\t-g: minimum uncVZ (default -60 mm)'
     print '\t-i: maximum uncVZ (default 80 mm)'
     print '\t-e: beam energy (default 2.3 GeV)'
-    print '\t-b: number of bins (default 140)'
+    print '\t-q: number of bins (default 140)'
     print '\t-t: cluster time offset (default 56 ns)'
     print '\t-j: uncVX mean (default 0)'
     print '\t-k: uncVX sigma (default 9999)'
@@ -51,7 +51,7 @@ uncTargProjXSig = 9999.
 uncTargProjY = 0.
 uncTargProjYSig = 9999.
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:b:t:j:k:m:n:o:p:a:b:fdcl')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:fdcl')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -63,7 +63,7 @@ for opt, arg in options:
 			maxVZ = float(arg)
 		if opt=='-e':
 			ebeam = float(arg)
-		if opt=='-b':
+		if opt=='-q':
 			nBins = float(arg)
 		if opt=='-t':
 			clusterT = float(arg)
