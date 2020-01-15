@@ -57,7 +57,7 @@ c.Print(remainder[0]+".pdf")
 
 
 #fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
-fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2])*[4])",-50,50)
+fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(-0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
 #fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
 fitfunc.SetParName(0,"Amplitude")
 fitfunc.SetParName(1,"Mean")
@@ -118,7 +118,7 @@ for i in range(0,n_massbins):
     mean=fit.Get().Parameter(1)
     sigma=fit.Get().Parameter(2)
     print("mean {0}  sigma {1}".format(mean,sigma))
-    fitfunc.SetParameters(peak,mean,sigma,3*sigma);
+    fitfunc.SetParameters(peak,mean,sigma,3);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
