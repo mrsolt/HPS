@@ -55,44 +55,31 @@ events = inFile.Get("ntuple")
 events.Draw("uncVZ:{0}>>hnew(100,0,0.2,100,-50,50)".format(massVar),"","colz")
 c.Print(remainder[0]+".pdf")
 
-
-#fitfunc = TF1("fitfunc","exp(((x-[0])>=[2])*(pow([2]/2.0,2.0)-[2]*(x-[0])/[1]))",-60,60)
 fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
-#fitfunc = TF1("fitfunc","[0]*exp(((x-[1])>=[3])*(pow([3]/2.0,2.0)-[3]*(x-[1])/[2]))",-50,50)
 fitfunc.SetParName(0,"Amplitude")
 fitfunc.SetParName(1,"Mean")
 fitfunc.SetParName(2,"Sigma")
 fitfunc.SetParName(3,"Tail Z")
-#fitfunc.SetParName(4,"Tail Slope")
-
-#fitfunc = TF1("fitfunc","[0]*exp( ((x-[1])<[3])*(-0.5*(x-[1])^2/[2]^2) + ((x-[1])>=[3])*(-0.5*[3]^2/[2]^2-(x-[1]-[3])/[4]))",-50,50)
-#fitfunc.SetParName(0,"Amplitude")
-#fitfunc.SetParName(1,"Mean")
-#fitfunc.SetParName(2,"Sigma")
-#fitfunc.SetParName(3,"Tail Z")
-#fitfunc.SetParName(4,"Tail length")
 
 massarray=array.array('d')
 zeroArr=array.array('d')
 meanarray=array.array('d')
 sigmaarray=array.array('d')
 breakzarray=array.array('d')
-#lengtharray=array.array('d')
 zcutarray=array.array('d')
 zcutscaledarray=array.array('d')
 meanErr=array.array('d')
 sigmaErr=array.array('d')
 breakzErr=array.array('d')
-#lengthErr=array.array('d')
 #zcutErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
 n_massbins=50
 minmass=0.04
-maxmass=0.12
+maxmass=0.15
 
-mres_p0 = 0.001853
-mres_p1 = 0.03541
+mres_p0 = 1.364/1000.
+mres_p1 = 0.02608
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
@@ -120,14 +107,13 @@ for i in range(0,n_massbins):
     print("mean {0}  sigma {1}".format(mean,sigma))
     fitfunc.SetParameters(peak,mean,sigma,3);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
+    outfile.Write()
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
     breakzarray.append(fit.Get().Parameter(3))
-    #lengtharray.append(fit.Get().Parameter(4))
     meanErr.append(fit.Get().ParError(1))
     sigmaErr.append(fit.Get().ParError(2))
     breakzErr.append(fit.Get().ParError(3))
-    #lengthErr.append(fit.Get().ParError(4))
     zcut = getZCut(zcut_val=zcut_val)
     zcut_scaled = getZCut(zcut_val=zcut_val,scale=scale)
     zcutarray.append(zcut)
@@ -169,15 +155,6 @@ graph.GetYaxis().SetTitle("tail Z [mm]")
 graph.Fit("pol3")
 graph.Write("breakz")
 c.Print(remainder[0]+".pdf","Title:tailz")
-
-#graph=TGraphErrors(len(massarray),massarray,lengtharray,zeroArr,lengthErr)
-#graph.Draw("A*")
-#graph.SetTitle("Tail length")
-#graph.GetXaxis().SetTitle("mass [GeV]")
-#graph.GetYaxis().SetTitle("tail length [mm]")
-#graph.Fit("pol3")
-#graph.Write("length")
-#c.Print(remainder[0]+".pdf","Title:length")
 
 graph=TGraph(len(massarray),massarray,zcutarray)
 #graph=TGraphErrors(len(massarray),massarray,zcutarray,zeroArr,zcutErr)
