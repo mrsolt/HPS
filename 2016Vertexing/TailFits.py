@@ -107,6 +107,7 @@ for i in range(0,n_massbins):
     print("mean {0}  sigma {1}".format(mean,sigma))
     fitfunc.SetParameters(peak,mean,sigma,3);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
+    outfile.cd()
     h1d.Write("{0} < uncM < {1}".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
