@@ -116,7 +116,7 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 		maximum = histo1.GetMaximum()
 	if(histo2.GetMaximum() > maximum):
 		maximum = histo2.GetMaximum()
-	histo0.GetYaxis().SetRangeUser(0,1.2*maximum)
+	histo0.GetYaxis().SetRangeUser(0.1,1.2*maximum)
 	histo0.Draw()
 	histo0.SetTitle(plotTitle)
 	histo0.GetXaxis().SetTitle(XaxisTitle)
@@ -147,6 +147,7 @@ def comparePlot(events0,events1,events2,inHisto,nBins,minX,maxX,outfile,canvas,t
 def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	histos = []
 	histos2 = []
+	histos3 = []
 	cut_tot = ""
 	for i in range(len(cuts)):
 		cut = cuts[i]
@@ -166,6 +167,8 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
 		histos2.append(ROOT.gROOT.FindObject("histo2{0}".format(i)))
+		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}".format(i),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
+		histos3.append(ROOT.gROOT.FindObject("histo3{0}".format(i)))
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
@@ -195,12 +198,31 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
 	for i in range(len(histos2)):
+		histos[0].Scale(1.0)
+		histos[0].SetLineColor(1)
+		histos[0].Draw()
+		histos[0].SetTitle(plotTitle + " " + label[i] + " Exclusive")
+		histos[0].GetXaxis().SetTitle(XaxisTitle)
+		histos[0].GetYaxis().SetTitle(YaxisTitle)
+		histos[0].SetStats(stats)
 		histos2[i].Scale(1.0)
-		histos2[i].SetTitle(plotTitle + " " + label[i] + " Exclusive")
-		histos2[i].GetXaxis().SetTitle(XaxisTitle)
-		histos2[i].GetYaxis().SetTitle(YaxisTitle)
-		histos2[i].SetStats(stats)
-		histos2[i].Draw("")
+		histos2[i].SetLineColor(2)
+		histos2[i].Draw("same")
+		histos3[i].Scale(1.0)
+		histos3[i].SetLineColor(4)
+		histos3[i].Draw("same")
+		legend3 = TLegend(.08,.66,.42,.87)
+		if(inHisto == "uncM"):
+			legend3 = TLegend(.58,.66,.92,.87)
+		legend3.SetBorderSize(0)
+		legend3.SetFillColor(0)
+		legend3.SetFillStyle(0)
+		legend3.SetTextFont(42)
+		legend3.SetTextSize(0.035)
+		legend3.AddEntry(histos[0],labels[0],"LP")
+		legend3.AddEntry(histos2[i],"Without " + labels[i],"LP")
+		legend3.AddEntry(histos3[i],"With " + labels[i],"LP")
+		legend3.Draw("same")
 		canvas.Print(outfile+".pdf")
 	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
@@ -220,7 +242,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			histos2[i].Draw("same")
 			if(histos2[i].GetMaximum() > maximum):
 				maximum = histos2[i].GetMaximum()
-	histos2[0].GetYaxis().SetRangeUser(0,1.2*maximum)
+	histos2[0].GetYaxis().SetRangeUser(0.1,1.2*maximum)
 	legend2 = TLegend(.08,.46,.42,.87)
 	if(inHisto == "uncM"):
 		legend2 = TLegend(.58,.46,.92,.87)
@@ -236,6 +258,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	canvas.Print(outfile+".pdf")
 	del histos
 	del histos2
+	del histos3
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
