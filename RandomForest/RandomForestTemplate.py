@@ -15,8 +15,10 @@ minVZ = -20
 maxVZ = 80
 
 output = "test"
-signal_file = '~/CS230/cs230-project/notebooks/datasets/ap_100MeV_L1L1_tight_08mm.csv'
-background_file = '~/CS230/cs230-project/notebooks/datasets/tritrig-wab-beam_100MeV_L1L1_tight.csv'
+signal_file = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MachineLearing/AnalysisWorkshopML/ap-beam_100MeV_4e9.csv'
+background_file = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MachineLearing/AnalysisWorkshopML/tritrig-wab-beam_100MeV_L1L1_tight.csv'
+#signal_file = '~/CS230/cs230-project/notebooks/datasets/ap_100MeV_L1L1_tight_08mm.csv'
+#background_file = '~/CS230/cs230-project/notebooks/datasets/tritrig-wab-beam_100MeV_L1L1_tight.csv'
 
 background = CsvParser(background_file)
 signal     = CsvParser(signal_file)
