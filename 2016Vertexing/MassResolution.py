@@ -15,7 +15,7 @@ def print_usage():
     print
 
 zbin = 5.
-zTarg =-4.3
+zTarg = -4.3
 maxZ = 100
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
 
@@ -64,7 +64,7 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	for i in range(nbins):
 		zmin = zTarg + i * zbin
 		zmax = zmin + zbin
-		zErr.append(zbin)
+		zErr.append(0.0)
 		z.append(zmin + zbin/2.)
 		events.Draw("{0}>>histo2({1},{2},{3})".format(inHisto,nBins,minX,maxX),"triEndZ>{0}&&triEndZ<{1}".format(zmin,zmax))
 		histo2 = ROOT.gROOT.FindObject("histo2")
