@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Optimum Interval Software</title>
+  </head>
+
+  <body>
+    <h1> Optimum Interval Software</h1>
+
+This site contains software for computing an upper limit given unknown
+background.  It includes methods for combining multiple measurements,
+each of which alone can have its upper limit computed with the optimum
+interval method.  The software, with this web page, is in the 1.3 MB gzipped
+tar file <a href="../Upper.tgz">Upper.tgz</a>, and the individual
+files totalling 4.1 MB are linked below.  Once the tar file is downloaded it
+can be unpacked with GNU tar via 'tar xzf Upper.tgz' to locally
+mirror this site in subdirectory Upper.
+
+<p><a href="http://prd.aps.org/abstract/PRD/v66/i3/e032005">
+PRD66, 032005 (2005)</a> = <a href="http://arxiv.org/abs/physics/0203002">
+arXiv:physics/0203002</a> introduces the optimum interval method,
+<a href="http://arxiv.org/abs/0709.2701">arXiv:0709.2701</a> extends it to
+high statistics, and <a href="http://arxiv.org/abs/1105.2928">
+arXiv:1105.2928</a> explains the methods of combining measurements.<p>
+
+<UL>
+<LI> <a href="CERN_Stuff.f"> CERN_Stuff.f:</a> Various CERNLIB mathematical
+routines needed for the optimum interval, as modified from CERN's source
+archives to avoid calling other cernlib routines.  See<br> &nbsp; &nbsp; &nbsp;
+2006_src.tar.gz in their <a href="http://cernlib.web.cern.ch/cernlib/download/2006_source/tar/">source archive.</a><br>
+There were also modifications to prevent some warnings when compilation is done
+with extra warning options turned on.  CERN, of course, is not responsible in
+the unlikely eventuality that I introduced errors.<br> &nbsp; &nbsp; &nbsp; 
+With CERN_Stuff.f it's not necessary to have other CERN software on the
+computer in order to compile optimum interval software because
+compilation commands can include "CERN_Stuff.f".
+
+<LI> <a href="testUpper.f">testUpper.f:</a> A sample program
+demonstrating use of the upper limit software.  Near the beginning is an
+example of the command for compiling and linking with CERNLIB software using
+the f77=g77=GNU project Fortran 77 compiler.  The "methods" it tests are
+described in arXiv:1105.2928, and are numbered as given in comments near
+the beginning of <a href="Upper.f">Upper.f</a>.  This program is used to
+verify by Monte Carlo that CL confidence level upper limit do, indeed,
+have probability at least CL of being above the truth.  The Monte Carlo uses
+CERNLIB routine RANLUX.
+
+<LI> <a href="Upper.f">Upper.f:</a> Real Function
+Upper(Method,CL,Nexp,Maxp1,Nevts,mu,FC,ICode)
+returns the CL confidence level upper limit for a combination of one or
+more measurements.  Method is the method used to combine measurements.
+Method=0 is just a call to UpperLim, with only one measurement.
+Nexp is the number of experiments, and the other parameters are described near
+the beginning of Fortran file.
+
+<LI> <a href="UpperLim.f">UpperLim.f:</a> Real Function
+UpperLim(CL,If,N,FC,muB,FB,Iflag) returns the CL confidence level upper
+limit on the expected number of events given that there
+are N events observed in some range of, say, energy, E.
+The events are assumed to be ordered from low to high E, with
+FC(i) defined as the probability that for the assumed shape of the
+event distribution of the process of interest a random event will have
+lower E than the one the i'th event has.  The array FC should
+be dimensioned from 0 to at least N+1 because UpperLim uses,
+for convenience, FC(0)=0 and FC(N+1)=1.  If muB is zero, there is
+no known background.  Otherwise muB is the expectation of the total
+amount of known background within the experimental range and FB is
+like FC, but for the probability distribution of the known background
+instead of the process of interest.  If muB is non-zero, the program
+returns an upper limit with the known background subtracted.
+<br> &nbsp; &nbsp; &nbsp;
+Within the UpperLim routine
+there is a parameter NMax=150000, which is the limit on the
+allowed size of N.  Increase NMax if you expect N > 150000.
+<br> &nbsp; &nbsp; &nbsp;
+The routine uses
+the optimum range in E with range in probability greater
+than 0.0, .01, .02, .05, .10, .20, or .50, depending on the choice
+of If=1,2,3,4,5, 6, or 7.  If should probably be set to 1.  For mu < 100
+CL must be from 0.00001 to 0.99999, though if it gets close to those
+limits, results might be inaccurate.  For mu > 100 0.8 < CL < 0.995.
+<br> &nbsp; &nbsp; &nbsp;
+UpperLim calls ForCnMax, CnMax, y_vs_CLf, and CMaxinf, along with CERNLIB
+routine RZERO.
+<br> &nbsp; &nbsp; &nbsp;
+Iflag is a status return.  None of the returns indicates failure
+of the calculation of upper limit.  If the program has good
+reason to conclude that it failed, it aborts.  But the status return
+does give information a user might like to know.  See comment lines
+near the beginning of the code for what the various status codes mean.
+In particular, Iflag at least 256 tags the existence of an excluded range
+separated from and below the absolute upper limit returned by the program.
+This possibility should be insignificant unless there are just a few events.
+<br> &nbsp; &nbsp; &nbsp
+
+UpperLim.f includes a common 
+ <p>Common/Upperlimcom/EndPoints(2),Exclude_low(2)
+<p>where EndPoints is Integer and Exclude_low is real.  EndPoints contains
+the values of I in FC(I) for the endpoints of the optimum interval,
+and Exclude_low contains the excluded range if Iflag is at least 256.
+See comments in the program.
+
+<br> &nbsp; &nbsp; &nbsp;
+
+Example:  If a cross section sigma0 would lead on the average to
+mu0 events in the experimental range, a 90 % confidence level
+upper limit cross section is 
+<p>sigma = (sigma0/mu0) x UpperLim(0.9,1,N,FC,0.,FB,Iflag).
+
+<LI> <a href="CMaxinf.f">CMaxinf.f:</a> Real Function
+CMaxinf(CL,If,mu) computes what the maximum C<sub>&#8734;</sub>
+(defined in <a href="http://arxiv.org/abs/0709.2701">arXiv:0709.2701</a>)
+must be for the optimum interval in order to have CL
+confidence level exclusion of the assumed signal as being
+too high.  "If" is as for Upperlim, and mu is the assumed
+expectation value of the total number of events in the
+signal.  The routine uses tables CMax.txt for low statistics, mu < 99.4843, and
+CMaxf.txt for the high statistics case.
+
+<LI> <a href="y_vs_CLf.f">y_vs_CLf.f:</a> Real Function
+y_vs_CLf(CL,f,Istat) computes the "y" such that CL=C<sub>&#8734;</sub>(y,f).
+See <a href="http://arxiv.org/abs/0709.2701">arXiv:0709.2701</a>
+for the meaning of "y", "f". and "C<sub>&#8734;</sub>".
+See <a href="y_vs_CLf.f">y_vs_CLf.f</a> for the meaning of Istat, the status
+code indicating the quality of the calculation.  Istat greater than 2 means
+the computation failed.  The routine uses table y_vs_CLf.txt and
+CERNLIB routine DGAUSN.  DGAUSN could be replaced by PPND16 from <a
+href="http://lib.stat.cmu.edu/apstat/241"> the web </a> and
+Applied Statistics, vol. 37, pp. 477-484, 1988.  DGAUSN is
+probably not going to be called during normal use of UpperLim.f.
+
+<LI> <a href="Cinf.f">Cinf.f:</a> Real function Cinf(y,f,Istat)
+computes C<sub>&#8734;</sub>(y,f), with y and f as defined in
+<a href="http://arxiv.org/abs/0709.2701">arXiv:0709.2701</a>.  Istat is a
+return code described by comment lines near the beginning of 
+<a href="Cinf.f">Cinf.f</a>.  Cinf uses table ymintable.txt.
+
+<LI> <a href="ConfLev.f">ConfLev.f:</a> Real Function
+ConfLev(m,x,mu,icode) calculates C<sub>m</sub>(x,mu), as described
+in <a href="http://arxiv.org/abs/physics/0203002"> arXiv:physics/0203002</a>.
+We require mu &#8804; 104.585 and m  &#8804; 100.  The return
+code, icode, is described by comments
+near the beginning of <a href="ConfLev.f">ConfLev.f</a>.  It calls CERNLIB
+function GAMDIS.  It uses table Cm.txt.
+
+<LI> <a href="CombConf.f">CombConf.f:</a> Real Function CombConf(Method,p1,p2,mua,mub,ICode)
+is used by Upper.f.  It
+gives the confidence level by which the cross section is rejected as too
+high when it is rejected by two measurements with confidence levels p1 and
+p2.  The two measurements have total expected number of events mu1 and mu2.
+CombConf uses XC0 from C0.f.
+
+<LI> <a href="C0.f">C0.f:</a> Real functions C0(x,mu) and dC0dx(x,mu), which
+evaluate C<sub>0</sub> (defined in
+<a href="http://arxiv.org/abs/physics/0203002"> arXiv:physics/0203002</a>)
+and its derivative, XC0(p,mu,ICode), which evaluates the value
+of x for which C0(x,mu)=p, 
+C0Int(A,B,mu1,mu2,z,Icode), which evaluates a certain integral defined in
+terms of C0 and its derivative.  There are a couple other pieces of software
+used in this file for dealing with the C0 function.  CERNLIB program RZERO
+is used to evaluate XC0.  The routines in C0.f are used by CombConf, ConfLev,
+and Upper.
+
+<LI> <a href="CnMax.f">CnMax.f:</a> Real function CnMax(Mmax,f,mu,HighCut,fmin,mtop,Istat)
+calculates the maximum interval C<sub>n</sub>.
+
+<LI> <a href="CMaxf.txt">CMaxf.txt:</a> A table used by CMaxinf when
+mu >99.4843.
+
+<LI> <a href="y_vs_CLf.txt">y_vs_CLf.txt:</a> A table used by
+y_vs_CLf.
+
+<LI> <a href="Cm.txt">Cm.txt:</a> A table used by ConfLev.
+
+<LI> <a href="ymintable.txt">ymintable.txt:</a> A table used by
+Cinf.
+
+<LI> <a href="CLtable.txt">CLtable.txt:</a> A table used by ConfLev.f.
+</UL>
+
+
+    <hr>
+    <address><a href="mailto:yellin@slac.stanford.edu">Steven J. Yellin</a></address>
+<!-- Created: Sun May 15, 2011 -->
+<!-- hhmts start -->
+Last modified:  Mon May 16, 2011
+<!-- hhmts end -->
+  </body>
+</html>
+
