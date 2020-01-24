@@ -113,7 +113,7 @@ maxZ0 = -minZ0
 plots = []
 plots.append("eleTrkZ0 {0} {1}".format(minZ0,maxZ0))
 plots.append("posTrkZ0 {0} {1}".format(minZ0,maxZ0))
-plots.append("sqrt(uncCovZZ) {0} {1}".format(0,5))
+#plots.append("sqrt(uncCovZZ) {0} {1}".format(0,5))
 
 openPDF(outfile,c)
 
