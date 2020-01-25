@@ -84,8 +84,8 @@ for i in range(len(Files)):
 cuts = []
 cuts.append("uncP<9999")
 cuts.append("isPair1")
-cuts.append("eleHasL1&&posHasL1")
-cuts.append("eleHasL2&&posHasL2")
+#cuts.append("eleHasL1&&posHasL1")
+#cuts.append("eleHasL2&&posHasL2")
 cuts.append("eleMatchChisq<10")
 cuts.append("posMatchChisq<10")
 cuts.append("abs(eleClT-posClT)<2")
@@ -107,8 +107,8 @@ cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),pos
 label = []
 label.append("Preprocessing")
 label.append("Pairs1")
-label.append("e+e- L1 Hit")
-label.append("e+e- L2 Hit")
+#label.append("e+e- L1 Hit")
+#label.append("e+e- L2 Hit")
 label.append("e- Track/Cluster Match Chisq < 10")
 label.append("e+ Track/Cluster Match Chisq < 10")
 label.append("Cluster Time Diff < 2 ns")
