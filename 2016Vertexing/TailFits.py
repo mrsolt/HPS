@@ -8,21 +8,25 @@ def print_usage():
     print "\nUsage: {0} <output basename> <input ROOT file>".format(sys.argv[0])
     print "Arguments: "
     print '\t-n: width of mass bins in nsigma (default is 2.80)'
+    print '\t-m: shift mean (default false)'
     print '\t-a: scale factor (default is 1)'
     print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'n:z:s:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nm:z:s:h')
 
 massVar = "uncM"
 masscut_nsigma = 2.80
 scale = 1.
 zcut_val = 0.5
+shift_mean = False
 
 for opt, arg in options:
     if opt=='-n':
         n = float(arg)
+    if opt=='-m':
+        shift_mean = True
     if opt=='-z':
         zcut_val = float(arg)
     if opt=='-s':
@@ -48,6 +52,7 @@ gStyle.SetOptStat(1111)
 c = TCanvas("c","c",800,600);
 c.Print(remainder[0]+".pdf[")
 outfile = TFile(remainder[0]+".root","RECREATE")
+outfile_shift = TFile(remainder[0]+"_shift.root","RECREATE")
 
 inFile = TFile(remainder[1])
 events = inFile.Get("ntuple")
@@ -123,6 +128,10 @@ for i in range(0,n_massbins):
     #zcutscaledErr.append(0)
 
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
+    if(shift_mean):
+        outfile_shift.cd()
+        events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
+        outfile_shift.Write()
 
 c.Clear()
 outfile.cd()
@@ -180,4 +189,5 @@ c.Print(remainder[0]+".pdf","Title:zcutscaled")
 c.Print(remainder[0]+".pdf]")
 outfile.Write()
 outfile.Close()
+outfile_shift.Close()
 sys.exit(0)
