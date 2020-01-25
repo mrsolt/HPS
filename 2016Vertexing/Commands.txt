@@ -225,5 +225,7 @@ python ../../../../../HPS/Bsub/RunBatchJob.py -n 1 -W 8:00 -c " python /nfs/slac
 L2L2
 python ../../../../../HPS/Bsub/RunBatchJob.py -n 1 -W 8:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS/2016Vertexing/FullTruthL1L1BadTrackPlots.py " -i L2L2_nPos_files.txt -l log/tritrig-wab-beam_cleanup_nPos_L2L2_badhitplots -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/FullPlots/tritrig-wab-beam_L2L2_cleanup_nPos_badhitplots_
 
-Refit plots
+Cutflow Plots
+
+
 
