@@ -14,7 +14,7 @@ def print_usage():
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nm:z:s:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmz:s:h')
 
 massVar = "uncM"
 masscut_nsigma = 2.80
@@ -130,6 +130,8 @@ for i in range(0,n_massbins):
     if(shift_mean):
         c.Clear()
         events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
+        h1d_shift = gDirectory.Get("hnew1d_shift")
+        h1d_shift.Write("{0} < uncM < {1} Mean Shifted".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
 
 c.Clear()
 outfile.cd()
