@@ -52,7 +52,6 @@ gStyle.SetOptStat(1111)
 c = TCanvas("c","c",800,600);
 c.Print(remainder[0]+".pdf[")
 outfile = TFile(remainder[0]+".root","RECREATE")
-outfile_shift = TFile(remainder[0]+"_shift.root","RECREATE")
 
 inFile = TFile(remainder[1])
 events = inFile.Get("ntuple")
@@ -129,9 +128,8 @@ for i in range(0,n_massbins):
 
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
     if(shift_mean):
-        outfile_shift.cd()
+        c.Clear()
         events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
-        outfile_shift.Write()
 
 c.Clear()
 outfile.cd()
@@ -189,5 +187,4 @@ c.Print(remainder[0]+".pdf","Title:zcutscaled")
 c.Print(remainder[0]+".pdf]")
 outfile.Write()
 outfile.Close()
-outfile_shift.Close()
 sys.exit(0)
