@@ -20,8 +20,8 @@ def print_usage():
 
 zTarg = -4.3
 ebeam = 2.3
-minVZ = -40
-maxVZ = 40
+minVZ = -50
+maxVZ = 50
 nBins = 100
 
 
@@ -49,9 +49,10 @@ c = TCanvas("c","c",800,600)
 def saveTuplePlot(events,inHisto,nBins,minVZ,maxVZ,minP,maxP,cut,outfile,canvas):
 	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBins,minVZ,maxVZ),cut)
 	histo = ROOT.gROOT.FindObject("histo")
-	histo.SetTitle("{0} P Bin {1:.3f} < uncP < {1:.3f}".format(inHisto,minP,maxP))
+	histo.SetTitle("{0} P Bin {1:.3f} < uncP < {2:.3f}".format(inHisto,minP,maxP))
 	histo.GetXaxis().SetTitle("uncVZ (mm)")
 	histo.Draw("COLZ")
+	canvas.SetLogy(1)
 	canvas.Print(outfile+".pdf")
 
 def openPDF(outfile,canvas):
@@ -80,6 +81,7 @@ cuts.append("eleP>0.6**posP>0.6")
 pmin = 0.5
 pmax = 2.5
 nPBins = 10
+p_range = 0.1
 
 openPDF(outfile,c)
 
@@ -90,9 +92,9 @@ for i in range(len(cuts)):
 	histo.GetXaxis().SetTitle("uncVZ (mm)")
 	histo.GetYaxis().SetTitle("uncP (GeV)")
 	histo.Draw("COLZ")
+	c.SetLogy(0)
 	c.Print(outfile+".pdf")
 	del histo
-	p_range = 0.005
 	for j in range(nPBins):
 		p = pmin + (pmax-pmin)/float(nPBins) * j
 		pcut = "uncP>{0}&&uncP<{1}".format(p-p_range,p+p_range)
