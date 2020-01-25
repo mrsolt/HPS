@@ -85,11 +85,12 @@ if(not useAp):
 	#inFile = TFile(remainder[1])
 	#events = inFile.Get("ntuple")
 	file = open(remainder[1],"r")
+	files = []
 	for line in (raw.strip().split() for raw in file):
-		Files.append(line[0])
+		files.append(line[0])
 	events = TChain("ntuple")
-	for i in range(len(Files)):
-		events.Add(Files[i])
+	for i in range(len(files)):
+		events.Add(files[i])
 	mass = []
 	nMass = 20
 	minMass = 0.050
