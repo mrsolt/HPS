@@ -63,8 +63,14 @@ def closePDF(outfile,canvas):
 
 outfile = remainder[0]
 
-inFile = TFile(remainder[1])
-events = inFile.Get("ntuple")
+file = open(remainder[1],"r")
+Files = []
+
+for line in (raw.strip().split() for raw in file):
+	Files.append(line[0])
+events = TChain("ntuple")
+for i in range(len(Files)):
+	events.Add(Files[i])
 
 cuts = []
 cuts.append("")
