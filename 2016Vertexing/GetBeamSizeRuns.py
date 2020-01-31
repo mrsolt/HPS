@@ -52,6 +52,8 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 
 	histo.Draw()
 	canvas.SetLogy(logY)
+	outfileroot.cd()
+	rootoutfile.Write()
 	canvas.Print(outfile+".pdf")
 	fitpar = []
 	fitpar.append(mean)
@@ -71,6 +73,8 @@ def saveFitParams(array,arrayErr,outfile,canvas,XaxisTitle="",YaxisTitle="",plot
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.Draw()
+	outfileroot.cd()
+	rootoutfile.Write()
 	canvas.Print(outfile+".pdf")
 	del histo
 
@@ -94,13 +98,12 @@ def getMaxX(string):
 	if(len(arr) < 3): return -9999
 	else: return float(arr[2])
 
-outfile = remainder[0]
-
 events = TChain("ntuple")
 for i in range(1,len(remainder)):
     events.Add(remainder[i])
 
 outfile = remainder[0]
+rootoutfile = TFile(remainder[0]+".root","RECREATE")
 infile = open(remainder[1],"r")
 infiles = []
 filenames = []
@@ -176,6 +179,9 @@ for i in range(len(fitGaus)):
 	del meanErr
 	del sigmaErr
 	closePDF(pdfFileName,c)
+
+rootoutfile.Write()
+rootoutfile.Close()
 
 textFileName = outfile+"_params.txt"
 textFile = open(textFileName,"w")
