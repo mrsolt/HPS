@@ -133,7 +133,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			color = color + 1
 		histos[i].SetLineColor(color)
 		color = color + 1
-		histos[i].Scale(1.0)
+		histos[i].Sumw2()
 		if(i == 0):
 			histos[i].Draw("")
 		else:
@@ -154,17 +154,17 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	outfileroot.cd()
 	canvas.Write()
 	for i in range(len(histos2)):
-		histos[0].Scale(1.0)
+		#histos[0].Sumw2()
 		histos[0].SetLineColor(1)
 		histos[0].Draw()
 		histos[0].SetTitle(plotTitle + " " + label[i] + " Exclusive")
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
 		histos[0].SetStats(stats)
-		histos2[i].Scale(1.0)
+		histos2[i].Sumw2()
 		histos2[i].SetLineColor(2)
 		histos2[i].Draw("same")
-		histos3[i].Scale(1.0)
+		histos3[i].Sumw2()
 		histos3[i].SetLineColor(4)
 		histos3[i].Draw("same")
 		legend3 = TLegend(.08,.66,.42,.87)
@@ -191,7 +191,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			color = color + 1
 		histos2[i].SetLineColor(color)
 		color = color + 1
-		histos2[i].Scale(1.0)
+		#histos2[i].Sumw2()
 		if(i == 0):
 			histos2[i].Draw("")
 			maximum = histos2[0].GetMaximum()
