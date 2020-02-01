@@ -140,8 +140,8 @@ posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP+3*(posTrkZ0Err+abs({0}*
 
 truthCutele = "(eleL1tIsGoodTruthHit>-0.5||eleL1tIsGoodTruthHit<0.5)||(eleL2tIsGoodTruthHit>-0.5||eleL2tIsGoodTruthHit<0.5)||(eleL1bIsGoodTruthHit>-0.5||eleL1bIsGoodTruthHit<0.5)||(eleL2bIsGoodTruthHit>-0.5||eleL2bIsGoodTruthHit<0.5)"
 truthCutpos = "(posL1tIsGoodTruthHit>-0.5||posL1tIsGoodTruthHit<0.5)||(posL2tIsGoodTruthHit>-0.5||posL2tIsGoodTruthHit<0.5)||(posL1bIsGoodTruthHit>-0.5||posL1bIsGoodTruthHit<0.5)||(posL2bIsGoodTruthHit>-0.5||posL2bIsGoodTruthHit<0.5)"
-purityCutele = "elePurity>0.99"
-purityCutpos = "posPurity>0.99"
+purityCutele = "elePurity>0.99"+"&&!("+truthCutele+")"
+purityCutpos = "posPurity>0.99"+"&&!("+truthCutpos+")"
 
 dataevents.Draw("uncVZ:{0}>>eleiso_data(100,-3,7,100,-40,60)".format(eleiso))
 dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso))
