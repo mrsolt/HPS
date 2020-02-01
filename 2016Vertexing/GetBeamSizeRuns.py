@@ -52,7 +52,7 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 
 	histo.Draw()
 	canvas.SetLogy(logY)
-	outfileroot.cd()
+	rootoutfile.cd()
 	rootoutfile.Write()
 	canvas.Print(outfile+".pdf")
 	fitpar = []
