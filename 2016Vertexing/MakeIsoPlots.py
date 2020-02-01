@@ -132,8 +132,8 @@ ap1events = ap1file.Get("ntuple")
 ap2file = TFile(remainder[4])
 ap2events = ap2file.Get("ntuple")
 
-eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP+3*(eleTrkZ0err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmega/eleTrkOmegaErr)))*sign(elePY)".format(zTarg)
-posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP+3*(posTrkZ0err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmega/posTrkOmegaErr)))*sign(posPY)".format(zTarg)
+eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP+3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmega/eleTrkOmegaErr)))*sign(elePY)".format(zTarg)
+posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP+3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmega/posTrkOmegaErr)))*sign(posPY)".format(zTarg)
 
 #eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
 #posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
