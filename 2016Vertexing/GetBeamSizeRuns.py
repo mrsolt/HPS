@@ -73,7 +73,7 @@ def saveFitParams(array,arrayErr,outfile,canvas,XaxisTitle="",YaxisTitle="",plot
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.Draw()
-	outfileroot.cd()
+	rootoutfile.cd()
 	rootoutfile.Write()
 	canvas.Print(outfile+".pdf")
 	del histo
