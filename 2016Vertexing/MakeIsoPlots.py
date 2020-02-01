@@ -132,8 +132,8 @@ ap1events = ap1file.Get("ntuple")
 ap2file = TFile(remainder[4])
 ap2events = ap2file.Get("ntuple")
 
-eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP+3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmega/eleTrkOmegaErr)))*sign(elePY)".format(zTarg)
-posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP+3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmega/posTrkOmegaErr)))*sign(posPY)".format(zTarg)
+eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP+3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))*sign(elePY)".format(zTarg)
+posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP+3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))*sign(posPY)".format(zTarg)
 
 #eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
 #posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
@@ -151,15 +151,15 @@ mcevents.Draw("uncVZ:{0}>>posiso_mc_truth(100,-3,7,100,-40,40)".format(posiso),t
 mcevents.Draw("uncVZ:{0}>>eleiso_mc(100,-3,7,100,-40,40)".format(eleiso),purityCut)
 mcevents.Draw("uncVZ:{0}>>posiso_mc(100,-3,7,100,-40,40)".format(posiso),purityCut)
 
-ap1events.Draw("uncVZ:{0}>>eleiso_ap1(100,-3,7,100,-40,40)".format(eleiso))
-ap1events.Draw("uncVZ:{0}>>posiso_ap1(100,-3,7,100,-40,40)".format(posiso))
-ap1events.Draw("uncVZ>>uncVZ_ap1(100,-40,40)")
-ap1events.Draw("uncVZ>>uncVZ_ap1_isocut(100,-40,40)",eleiso+">0&&"+posiso+">0")
+ap1events.Draw("uncVZ:{0}>>eleiso_ap1(100,-3,7,100,-40,60)".format(eleiso))
+ap1events.Draw("uncVZ:{0}>>posiso_ap1(100,-3,7,100,-40,60)".format(posiso))
+ap1events.Draw("uncVZ>>uncVZ_ap1(100,-40,60)")
+ap1events.Draw("uncVZ>>uncVZ_ap1_isocut(100,-40,60)",eleiso+">0&&"+posiso+">0")
 
-ap2events.Draw("uncVZ:{0}>>eleiso_ap2(100,-3,7,100,-40,40)".format(eleiso))
-ap2events.Draw("uncVZ:{0}>>posiso_ap2(100,-3,7,100,-40,40)".format(posiso))
-ap2events.Draw("uncVZ>>uncVZ_ap2(100,-40,40)")
-ap2events.Draw("uncVZ>>uncVZ_ap2_isocut(100,-40,40)",eleiso+">0&&"+posiso+">0")
+ap2events.Draw("uncVZ:{0}>>eleiso_ap2(100,-3,7,100,-40,60)".format(eleiso))
+ap2events.Draw("uncVZ:{0}>>posiso_ap2(100,-3,7,100,-40,60)".format(posiso))
+ap2events.Draw("uncVZ>>uncVZ_ap2(100,-40,60)")
+ap2events.Draw("uncVZ>>uncVZ_ap2_isocut(100,-40,60)",eleiso+">0&&"+posiso+">0")
 
 openPDF(outfile,c)
 
