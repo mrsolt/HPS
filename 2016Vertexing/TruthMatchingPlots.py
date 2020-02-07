@@ -69,7 +69,7 @@ print ("Number electrons without match:{0}  Number of positrons without a match:
 eleBad = TH1F("eleBad","eleBad",12,0,12)
 posBad = TH1F("posBad","posBad",12,0,12)
 
-for i in range(1,6):
+for i in range(1,12):
 	events.Draw("uncVZ>>eleHisto(1,0,1)".format(i),"(eleL{0}tIsGoodTruthHit<0.5&&eleL{0}tIsGoodTruthHit>-0.5)||(eleL{0}bIsGoodTruthHit<0.5&&eleL{0}bIsGoodTruthHit>-0.5)".format(i))
 	events.Draw("uncVZ>>posHisto(1,0,1)".format(i),"(posL{0}tIsGoodTruthHit<0.5&&posL{0}tIsGoodTruthHit>-0.5)||(posL{0}bIsGoodTruthHit<0.5&&posL{0}bIsGoodTruthHit>-0.5)".format(i))
 	eleHisto = gDirectory.FindObject("eleHisto")
