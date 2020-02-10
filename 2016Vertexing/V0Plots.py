@@ -78,8 +78,8 @@ label = str(remainder[2])
 events.Draw("uncVY:uncVX>>V0_pos(100,-1.5,1.5,100,-1,1)")
 events.Draw("uncTargProjY:uncTargProjX>>V0_proj(100,-1.5,1.5,100,-1,1)")
 
-events.Draw("(uncVY-{0})/{1}:(uncVX-{2})/{3}>>V0_pos_sig(100,-4,4,100,-4,4)".format(uncVX,uncVXSig,uncVY,uncVYSig))
-events.Draw("(uncTargProjY-{0})/{1}:(uncTargProjX-{2})/{3}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig))
+events.Draw("(uncVY-{2})/{3}:(uncVX-{0})/{1}>>V0_pos_sig(100,-4,4,100,-4,4)".format(uncVX,uncVXSig,uncVY,uncVYSig))
+events.Draw("(uncTargProjY-{2})/{3}:(uncTargProjX-{0})/{1}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig))
 
 V0_pos = gDirectory.FindObject("V0_pos")
 V0_proj = gDirectory.FindObject("V0_proj")
