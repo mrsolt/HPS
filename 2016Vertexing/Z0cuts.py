@@ -127,7 +127,7 @@ def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,in
 	#	sigmaErr = fit.GetParError(2)
 	#except Exception as ex:
 
-		print(ex)
+	#	print(ex)
 	fitpar.append(mean)
 	fitpar.append(meanErr)
 	fitpar.append(sigma)
