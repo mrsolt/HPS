@@ -170,10 +170,12 @@ for i in range(len(fitGaus)):
 	if(plot == "uncVZ"):
 		beamZ = mean
 		beamZSig = sigma
-	if(plot == "uncTargProjX"):
+	#if(plot == "uncTargProjX"):
+	if(plot == "uncVX-(uncVZ+4.3)*uncPX/uncPZ"):
 		targX = mean
 		targXSig = sigma
-	if(plot == "uncTargProjY"):
+	#if(plot == "uncTargProjY"):
+	if(plot == "uncVY-(uncVZ+4.3)*uncPY/uncPZ"):
 		targY = mean
 		targYSig = sigma
 	del mean
