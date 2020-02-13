@@ -141,6 +141,10 @@ for i in range(len(fitGaus)):
 	minX = getMinX(fitGaus[i])
 	maxX = getMaxX(fitGaus[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
+	if(plot == "uncVX-(uncVZ+4.3)*uncPX/uncPZ"):
+		pdfFileName = outfile+"_uncTargProjX_fit"
+	if(plot == "uncVY-(uncVZ+4.3)*uncPY/uncPZ"):
+		pdfFileName = outfile+"_uncTargProjY_fit"
 	openPDF(pdfFileName,c)
 	mean = []
 	sigma = []
@@ -159,8 +163,6 @@ for i in range(len(fitGaus)):
 		if(i == 0):
 			Run.append(str(event.run))
 		del params
-	saveFitParams(mean,meanErr,pdfFileName,c,"Run Number","Fitted Mean [mm]",plot)
-	saveFitParams(sigma,sigmaErr,pdfFileName,c,"Run Number","Fitted Sigma [mm]",plot)
 	if(plot == "uncVX"): 
 		beamX = mean
 		beamXSig = sigma
