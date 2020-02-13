@@ -116,8 +116,10 @@ fitGaus = []
 fitGaus.append("uncVX -2 2")
 fitGaus.append("uncVY -1 1")
 fitGaus.append("uncVZ -35 25")
-fitGaus.append("uncTargProjX -2 2")
-fitGaus.append("uncTargProjY -1 1")
+#fitGaus.append("uncTargProjX -2 2")
+#fitGaus.append("uncTargProjY -1 1")
+fitGaus.append("uncVX-(uncVZ+4.3)*uncPX/uncPZ -2 2")
+fitGaus.append("uncVY-(uncVZ+4.3)*uncPY/uncPZ -1 1")
 
 nBins = 100
 beamX = []

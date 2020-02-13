@@ -75,11 +75,15 @@ events = file.Get("ntuple")
 label = ""
 label = str(remainder[2])
 
+xProj = "uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg)
+yProj = "uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg)
+
 events.Draw("uncVY:uncVX>>V0_pos(100,-1.5,1.5,100,-1,1)")
-events.Draw("uncTargProjY:uncTargProjX>>V0_proj(100,-1.5,1.5,100,-1,1)")
+#events.Draw("uncTargProjY:uncTargProjX>>V0_proj(100,-1.5,1.5,100,-1,1)")
+events.Draw("{1}:{0}>>V0_proj(100,-1.5,1.5,100,-1,1)".format(xProj,yProj))
 
 events.Draw("(uncVY-{2})/{3}:(uncVX-{0})/{1}>>V0_pos_sig(100,-4,4,100,-4,4)".format(uncVX,uncVXSig,uncVY,uncVYSig))
-events.Draw("(uncTargProjY-{2})/{3}:(uncTargProjX-{0})/{1}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig))
+events.Draw("({5}-{2})/{3}:({4}-{0})/{1}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj,yProj))
 
 V0_pos = gDirectory.FindObject("V0_pos")
 V0_proj = gDirectory.FindObject("V0_proj")
