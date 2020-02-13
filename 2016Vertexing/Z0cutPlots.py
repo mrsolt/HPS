@@ -98,7 +98,8 @@ x0_cut2_neg = "({0}+{1}*uncM)".format(x0_cut2_neg_x0,x1_cut2_neg_x0)
 x1_cut2_neg = "({0}+{1}*uncM)".format(x0_cut2_neg_x1,x1_cut2_neg_x1)
 cut2_neg = "({0}+{1}*uncVZ)".format(x0_cut2_neg,x1_cut2_neg)
 
-cut = "(eleTrkZ0>{0}&&eleTrkZ0<{1}&&-posTrkZ0>{2}&&-posTrkZ0<{3})||(posTrkZ0>{0}&&posTrkZ0<{1}&&-eleTrkZ0>{2}&&-eleTrkZ0<{3})".format(cut1_pos,cut2_pos,cut1_neg,cut2_neg)
+#cut = "(eleTrkZ0>{0}&&eleTrkZ0<{1}&&-posTrkZ0>{2}&&-posTrkZ0<{3})||(posTrkZ0>{0}&&posTrkZ0<{1}&&-eleTrkZ0>{2}&&-eleTrkZ0<{3})".format(cut1_pos,cut2_pos,cut1_neg,cut2_neg)
+cut = "(eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1})".format(cut1_pos,cut1_neg)
 
 dataevents.Draw("uncVZ>>vz_data(100,-40,40)")
 dataevents.Draw("uncVZ:uncM>>vz_m_data(100,0,0.2,100,-40,40)")
