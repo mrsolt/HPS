@@ -105,7 +105,7 @@ cuts.append("abs(uncVX-{0})<3*{1}".format(uncVX,uncVXSig))
 cuts.append("abs(uncVY-{0})<3*{1}".format(uncVY,uncVYSig))
 cuts.append("abs(uncVX-(uncVZ-{2})*uncPX/uncPZ-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig,zTarg))
 cuts.append("abs(uncVY-(uncVZ-{2})*uncPY/uncPZ-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig,zTarg))
-cuts.append("min(eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega))),posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg))
+cuts.append("min(eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega))),posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega))))".format(zTarg))
 
 label = []
 #label.append("Preprocessing")
