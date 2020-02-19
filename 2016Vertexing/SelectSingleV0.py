@@ -16,6 +16,7 @@ def print_usage():
     print '\t-b: only keep best candidate'
     print '\t-o: only keep candidate if it\'s the only one'
     print '\t-m: use MC information'
+    print '\t-t: use MM full truth information'
     print '\t-p: make Plots'
     print '\t-h: this help message'
     print
@@ -25,9 +26,10 @@ cutOutput = False
 onlyBest = False
 onlyOnly = False
 useMC = False
+useFullTruth = False
 makePlots = False #Todo make plots
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomhp')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomthp')
 # Parse the command line arguments
 for opt, arg in options:
         if opt=='-e':
@@ -40,6 +42,8 @@ for opt, arg in options:
             onlyOnly = True
         if opt=='-m':
             useMC = True
+        if opt=='-t':
+            useFullTruth = True
         if opt=='-p':
             makePlots = True
         if opt=='-h':
@@ -125,13 +129,63 @@ branchlist=["event",
     "posHasL1",
     "eleHasL2",
     "posHasL2",
-    "nPos"]
+    "nPos",
+    "eleTrkExtrpYSensorAxialTopL1",
+    "eleTrkExtrpYSensorStereoTopL1",
+    "eleTrkExtrpYSensorAxialBotL1",
+    "eleTrkExtrpYSensorStereoBotL1",
+    "posTrkExtrpYSensorAxialTopL1",
+    "posTrkExtrpYSensorStereoTopL1",
+    "posTrkExtrpYSensorAxialBotL1",
+    "posTrkExtrpYSensorStereoBotL1"]
 
 if useMC:
     branchlist.append("triP")
 #    branchlist.append("triPair1P")
     branchlist.append("triM")
     branchlist.append("triEndZ")
+
+if useFullTruth:
+    branchlist.append("elepdgid")
+    branchlist.append("eleparentID")
+    branchlist.append("eleHasTruthMatch")
+    branchlist.append("elePurity")
+    branchlist.append("pospdgid")
+    branchlist.append("posparentID")
+    branchlist.append("posHasTruthMatch")
+    branchlist.append("posPurity")
+    branchlist.append("eleL1tsvtthetaY")
+    branchlist.append("eleL2tsvtthetaY")
+    branchlist.append("eleL3tsvtthetaY")
+    branchlist.append("eleL4tsvtthetaY")
+    branchlist.append("eleL1bsvtthetaY")
+    branchlist.append("eleL2bsvtthetaY")
+    branchlist.append("eleL3bsvtthetaY")
+    branchlist.append("eleL4bsvtthetaY")
+    branchlist.append("posL1tsvtthetaY")
+    branchlist.append("posL2tsvtthetaY")
+    branchlist.append("posL3tsvtthetaY")
+    branchlist.append("posL4tsvtthetaY")
+    branchlist.append("posL1bsvtthetaY")
+    branchlist.append("posL2bsvtthetaY")
+    branchlist.append("posL3bsvtthetaY")
+    branchlist.append("posL4bsvtthetaY")
+    branchlist.append("eleL1tIsGoodTruthHit")
+    branchlist.append("eleL2tIsGoodTruthHit")
+    branchlist.append("eleL3tIsGoodTruthHit")
+    branchlist.append("eleL4tIsGoodTruthHit")
+    branchlist.append("eleL1bIsGoodTruthHit")
+    branchlist.append("eleL2bIsGoodTruthHit")
+    branchlist.append("eleL3bIsGoodTruthHit")
+    branchlist.append("eleL4bIsGoodTruthHit")
+    branchlist.append("posL1tIsGoodTruthHit")
+    branchlist.append("posL2tIsGoodTruthHit")
+    branchlist.append("posL3tIsGoodTruthHit")
+    branchlist.append("posL4tIsGoodTruthHit")
+    branchlist.append("posL1bIsGoodTruthHit")
+    branchlist.append("posL2bIsGoodTruthHit")
+    branchlist.append("posL3bIsGoodTruthHit")
+    branchlist.append("posL4bIsGoodTruthHit")
 events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple")
 
 n = events.size
@@ -213,13 +267,63 @@ names = ["event",
     "posHasL1",
     "eleHasL2",
     "posHasL2",
-    "nPos"]
+    "nPos",
+    "eleTrkExtrpYSensorAxialTopL1",
+    "eleTrkExtrpYSensorStereoTopL1",
+    "eleTrkExtrpYSensorAxialBotL1",
+    "eleTrkExtrpYSensorStereoBotL1",
+    "posTrkExtrpYSensorAxialTopL1",
+    "posTrkExtrpYSensorStereoTopL1",
+    "posTrkExtrpYSensorAxialBotL1",
+    "posTrkExtrpYSensorStereoBotL1"]
 
 if useMC:
     names.append("triP")
 #    names.append("triPair1P")
     names.append("triM")
     names.append("triEndZ")
+
+if useFullTruth:
+    names.append("elepdgid")
+    names.append("eleparentID")
+    names.append("eleHasTruthMatch")
+    names.append("elePurity")
+    names.append("pospdgid")
+    names.append("posparentID")
+    names.append("posHasTruthMatch")
+    names.append("posPurity")
+    names.append("eleL1tsvtthetaY")
+    names.append("eleL2tsvtthetaY")
+    names.append("eleL3tsvtthetaY")
+    names.append("eleL4tsvtthetaY")
+    names.append("eleL1bsvtthetaY")
+    names.append("eleL2bsvtthetaY")
+    names.append("eleL3bsvtthetaY")
+    names.append("eleL4bsvtthetaY")
+    names.append("posL1tsvtthetaY")
+    names.append("posL2tsvtthetaY")
+    names.append("posL3tsvtthetaY")
+    names.append("posL4tsvtthetaY")
+    names.append("posL1bsvtthetaY")
+    names.append("posL2bsvtthetaY")
+    names.append("posL3bsvtthetaY")
+    names.append("posL4bsvtthetaY")
+    names.append("eleL1tIsGoodTruthHit")
+    names.append("eleL2tIsGoodTruthHit")
+    names.append("eleL3tIsGoodTruthHit")
+    names.append("eleL4tIsGoodTruthHit")
+    names.append("eleL1bIsGoodTruthHit")
+    names.append("eleL2bIsGoodTruthHit")
+    names.append("eleL3bIsGoodTruthHit")
+    names.append("eleL4bIsGoodTruthHit")
+    names.append("posL1tIsGoodTruthHit")
+    names.append("posL2tIsGoodTruthHit")
+    names.append("posL3tIsGoodTruthHit")
+    names.append("posL4tIsGoodTruthHit")
+    names.append("posL1bIsGoodTruthHit")
+    names.append("posL2bIsGoodTruthHit")
+    names.append("posL3bIsGoodTruthHit")
+    names.append("posL4bIsGoodTruthHit")
 
 stuff = [[events[i],(i,events.dtype[i])] for i in names]
 stuff.append([cut,("cut",numpy.int8)])
