@@ -378,14 +378,14 @@ if onlyOnly:
 
 print("Number of events with a duplicate V0 = {0}".format(duplicates))
 print("Total Number of V0s = {0}".format(n))
-root_numpy.array2root(output,remainder[0],mode="recreate",treename="ntuple")
+root_numpy.array2root(output,remainder[0]+".root",mode="recreate",treename="ntuple")
 
 if(makePlots):
     gStyle.SetOptStat(0)
     c = TCanvas("c","c",800,600)
     c.Print(remainder[0]+".pdf[")
     infile = TFile(remainder[1])
-    outfile = TFile(remainder[0])
+    outfile = TFile(remainder[0]+".root")
     events_in = infile.Get("ntuple")
     events_out = outfile.Get("ntuple")
     nBins = 50
@@ -406,6 +406,8 @@ if(makePlots):
         histo_in = ROOT.gROOT.FindObject("histo_in")
         events_out.Draw("{0}>>{1}({2},{3},{4})".format(plot,"histo_out",nBins,minX,maxX))
         histo_out = ROOT.gROOT.FindObject("histo_out")
+        histo_in.Sumw2()
+        histo_out.Sumw2()
         histo_in.Draw()
         histo_in.GetXaxis().SetTitle(plot)
         histo_in.SetTitle(plot)
