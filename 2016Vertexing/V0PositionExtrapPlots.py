@@ -84,12 +84,14 @@ def saveTupleFitPlotsZ(events,inHisto,nBins,mass,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_mean.GetYaxis().SetTitle("Mean (mm)")
 	gr_mean.GetYaxis().SetRangeUser(-0.4,0)
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 	gr_sigma.Draw("AP")
 	gr_sigma.SetTitle("{0} Fitted Sigma {1:.0f} MeV A'".format(plot,mass))
 	gr_sigma.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_sigma.GetYaxis().SetTitle("Sigma (mm)")
 	gr_sigma.GetYaxis().SetRangeUser(0,0.4)
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 	del histo
 	del gr_mean
 	del gr_sigma
@@ -134,6 +136,7 @@ def getMax(string):
 nBins = 50
 
 outfile = remainder[0]
+outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 apfile = open(remainder[1],"r")
 apfiles = []
@@ -152,11 +155,6 @@ for i in range(len(apfiles)):
 	masserror.append(0.0)
 	del dummy
 
-fittedmean = array.array('d')
-fittedsigma = array.array('d')
-fittedmeanerror = array.array('d')
-fittedsigmaerror = array.array('d')
-
 plots = []
 plots.append("uncVX -1 1")
 plots.append("uncVY -0.5 0.5")
@@ -164,7 +162,12 @@ plots.append("uncVX-(uncVZ-{0})*uncPX/uncPZ -1 1".format(zTarg))
 plots.append("uncVY-(uncVZ-{0})*uncPY/uncPZ -0.5 0.5".format(zTarg))
 
 openPDF(outfile,c)
+outfileroot.cd()
 for i in range(len(plots)):
+	fittedmean = array.array('d')
+	fittedsigma = array.array('d')
+	fittedmeanerror = array.array('d')
+	fittedsigmaerror = array.array('d')
 	for j in range(len(mass)):
 		plot = getPlot(plots[i])
 		minX = getMin(plots[i])
@@ -185,6 +188,7 @@ for i in range(len(plots)):
 	gr_mean.GetYaxis().SetRangeUser(-0.4,0)
 	gr_mean.Draw("AP")
 	c.Print(outfile+".pdf")
+	c.Write()
 
 	gr_sigma.SetTitle("{0} Sigma ".format(plot))
 	gr_sigma.GetXaxis().SetTitle("Truth Mass (MeV)")
@@ -193,5 +197,12 @@ for i in range(len(plots)):
 	gr_sigma.Draw("AP")
 
 	c.Print(outfile+".pdf")
+	c.Write()
+
+	del fittedmean
+	del fittedsigma
+	del fittedmeanerror
+	del fittedsigmaerror
 
 closePDF(outfile,c)
+outfileroot.Close()
