@@ -160,8 +160,8 @@ fittedsigmaerror = array.array('d')
 plots = []
 plots.append("uncVX -1 1")
 plots.append("uncVY -0.5 0.5")
-plots.append("uncTargProjX -1 1")
-plots.append("uncTargProjY -0.5 0.5")
+plots.append("uncVX-(uncVZ-{0})*uncPX/uncPZ -1 1".format(zTarg))
+plots.append("uncVY-(uncVZ-{0})*uncPY/uncPZ -0.5 0.5".format(zTarg))
 
 openPDF(outfile,c)
 for i in range(len(plots)):
