@@ -26,6 +26,7 @@ def print_usage():
     print '\t-a: uncTargProjY mean (default 0)'
     print '\t-b: uncTargProjY sigma (default 9999)'
     print '\t-f: use preprocessing cuts and labels (default false)'
+    print '\t-r: is L1L2 category (default false)'
     print '\t-d: do not use data file (default use)'
     print '\t-c: do not use MC file (default use)'
     print '\t-l: do not use Ap file (default use)'
@@ -41,6 +42,7 @@ useData = True
 useMC = True
 useAp = True
 preproc = False
+L1L2 = False
 clusterT = 56
 uncVX = 0.
 uncVXSig = 9999.
@@ -51,7 +53,7 @@ uncTargProjXSig = 9999.
 uncTargProjY = 0.
 uncTargProjYSig = 9999.
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:fdcl')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:frdcl')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -85,6 +87,8 @@ for opt, arg in options:
 			uncTargProjYSig=float(arg)
 		if opt=='-f':
 			preproc = True
+		if opt=='-r':
+			L1L2 = True
 		if opt=='-d':
 			useData = False
 		if opt=='-c':
@@ -148,6 +152,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	histos = []
 	histos2 = []
 	histos3 = []
+	histos4 = []
 	cut_tot = ""
 	for i in range(len(cuts)):
 		cut = cuts[i]
@@ -169,11 +174,37 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos2.append(ROOT.gROOT.FindObject("histo2{0}".format(i)))
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}".format(i),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
 		histos3.append(ROOT.gROOT.FindObject("histo3{0}".format(i)))
+		if(inHisto == "uncVZ"):
+			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}".format(i),nBins,0.,0.2,minX,maxX),cuts_1)
+			histos4.append(ROOT.gROOT.FindObject("histo4{0}".format(i)))
+	
+	if(inHisto == "uncVZ"):
+		events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo_2D",nBins,0.,0.2,minX,maxX),cut_tot)
+		histo_2D = ROOT.gROOT.FindObject("histo_2D")
+		canvas.SetLogz(1)
+		canvas.SetLogy(0)
+		histo_2D.Draw("COLZ")
+		histo_2D.SetTitle("Vz vs Mass All Cuts")
+		histo_2D.GetXaxis().SetTitle("Mass [GeV]")
+		histo_2D.GetYaxis().SetTitle("Reconstructed z [mm]")
+		histo_2D.SetStats(stats)
+		canvas.Print(outfile+".pdf")
+
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
 	histos[0].SetStats(stats)
 	color = 1
+	for i in range(len(histos4)):
+		canvas.SetLogy(0)
+		histos4[i].Draw("COLZ")
+		histos4[i].SetTitle("Vz vs Mass " + label[i] + " Exclusive")
+		histos4[i].GetXaxis().SetTitle("Mass [GeV]")
+		histos4[i].GetYaxis().SetTitle("Reconstructed z [mm]")
+		histos4[i].SetStats(stats)
+		canvas.Print(outfile+".pdf")
+		canvas.SetLogy(logY)
+
 	for i in range(len(histos)):
 		if(color == 5 or color == 10):
 			color = color + 1
@@ -259,6 +290,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	del histos
 	del histos2
 	del histos3
+	del histos4
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
@@ -355,24 +387,79 @@ if(preproc):
 	label.append("Unconstrained Vertex Chisq < 10")
 
 else:
-	cuts.append("uncP< 1.15*2.3")
-	cuts.append("uncChisq<4")
+	label.append("Preselection")
+
+	if(L1L2):
+		x0_cut1_pos_x0 = -0.3187
+		x1_cut1_pos_x0 = -0.9498
+
+		x0_cut1_neg_x0 = -0.09418
+		x1_cut1_neg_x0 = -0.7761
+
+		x0_cut1_pos_x1 = 0.02095
+		x1_cut1_pos_x1 = 0.05914
+
+		x0_cut1_neg_x1 = 0.02016
+		x1_cut1_neg_x1 = 0.05854
+
+		eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+		eleisoL2 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL2 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+		eleiso = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1,eleisoL2)
+		posiso = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
+
+		cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
+		label.append("e- (!L1 & L2) or e+ (!L1 & L2)")
+	else:
+		x0_cut1_pos_x0 = -0.2289
+		x1_cut1_pos_x0 = -1.09
+
+		x0_cut1_neg_x0 = -0.0009241
+		x1_cut1_neg_x0 = -1.612
+
+		x0_cut1_pos_x1 = 0.009205
+		x1_cut1_pos_x1 = 0.2069
+
+		x0_cut1_neg_x1 = 0.0091
+		x1_cut1_neg_x1 = 0.2341
+
+		eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+		cuts.append("eleHasL1&&posHasL1&&eleHasL2&&posHasL2")
+		label.append("e+e- L1 & L2")
+
+	x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
+	x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
+	cut1_pos = "({0}+{1}*uncVZ)".format(x0_cut1_pos,x1_cut1_pos)
+
+	x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
+	x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
+	cut1_neg = "({0}+{1}*uncVZ)".format(x0_cut1_neg,x1_cut1_neg)
+
+	z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
+	isocut = "({0}&&{1})".format(eleiso,posiso)
+
 	cuts.append("abs(uncVX-{0})<3*{1}".format(uncVX,uncVXSig))
 	cuts.append("abs(uncVY-{0})<3*{1}".format(uncVY,uncVYSig))
-	cuts.append("abs(uncTargProjX-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig))
-	cuts.append("abs(uncTargProjY-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig))
-	cuts.append("uncP>0.8*2.3")
-	cuts.append("min(eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY),posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY))>0".format(zTarg))
+	cuts.append("abs((uncVX-(uncVZ-{2})*uncPX/uncPZ)-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig,zTarg))
+	cuts.append("abs((uncVY-(uncVZ-{2})*uncPY/uncPZ)-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig,zTarg))
+	cuts.append("uncChisq<4")
+	cuts.append("uncP>1.55")
+	cuts.append(isocut)
+	cuts.append(z0cut)
 
-	label.append("Preselection")
-	label.append("V0 momentum < 1.15 E")
-	label.append("Unconstrained Vertex Chisq < 4")
 	label.append("V0 X 3 sigma")
 	label.append("V0 Y 3 sigma")
 	label.append("V0 Projection X 3 sigma")
 	label.append("V0 Projection Y 3 sigma")
-	label.append("V0 momentum > 0.8 E")
-	label.append("Nominal Isolation Cut")
+	label.append("Unconstrained Vertex Chisq < 4")
+	label.append("V0 momentum > 1.55 GeV")
+	label.append("Isolation Cut")
+	label.append("Impact Parameter Cuts")
 
 #for i in range(1,len(cuts)):
 #	label.append(cuts[i])
