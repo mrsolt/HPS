@@ -413,6 +413,11 @@ else:
 
 		cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
 		label.append("e- (!L1 & L2) or e+ (!L1 & L2)")
+		uncVXSig = 1.25 * uncVXSig
+		uncVYSig = 1.5 * uncVYSig
+		uncTargProjXSig = 1.25 * uncTargProjXSig
+		uncTargProjYSig = 1.5 * uncTargProjYSig
+
 	else:
 		x0_cut1_pos_x0 = -0.2289
 		x1_cut1_pos_x0 = -1.09
@@ -443,19 +448,23 @@ else:
 	z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
 	isocut = "({0}&&{1})".format(eleiso,posiso)
 
-	cuts.append("abs(uncVX-{0})<3*{1}".format(uncVX,uncVXSig))
-	cuts.append("abs(uncVY-{0})<3*{1}".format(uncVY,uncVYSig))
-	cuts.append("abs((uncVX-(uncVZ-{2})*uncPX/uncPZ)-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig,zTarg))
-	cuts.append("abs((uncVY-(uncVZ-{2})*uncPY/uncPZ)-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig,zTarg))
+	cuts.append("sqrt((abs(uncVX-{0})/(3*{1}))^2+(abs(uncVY-{2})/(3*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
+	#cuts.append("abs(uncVX-{0})<3*{1}".format(uncVX,uncVXSig))
+	#cuts.append("abs(uncVY-{0})<3*{1}".format(uncVY,uncVYSig))
+	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(3*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(3*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	#cuts.append("abs((uncVX-(uncVZ-{2})*uncPX/uncPZ)-{0})<3*{1}".format(uncTargProjX,uncTargProjXSig,zTarg))
+	#cuts.append("abs((uncVY-(uncVZ-{2})*uncPY/uncPZ)-{0})<3*{1}".format(uncTargProjY,uncTargProjYSig,zTarg))
 	cuts.append("uncChisq<4")
 	cuts.append("uncP>1.55")
 	cuts.append(isocut)
 	cuts.append(z0cut)
 
-	label.append("V0 X 3 sigma")
-	label.append("V0 Y 3 sigma")
-	label.append("V0 Projection X 3 sigma")
-	label.append("V0 Projection Y 3 sigma")
+	label.append("V0 3 sigma")
+	label.append("V0 Projection 3 sigma")
+	#label.append("V0 X 3 sigma")
+	#label.append("V0 Y 3 sigma")
+	#label.append("V0 Projection X 3 sigma")
+	#label.append("V0 Projection Y 3 sigma")
 	label.append("Unconstrained Vertex Chisq < 4")
 	label.append("V0 momentum > 1.55 GeV")
 	label.append("Isolation Cut")
