@@ -27,6 +27,7 @@ def print_usage():
     print '\t-b: uncTargProjY sigma (default 9999)'
     print '\t-f: use preprocessing cuts and labels (default false)'
     print '\t-r: is L1L2 category (default false)'
+    print '\t-y: plot label'
     print '\t-d: use data file (default False)'
     print '\t-c: use MC file (default False)'
     print '\t-l: use Ap file (default False)'
@@ -52,8 +53,9 @@ uncTargProjX = 0.
 uncTargProjXSig = 9999.
 uncTargProjY = 0.
 uncTargProjYSig = 9999.
+Label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:frdcl')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:y:frdcl')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -85,6 +87,8 @@ for opt, arg in options:
 			uncTargProjY=float(arg)
 		if opt=='-b':
 			uncTargProjYSig=float(arg)
+		if opt=='-y':
+			Label=str(arg)
 		if opt=='-f':
 			preproc = True
 		if opt=='-r':
@@ -122,16 +126,16 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 						cuts_1 = cuts_1 + "&&" + cuts[j]
 					else:
 						cuts_1 = cuts[j]
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cut_tot)
-		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}".format(i),nBins,minX,maxX),cuts_1)
-		histos2.append(ROOT.gROOT.FindObject("histo2{0}".format(i)))
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}".format(i),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
-		histos3.append(ROOT.gROOT.FindObject("histo3{0}".format(i)))
+		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histos{0}_{1}".format(i,inHisto),nBins,minX,maxX),cut_tot)
+		histos.append(ROOT.gROOT.FindObject("histos{0}_{1}".format(i,inHisto)))
+		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1)
+		histos2.append(ROOT.gROOT.FindObject("histo2{0}_{1}".format(i,inHisto)))
+		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
+		histos3.append(ROOT.gROOT.FindObject("histo3{0}_{1}".format(i,inHisto)))
 		if(inHisto == "uncVZ"):
-			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}".format(i),nBins,0.,0.2,minX,maxX),cuts_1)
-			histos4.append(ROOT.gROOT.FindObject("histo4{0}".format(i)))
-	
+			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,minX,maxX),cuts_1)
+			histos4.append(ROOT.gROOT.FindObject("histo4{0}_{1}".format(i,inHisto)))
+	outfileroot.cd()
 	if(inHisto == "uncVZ"):
 		events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo_2D",nBins,0.,0.2,minX,maxX),cut_tot)
 		histo_2D = ROOT.gROOT.FindObject("histo_2D")
@@ -143,6 +147,8 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histo_2D.GetYaxis().SetTitle("Reconstructed z [mm]")
 		histo_2D.SetStats(stats)
 		canvas.Print(outfile+".pdf")
+		canvas.Write()
+		histo_2D.Write("histo_2D")
 
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
@@ -157,6 +163,8 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos4[i].GetYaxis().SetTitle("Reconstructed z [mm]")
 		histos4[i].SetStats(stats)
 		canvas.Print(outfile+".pdf")
+		canvas.Write()
+		histos4[i].Write("histo4{0}_{1}".format(i,inHisto))
 		canvas.SetLogy(logY)
 
 	for i in range(len(histos)):
@@ -167,8 +175,10 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos[i].Scale(1.0)
 		if(i == 0):
 			histos[i].Draw("")
+			histos[i].Write("histos{0}_{1}".format(i,inHisto))
 		else:
 			histos[i].Draw("same")
+			histos[i].Write("histos{0}_{1}".format(i,inHisto))
 	legend = TLegend(.08,.46,.42,.87)
 	if(inHisto == "uncM"):
 		legend = TLegend(.58,.46,.92,.87)
@@ -182,6 +192,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	legend.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 	for i in range(len(histos2)):
 		histos[0].Scale(1.0)
 		histos[0].SetLineColor(1)
@@ -190,12 +201,15 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
 		histos[0].SetStats(stats)
+		#histos[0].Write("histos{0}_{1}".format(i,inHisto))
 		histos2[i].Scale(1.0)
 		histos2[i].SetLineColor(2)
 		histos2[i].Draw("same")
+		histos2[i].Write("histo2{0}_{1}".format(i,inHisto))
 		histos3[i].Scale(1.0)
 		histos3[i].SetLineColor(4)
 		histos3[i].Draw("same")
+		histos3[i].Write("histo3{0}_{1}".format(i,inHisto))
 		legend3 = TLegend(.08,.66,.42,.87)
 		if(inHisto == "uncM"):
 			legend3 = TLegend(.58,.66,.92,.87)
@@ -209,10 +223,12 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		legend3.AddEntry(histos3[i],"With " + labels[i],"LP")
 		legend3.Draw("same")
 		canvas.Print(outfile+".pdf")
+		canvas.Write()
 	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
 	histos2[0].SetStats(stats)
+	#histos2[0].Write("histos20")
 	color = 1
 	for i in range(len(histos2)):
 		if(color == 5 or color == 10):
@@ -222,9 +238,11 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos2[i].Scale(1.0)
 		if(i == 0):
 			histos2[i].Draw("")
+			#histos2[i].Write("histos2{0}_{1}".format(i,inHisto))
 			maximum = histos2[0].GetMaximum()
 		else:
 			histos2[i].Draw("same")
+			#histos2[i].Write("histos2{0}_{1}".format(i,inHisto))
 			if(histos2[i].GetMaximum() > maximum):
 				maximum = histos2[i].GetMaximum()
 	histos2[0].GetYaxis().SetRangeUser(0.1,1.2*maximum)
@@ -241,6 +259,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	legend2.Draw("")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 	del histos
 	del histos2
 	del histos3
@@ -277,41 +296,44 @@ def getNEvents(events,cut_tot,i):
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
 
-if(useData):
-	datafile = open(remainder[1],"r")
-	dataFiles = []
+file = TFile(remainder[1])
+events = file.Get("ntuple")
 
-	for line in (raw.strip().split() for raw in datafile):
-		dataFiles.append(line[0])
-	dataevents = TChain("ntuple")
-	for i in range(len(dataFiles)):
-		dataevents.Add(dataFiles[i])
+#if(useData):
+#	datafile = open(remainder[1],"r")
+#	dataFiles = []
 
-if(useMC):
-	mcfile = open(remainder[1],"r")
-	mcFiles = []
+#	for line in (raw.strip().split() for raw in datafile):
+#		dataFiles.append(line[0])
+#	dataevents = TChain("ntuple")
+#	for i in range(len(dataFiles)):
+#		dataevents.Add(dataFiles[i])
 
-	for line in (raw.strip().split() for raw in mcfile):
-		mcFiles.append(line[0])
-	mcevents = TChain("ntuple")
-	for i in range(len(mcFiles)):
-		mcevents.Add(mcFiles[i])
+#if(useMC):
+#	mcfile = open(remainder[1],"r")
+#	mcFiles = []
 
-if(useAp):
-	apfile = open(remainder[1],"r")
-	apfiles = []
-	events = []
-	mass = []
+#	for line in (raw.strip().split() for raw in mcfile):
+#		mcFiles.append(line[0])
+#	mcevents = TChain("ntuple")
+#	for i in range(len(mcFiles)):
+#		mcevents.Add(mcFiles[i])
 
-	for line in (raw.strip().split() for raw in apfile):
-		apfiles.append(TFile(line[0]))
+#if(useAp):
+#	apfile = open(remainder[1],"r")
+#	apfiles = []
+#	events = []
+#	mass = []
 
-	for i in range(len(apfiles)):
-		events.append(apfiles[i].Get("ntuple"))
-		events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
-		dummy = ROOT.gROOT.FindObject("dummy")
-		mass.append(dummy.GetMean())
-		del dummy
+#	for line in (raw.strip().split() for raw in apfile):
+#		apfiles.append(TFile(line[0]))
+
+#	for i in range(len(apfiles)):
+#		events.append(apfiles[i].Get("ntuple"))
+#		events[i].Draw("triM>>dummy({0},{1},{2})".format(1000,0,1))
+#		dummy = ROOT.gROOT.FindObject("dummy")
+#		mass.append(dummy.GetMean())
+#		del dummy
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))
@@ -333,8 +355,6 @@ cuts = []
 cuts.append("uncP<9999")
 if(preproc):
 	cuts.append("isPair1")
-	#cuts.append("eleHasL1&&posHasL1")
-	#cuts.append("eleHasL2&&posHasL2")
 	cuts.append("eleMatchChisq<10&&posMatchChisq<10")
 	cuts.append("abs(eleClT-posClT)<1.45")
 	cuts.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterT))
@@ -346,8 +366,6 @@ if(preproc):
 
 	label.append("Preprocessing")
 	label.append("Pair1 Trigger")
-	#label.append("e+e- L1 Hit")
-	#label.append("e+e- L2 Hit")
 	label.append("Track/Cluster Match Chisq < 10")
 	label.append("Cluster Time Diff < 1.45 ns")
 	label.append("Track/Cluster Time Diff < 4 ns")
@@ -447,13 +465,15 @@ for i in range(len(plots)):
 	minimum = getMin(plots[i])
 	maximum = getMax(plots[i])
 	plotlabel = plotlabels[i]
-	if(useData):
-		saveCutFlow(dataevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " Data",stats=0,logY=setlog[i])
-	if(useMC):
-		saveCutFlow(mcevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " MC",stats=0,logY=setlog[i])
-	if(useAp):
-		for j in range(len(mass)):
-			saveCutFlow(events[j],plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ ' Ap {0:.0f} MeV'.format(mass[j]*1000),stats=0,logY=setlog[i])
+	saveCutFlow(events,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0}".format(Label),stats=0,logY=setlog[i])
+	#if(useData):
+	#	saveCutFlow(events,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " Data",stats=0,logY=setlog[i])
+	#if(useMC):
+	#	saveCutFlow(events,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " MC",stats=0,logY=setlog[i])
+	#if(useAp):
+		#for j in range(len(mass)):
+			#saveCutFlow(events[j],plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ ' Ap {0:.0f} MeV'.format(mass[j]*1000),stats=0,logY=setlog[i])
+	#	saveCutFlow(event,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ ' Ap',stats=0,logY=setlog[i])
 
 histo_cutflow = TH1F("histo_cutflow","histo_cutflow",len(cuts),0,len(cuts))
 
@@ -464,7 +484,7 @@ for i in range(len(cuts)):
 	if(i == 0):
 		cut_all = cut
 	else:
-		cut_all = cut_tot + "&&" + cut
+		cut_all = cut_all + "&&" + cut
 
 for i in range(len(cuts)):
 	if(i == 0):
@@ -478,7 +498,8 @@ for i in range(len(cuts)):
 histo_cutflow.Draw()
 histo_cutflow.SetTitle("Cut Flow")
 histo_cutflow.GetXaxis().SetTitle("Cut")
-outfileroot.Write()
+c.Print(outfile+".pdf")
+histo_cutflow.Write("histo_cutflow")
 
 closePDF(outfile,c)
 outfileroot.Close()
