@@ -444,14 +444,14 @@ else:
 	cuts.append("sqrt((abs(uncVX-{0})^2/(3*{1}))^2+(abs(uncVY-{2})^2/(3*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
 	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})^2/(3*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})^2/(3*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
 	cuts.append("uncChisq<4")
-	cuts.append("uncP>1.55")
+	cuts.append("uncP>1.9")
 	cuts.append(isocut)
 	cuts.append(z0cut)
 
 	label.append("V0 3 sigma")
 	label.append("V0 Projection 3 sigma")
 	label.append("Unconstrained Vertex Chisq < 4")
-	label.append("V0 momentum > 1.55 GeV")
+	label.append("V0 momentum > 1.9 GeV")
 	label.append("Isolation Cut")
 	label.append("Impact Parameter Cuts")
 

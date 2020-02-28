@@ -143,7 +143,7 @@ label.append("e+e- L1 & L2")
 label.append("V0 3 sigma")
 label.append("V0 Projection 3 sigma")
 label.append("Unconstrained Vertex Chisq < 4")
-label.append("V0 momentum > 1.55 GeV")
+label.append("V0 momentum > 1.9 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
