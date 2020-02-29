@@ -37,6 +37,8 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,out
 	outfileroot.cd()
 	canvas.Clear()
 
+	canvas.SetLogy(1)
+	canvas.SetLogz(1)
 	histo.SetLineColor(1)
 	histo.Draw()
 	histo.SetTitle(plotTitle + " " + label)
