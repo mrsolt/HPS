@@ -125,6 +125,8 @@ def saveCutFlow(events,inHisto,i,cuts_1,cut1,cut2,cut3,nBins,minX,maxX,label,out
 	histo8 = ROOT.gROOT.FindObject("histo8{0}".format(i))
 	outfileroot.cd()
 
+	canvas.SetLogy(1)
+	canvas.SetLogz(1)
 	histo.SetLineColor(1)
 	histo.Draw()
 	histo.SetTitle(plotTitle + " " + label)
