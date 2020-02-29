@@ -441,8 +441,8 @@ else:
 	z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
 	isocut = "({0}&&{1})".format(eleiso,posiso)
 
-	cuts.append("sqrt((abs(uncVX-{0})^2/(3*{1}))^2+(abs(uncVY-{2})^2/(3*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
-	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})^2/(3*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})^2/(3*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	cuts.append("sqrt((abs(uncVX-{0})/(3*{1}))^2+(abs(uncVY-{2})/(3*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
+	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(3*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(3*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
 	cuts.append("uncChisq<4")
 	cuts.append("uncP>1.9")
 	cuts.append(isocut)
