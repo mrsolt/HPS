@@ -33,15 +33,19 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=1):
+def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=1):
 	outfileroot.cd()
 	canvas.Clear()
+
+	label1 = label[3*i+2]
+	label2 = label[3*i+3]
+	label3 = label[3*i+4]
 
 	canvas.SetLogy(1)
 	canvas.SetLogz(1)
 	histo.SetLineColor(1)
 	histo.Draw()
-	histo.SetTitle(plotTitle + " " + label)
+	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
@@ -57,17 +61,17 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,out
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.035)
-	legend.AddEntry(histo,"Without " + label,"LP")
-	legend.AddEntry(histo2,"With Cut1","LP")
-	legend.AddEntry(histo3,"With Cut2","LP")
-	legend.AddEntry(histo4,"With Cut3","LP")
+	legend.AddEntry(histo,"Without " + label1,"LP")
+	legend.AddEntry(histo2,"{0}".format(label1),"LP")
+	legend.AddEntry(histo3,"{0}".format(label2),"LP")
+	legend.AddEntry(histo4,"{0}".format(label3),"LP")
 	legend.Draw("same")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
 
 	canvas.SetLogy(0)
 	histo5.Draw("COLZ")
-	histo5.SetTitle("Vz vs Mass " + label + " Exclusive")
+	histo5.SetTitle("Vz vs Mass " + label1 + " Exclusive")
 	histo5.GetXaxis().SetTitle("Mass [GeV]")
 	histo5.GetYaxis().SetTitle("Reconstructed z [mm]")
 	histo5.SetStats(stats)
@@ -75,7 +79,7 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,out
 	canvas.Write()
 
 	histo6.Draw("COLZ")
-	histo6.SetTitle("Vz vs Mass " + label + " Cut1")
+	histo6.SetTitle("Vz vs Mass " + label1)
 	histo6.GetXaxis().SetTitle("Mass [GeV]")
 	histo6.GetYaxis().SetTitle("Reconstructed z [mm]")
 	histo6.SetStats(stats)
@@ -83,7 +87,7 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,out
 	canvas.Write()
 
 	histo7.Draw("COLZ")
-	histo7.SetTitle("Vz vs Mass " + label + " Cut2")
+	histo7.SetTitle("Vz vs Mass " + label2)
 	histo7.GetXaxis().SetTitle("Mass [GeV]")
 	histo7.GetYaxis().SetTitle("Reconstructed z [mm]")
 	histo7.SetStats(stats)
@@ -91,7 +95,7 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,out
 	canvas.Write()
 
 	histo8.Draw("COLZ")
-	histo8.SetTitle("Vz vs Mass " + label + " Cut3")
+	histo8.SetTitle("Vz vs Mass " + label3)
 	histo8.GetXaxis().SetTitle("Mass [GeV]")
 	histo8.GetYaxis().SetTitle("Reconstructed z [mm]")
 	histo8.SetStats(stats)
@@ -115,12 +119,24 @@ c = TCanvas("c","c",800,600)
 label = []
 label.append("Preselection")
 label.append("e+e- L1 & L2")
-label.append("V0 Position")
-label.append("V0 Projection")
-label.append("Unconstrained Vertex Chisq")
-label.append("V0 momentum")
+label.append("V0 Position 3 sigma")
+label.append("V0 Position 2 sigma")
+label.append("V0 Position 4 sigma")
+label.append("V0 Projection 3 sigma")
+label.append("V0 Projection 2 sigma")
+label.append("V0 Projection 4 sigma")
+label.append("Unconstrained Vertex Chisq < 4")
+label.append("Unconstrained Vertex Chisq < 3")
+label.append("Unconstrained Vertex Chisq < 5")
+label.append("V0 momentum > 2.0 GeV")
+label.append("V0 momentum > 1.9 GeV")
+label.append("V0 momentum > 2.1 GeV")
+label.append("Isolation Cut")
+label.append("Isolation Cut")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
+label.append("Impact Parameter Cuts + 0.1 mm")
+label.append("Impact Parameter Cuts + 0.2 mm")
 
 plot = "uncVZ"
 
@@ -171,7 +187,7 @@ for i in infiles[0].GetListOfKeys():
 		histos8.append(h)
 
 for i in range(len(histos)):
-	saveCutFlow(histos[i],histos2[i],histos3[i],histos4[i],histos5[i],histos6[i],histos7[i],histos8[i],label[i+2],outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0}".format(Label),stats=0,logY=1)
+	saveCutFlow(i,histos[i],histos2[i],histos3[i],histos4[i],histos5[i],histos6[i],histos7[i],histos8[i],label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0}".format(Label),stats=0,logY=1)
 
 closePDF(outfile,c)
 outfileroot.Close()
