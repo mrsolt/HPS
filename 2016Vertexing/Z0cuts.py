@@ -15,16 +15,18 @@ def print_usage():
     print '\t-s: save fitted histograms'
     print '\t-m: minimum uncVZ'
     print '\t-n: maximum uncVZ'
+    print '\t-f: fraction of events'
     print '\t-h: this help message'
     print
 
-minVZ = 5
+minVZ = 0
 maxVZ = 60
 nZ = 20
 zBin = 5
 saveFits = False
+frac = 0.9
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
 # Parse the command line argumentz
 for opt, arg in options:
@@ -38,6 +40,8 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-f':
+			frac = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -95,7 +99,7 @@ def saveHisto(histo,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTit
 	canvas.Print(outfile+".pdf")
 	return [x0, x1, x0Err, x1Err]
 
-def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z0mean=-0.1,z=0,zRange=9999,saveFits=False):
+def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z0mean=-0.1,z=0,zRange=9999,saveFits=False,frac1=0.9):
 	ex = "Null Fit"
 	if(index == 0):
 		bound = ">"
@@ -110,22 +114,7 @@ def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,in
 	histo.Add(histo2)
 	histo1D = histo.ProjectionX()
 
-	#histo1D.Fit("gaus","gaus","",histo1D.GetMean()-1.5*histo1D.GetRMS(),histo1D.GetMean()+1.5*histo1D.GetRMS())
-	#fit = histo1D.GetFunction("gaus")
-	
-	#histo1D.Fit("landau")
-	#fit = histo1D.GetFunction("landau")
-	#if saveFits:
-	#	canvas.Print(outfile+".pdf")
-
-	fitpar = []
-	mean = 0
-	meanErr = 0
-	sigma = 0
-	sigmaErr = 0
-
 	cut1 = 0
-	frac1 = 0.9
 	n1 = (1 - frac1) * histo.Integral()
 	for i in range(nBinsX):
 		integral = histo1D.Integral(1,i+1)
@@ -133,43 +122,14 @@ def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,in
 			if(i == 0):
 				cut1 = histo1D.GetBinCenter(i+1)
 			else:
-				#val = (n1*frac1 - integral) / (integral - histo1D.Integral(1,i))
 				val = (n1 - integral) / (integral - histo1D.Integral(1,i))
 				cut1 = (histo1D.GetBinCenter(i+1) - histo1D.GetBinCenter(i)) * val + histo1D.GetBinCenter(i)
 			break
 
-	#cut2 = 9999
-	#frac2 = 0.95
-	#n2 = frac2 * histo.Integral()
-	#for i in range(nBinsX):
-	#	integral = histo1D.Integral(1,i+1)
-	#	if (integral > n2):
-	#		if(i == 0):
-	#			cut2 = histo1D.GetBinCenter(i+1)
-	#		else:
-	#			val = (n2 - integral) / (integral - histo1D.Integral(1,i))
-	#			cut2 = (histo1D.GetBinCenter(i+1) - histo1D.GetBinCenter(i)) * val + histo1D.GetBinCenter(i)
-	#		break
-
-	#try:
-	#	mean = fit.GetParameter(1)
-	#	meanErr = fit.GetParError(1)
-	#	sigma = fit.GetParameter(2)
-	#	sigmaErr = fit.GetParError(2)
-	#except Exception as ex:
-
-	#	print(ex)
-	fitpar.append(mean)
-	fitpar.append(meanErr)
-	fitpar.append(sigma)
-	fitpar.append(sigmaErr)
-	fitpar.append(cut1)
-	#fitpar.append(cut2)
 	del histo
 	del histo2
 	del histo1D
-	#del fit
-	return fitpar
+	return cut1
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
@@ -206,79 +166,24 @@ side = ""
 openPDF(outfile,c)
 
 for i in [0,1]:
-	histoMassMeanx0 = TH1F("histoMassMeanx0","histoMassMeanx0",len(masses),masses[0],masses[len(masses)-1])
-	histoMassSigmax0 = TH1F("histoMassSigmax0","histoMassSigmax0",len(masses),masses[0],masses[len(masses)-1])
-	histoMassMeanx1 = TH1F("histoMassMeanx1","histoMassMeanx1",len(masses),masses[0],masses[len(masses)-1])
-	histoMassSigmax1 = TH1F("histoMassSigmax1","histoMassSigmax1",len(masses),masses[0],masses[len(masses)-1])
 	histoMassCut1x0 = TH1F("histoMassCut1x0","histoMassCut1x0",len(masses),masses[0],masses[len(masses)-1])
 	histoMassCut1x1 = TH1F("histoMassCut1x1","histoMassCut1x1",len(masses),masses[0],masses[len(masses)-1])
-	#histoMassCut2x0 = TH1F("histoMassCut2x0","histoMassCut2x0",len(masses),masses[0],masses[len(masses)-1])
-	#histoMassCut2x1 = TH1F("histoMassCut2x1","histoMassCut2x1",len(masses),masses[0],masses[len(masses)-1])
 	for j in range(len(masses)):
 		mass = masses[j]
-		histoMean = TH1F("histoMean","histoMean",nZ,minVZ,maxVZ)
-		histoSigma = TH1F("histoSigma","histoSigma",nZ,minVZ,maxVZ)
 		histoCut1 = TH1F("histoCut1","histoCut1",nZ,minVZ,maxVZ)
-		#histoCut2 = TH1F("histoCut2","histoCut2",nZ,minVZ,maxVZ)
 		for k in range(nZ):
 			z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
-			params = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,i,z0mean,z,zBin,saveFits)
-			histoMean.SetBinContent(k+1,params[0])
-			histoMean.SetBinError(k+1,params[1])
-			histoSigma.SetBinContent(k+1,params[2])
-			histoSigma.SetBinError(k+1,params[3])
-			#histoCut.SetBinContent(k+1,params[0]-3*params[2])
-			histoCut1.SetBinContent(k+1,params[4])
-			#histoCut2.SetBinContent(k+1,params[5])
+			cut1 = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,i,z0mean,z,zBin,saveFits,frac)
+			histoCut1.SetBinContent(k+1,cut1)
 		outfileroot.cd()
-		#x0Mean, x1Mean, x0MeanErr, x1MeanErr = saveHisto(histoMean,0,3,outfile,c,"z [mm]","Fitted Mean","Fitted Means {0} A' mass {1:.2f} GeV".format(plot,mass))
-		#x0Sigma, x1Sigma, x0SigmaErr, x1SigmaErr = saveHisto(histoSigma,0,1,outfile,c,"z [mm]","Fitted Sigma","Fitted Sigmas {0} A' mass {1:.2f} GeV".format(plot,mass))
 		x0Cut1, x1Cut1, _, _ = saveHisto(histoCut1,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
-		#x0Cut2, x1Cut2, _, _ = saveHisto(histoCut2,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 2".format(plot,mass))
-		#histoMassMeanx0.SetBinContent(j+1,x0Mean)
-		#histoMassMeanx0.SetBinError(j+1,x0MeanErr)
-		#histoMassMeanx1.SetBinContent(j+1,x1Mean)
-		#histoMassMeanx1.SetBinError(j+1,x1MeanErr)
-		#histoMassSigmax0.SetBinContent(j+1,x0Sigma)
-		#histoMassSigmax0.SetBinError(j+1,x0SigmaErr)
-		#histoMassSigmax1.SetBinContent(j+1,x1Sigma)
-		#histoMassSigmax1.SetBinError(j+1,x1SigmaErr)
 		histoMassCut1x0.SetBinContent(j+1,x0Cut1)
 		histoMassCut1x1.SetBinContent(j+1,x1Cut1)
-		#histoMassCut2x0.SetBinContent(j+1,x0Cut2)
-		#histoMassCut2x1.SetBinContent(j+1,x1Cut2)
-		del histoMean
-		del histoSigma
-		#del histoCut1
-		#del histoCut2
 	if(i == 0):
 		side = "Positive"
 	else:
 		side = "Negative"
-	#histoMassMeanx0.Fit("pol1")
-	#histoMassMeanx0.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassMeanx0.SetTitle("Mean x0 {0}".format(side))
-	#histoMassMeanx0.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
-	#histoMassMeanx1.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassMeanx1.SetTitle("Mean x1 {0}".format(side))
-	#histoMassMeanx1.Fit("pol1")
-	#histoMassMeanx1.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
-	#histoMassSigmax0.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassSigmax0.SetTitle("Sigma x0 {0}".format(side))
-	#histoMassSigmax0.Fit("pol1")
-	#histoMassSigmax0.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
-	#histoMassSigmax1.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassSigmax1.SetTitle("Sigma x1 {0}".format(side))
-	#histoMassSigmax1.Fit("pol1")
-	#histoMassSigmax1.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
+
 	histoMassCut1x0.GetXaxis().SetTitle("Mass (GeV)")
 	histoMassCut1x0.SetTitle("Cut 1 x0 {0}".format(side))
 	histoMassCut1x0.Fit("pol1")
@@ -292,12 +197,7 @@ for i in [0,1]:
 	histoMassCut1x0.Draw()
 	c.Write()
 	c.Print(outfile+".pdf")
-	#histoMassCut2x0.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassCut2x0.SetTitle("Cut 2 x0 {0}".format(side))
-	#histoMassCut2x0.Fit("pol1")
-	#histoMassCut2x0.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
+
 	histoMassCut1x1.GetXaxis().SetTitle("Mass (GeV)")
 	histoMassCut1x1.SetTitle("Cut 1 x1 {0}".format(side))
 	histoMassCut1x1.Fit("pol1")
@@ -311,20 +211,9 @@ for i in [0,1]:
 	histoMassCut1x1.Draw()
 	c.Write()
 	c.Print(outfile+".pdf")
-	#histoMassCut2x1.GetXaxis().SetTitle("Mass (GeV)")
-	#histoMassCut2x1.SetTitle("Cut 2 x1 {0}".format(side))
-	#histoMassCut2x1.Fit("pol1")
-	#histoMassCut2x1.Draw()
-	#c.Write()
-	#c.Print(outfile+".pdf")
-	#del histoMassMeanx0
-	#del histoMassMeanx1
-	#del histoMassSigmax0
-	#del histoMassSigmax1
+
 	del histoMassCut1x0
 	del histoMassCut1x1
-	#del histoMassCut2x0
-	#del histoMassCut2x1
 	del fitx0
 	del fitx1
 
@@ -348,3 +237,4 @@ for i in range(len(masses)):
 	draw2DHisto(apevents[i],nBins,minVZ,maxVZ,minX,maxX,outfile+"_2D",c,cut,plotTitle="VZ vs Z0 {0:.3f} GeV A' ".format(mass))
 
 closePDF(outfile+"_2D",c)
+print(cut)
