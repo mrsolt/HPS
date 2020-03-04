@@ -19,6 +19,8 @@ def print_usage():
     print '\t-z: target z position'
     print '\t-p: plot 2D plots'
     print '\t-a: plot in mass slices'
+    print '\t-d: use data'
+    print '\t-l: use L1L2'
     print '\t-h: this help message'
     print
 
@@ -28,18 +30,22 @@ maxVZ = 40
 nBins = 100
 energy = 2.3
 trackTDiff = 43 #only for MC, should be ~55 for data
-beamX = -0.224
-beamY = -0.080
+beamX =  -0.091683900354
+beamY = -0.0768593640179
+uncVXSig = 0.215941433591
+uncVYSig = 0.0880585145088
 targZ = -4.3
 plot2D = False
 plotMassSlices = False
+L1L2 = False
+useData = False
 nentries = 99999999999999
 minMass = 0.03
 maxMass = 0.15
 massBin = 0.01
 nMass = int((maxMass - minMass) / massBin + 1)
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:b:e:t:x:y:z:s:pah')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'm:n:b:e:t:x:y:z:s:dlpah')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -65,6 +71,10 @@ for opt, arg in options:
 			plot2D = True
 		if opt=='-a':
 			plotMassSlices = True
+		if opt=='-d':
+			useData = True
+		if opt=='-l':
+			L1L2 = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -97,6 +107,7 @@ def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,o
 	histo.SetStats(stats)
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
+	canvas.SetLogz(1)
 	canvas.Print(outfile+".pdf")
 	histo.Write(plotTitle)
 	del histo
@@ -168,6 +179,61 @@ cuts = ""
 #Example list of cuts
 #cuts="isPair1&&max(eleMatchChisq,posMatchChisq)<10&&max(abs(eleClT-eleTrkT-{1}),abs(posClT-posTrkT-{1}))<4&&abs(eleClT-posClT)<2&&
     #bscChisq<10&&bscChisq-uncChisq<5&&eleP<{0}*0.75&&uncP<{0}*1.15&&uncP>{0}*0.8&&eleHasL2&&posHasL2".format(energy,trackTDiff)
+
+eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(targZ)
+posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(targZ)
+
+x0_cut1_pos_x0 = -0.2289
+x1_cut1_pos_x0 = -1.09
+
+x0_cut1_neg_x0 = -0.0009241
+x1_cut1_neg_x0 = -1.612
+
+x0_cut1_pos_x1 = 0.009205
+x1_cut1_pos_x1 = 0.2069
+
+x0_cut1_neg_x1 = 0.0091
+x1_cut1_neg_x1 = 0.2341
+
+dz = "0."
+if(useData):
+	dz = "((-3.517-13.41*uncM+88.16*uncM^2-173.1*uncM^3)-(-3.14-27.2*uncM+144*uncM^2-257.1*uncM^3))"
+	beamX = -0.113246598948
+	beamY = -0.0860657518949
+	uncVXSig = 0.318293608185
+	uncVYSig = 0.0992756085509
+	trackTDiff = 56
+
+if(L1L2):
+	x0_cut1_pos_x0 = -0.3187
+	x1_cut1_pos_x0 = -0.9498
+
+	x0_cut1_neg_x0 = -0.09418
+	x1_cut1_neg_x0 = -0.7761
+
+	x0_cut1_pos_x1 = 0.02095
+	x1_cut1_pos_x1 = 0.05914
+
+	x0_cut1_neg_x1 = 0.02016
+	x1_cut1_neg_x1 = 0.05854
+
+	eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(targZ)
+	posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(targZ)
+
+	eleisoL2 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(targZ)
+	posisoL2 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(targZ)
+
+	uncVXSig = 1.25 * uncVXSig
+	uncVYSig = 1.5 * uncVYSig
+
+x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
+x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
+cut1_pos = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_pos,x1_cut1_pos,dz)
+
+x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
+x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
+cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
+
 rootfile = TFile(outfile+".root","recreate")
 
 #List of plots
@@ -178,28 +244,47 @@ plots.append("uncVX -1.5 1.5")
 plots.append("uncM 0 {0}".format(0.1*energy))
 plots.append("uncP 0 {0}".format(1.6*energy))
 plots.append("uncChisq 0 5")
-plots.append("bscChisq 0 15")
+plots.append("bscChisq 0 40")
 plots.append("eleP 0 {0}".format(1.6*energy))
 plots.append("posP 0 {0}".format(1.6*energy))
 plots.append("eleTrkChisq/(2*eleNTrackHits-5) 0 6")
 plots.append("posTrkChisq/(2*posNTrackHits-5) 0 6")
+plots.append("eleTrkChisq/(2*eleNTrackHits-5)+posTrkChisq/(2*posNTrackHits-5) 0 12")
 plots.append("eleClT-eleTrkT-{0} -10 10".format(trackTDiff))
 plots.append("posClT-posTrkT-{0} -10 10".format(trackTDiff))
-plots.append("eleTrkZ0 -1.5 1.5")
-plots.append("posTrkZ0 -1.5 1.5")
+plots.append("eleTrkZ0 -2 2")
+plots.append("posTrkZ0 -2 2")
+plots.append("eleClE/eleP 0 2")
+plots.append("posClE/posP 0 2")
 plots.append("eleMatchChisq 0 10")
 plots.append("posMatchChisq 0 10")
-plots.append("bscChisq-uncChisq 0 15")
-plots.append("minPositiveIso -5 10")
+plots.append("eleMatchChisq+posMatchChisq 0 20")
+plots.append("bscChisq-uncChisq 0 40")
 plots.append("nPos 0 10")
 plots.append("(eleP-posP)/uncP -1 1")
 plots.append("uncTargProjX-{0} -1 1".format(beamX))
 plots.append("uncTargProjY-{0} -0.5 0.5".format(beamY))
-#plots.append("(uncTargProjX-{0})/uncTargProjXErr -10 10".format(beamX))
-#plots.append("(uncTargProjY-{0})/uncTargProjYErr -10 10".format(beamY))
-#plots.append("(uncVX-{0})/sqrt(uncCovXX) -10 10".format(beamX))
-#plots.append("(uncVY-{0})/sqrt(uncCovYY) -10 10".format(beamY))
-#plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -10 10".format(targZ))
+plots.append("(uncVX-(uncVZ-{1})*uncPX/uncPZ)-{0} -1 1".format(beamX,targZ))
+plots.append("(uncVY-(uncVZ-{1})*uncPY/uncPZ)-{0} -0.5 0.5".format(beamY,targZ))
+plots.append("sqrt((abs(uncVX-{0})/(2*{1}))^2+(abs(uncVY-{2})/(2*{3}))^2) 0 2".format(beamX,uncVXSig,beamY,uncVYSig))
+plots.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2) 0 2".format(beamX,uncVXSig,beamY,uncVYSig,targZ))
+plots.append("(uncVZ-{0})/sqrt(uncCovZZ) -20 20".format(targZ))
+plots.append("sqrt(uncCovZZ) 0 10")
+if(not L1L2):
+	plots.append("{0} -3 7".format(eleiso))
+	plots.append("{0} -3 7".format(posiso))
+else:
+	plots.append("{0} -3 7".format(eleisoL1))
+	plots.append("{0} -3 7".format(posisoL1))
+	plots.append("{0} -3 7".format(eleisoL2))
+	plots.append("{0} -3 7".format(posisoL2))
+plots.append("eleTrkZ0-{0} -1 4".format(cut1_pos))
+plots.append("posTrkZ0-{0} -1 4".format(cut1_pos))
+plots.append("-eleTrkZ0-{0} -1 4".format(cut1_neg))
+plots.append("-posTrkZ0-{0} -1 4".format(cut1_neg))
+plots.append("nSVTHitsL1 0 500")
+plots.append("nSVTHitsL1b 0 500")
+plots.append("run 5000 9000")
 
 #List of 2D plots
 plots2D = []
@@ -237,8 +322,8 @@ if(plotMassSlices):
 			massCut = "abs(uncM-{0})<{1}/2".format(mass,massBin)
 			if(cuts == ""): cut = massCut
 			else: cut = cuts + "&&" + massCut
-			saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" {0:.1f} < uncM < {1:.1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
-			if(plot2D): saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ {0:.1f} < uncM < {1:.1f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
+			saveTuplePlot(events,plot,nBins,minX,maxX,outfile,c,plot,"",plot+" {0:.3f} < uncM < {1:.3f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
+			if(plot2D): saveTuplePlot2D(events,"uncVZ",plot,nBins,minVZ,maxVZ,nBins,minX,maxX,outfile,c,"uncVZ",plot,plot+" vs uncVZ {0:.3f} < uncM < {1:.3f} GeV".format(mass-massBin/2.,mass+massBin/2.),nentries,cuts=cut)
 
 closePDF(outfile,c)
 
