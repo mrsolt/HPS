@@ -277,6 +277,9 @@ else:
 		eleiso = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1,eleisoL2)
 		posiso = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
 
+		z0cut2 = "(eleTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*uncVZ)&&-posTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*uncVZ))||(posTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*uncVZ)&&-eleTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*uncVZ))"
+		z0cut3 = "(eleTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*uncVZ)&&-posTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*uncVZ))||(posTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*uncVZ)&&-eleTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*uncVZ))"
+
 		cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
 		label.append("e- (!L1 & L2) or e+ (!L1 & L2)")
 		uncVXSig = 1.25 * uncVXSig
@@ -299,6 +302,11 @@ else:
 
 		eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 		posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+		#z0cut2 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_2,cut1_neg_2)
+		#z0cut3 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_3,cut1_neg_3)
+		z0cut2 = "(eleTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*uncVZ)&&-posTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*uncVZ))||(posTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*uncVZ)&&-eleTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*uncVZ))" #80%
+		z0cut3 = "(eleTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*uncVZ)&&-posTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*uncVZ))||(posTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*uncVZ)&&-eleTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*uncVZ))" #70%
 
 		cuts.append("eleHasL1&&posHasL1&&eleHasL2&&posHasL2")
 		label.append("e+e- L1 & L2")
@@ -323,7 +331,7 @@ else:
 	cuts.append("uncChisq<4")
 	cuts.append("uncP>2.0")
 	cuts.append(isocut)
-	cuts.append(z0cut)
+	cuts.append(z0cut2)
 
 	label.append("V0 Position 3 sigma")
 	label.append("V0 Position 2 sigma")
@@ -340,17 +348,15 @@ else:
 	label.append("Isolation Cut")
 	label.append("Isolation Cut")
 	label.append("Isolation Cut")
-	label.append("Impact Parameter Cuts")
-	label.append("Impact Parameter Cuts + 0.1 mm")
-	label.append("Impact Parameter Cuts + 0.2 mm")
+	label.append("Impact Parameter Cuts Nominal")
+	label.append("Impact Parameter Cuts Loose")
+	label.append("Impact Parameter Cuts Tight")
 
-	cut1_pos_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_pos,x1_cut1_pos,dz)
-	cut1_neg_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_neg,x1_cut1_neg,dz)
-	cut1_pos_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_pos,x1_cut1_pos,dz)
-	cut1_neg_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_neg,x1_cut1_neg,dz)
+	#cut1_pos_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_pos,x1_cut1_pos,dz)
+	#cut1_neg_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_neg,x1_cut1_neg,dz)
+	#cut1_pos_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_pos,x1_cut1_pos,dz)
+	#cut1_neg_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_neg,x1_cut1_neg,dz)
 
-	z0cut2 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_2,cut1_neg_2)
-	z0cut3 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_3,cut1_neg_3)
 	floatcuts.append("sqrt((abs(uncVX-{0})/(2*{1}))^2+(abs(uncVY-{2})/(2*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
 	floatcuts.append("sqrt((abs(uncVX-{0})/(4*{1}))^2+(abs(uncVY-{2})/(4*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
 	floatcuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
@@ -361,7 +367,7 @@ else:
 	floatcuts.append("uncP>2.1")
 	floatcuts.append(isocut)
 	floatcuts.append(isocut)
-	floatcuts.append(z0cut2)
+	floatcuts.append(z0cut)
 	floatcuts.append(z0cut3)
 
 cuts_1_arr = []
@@ -390,3 +396,5 @@ for i in range(len(cuts)-2):
 
 closePDF(outfile,c)
 outfileroot.Close()
+
+print(z0cut)
