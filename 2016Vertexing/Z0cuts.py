@@ -24,7 +24,7 @@ maxVZ = 60
 nZ = 20
 zBin = 5
 saveFits = False
-frac = 0.9
+frac = 0.8
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
@@ -220,15 +220,42 @@ for i in [0,1]:
 outfileroot.Close()
 closePDF(outfile,c)
 
-x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
-x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
-cut1_pos = "({0}+{1}*uncVZ)".format(x0_cut1_pos,x1_cut1_pos)
 
-x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
-x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
-cut1_neg = "({0}+{1}*uncVZ)".format(x0_cut1_neg,x1_cut1_neg)
+#x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
+#x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
+#cut1_pos = "({0}+{1}*uncVZ)".format(x0_cut1_pos,x1_cut1_pos)
 
-cut = "(eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1})".format(cut1_pos,cut1_neg)
+#x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
+#x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
+#cut1_neg = "({0}+{1}*uncVZ)".format(x0_cut1_neg,x1_cut1_neg)
+
+#cut = "(eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1})".format(cut1_pos,cut1_neg)
+
+a0 = x0_cut1_pos_x0
+a1 = x1_cut1_pos_x0
+a2 = x0_cut1_pos_x1
+a3 = x1_cut1_pos_x1
+b0 = x0_cut1_neg_x0
+b1 = x1_cut1_neg_x0
+b2 = x0_cut1_neg_x1
+b3 = x1_cut1_neg_x1
+
+print("a0 = ".format(x0_cut1_pos_x0))
+print("a1 = ".format(x1_cut1_pos_x0))
+print("a2 = ".format(x0_cut1_pos_x1))
+print("a3 = ".format(x1_cut1_pos_x1))
+print("b0 = ".format(x0_cut1_neg_x0))
+print("b1 = ".format(x1_cut1_neg_x0))
+print("b2 = ".format(x0_cut1_neg_x1))
+print("b3 = ".format(x1_cut1_neg_x1))
+
+eleZ0_up = "(eleZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+posZ0_up = "(posZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+
+eleZ0_down = "(-eleZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+posZ0_down = "(-posZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+
+cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
 openPDF(outfile+"_2D",c)
 
