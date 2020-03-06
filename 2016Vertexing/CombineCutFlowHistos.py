@@ -139,8 +139,7 @@ c = TCanvas("c","c",800,600)
 
 label = []
 label.append("Preselection")
-label.append("e+e- L1 & L2")
-label.append("V0 3 sigma")
+label.append("e+e- Layer Requirement")
 label.append("V0 Projection 2 sigma")
 label.append("Unconstrained Vertex Chisq < 4")
 label.append("V0 momentum > 2.0 GeV")

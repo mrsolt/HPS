@@ -230,3 +230,16 @@ Cutflow Plots
 
 
 
+
+
+Data L1L1 Tight Cuts
+
+python RunBatchRunsCutFlow.py -i /nfs/slac/g/hps_data2/tuple/2pt3/data/Final/Preselection/L1L1/{0}_10per_preselection_L1L.root -o /nfs/slac/g/hps_data2/tuple/2pt3/data/Final/Tight/L1L1/10per_tight_L1L1 -l log/10per_tight_L1L1 -W 1:00 -f ../Preselection/V0Positions/10per_preselection_rotated_params.txt -t Data -c "d -w -x "
+
+
+Data L1L2 Tight Cuts
+
+python RunBatchRunsCutFlow.py -i /nfs/slac/g/hps_data2/tuple/2pt3/data/Final/Preselection/L1L2/10per_preselection_L1L2_reduced_{0}.root.root -o /nfs/slac/g/hps_data2/tuple/2pt3/data/Final/Tight/L1L2/10per_tight_L1L2 -l log/10per_tight_L1L2 -W 1:00 -f ../Preselection/V0Positions/10per_preselection_rotated_params.txt -t Data -c "d -w -x -r "
+
+
+
