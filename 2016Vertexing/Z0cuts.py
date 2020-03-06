@@ -240,20 +240,20 @@ b1 = x1_cut1_neg_x0
 b2 = x0_cut1_neg_x1
 b3 = x1_cut1_neg_x1
 
-print("a0 = ".format(x0_cut1_pos_x0))
-print("a1 = ".format(x1_cut1_pos_x0))
-print("a2 = ".format(x0_cut1_pos_x1))
-print("a3 = ".format(x1_cut1_pos_x1))
-print("b0 = ".format(x0_cut1_neg_x0))
-print("b1 = ".format(x1_cut1_neg_x0))
-print("b2 = ".format(x0_cut1_neg_x1))
-print("b3 = ".format(x1_cut1_neg_x1))
+print("a0 = {0}".format(a0))
+print("a1 = {0}".format(a1))
+print("a2 = {0}".format(a2))
+print("a3 = {0}".format(a3))
+print("b0 = {0}".format(b0))
+print("b1 = {0}".format(b1))
+print("b2 = {0}".format(b2))
+print("b3 = {0}".format(b3))
 
-eleZ0_up = "(eleZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
-posZ0_up = "(posZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
 
-eleZ0_down = "(-eleZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
-posZ0_down = "(-posZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
 
 cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
