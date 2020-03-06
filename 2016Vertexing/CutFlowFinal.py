@@ -409,7 +409,7 @@ for i in range(len(cuts)):
 
 if(makeCutflow):
 	outfile = remainder[0]+"_cutflow"
-	outfileroot = TFile(remainder[0]+"_cutlfow.root","RECREATE")
+	outfileroot = TFile(remainder[0]+"_cutflow.root","RECREATE")
 
 	openPDF(outfile,c)
 
