@@ -286,7 +286,7 @@ plots.append("nSVTHitsL1 0 500")
 plots.append("nSVTHitsL1b 0 500")
 plots.append("eleNHitsShared 0 7")
 plots.append("posNHitsShared 0 7")
-plots.append("eleNHitsShared+posNHitsShared 0 7")
+plots.append("eleNHitsShared+posNHitsShared 0 14")
 plots.append("run 5000 9000")
 
 #List of 2D plots
