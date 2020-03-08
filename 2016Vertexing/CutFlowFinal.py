@@ -135,7 +135,6 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		canvas.Print(outfile+".pdf")
 		canvas.Write()
 		histo_2D.Write("histo_2D")
-
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
@@ -158,7 +157,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			color = color + 1
 		histos[i].SetLineColor(color)
 		color = color + 1
-		histos[i].Scale(1.0)
+		histos[i].Sumw2()
 		if(i == 0):
 			histos[i].Draw("")
 			histos[i].Write("histos{0}_{1}".format(i,inHisto))
@@ -187,11 +186,11 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
 		histos[0].SetStats(stats)
-		histos2[i].Scale(1.0)
+		histos2[i].Sumw2()
 		histos2[i].SetLineColor(2)
 		histos2[i].Draw("same")
 		histos2[i].Write("histo2{0}_{1}".format(i,inHisto))
-		histos3[i].Scale(1.0)
+		histos3[i].Sumw2()
 		histos3[i].SetLineColor(4)
 		histos3[i].Draw("same")
 		histos3[i].Write("histo3{0}_{1}".format(i,inHisto))
@@ -219,7 +218,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			color = color + 1
 		histos2[i].SetLineColor(color)
 		color = color + 1
-		histos2[i].Scale(1.0)
+		histos2[i].Sumw2()
 		if(i == 0):
 			histos2[i].Draw("")
 			maximum = histos2[0].GetMaximum()
@@ -431,6 +430,7 @@ if(makeCutflow):
 		print("Cut {0}: Entries {1}".format(label[i],n))
 		histo_cutflow.SetBinContent(i+1,n)
 
+	histo_cutflow.Sumw2()
 	histo_cutflow.Draw()
 	histo_cutflow.SetTitle("Cut Flow")
 	histo_cutflow.GetXaxis().SetTitle("Cut")
