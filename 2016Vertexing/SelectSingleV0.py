@@ -18,6 +18,9 @@ def print_usage():
     print '\t-m: use MC information'
     print '\t-t: use MC full truth information'
     print '\t-p: make Plots'
+    print '\t-s: remove shared hits (default False)'
+    print '\t-g: minimum VZ (default -30 mm)'
+    print '\t-i: maximum VZ (default 60 mm)'
     print '\t-h: this help message'
     print
 
@@ -27,9 +30,12 @@ onlyBest = False
 onlyOnly = False
 useMC = False
 useFullTruth = False
-makePlots = False #Todo make plots
+makePlots = False
+removeSharedHits = False
+minVZ = -30
+maxVZ = 60
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomthp')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:cbomthpsg:i:')
 # Parse the command line arguments
 for opt, arg in options:
         if opt=='-e':
@@ -46,6 +52,12 @@ for opt, arg in options:
             useFullTruth = True
         if opt=='-p':
             makePlots = True
+        if opt=='-s':
+            removeSharedHits = True
+        if opt=='-g':
+            minVZ = float(arg)
+        if opt=='-i':
+            maxVZ = float(arg)
         if opt=='-h':
             print_usage()
             sys.exit(0)
@@ -150,7 +162,8 @@ branchlist=["event",
     "posTrkExtrpYSensorStereoBotL1"]
 
 if useMC:
-    branchlist.append("triP")
+    #branchlist.append("triP")
+    branchlist.append("triStartP")
 #    branchlist.append("triPair1P")
     branchlist.append("triM")
     branchlist.append("triEndZ")
@@ -200,9 +213,11 @@ events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple
 
 n = events.size
 
-cut = events["uncP"]>0.0
-    #cut = numpy.row_stack((#events["isPair1"]==1,
-        #events["uncP"]>0.8*ebeam)).all(0)
+if(not removeSharedHits):
+    cut = events["uncP"]>0.0
+else:
+    cut = numpy.row_stack((events["eleNHitsShared"]<1.0,
+        events["posNHitsShared"]<1.0)).all(0)
 
 names = ["event",
     "run",
@@ -298,7 +313,8 @@ names = ["event",
     "posTrkExtrpYSensorStereoBotL1"]
 
 if useMC:
-    names.append("triP")
+    #names.append("triP")
+    names.append("triStartP")
 #    names.append("triPair1P")
     names.append("triM")
     names.append("triEndZ")
@@ -385,9 +401,10 @@ print("Total Number of V0s = {0}".format(n))
 root_numpy.array2root(output,remainder[0]+".root",mode="recreate",treename="ntuple")
 
 if(makePlots):
+    outfileroot = TFile(remainder[0]+"_plots.root","RECREATE")
     gStyle.SetOptStat(0)
     c = TCanvas("c","c",800,600)
-    c.Print(remainder[0]+".pdf[")
+    c.Print(remainder[0]+"_plots.pdf[")
     infile = TFile(remainder[1])
     outfile = TFile(remainder[0]+".root")
     events_in = infile.Get("ntuple")
@@ -396,11 +413,14 @@ if(makePlots):
     plots = []
     plots.append("uncVZ")
     plots.append("uncM")
+    plotlabels = []
+    plotlabels.append("Reconstructed Z (mm)")
+    plotlabels.append("Mass (GeV)")
     minimums = []
-    minimums.append(-60)
+    minimums.append(minVZ)
     minimums.append(0)
     maximums = []
-    maximums.append(60)
+    maximums.append(maxVZ)
     maximums.append(0.1*ebeam)
     for i in range(len(plots)):
         plot = plots[i]
@@ -413,8 +433,8 @@ if(makePlots):
         histo_in.Sumw2()
         histo_out.Sumw2()
         histo_in.Draw()
-        histo_in.GetXaxis().SetTitle(plot)
-        histo_in.SetTitle(plot)
+        histo_in.GetXaxis().SetTitle(plotlabels[i])
+        histo_in.SetTitle("Single V0s")
         histo_out.SetLineColor(2)
         histo_out.Draw("same")
         legend = TLegend(.68,.66,.92,.87)
@@ -426,6 +446,12 @@ if(makePlots):
         legend.AddEntry(histo_in,"Before Single V0s","LP")
         legend.AddEntry(histo_out,"Single V0s","LP")
         legend.Draw("same")
+        outfileroot.cd()
+        histo_in.Write("{0} Before".format(plot))
+        histo_out.Write("{0} After".format(plot))
         c.SetLogy(1)
-        c.Print(remainder[0]+".pdf")
-    c.Print(remainder[0]+".pdf]")
+        c.Print(remainder[0]+"_plots.pdf")
+        c.SetLogy(0)
+        c.Print(remainder[0]+"_plots.pdf")
+    c.Print(remainder[0]+"_plots.pdf]")
+    outfileroot.Close()

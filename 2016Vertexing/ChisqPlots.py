@@ -8,7 +8,7 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input Data file> <input MC text file> <input 80 MeV A' file> <input 100 MeV A' file>".format(sys.argv[0])
+    print "\nUsage: {0} <output file base name> <input Data text file> <input MC text file> <input 100 MeV A' file>".format(sys.argv[0])
     print '\t-z: target position (default -4.3 mm)'
     print '\t-h: this help message'
     print
@@ -36,9 +36,6 @@ def closePDF(outfile,canvas):
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
-
-datafile = TFile(remainder[1])
-dataevents = datafile.Get("ntuple")
 
 datafile = open(remainder[1],"r")
 dataFiles = []

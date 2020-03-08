@@ -45,12 +45,13 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		for i in range(len(histos4)):
 			canvas.SetLogy(0)
 			histos4[i].Draw("COLZ")
-			histos4[i].SetTitle("Vz vs Mass " + label[i] + " Exclusive")
+			histos4[i].SetTitle("Vz vs Mass " + labels[i] + " Exclusive")
 			histos4[i].GetXaxis().SetTitle("Mass [GeV]")
 			histos4[i].GetYaxis().SetTitle("Reconstructed z [mm]")
 			histos4[i].SetStats(stats)
 			canvas.Print(outfile+".pdf")
 			canvas.Write()
+			histos4[i].Write("Vz vs Mass " + labels[i] + " Exclusive")
 			canvas.SetLogy(logY)
 
 	for i in range(len(histos)):
@@ -62,6 +63,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 			histos[i].Draw("")
 		else:
 			histos[i].Draw("same")
+		histos[i].Write(labels[i]+" "+inHisto)
 	legend = TLegend(.08,.46,.42,.87)
 	if(inHisto == "uncM"):
 		legend = TLegend(.58,.46,.92,.87)
@@ -79,7 +81,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 	for i in range(len(histos2)):
 		histos[0].SetLineColor(1)
 		histos[0].Draw()
-		histos[0].SetTitle(plotTitle + " " + label[i] + " Exclusive")
+		histos[0].SetTitle(plotTitle + " " + labels[i] + " Exclusive")
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
 		histos[0].SetStats(stats)
@@ -92,7 +94,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 			legend3 = TLegend(.58,.66,.92,.87)
 		legend3.SetBorderSize(0)
 		legend3.SetFillColor(0)
-		legend3.SetFillStyle(0)
+		legend3.SetFillStyle(0),
 		legend3.SetTextFont(42)
 		legend3.SetTextSize(0.035)
 		legend3.AddEntry(histos[0],labels[0],"LP")
@@ -101,6 +103,8 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		legend3.Draw("same")
 		canvas.Print(outfile+".pdf")
 		canvas.Write()
+		histos2[i].Write("Without " + labels[i]+" "+inHisto)
+		histos2[i].Write("With " + labels[i]+" "+inHisto)
 	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
