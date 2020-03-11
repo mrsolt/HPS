@@ -21,11 +21,6 @@ for opt, arg in options:
 			print_usage()
 			sys.exit(0)
 
-if(toPDF == False and toPNG == False):
-	print("You must either select to PDF or to PNG or both.")
-	print_usage()
-	sys.exit(0)
-
 def openPDF(outfile,canvas):
 	canvas.Print(outfile+".pdf[")
 
