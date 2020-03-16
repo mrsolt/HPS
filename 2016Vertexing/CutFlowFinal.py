@@ -8,8 +8,7 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input text Data file> <input text MC file> <input text A' files>".format(sys.argv[0])
-    print 'Note: Even when not using a data, MC, or Ap file, you must feed a dummy text file'
+    print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
     print "Arguments: "
     print '\t-z: target position (default -4.3 mm)'
     print '\t-g: minimum uncVZ (default -60 mm)'
@@ -121,6 +120,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		if(inHisto == "uncVZ"):
 			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,minX,maxX),cuts_1)
 			histos4.append(ROOT.gROOT.FindObject("histo4{0}_{1}".format(i,inHisto)))
+
 	outfileroot.cd()
 	if(inHisto == "uncVZ"):
 		events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo_2D",nBins,0.,0.2,minX,maxX),cut_tot)
@@ -218,7 +218,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 			color = color + 1
 		histos2[i].SetLineColor(color)
 		color = color + 1
-		histos2[i].Sumw2()
+		#histos2[i].Sumw2()
 		if(i == 0):
 			histos2[i].Draw("")
 			maximum = histos2[0].GetMaximum()
@@ -246,6 +246,20 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 	del histos3
 	del histos4
 
+def saveCuts(events,i,cut_1,nBins,minX,maxX,label,var,outfile,canvas,XaxisTitle="",YaxisTitle="",stats=0,logY=0):
+	events.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo5{0}".format(i),nBins,minX,maxX),cut_1)
+	histo5 = ROOT.gROOT.FindObject("histo5{0}".format(i))
+	canvas.SetLogy(logY)
+	histo5.Sumw2()
+	histo5.Draw()
+	histo5.SetTitle(label + " Exclusive")
+	histo5.GetXaxis().SetTitle(XaxisTitle)
+	histo5.GetYaxis().SetTitle(YaxisTitle)
+	histo5.SetStats(stats)
+	canvas.Print(outfile+".pdf")
+	canvas.Write()
+	histo5.Write("histo5{0}".format(i))
+	del histo5
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
@@ -294,6 +308,7 @@ setlog.append(0)
 
 label = []
 cuts = []
+var = []
 cuts.append("uncP<9999")
 
 #cuts.append("isPair1")
@@ -352,6 +367,7 @@ if(L1L2):
 	posiso = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
 
 	cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
+	var.append("((!eleHasL1*posHasL1)+(eleHasL1*!posHasL1))*eleHasL2*posHasL2 -1 2")
 	label.append("Layer Requirement")
 
 	uncTargProjXSig = 1.25 * uncTargProjXSig
@@ -373,6 +389,7 @@ else:
 	#z0cut = "((eleTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*uncVZ)&&-eleTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0}))))".format(dz) #80%
 
 	cuts.append("eleHasL1&&posHasL1&&eleHasL2&&posHasL2")
+	var.append("eleHasL1*posHasL1*eleHasL2*posHasL2 -1 2")
 	label.append("e+e- Layer Requirement")
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
@@ -397,6 +414,34 @@ label.append("V0 momentum > 2.0 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
+var.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2) 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+var.append("uncChisq 0 10")
+var.append("uncP 0 2.4")
+var.append("eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega))) -3 7".format(zTarg))
+var.append("posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega))) -3 7".format(zTarg))
+var.append("eleTrkZ0 -3 3")
+var.append("posTrkZ0 -3 3")
+
+xlabel = []
+xlabel.append("Passes Layer Requirement")
+xlabel.append("V0 Projection to Target N Sigma")
+xlabel.append("Unconstrainced Chisq")
+xlabel.append("V0 Momentum (GeV)")
+xlabel.append("Electron Isolation Cut Value (mm)")
+xlabel.append("Positron Isolation Cut Value (mm)")
+xlabel.append("Electron Track Z0 (mm)")
+xlabel.append("Positron Track Z0 (mm)")
+
+index = []
+index.append(1)
+index.append(2)
+index.append(3)
+index.append(4)
+index.append(5)
+index.append(5)
+index.append(6)
+index.append(6)
+
 cut_all = ""
 
 for i in range(len(cuts)):
@@ -418,6 +463,20 @@ if(makeCutflow):
 		maximum = getMax(plots[i])
 		plotlabel = plotlabels[i]
 		saveCutFlow(events,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0}".format(Label),stats=0,logY=setlog[i])
+
+	for i in range(len(var)):
+		plot = getPlot(var[i])
+		minimum = getMin(var[i])
+		maximum = getMax(var[i])
+		cut_1 = ""
+		cut = cuts[index[i]]
+		for j in range(len(cuts)):
+			if(j != index[i]):
+				if(cut_1 != ""):
+					cut_1 = cut_1 + "&&" + cuts[j]
+				else:
+					cut_1 = cuts[j]
+		saveCuts(events,i,cut_1,nBins,minimum,maximum,label[index[i]],plot,outfile,c,XaxisTitle=xlabel[i],logY=1)
 
 	histo_cutflow = TH1F("histo_cutflow","histo_cutflow",len(cuts),0,len(cuts))
 

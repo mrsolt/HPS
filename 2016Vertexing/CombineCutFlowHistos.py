@@ -150,6 +150,18 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 	canvas.Write()
 	canvas.SetLogy(logY)
 
+def saveCuts(histos5,outfile,canvas,label,index,XaxisTitle,logY=1):
+	outfileroot.cd()
+	canvas.Clear()
+	for i in range(len(histos5)):
+		canvas.SetLogy(logY)
+		histos5[i].Draw()
+		histos5[i].SetTitle(label[index[i]] + " Exclusive")
+		histos5[i].GetXaxis().SetTitle(XaxisTitle[i])
+		canvas.Print(outfile+".pdf")
+		canvas.Write()
+		histos5[i].Write(XaxisTitle[i] + " Exclusive")
+
 gStyle.SetOptStat(110011)
 c = TCanvas("c","c",800,600)
 
@@ -176,6 +188,26 @@ setlog = []
 setlog.append(1)
 setlog.append(1)
 setlog.append(0)
+
+xlabel = []
+xlabel.append("Passes Layer Requirement")
+xlabel.append("V0 Projection to Target N Sigma")
+xlabel.append("Unconstrainced Chisq")
+xlabel.append("V0 Momentum (GeV)")
+xlabel.append("Electron Isolation Cut Value (mm)")
+xlabel.append("Positron Isolation Cut Value (mm)")
+xlabel.append("Electron Track Z0 (mm)")
+xlabel.append("Positron Track Z0 (mm)")
+
+index = []
+index.append(1)
+index.append(2)
+index.append(3)
+index.append(4)
+index.append(5)
+index.append(5)
+index.append(6)
+index.append(6)
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
@@ -237,6 +269,24 @@ for k in range(len(plots)):
 	del histos2
 	del histos3
 	del histos4
+
+histos5 = []
+for i in infiles[0].GetListOfKeys():
+	infiles[0].cd()
+	h = i.ReadObj()
+	if((h.ClassName() != "TH1F") and (h.ClassName() != "TH1D") and (h.ClassName() != "TH2F") and (h.ClassName() != "TH2D")):
+		continue
+	if(not ("histo5" in h.GetName())):
+		continue
+	for j in range(1,len(infiles)):
+		infiles[j].cd()
+		if(infiles[j].Get(h.GetName()) == None):
+			print h.GetName()
+			continue
+		h.Add(infiles[j].Get(h.GetName()))
+	histos5.append(h)
+saveCuts(histos5,outfile,c,label,index,xlabel)
+del histos5
 
 histo_cutflow = infiles[0].Get("histo_cutflow")
 
