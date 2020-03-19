@@ -126,6 +126,60 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,label,outfile,outfilero
 	#canvas.Print(outfile+".pdf")
 	#canvas.Write()
 
+def saveCuts(histo,histo2,outfile,outfileroot,canvas,XaxisTitle="",plotTitle="",stats=0):
+	#outfileroot.cd()
+	canvas.Clear()
+	RatioMin = 0.2
+	RatioMax = 2.2
+
+	top = TPad("top","top",0,0.42,1,1)
+	top.SetLogy(1)
+    
+	bot = TPad("bot","bot",0,0,1,0.38)
+    
+	top.Draw()
+	top.SetBottomMargin(0)
+	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+	bot.Draw()
+	bot.SetTopMargin(0)
+	bot.SetBottomMargin(0.4)
+	top.cd()
+
+	histo.SetTitle(plotTitle)
+	histo.GetXaxis().SetTitle(XaxisTitle)
+	histo2.Scale(1./histo2.Integral())
+	histo.Scale(1./histo.Integral())
+	histo.SetLineColor(1)
+	histo2.SetLineColor(2)
+	histo2.Draw()
+	histo.Draw("same")
+	legend = TLegend(.68,.66,.99,.87)
+	legend.SetBorderSize(0)
+	legend.SetFillColor(0)
+	legend.SetFillStyle(0)
+	legend.SetTextFont(42)
+	legend.SetTextSize(0.05)
+	legend.AddEntry(histo,"Data","LP")
+	legend.AddEntry(histo2,"MC","LP")
+	legend.Draw("same")
+	bot.cd()
+	reference = histo2.Clone("reference")
+	reference.GetYaxis().SetTitle("Ratio")
+	reference.GetYaxis().SetTitleSize(0.06)
+	reference.GetYaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitle(XaxisTitle)
+	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+	reference.GetYaxis().SetNdivisions(508)
+	reference.GetYaxis().SetDecimals(True)
+	reference.Draw("axis")
+	ratio = histo.Clone("Ratio"+histo.GetName())
+	ratio.Divide(reference)
+	ratio.DrawCopy("pe same")
+	canvas.Print(outfile+".pdf")
+	canvas.Write()
+
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
 
@@ -153,6 +207,26 @@ plotlabels = []
 plotlabels.append("Reconstructed z [mm]")
 plotlabels.append("Reconstructed Mass [GeV]")
 plotlabels.append("V0 Momentum [GeV]")
+
+xlabel = []
+xlabel.append("Passes Layer Requirement")
+xlabel.append("V0 Projection to Target N Sigma")
+xlabel.append("Unconstrainced Chisq")
+xlabel.append("V0 Momentum (GeV)")
+xlabel.append("Electron Isolation Cut Value (mm)")
+xlabel.append("Positron Isolation Cut Value (mm)")
+xlabel.append("Electron Track Z0 (mm)")
+xlabel.append("Positron Track Z0 (mm)")
+
+index = []
+index.append(1)
+index.append(2)
+index.append(3)
+index.append(4)
+index.append(5)
+index.append(5)
+index.append(6)
+index.append(6)
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
@@ -188,6 +262,16 @@ for i in range(len(plots)):
 		histo_n1_data.Write(title+" Data")
 		histo_n1_mc.Write(title+" MC")
 		saveCutFlow(histo_pre_data,histo_n1_data,histo_tight_data,histo_pre_mc,histo_n1_mc,histo_tight_mc,label,outfile,outfileroot,c,XaxisTitle=plotlabel,plotTitle="Data/MC Compare {0}".format(label))
+
+for i in range(len(xlabel)):
+	infiledata.cd()
+	histo_data = infiledata.Get("{0} Exclusive".format(xlabel[i]))
+	infilemc.cd()
+	histo_mc = infilemc.Get("{0} Exclusive".format(xlabel[i]))
+	outfileroot.cd()
+	histo_data.Write("{0} Exclusive".format(xlabel[i]))
+	histo_mc.Write("{0} Exclusive".format(xlabel[i]))
+	saveCuts(histo_data,histo_mc,outfile,outfileroot,c,XaxisTitle=xlabel[i],plotTitle="Data/MC Compare Without {0}".format(labels[index[i]]))
 
 infiledata.cd()
 histo_cutflow_data = infiledata.Get("histo_cutflow")

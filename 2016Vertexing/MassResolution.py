@@ -153,6 +153,7 @@ maxX = 15.
 minX = -maxX
 
 outfile = remainder[0]
+outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 apfile = open(remainder[1],"r")
 apfiles = []
@@ -196,11 +197,13 @@ gr_sigma_scaled = TGraphErrors(len(mass),mass,fittedsigmascaled,masserror,fitted
 gr_moller_data = TGraphErrors(1,moller_mass_data_arr,moller_mass_res_data_arr,moller_mass_data_err_arr,moller_mass_res_data_err_arr)
 gr_moller_mc = TGraphErrors(1,moller_mass_mc_arr,moller_mass_res_mc_arr,moller_mass_mc_err_arr,moller_mass_res_mc_err_arr)
 
+outfileroot.cd()
 gr_mean.Draw("AP")
 gr_mean.SetTitle("Fitted Mass - Truth Mass Mean")
 gr_mean.GetXaxis().SetTitle("Truth Mass (MeV)")
 gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 c.Print(outfile+".pdf")
+c.Write()
 mg = TMultiGraph()
 #gr_sigma.Draw("AP")
 #gr_sigma.Fit("pol1")
@@ -247,8 +250,14 @@ mg.Draw("AP")
 #legend.AddEntry(gr_moller_data,"Moller Res Data","LP")
 #legend.AddEntry(gr_moller_mc,"Moller Res MC","LP")
 #mg.Add(legend)
+mg.GetXaxis().SetTitle("Truth Mass (MeV)")
+mg.GetYaxis().SetTitle("Sigma (MeV)")
+mg.GetXaxis().SetLimits(0,200)
+mg.GetYaxis().SetLimits(0,8)
 mg.Draw("AP")
 c.BuildLegend(.1,.56,.35,.87)
 c.Print(outfile+".pdf")
+c.Write()
 
 closePDF(outfile,c)
+outfileroot.Close()
