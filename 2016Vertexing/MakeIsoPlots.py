@@ -10,17 +10,21 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input Data file> <input MC text file> <input 80 MeV A' file> <input 100 MeV A' file>".format(sys.argv[0])
     print '\t-z: target position (default -4.3 mm)'
+    print '\t-l: is L1L2 (default False)'
     print '\t-h: this help message'
     print
 
 zTarg = -4.3
+L1L2 = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:lh')
 
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-z':
 			zTarg = float(arg)
+		if opt=='-l':
+			L1L2 = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -55,51 +59,74 @@ ap1events = ap1file.Get("ntuple")
 ap2file = TFile(remainder[4])
 ap2events = ap2file.Get("ntuple")
 
-eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(zTarg)
-posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg)
+eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(zTarg)
+posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg)
+eleisoL2 = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(zTarg)
+posisoL2 = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg)
+
+if(not L1L2):
+	layercutele = "(eleHasL1&&eleHasL2)"
+	layercutpos = "(posHasL1&&posHasL2)"
+	eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(zTarg)
+	posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg)
+	truthCutele = "(eleL1tIsGoodTruthHit>-0.5&&eleL1tIsGoodTruthHit<0.5)||(eleL2tIsGoodTruthHit>-0.5&&eleL2tIsGoodTruthHit<0.5)||(eleL1bIsGoodTruthHit>-0.5&&eleL1bIsGoodTruthHit<0.5)||(eleL2bIsGoodTruthHit>-0.5&&eleL2bIsGoodTruthHit<0.5)"
+	truthCutpos = "(posL1tIsGoodTruthHit>-0.5&&posL1tIsGoodTruthHit<0.5)||(posL2tIsGoodTruthHit>-0.5&&posL2tIsGoodTruthHit<0.5)||(posL1bIsGoodTruthHit>-0.5&&posL1bIsGoodTruthHit<0.5)||(posL2bIsGoodTruthHit>-0.5&&posL2bIsGoodTruthHit<0.5)"
+
+
+else:
+	layercutele = "(!eleHasL1&&eleHasL2)"
+	layercutpos = "(!posHasL1&&posHasL2)"
+	eleiso = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(zTarg)
+	posiso = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(zTarg)
+	truthCutele = "(eleL3tIsGoodTruthHit>-0.5&&eleL3tIsGoodTruthHit<0.5)||(eleL4tIsGoodTruthHit>-0.5&&eleL4tIsGoodTruthHit<0.5)||(eleL3bIsGoodTruthHit>-0.5&&eleL3bIsGoodTruthHit<0.5)||(eleL4bIsGoodTruthHit>-0.5&&eleL4bIsGoodTruthHit<0.5)"
+	truthCutpos = "(posL3tIsGoodTruthHit>-0.5&&posL3tIsGoodTruthHit<0.5)||(posL4tIsGoodTruthHit>-0.5&&posL4tIsGoodTruthHit<0.5)||(posL3bIsGoodTruthHit>-0.5&&posL3bIsGoodTruthHit<0.5)||(posL4bIsGoodTruthHit>-0.5&&posL4bIsGoodTruthHit<0.5)"
 
 #eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
 #posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
 
-truthCutele = "(eleL1tIsGoodTruthHit>-0.5&&eleL1tIsGoodTruthHit<0.5)||(eleL2tIsGoodTruthHit>-0.5&&eleL2tIsGoodTruthHit<0.5)||(eleL1bIsGoodTruthHit>-0.5&&eleL1bIsGoodTruthHit<0.5)||(eleL2bIsGoodTruthHit>-0.5&&eleL2bIsGoodTruthHit<0.5)"
-truthCutpos = "(posL1tIsGoodTruthHit>-0.5&&posL1tIsGoodTruthHit<0.5)||(posL2tIsGoodTruthHit>-0.5&&posL2tIsGoodTruthHit<0.5)||(posL1bIsGoodTruthHit>-0.5&&posL1bIsGoodTruthHit<0.5)||(posL2bIsGoodTruthHit>-0.5&&posL2bIsGoodTruthHit<0.5)"
 purityCut = "elePurity>0.99&&posPurity>0.99"
 
-dataevents.Draw("uncVZ:{0}>>eleiso_data(100,-3,7,100,-40,60)".format(eleiso))
-dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso))
+dataevents.Draw("uncVZ:{0}>>eleiso_data(100,-3,7,100,-40,60)".format(eleiso),layercutele)
+dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso),layercutpos)
 
-dataevents.Draw("{0}>>eleisocut_1D_data(100,-3,7)".format(eleiso))
-dataevents.Draw("{0}>>posisocut_1D_data(100,-3,7)".format(posiso))
+dataevents.Draw("{0}>>eleisocut_1D_data(100,-3,7)".format(eleiso),layercutele)
+dataevents.Draw("{0}>>posisocut_1D_data(100,-3,7)".format(posiso),layercutpos)
 
-dataevents.Draw("eleMinPositiveIso>>eleiso_1D_data(100,0,10)")
-dataevents.Draw("posMinPositiveIso>>posiso_1D_data(100,0,10)")
+dataevents.Draw("eleMinPositiveIso>>eleiso_1D_data(100,0,10)",layercutele)
+dataevents.Draw("posMinPositiveIso>>posiso_1D_data(100,0,10)",layercutpos)
 
-mcevents.Draw("uncVZ:{0}>>eleiso_mc_truth(100,-3,7,100,-40,60)".format(eleiso),truthCutele)
-mcevents.Draw("uncVZ:{0}>>posiso_mc_truth(100,-3,7,100,-40,60)".format(posiso),truthCutpos)
+mcevents.Draw("uncVZ:{0}>>eleiso_mc_truth(100,-3,7,100,-40,60)".format(eleiso),truthCutele+"&&"+layercutele)
+mcevents.Draw("uncVZ:{0}>>posiso_mc_truth(100,-3,7,100,-40,60)".format(posiso),truthCutpos+"&&"+layercutpos)
 
-mcevents.Draw("{0}>>eleisocut_1D_mc(100,-3,7)".format(eleiso))
-mcevents.Draw("{0}>>posisocut_1D_mc(100,-3,7)".format(posiso))
+mcevents.Draw("{0}>>eleisocut_1D_mc(100,-3,7)".format(eleiso),layercutele)
+mcevents.Draw("{0}>>posisocut_1D_mc(100,-3,7)".format(posiso),layercutpos)
 
-mcevents.Draw("eleMinPositiveIso>>eleiso_1D_mc(100,0,10)")
-mcevents.Draw("posMinPositiveIso>>posiso_1D_mc(100,0,10)")
+mcevents.Draw("eleMinPositiveIso>>eleiso_1D_mc(100,0,10)",layercutele)
+mcevents.Draw("posMinPositiveIso>>posiso_1D_mc(100,0,10)",layercutpos)
 
-mcevents.Draw("uncVZ:{0}>>eleiso_mc(100,-3,7,100,-40,60)".format(eleiso),purityCut)
-mcevents.Draw("uncVZ:{0}>>posiso_mc(100,-3,7,100,-40,60)".format(posiso),purityCut)
+mcevents.Draw("uncVZ:{0}>>eleiso_mc(100,-3,7,100,-40,60)".format(eleiso),purityCut+"&&"+layercutele)
+mcevents.Draw("uncVZ:{0}>>posiso_mc(100,-3,7,100,-40,60)".format(posiso),purityCut+"&&"+layercutpos)
 
-mcevents.Draw("uncVZ>>uncVZ_mc_truth(100,-40,60)",truthCutele+"||"+truthCutpos)
+mcevents.Draw("uncVZ>>uncVZ_mc_truth(100,-40,60)","("+truthCutele+"&&"+layercutele+")||("+truthCutpos+"&&"+layercutpos+")")
 mcevents.Draw("uncVZ>>uncVZ_mc(100,-40,60)",purityCut)
 
-ap1events.Draw("uncVZ:{0}>>eleiso_ap1(100,-3,7,100,-40,100)".format(eleiso))
-ap1events.Draw("uncVZ:{0}>>posiso_ap1(100,-3,7,100,-40,100)".format(posiso))
+ap1events.Draw("uncVZ:{0}>>eleiso_ap1(100,-3,7,100,-40,100)".format(eleiso),layercutele)
+ap1events.Draw("uncVZ:{0}>>posiso_ap1(100,-3,7,100,-40,100)".format(posiso),layercutpos)
 ap1events.Draw("uncVZ>>uncVZ_ap1(100,-40,100)")
-ap1events.Draw("uncVZ>>uncVZ_ap1_isocut(100,-40,100)",eleiso+">0&&"+posiso+">0")
+if(not L1L2):
+	ap1events.Draw("uncVZ>>uncVZ_ap1_isocut(100,-40,100)",eleiso+">0&&"+posiso+">0")
+else:
+	ap1events.Draw("uncVZ>>uncVZ_ap1_isocut(100,-40,100)","("+eleisoL1+">0&&"+posisoL2+">0)||("+eleisoL2+">0&&"+posisoL1+">0)")
 #ap1events.Draw("uncVZ>>uncVZ_ap1_truth(100,-40,100)",truthCutele+"||"+truthCutpos)
 #ap1events.Draw("uncVZ>>uncVZ_ap1(100,-40,100)",purityCut)
 
-ap2events.Draw("uncVZ:{0}>>eleiso_ap2(100,-3,7,100,-40,100)".format(eleiso))
-ap2events.Draw("uncVZ:{0}>>posiso_ap2(100,-3,7,100,-40,100)".format(posiso))
+ap2events.Draw("uncVZ:{0}>>eleiso_ap2(100,-3,7,100,-40,100)".format(eleiso),layercutele)
+ap2events.Draw("uncVZ:{0}>>posiso_ap2(100,-3,7,100,-40,100)".format(posiso),layercutpos)
 ap2events.Draw("uncVZ>>uncVZ_ap2(100,-40,100)")
-ap2events.Draw("uncVZ>>uncVZ_ap2_isocut(100,-40,100)",eleiso+">0&&"+posiso+">0")
+if(not L1L2):
+	ap2events.Draw("uncVZ>>uncVZ_ap2_isocut(100,-40,100)",eleiso+">0&&"+posiso+">0")
+else:
+	ap2events.Draw("uncVZ>>uncVZ_ap2_isocut(100,-40,100)","("+eleisoL1+">0&&"+posisoL2+">0)||("+eleisoL2+">0&&"+posisoL1+">0)")
 #ap2events.Draw("uncVZ>>uncVZ_ap2_truth(100,-40,100)",truthCutele+"||"+truthCutpos)
 #ap2events.Draw("uncVZ>>uncVZ_ap2(100,-40,100)",purityCut)
 
@@ -152,12 +179,14 @@ eleiso_data.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_data.SetTitle("10% Data Preselection Isolation Cut")
 c.Print(outfile+".pdf")
 outfileroot.cd()
-eleiso_data.Write()
+eleiso_data.Write("eleiso_data")
 
 eleisocut_1D_data.Add(posisocut_1D_data)
 eleisocut_1D_mc.Add(posisocut_1D_mc)
 eleisocut_1D_data.Sumw2()
 eleisocut_1D_mc.Sumw2()
+eleisocut_1D_data.Write("eleisocut_1D_data")
+eleisocut_1D_mc.Write("eleisocut_1D_mc")
 eleisocut_1D_data.Scale(1/eleisocut_1D_data.Integral())
 eleisocut_1D_mc.Scale(1/eleisocut_1D_mc.Integral())
 eleisocut_1D_mc.SetLineColor(2)
@@ -181,6 +210,8 @@ eleiso_1D_data.Add(posiso_1D_data)
 eleiso_1D_mc.Add(posiso_1D_mc)
 eleiso_1D_data.Sumw2()
 eleiso_1D_mc.Sumw2()
+eleiso_1D_data.Write("eleiso_1D_data")
+eleiso_1D_mc.Write("eleiso_1D_mc")
 eleiso_1D_data.Scale(1/eleiso_1D_data.Integral())
 eleiso_1D_mc.Scale(1/eleiso_1D_mc.Integral())
 eleiso_1D_mc.SetLineColor(2)
@@ -198,7 +229,7 @@ eleiso_mc_truth.GetXaxis().SetTitle("Isolation Cut Value (mm)")
 eleiso_mc_truth.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_mc_truth.SetTitle("MC Preselection Isolation Cut with L1 Bad Hits")
 c.Print(outfile+".pdf")
-eleiso_mc_truth.Write()
+eleiso_mc_truth.Write("eleiso_mc_truth")
 
 eleiso_mc.Add(posiso_mc)
 eleiso_mc.Draw("COLZ")
@@ -206,13 +237,15 @@ eleiso_mc.GetXaxis().SetTitle("Isolation Cut Value (mm)")
 eleiso_mc.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_mc.SetTitle("MC Preselection Isolation Cut with Pure Tracks")
 c.Print(outfile+".pdf")
-eleiso_mc.Write()
+eleiso_mc.Write("eleiso_mc")
 
 
 n_mc_truth = uncVZ_mc_truth.Integral()
 n_mc = uncVZ_mc.Integral()
 uncVZ_mc.Sumw2()
 uncVZ_mc_truth.Sumw2()
+uncVZ_mc.Write("uncVZ_mc")
+uncVZ_mc_truth.Write("uncVZ_mc_truth")
 #uncVZ_mc.Scale(1./uncVZ_mc.Integral())
 #uncVZ_mc_truth.Scale(1./uncVZ_mc_truth.Integral())
 uncVZ_mc_truth.SetLineColor(2)
@@ -240,10 +273,12 @@ eleiso_ap1.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_ap1.SetTitle("80 MeV A' Preselection Isolation Cut")
 c.SetLogy(0)
 c.Print(outfile+".pdf")
-eleiso_ap1.Write()
+eleiso_ap1.Write("eleiso_ap1")
 
 uncVZ_ap1.Sumw2()
 uncVZ_ap1_isocut.Sumw2()
+uncVZ_ap1.Write("uncVZ_ap1")
+uncVZ_ap1_isocut.Write("uncVZ_ap1_isocut")
 uncVZ_ap1_isocut.SetLineColor(2)
 uncVZ_ap1.Draw()
 uncVZ_ap1.GetXaxis().SetTitle("Reconstructed z (mm)")
@@ -270,10 +305,12 @@ eleiso_ap2.GetXaxis().SetTitle("Isolation Cut Value (mm)")
 eleiso_ap2.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_ap2.SetTitle("100 MeV A' Preselection Isolation Cut")
 c.Print(outfile+".pdf")
-eleiso_ap2.Write()
+eleiso_ap2.Write("eleiso_ap2")
 
 uncVZ_ap2.Sumw2()
 uncVZ_ap2_isocut.Sumw2()
+uncVZ_ap2.Write("uncVZ_ap2")
+uncVZ_ap2_isocut.Write("uncVZ_ap2_isocut")
 uncVZ_ap2_isocut.SetLineColor(2)
 uncVZ_ap2.Draw()
 uncVZ_ap2.GetXaxis().SetTitle("Reconstructed z (mm)")
