@@ -96,6 +96,10 @@ for i in range(0,n_massbins):
     c.Divide(1,2)
     c.cd(1)
     events.Draw("uncVZ:{0}>>hnew2d(100,0,0.2,100,-50,50)".format(massVar),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"colz")
+    hnew2d = gDirectory.Get("hnew2d")
+    hnew2d.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
+    hnew2d.GetXaxis().SetTitle("Mass (GeV)")
+    hnew2d.GetYaxis().SetTitle("Reconstructed z (mm)")
     c.cd(2)
     gPad.SetLogy(1)
     events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
@@ -112,6 +116,8 @@ for i in range(0,n_massbins):
     fitfunc.SetParameters(peak,mean,sigma,3);
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
     outfile.cd()
+    h1d.GetXaxis().SetTitle("Reconstructed z (mm)")
+    h1d.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
     h1d.Write("{0} < uncM < {1}".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
@@ -131,6 +137,8 @@ for i in range(0,n_massbins):
         c.Clear()
         events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
         h1d_shift = gDirectory.Get("hnew1d_shift")
+        h1d_shift.GetXaxis().SetTitle("Reconstructed z (mm)")
+        h1d_shift.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV: Mean Shifted".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
         h1d_shift.Write("{0} < uncM < {1} Mean Shifted".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
 
 c.Clear()
