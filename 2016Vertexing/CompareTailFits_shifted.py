@@ -101,10 +101,10 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
-	graph1.Draw("P")
+	graph1.Draw("AP")
 	graph2.SetMarkerColor(2)
 	graph2.SetLineColor(2)
-	graph2.Draw("Psame")
+	graph2.Draw("APsame")
 	legend = TLegend(.68,.66,.92,.87)
 	legend.SetBorderSize(0)
 	legend.SetFillColor(0)
@@ -154,7 +154,6 @@ label2 = remainder[4]
 
 infile1.cd()
 histos1 = []
-histos1_2D = []
 for h in infile1.GetListOfKeys():
 	h = h.ReadObj()
 	plotHisto = True
@@ -162,18 +161,11 @@ for h in infile1.GetListOfKeys():
 		if(histos1[i].GetTitle() == h.GetTitle()): 
 			plotHisto = False
 			continue
-	for i in range(len(histos1_2D)):
-		if(histos1_2D[i].GetTitle() == h.GetTitle()):
-			plotHisto = False
-			continue
 	if(not plotHisto): continue
 	h.GetListOfFunctions().Remove(h.GetFunction("fitfunc"))
 	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
 		#h.GetFunction("fitfunc").SetLineColor(4)
 		histos1.append(h)
-	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):
-		histos1_2D.append(h)
-
 infile2.cd()
 histos2 = []
 histos2_2D = []
@@ -248,9 +240,6 @@ graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
 savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
-
-for i in range(len(histos1_2D)):
-	savehisto2D(histos1_2D[i],histos2_2D[i],label1,label2,outfile,c,histos1_2D[i].GetXaxis().GetTitle(),histos1_2D[i].GetYaxis().GetTitle(),histos1_2D[i].GetTitle())
 
 closePDF(outfile,c)
 outfileroot.Close()
