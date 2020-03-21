@@ -28,7 +28,24 @@ def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
 def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=1):
-	canvas.SetLogy(logY)	
+	canvas.Clear()
+	RatioMin = 0.2
+	RatioMax = 2.2
+	#canvas.SetLogy(logY)
+
+	top = TPad("top","top",0,0.42,1,1)
+	top.SetLogy(logY)
+    
+	bot = TPad("bot","bot",0,0,1,0.38)
+    
+	top.Draw()
+	top.SetBottomMargin(0)
+	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+	bot.Draw()
+	bot.SetTopMargin(0)
+	bot.SetBottomMargin(0.4)
+	top.cd()
+
 	histo1.SetTitle(plotTitle)
 	histo1.GetXaxis().SetTitle(XaxisTitle)
 	histo1.GetYaxis().SetTitle(YaxisTitle)
@@ -61,6 +78,22 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	canvas.Write()
 	histo1.Write("{0} {1}".format(histo1.GetTitle(),label1))
 	histo2.Write("{0} {1}".format(histo2.GetTitle(),label2))
+
+	bot.cd()
+	reference = histo2.Clone("reference")
+	reference.GetYaxis().SetTitle("Ratio")
+	reference.GetYaxis().SetTitleSize(0.06)
+	reference.GetYaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitle(XaxisTitle)
+	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+	reference.GetYaxis().SetNdivisions(508)
+	reference.GetYaxis().SetDecimals(True)
+	reference.Draw("axis")
+	ratio = histo1.Clone("Ratio"+histo1.GetName())
+	ratio.Divide(reference)
+	ratio.DrawCopy("pe same")
 
 def savegraph(graph1,graph2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
