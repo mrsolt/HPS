@@ -196,7 +196,6 @@ for h in infile2.GetListOfKeys():
 
 openPDF(outfile,c)
 for i in range(len(histos1)):
-	if(i>20): break
 	savehisto(histos1[i],histos2[i],label1,label2,outfile,c,histos1[i].GetXaxis().GetTitle(),"",histos1[i].GetTitle())
 
 infile1.cd()
