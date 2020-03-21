@@ -72,7 +72,6 @@ if(not L1L2):
 	truthCutele = "((eleL1tIsGoodTruthHit>-0.5&&eleL1tIsGoodTruthHit<0.5)||(eleL2tIsGoodTruthHit>-0.5&&eleL2tIsGoodTruthHit<0.5)||(eleL1bIsGoodTruthHit>-0.5&&eleL1bIsGoodTruthHit<0.5)||(eleL2bIsGoodTruthHit>-0.5&&eleL2bIsGoodTruthHit<0.5))"
 	truthCutpos = "((posL1tIsGoodTruthHit>-0.5&&posL1tIsGoodTruthHit<0.5)||(posL2tIsGoodTruthHit>-0.5&&posL2tIsGoodTruthHit<0.5)||(posL1bIsGoodTruthHit>-0.5&&posL1bIsGoodTruthHit<0.5)||(posL2bIsGoodTruthHit>-0.5&&posL2bIsGoodTruthHit<0.5))"
 
-
 else:
 	layercutele = "(!eleHasL1&&eleHasL2)"
 	layercutpos = "(!posHasL1&&posHasL2)"
@@ -92,8 +91,13 @@ dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso),lay
 dataevents.Draw("{0}>>eleisocut_1D_data(100,-3,7)".format(eleiso),layercutele)
 dataevents.Draw("{0}>>posisocut_1D_data(100,-3,7)".format(posiso),layercutpos)
 
-dataevents.Draw("eleMinPositiveIso>>eleiso_1D_data(100,0,10)",layercutele)
-dataevents.Draw("posMinPositiveIso>>posiso_1D_data(100,0,10)",layercutpos)
+if(not L1L2):
+	dataevents.Draw("eleMinPositiveIso>>eleiso_1D_data(100,0,10)",layercutele)
+	dataevents.Draw("posMinPositiveIso>>posiso_1D_data(100,0,10)",layercutpos)
+
+else:
+	dataevents.Draw("eleMinPositiveIsoL2>>eleiso_1D_data(100,0,10)",layercutele)
+	dataevents.Draw("posMinPositiveIsoL2>>posiso_1D_data(100,0,10)",layercutpos)
 
 mcevents.Draw("uncVZ:{0}>>eleiso_mc_truth(100,-3,7,100,-40,60)".format(eleiso),truthCutele+"&&"+layercutele)
 mcevents.Draw("uncVZ:{0}>>posiso_mc_truth(100,-3,7,100,-40,60)".format(posiso),truthCutpos+"&&"+layercutpos)
@@ -101,8 +105,13 @@ mcevents.Draw("uncVZ:{0}>>posiso_mc_truth(100,-3,7,100,-40,60)".format(posiso),t
 mcevents.Draw("{0}>>eleisocut_1D_mc(100,-3,7)".format(eleiso),layercutele)
 mcevents.Draw("{0}>>posisocut_1D_mc(100,-3,7)".format(posiso),layercutpos)
 
-mcevents.Draw("eleMinPositiveIso>>eleiso_1D_mc(100,0,10)",layercutele)
-mcevents.Draw("posMinPositiveIso>>posiso_1D_mc(100,0,10)",layercutpos)
+if(not L1L2):
+	mcevents.Draw("eleMinPositiveIso>>eleiso_1D_mc(100,0,10)",layercutele)
+	mcevents.Draw("posMinPositiveIso>>posiso_1D_mc(100,0,10)",layercutpos)
+
+else:
+	mcevents.Draw("eleMinPositiveIsoL2>>eleiso_1D_mc(100,0,10)",layercutele)
+	mcevents.Draw("posMinPositiveIsoL2>>posiso_1D_mc(100,0,10)",layercutpos)
 
 mcevents.Draw("uncVZ:{0}>>eleiso_mc(100,-3,7,100,-40,60)".format(eleiso),purityCut+"&&"+layercutele)
 mcevents.Draw("uncVZ:{0}>>posiso_mc(100,-3,7,100,-40,60)".format(posiso),purityCut+"&&"+layercutpos)
