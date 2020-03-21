@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad
 sys.argv = tmpargv
 
 #List arguments
