@@ -88,6 +88,7 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	reference.Draw("axis")
 	ratio = histo1.Clone("Ratio"+histo1.GetName())
 	ratio.Divide(reference)
+	ratio.SetLineColor(1)
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
 	outfileroot.cd()
