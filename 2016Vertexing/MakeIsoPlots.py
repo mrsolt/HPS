@@ -80,13 +80,10 @@ else:
 	truthCutele = "((eleL3tIsGoodTruthHit>-0.5&&eleL3tIsGoodTruthHit<0.5)||(eleL4tIsGoodTruthHit>-0.5&&eleL4tIsGoodTruthHit<0.5)||(eleL3bIsGoodTruthHit>-0.5&&eleL3bIsGoodTruthHit<0.5)||(eleL4bIsGoodTruthHit>-0.5&&eleL4bIsGoodTruthHit<0.5))"
 	truthCutpos = "((posL3tIsGoodTruthHit>-0.5&&posL3tIsGoodTruthHit<0.5)||(posL4tIsGoodTruthHit>-0.5&&posL4tIsGoodTruthHit<0.5)||(posL3bIsGoodTruthHit>-0.5&&posL3bIsGoodTruthHit<0.5)||(posL4bIsGoodTruthHit>-0.5&&posL4bIsGoodTruthHit<0.5))"
 
-truthCutele = "uncP<9999"
-truthCutpos = "uncP<9999"
 #eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
 #posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
 
 purityCut = "elePurity>0.99&&posPurity>0.99"
-purityCut = "uncP<9999"
 
 dataevents.Draw("uncVZ:{0}>>eleiso_data(100,-3,7,100,-40,60)".format(eleiso),layercutele)
 dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso),layercutpos)
