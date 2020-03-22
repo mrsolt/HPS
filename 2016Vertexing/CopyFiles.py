@@ -19,7 +19,8 @@ import time
 def main() :
 
     def copyfile(file1,file2):
-        cp file1 file2
+        command = 'cp {0} {1}'.format(file1,file2)
+        subprocess.Popen(command, shell=True).wait() 
         time.sleep(1)
 
     outdir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/analysisnoteplots/'
