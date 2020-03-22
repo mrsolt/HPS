@@ -125,7 +125,7 @@ def main() :
     copyfile('{0}2.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z_L1L2')) #80 MeV A' Isocut Vz L1L2
     copyfile('{0}3.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_goodbad_z_L1L2')) #Good Bad Tracks Comparison L1L2
     copyfile('{0}4.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_iso_L1L2')) #Isolation Value L1L2
-    copyfile('{0}5.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut_L1L2))' #Isocut Value L1L2
+    copyfile('{0}5.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut_L1L2')) #Isocut Value L1L2
 
 
 if __name__ == "__main__" : 
