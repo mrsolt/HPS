@@ -21,7 +21,7 @@ def main() :
     def copyfile(file1,file2):
         command = 'cp {0} {1}'.format(file1,file2)
         subprocess.Popen(command, shell=True).wait() 
-        time.sleep(1)
+        time.sleep(0.1)
 
     outdir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/analysisnoteplots/'
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
@@ -34,22 +34,22 @@ def main() :
     isoplotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L2/'
 
 
-    copyfile('{0}compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L1')) #Tight Cutflow L1L1
-    copyfile('{0}compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl')) #Positron IP Exclusion
-    copyfile('{0}compare3.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'z0ele_excl')) #Electron IP Exclusion
-    copyfile('{0}compare4.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocutpos_excl')) #Positron Isocut Exclusion
-    copyfile('{0}compare5.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocutele_excl')) #Electron Isocut Exclusion
-    copyfile('{0}compare6.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0p_excl')) #V0 Momentum Exclusion
-    copyfile('{0}compare7.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl')) #UncChisq Exclusion
-    copyfile('{0}compare8.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl')) #V0 Projection Exclusion
-    copyfile('{0}compare9.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl')) #L1L1 Exclusion
-    copyfile('{0}compare50.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'preselection_compare')) #Preselection Compare
-    copyfile('{0}compare48.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_z')) #L1L1 Exclusion Vz
-    copyfile('{0}compare46.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_z')) #V0 Projection Exclusion Vz
-    copyfile('{0}compare44.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_z')) #UncChisq Exclusion Vz
-    copyfile('{0}compare42.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_z')) #V0 Momentum Exclusion Vz
-    copyfile('{0}compare40.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_excl_z')) #Isocut Exclusion Vz
-    copyfile('{0}compare38.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'ip_excl_z')) #IP Exclusion Vz
+    copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L1')) #Tight Cutflow L1L1
+    copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl')) #Positron IP Exclusion
+    copyfile('{0}_compare3.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'z0ele_excl')) #Electron IP Exclusion
+    copyfile('{0}_compare4.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocutpos_excl')) #Positron Isocut Exclusion
+    copyfile('{0}_compare5.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocutele_excl')) #Electron Isocut Exclusion
+    copyfile('{0}_compare6.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0p_excl')) #V0 Momentum Exclusion
+    copyfile('{0}_compare7.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl')) #UncChisq Exclusion
+    copyfile('{0}_compare8.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl')) #V0 Projection Exclusion
+    copyfile('{0}_compare9.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl')) #L1L1 Exclusion
+    copyfile('{0}_compare50.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'preselection_compare')) #Preselection Compare
+    copyfile('{0}_compare48.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_z')) #L1L1 Exclusion Vz
+    copyfile('{0}_compare46.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_z')) #V0 Projection Exclusion Vz
+    copyfile('{0}_compare44.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_z')) #UncChisq Exclusion Vz
+    copyfile('{0}_compare42.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_z')) #V0 Momentum Exclusion Vz
+    copyfile('{0}_compare40.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_excl_z')) #Isocut Exclusion Vz
+    copyfile('{0}_compare38.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'ip_excl_z')) #IP Exclusion Vz
 
     copyfile('{0}68.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_zm')) #L1L1 Exclusion Vz vs Mass
     copyfile('{0}67.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'voproj_excl_zm')) #V0 Projection Exclusion Vz vs Mass
@@ -81,22 +81,22 @@ def main() :
     copyfile('{0}5.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut')) #Isocut Value
 
 
-    copyfile('{0}compare1.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L2')) #Tight Cutflow L1L2
-    copyfile('{0}compare2.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl_L1L2')) #Positron IP Exclusion L1L2
-    copyfile('{0}compare3.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'z0ele_excl_L1L2')) #Electron IP Exclusion L1L2
-    copyfile('{0}compare4.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocutpos_excl_L1L2')) #Positron Isocut Exclusion L1L2
-    copyfile('{0}compare5.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocutele_excl_L1L2')) #Electron Isocut Exclusion L1L2
-    copyfile('{0}compare6.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_L1L2')) #V0 Momentum Exclusion L1L2
-    copyfile('{0}compare7.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_L1L2')) #UncChisq Exclusion L1L2
-    copyfile('{0}compare8.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_L1L2')) #V0 Projection Exclusion L1L2
-    copyfile('{0}compare9.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_L1L2')) #L1L1 Exclusion L1L2
-    copyfile('{0}compare50.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'preselection_compare_L1L2')) #Preselection Compare L1L2
-    copyfile('{0}compare48.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_z_L1L2')) #L1L2 Exclusion Vz
-    copyfile('{0}compare46.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_z_L1L2')) #V0 Projection Exclusion Vz L1L2
-    copyfile('{0}compare44.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_z_L1L2')) #UncChisq Exclusion Vz L1L2
-    copyfile('{0}compare42.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_z_L1L2')) #V0 Momentum Exclusion Vz L1L2
-    copyfile('{0}compare40.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_excl_z_L1L2')) #Isocut Exclusion Vz L1L2
-    copyfile('{0}compare38.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'ip_excl_z_L1L2')) #IP Exclusion Vz L1L2
+    copyfile('{0}_compare1.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L2')) #Tight Cutflow L1L2
+    copyfile('{0}_compare2.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl_L1L2')) #Positron IP Exclusion L1L2
+    copyfile('{0}_compare3.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'z0ele_excl_L1L2')) #Electron IP Exclusion L1L2
+    copyfile('{0}_compare4.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocutpos_excl_L1L2')) #Positron Isocut Exclusion L1L2
+    copyfile('{0}_compare5.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocutele_excl_L1L2')) #Electron Isocut Exclusion L1L2
+    copyfile('{0}_compare6.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_L1L2')) #V0 Momentum Exclusion L1L2
+    copyfile('{0}_compare7.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_L1L2')) #UncChisq Exclusion L1L2
+    copyfile('{0}_compare8.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_L1L2')) #V0 Projection Exclusion L1L2
+    copyfile('{0}_compare9.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_L1L2')) #L1L1 Exclusion L1L2
+    copyfile('{0}_compare50.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'preselection_compare_L1L2')) #Preselection Compare L1L2
+    copyfile('{0}_compare48.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_z_L1L2')) #L1L2 Exclusion Vz
+    copyfile('{0}_compare46.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0proj_excl_z_L1L2')) #V0 Projection Exclusion Vz L1L2
+    copyfile('{0}_compare44.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'uncChisq_excl_z_L1L2')) #UncChisq Exclusion Vz L1L2
+    copyfile('{0}_compare42.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'v0p_excl_z_L1L2')) #V0 Momentum Exclusion Vz L1L2
+    copyfile('{0}_compare40.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_excl_z_L1L2')) #Isocut Exclusion Vz L1L2
+    copyfile('{0}_compare38.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'ip_excl_z_L1L2')) #IP Exclusion Vz L1L2
 
     copyfile('{0}68.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'L1L1_excl_zm_L1L2')) #L1L2 Exclusion Vz vs Mass
     copyfile('{0}67.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'voproj_excl_zm_L1L2')) #V0 Projection Exclusion Vz vs Mass L1L2
