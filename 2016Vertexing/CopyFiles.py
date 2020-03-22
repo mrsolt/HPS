@@ -78,7 +78,7 @@ def main() :
     copyfile('{0}2.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z')) #80 MeV A' Isocut Vz
     copyfile('{0}3.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_goodbad_z')) #Good Bad Tracks Comparison
     copyfile('{0}4.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_iso')) #Isolation Value
-    copyfile('{0}5.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut))' #Isocut Value
+    copyfile('{0}5.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut')) #Isocut Value
 
 
     copyfile('{0}compare1.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L2')) #Tight Cutflow L1L2
