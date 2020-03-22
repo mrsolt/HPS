@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TPad
 sys.argv = tmpargv
 
 #List arguments
@@ -80,10 +80,13 @@ else:
 	truthCutele = "((eleL3tIsGoodTruthHit>-0.5&&eleL3tIsGoodTruthHit<0.5)||(eleL4tIsGoodTruthHit>-0.5&&eleL4tIsGoodTruthHit<0.5)||(eleL3bIsGoodTruthHit>-0.5&&eleL3bIsGoodTruthHit<0.5)||(eleL4bIsGoodTruthHit>-0.5&&eleL4bIsGoodTruthHit<0.5))"
 	truthCutpos = "((posL3tIsGoodTruthHit>-0.5&&posL3tIsGoodTruthHit<0.5)||(posL4tIsGoodTruthHit>-0.5&&posL4tIsGoodTruthHit<0.5)||(posL3bIsGoodTruthHit>-0.5&&posL3bIsGoodTruthHit<0.5)||(posL4bIsGoodTruthHit>-0.5&&posL4bIsGoodTruthHit<0.5))"
 
+truthCutele = "uncP<9999"
+truthCutpos = "uncP<9999"
 #eleiso = "eleMinPositiveIso+0.5*(eleTrkZ0+{0}*elePY/eleP)*sign(elePY)".format(zTarg)
 #posiso = "posMinPositiveIso+0.5*(posTrkZ0+{0}*posPY/posP)*sign(posPY)".format(zTarg)
 
 purityCut = "elePurity>0.99&&posPurity>0.99"
+purityCut = "uncP<9999"
 
 dataevents.Draw("uncVZ:{0}>>eleiso_data(100,-3,7,100,-40,60)".format(eleiso),layercutele)
 dataevents.Draw("uncVZ:{0}>>posiso_data(100,-3,7,100,-40,60)".format(posiso),layercutpos)
@@ -189,6 +192,7 @@ eleiso_data.SetTitle("10% Data Preselection Isolation Cut")
 c.Print(outfile+".pdf")
 outfileroot.cd()
 eleiso_data.Write("eleiso_data")
+c.Write()
 
 eleisocut_1D_data.Add(posisocut_1D_data)
 eleisocut_1D_mc.Add(posisocut_1D_mc)
@@ -239,6 +243,7 @@ eleiso_mc_truth.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_mc_truth.SetTitle("MC Preselection Isolation Cut with L1 Bad Hits")
 c.Print(outfile+".pdf")
 eleiso_mc_truth.Write("eleiso_mc_truth")
+c.Write()
 
 eleiso_mc.Add(posiso_mc)
 eleiso_mc.Draw("COLZ")
@@ -247,6 +252,7 @@ eleiso_mc.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_mc.SetTitle("MC Preselection Isolation Cut with Pure Tracks")
 c.Print(outfile+".pdf")
 eleiso_mc.Write("eleiso_mc")
+c.Write()
 
 
 n_mc_truth = uncVZ_mc_truth.Integral()
@@ -283,6 +289,7 @@ eleiso_ap1.SetTitle("80 MeV A' Preselection Isolation Cut")
 c.SetLogy(0)
 c.Print(outfile+".pdf")
 eleiso_ap1.Write("eleiso_ap1")
+c.Write()
 
 uncVZ_ap1.Sumw2()
 uncVZ_ap1_isocut.Sumw2()
@@ -315,6 +322,7 @@ eleiso_ap2.GetYaxis().SetTitle("Reconstructed z (mm)")
 eleiso_ap2.SetTitle("100 MeV A' Preselection Isolation Cut")
 c.Print(outfile+".pdf")
 eleiso_ap2.Write("eleiso_ap2")
+c.Write()
 
 uncVZ_ap2.Sumw2()
 uncVZ_ap2_isocut.Sumw2()
@@ -340,9 +348,89 @@ c.Write()
 #n_ap2_truth = uncVZ_ap2_truth.Integral()
 #n_ap2 = uncVZ_ap2.Integral()
 
-closePDF(outfile,c)
-outfileroot.Close()
-
 print ("Number of total MC events:{0}  Number of Bad L1 Hits: {1}  Number of True Tracks: {2}".format(mcevents.GetEntries(),n_mc_truth,n_mc))
 #print ("Number of total A' 80 MeV events:{0}  Number of Bad L1 Hits: {1}  Number of True Tracks: {2}".format(ap1events.GetEntries(),n_ap1_truth,n_ap1))
 #print ("Number of total A' 100 MeV events:{0}  Number of Bad L1 Hits: {1}  Number of True Tracks: {2}".format(ap2events.GetEntries(),n_ap2_truth,n_ap2))
+
+
+
+c.Clear()
+RatioMin = 0.2
+RatioMax = 2.2
+
+top = TPad("top","top",0,0.42,1,1)
+top.SetLogy(1)
+   
+bot = TPad("bot","bot",0,0,1,0.38)
+    
+top.Draw()
+top.SetBottomMargin(0)
+#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+bot.Draw()
+bot.SetTopMargin(0)
+bot.SetBottomMargin(0.4)
+top.cd()
+
+eleisocut_1D_data.Draw("")
+eleisocut_1D_data.GetXaxis().SetTitle("Isolation Cut Value (mm)")
+eleisocut_1D_data.SetTitle("Preselection Isolation Cut")
+eleisocut_1D_mc.Draw("same")
+legend4.Draw("same")
+bot.cd()
+reference = eleisocut_1D_mc.Clone("reference")
+reference.GetYaxis().SetTitle("Ratio")
+reference.GetYaxis().SetTitleSize(0.06)
+reference.GetYaxis().SetLabelSize(0.1)
+reference.GetXaxis().SetTitleSize(0.1)
+reference.GetXaxis().SetLabelSize(0.1)
+reference.GetXaxis().SetTitle("Isolation Cut Value (mm)")
+reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+reference.GetYaxis().SetNdivisions(508)
+reference.GetYaxis().SetDecimals(True)
+reference.Draw("axis")
+ratio = eleisocut_1D_data.Clone("Ratio"+eleisocut_1D_data.GetName())
+ratio.Divide(reference)
+ratio.SetLineColor(1)
+ratio.DrawCopy("pe same")
+c.Print(outfile+".pdf")
+c.Write()
+
+c.Clear()
+top = TPad("top","top",0,0.42,1,1)
+top.SetLogy(1)
+   
+bot = TPad("bot","bot",0,0,1,0.38)
+top.Draw()
+top.SetBottomMargin(0)
+#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+bot.Draw()
+bot.SetTopMargin(0)
+bot.SetBottomMargin(0.4)
+top.cd()
+
+eleiso_1D_data.Draw("")
+eleiso_1D_data.GetXaxis().SetTitle("Isolation Value (mm)")
+eleiso_1D_data.SetTitle("Preselection Isolation Value")
+eleiso_1D_mc.Draw("same")
+legend4.Draw("same")
+bot.cd()
+reference2 = eleiso_1D_mc.Clone("reference2")
+reference2.GetYaxis().SetTitle("Ratio")
+reference2.GetYaxis().SetTitleSize(0.06)
+reference2.GetYaxis().SetLabelSize(0.1)
+reference2.GetXaxis().SetTitleSize(0.1)
+reference2.GetXaxis().SetLabelSize(0.1)
+reference2.GetXaxis().SetTitle("Isolation Value (mm)")
+reference2.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+reference2.GetYaxis().SetNdivisions(508)
+reference2.GetYaxis().SetDecimals(True)
+reference2.Draw("axis")
+ratio2 = eleiso_1D_data.Clone("Ratio2"+eleiso_1D_data.GetName())
+ratio2.Divide(reference2)
+ratio2.SetLineColor(1)
+ratio2.DrawCopy("pe same")
+c.Print(outfile+".pdf")
+c.Write()
+
+closePDF(outfile,c)
+outfileroot.Close()
