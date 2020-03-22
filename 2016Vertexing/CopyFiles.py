@@ -25,13 +25,13 @@ def main() :
 
     outdir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/analysisnoteplots/'
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
-    singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1compare'
+    singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1_compare'
     tailfitsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L1/compare_tailfits_L1L1'
-    isoplotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L1/'
+    isoplotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L1/isoplots_L1L1'
     tightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2'
-    singleL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2compare'
-    tailfitsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L2/compare_tailfits_L1L2'
-    isoplotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L2/'
+    singleL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2_compare'
+    #tailfitsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L2/compare_tailfits_L1L2'
+    isoplotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L2/isoplots_L1L2'
 
 
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L1')) #Tight Cutflow L1L1
@@ -117,9 +117,9 @@ def main() :
     copyfile('{0}5.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdir,'final_compare_L1L2')) #Data/MC Compare Final Selection L1L2
     copyfile('{0}6.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdir,'final_selection_cutflow_L1L2')) #Compare Tight to Final Selection L1L2
 
-    copyfile('{0}5.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
-    copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
-    copyfile('{0}74.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'mass_slice_L1L2')) #Mass Slice Compare L1L2
+    #copyfile('{0}5.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
+    #copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
+    #copyfile('{0}74.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'mass_slice_L1L2')) #Mass Slice Compare L1L2
 
     copyfile('{0}1.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_z_L1L2')) #100 MeV A' Isocut Vz L1L2
     copyfile('{0}2.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z_L1L2')) #80 MeV A' Isocut Vz L1L2
