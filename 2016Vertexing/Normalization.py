@@ -36,11 +36,13 @@ for opt, arg in options:
 def tupleToMassHisto(events,histo,nBins,minX,maxX):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
+	histo.Sumw2()
 	return histo
 
 def tupleToPHisto(events,histo,nBins,minX,maxX):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncP",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
+	histo.Sumw2()
 	return histo
 
 def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
@@ -59,6 +61,60 @@ def addTriWabHisto(triHisto, wabHisto):
 	return totalHisto
 
 def saveNHisto(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisTitle="", YaxisTitle="", PlotTitle=""):
+	outfileroot.cd()
+	radHisto.SetLineColor(1)
+	radHisto.GetXaxis().SetTitle(XaxisTitle)
+	radHisto.GetYaxis().SetTitle(YaxisTitle)
+	radHisto.SetTitle(PlotTitle)
+	triHisto.SetLineColor(2)
+	wabHisto.SetLineColor(3)
+	dataHisto.SetLineColor(4)
+	sumHisto.SetLineColor(7)
+	radHisto.Draw()
+	triHisto.Draw("same")
+	wabHisto.Draw("same")
+	dataHisto.Draw("same")
+	sumHisto.Draw("same")
+	radHisto.Write("Radiative {0}".format(XaxisTitle))
+	triHisto.Write("Trident {0}".format(XaxisTitle))
+	wabHisto.Write("Wab {0}".format(XaxisTitle))
+	sumHisto.Write("e+e- Sum {0}".format(XaxisTitle))
+	dataHisto.Write("Data {0}".format(XaxisTitle))
+	legend = TLegend(.68,.66,.92,.87)
+	legend.SetBorderSize(0)
+	legend.SetFillColor(0)
+	legend.SetFillStyle(0)
+	legend.SetTextFont(42)
+	legend.SetTextSize(0.035)
+	legend.AddEntry(radHisto,"Rad","LP")
+	legend.AddEntry(triHisto,"Trident","LP")
+	legend.AddEntry(wabHisto,"Wab","LP")
+	legend.AddEntry(dataHisto,"Data","LP")
+	legend.AddEntry(sumHisto,"Trident + Wab","LP")
+	legend.Draw()
+	canvas.Print(outfile+".pdf")
+	canvas.Write()
+
+
+def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisTitle="", YaxisTitle="", PlotTitle=""):	
+	outfileroot.cd()
+	canvas.Clear()
+	RatioMin = 0.0
+	RatioMax = 0.15
+
+	top = TPad("top","top",0,0.42,1,1)
+	top.SetLogy(logY)
+    
+	bot = TPad("bot","bot",0,0,1,0.38)
+    
+	top.Draw()
+	top.SetBottomMargin(0)
+	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+	bot.Draw()
+	bot.SetTopMargin(0)
+	bot.SetBottomMargin(0.4)
+	top.cd()
+
 	radHisto.SetLineColor(1)
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
@@ -84,7 +140,26 @@ def saveNHisto(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisT
 	legend.AddEntry(dataHisto,"Data","LP")
 	legend.AddEntry(sumHisto,"Trident + Wab","LP")
 	legend.Draw()
+
+	bot.cd()
+	reference = sumHisto.Clone("reference")
+	reference.GetYaxis().SetTitle("Ratio")
+	reference.GetYaxis().SetTitleSize(0.06)
+	reference.GetYaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitle(XaxisTitle)
+	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+	reference.GetYaxis().SetNdivisions(508)
+	reference.GetYaxis().SetDecimals(True)
+	reference.Draw("axis")
+	ratio = radHisto.Clone("Ratio"+radHisto.GetName())
+	ratio.Divide(reference)
+	ratio.SetLineColor(1)
+	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
+
 
 def truthMatch(events,cut):
 	cutevents = events.CopyTree(cut)
@@ -103,6 +178,7 @@ parentID = 622
 truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
 
 outfile = remainder[0]
+outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 radFile = TFile(radFilePath)
 triFile = TFile(triFilePath)
@@ -160,5 +236,8 @@ pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
 
 saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "Cross Section [ub]", "")
 saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [MeV]", "Cross Section [ub]", "")
+saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "Cross Section [ub]", "")
+saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [MeV]", "Cross Section [ub]", "")
 
 closePDF(outfile,c)
+outfileroot.Close()
