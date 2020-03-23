@@ -483,6 +483,7 @@ if(makePlots):
         histo_out.Write("{0} After".format(plot))
         c.SetLogy(1)
         c.Print(remainder[0]+"_plots.pdf")
+        c.Write()
         c.SetLogy(0)
         c.Print(remainder[0]+"_plots.pdf")
     c.Print(remainder[0]+"_plots.pdf]")
