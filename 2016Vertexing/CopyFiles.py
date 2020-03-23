@@ -175,7 +175,7 @@ def main() :
     copyfile('{0}{1}MeV_{2}52.pdf'.format(applotsL1L2dir,'80','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_80MeV_vop_n_1_z_L1L2')) #80 MeV A' V0 Momentum n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}50.pdf'.format(applotsL1L2dir,'80','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_80MeV_isocut_n_1_z_L1L2')) #80 MeV A' Isocut n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L2dir,'80','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_80MeV_ip_n_1_z_L1L2')) #80 MeV A' IP n-1 Vz L1L2
-    copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L1dir,'80','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_80MeV_singleV0_L1L2')) #80 MeV A' Single V0 Vz L1L2
+    copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L2dir,'80','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_80MeV_singleV0_L1L2')) #80 MeV A' Single V0 Vz L1L2
     copyfile('{0}{1}MeV_{2}62.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_tightcutflowL1L2')) #100 MeV A' Tight Cutflow L1L2
     copyfile('{0}{1}MeV_{2}58.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_L1L2_n_1_z_L1L2')) #100 MeV A' L1L2 n-1 Vz
     copyfile('{0}{1}MeV_{2}56.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_v0proj_n_1_z_L1L2')) #100 MeV A' V0 Projection n-1 Vz L1L2
@@ -183,7 +183,7 @@ def main() :
     copyfile('{0}{1}MeV_{2}52.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_vop_n_1_z_L1L2')) #100 MeV A' V0 Momentum n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}50.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_isocut_n_1_z_L1L2')) #100 MeV A' Isocut n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_ip_n_1_z_L1L2')) #100 MeV A' IP n-1 Vz L1L2
-    copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L1dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_singleV0_L1L2')) #100 MeV A' Single V0 Vz L1L2
+    copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_singleV0_L1L2')) #100 MeV A' Single V0 Vz L1L2
 
 
 if __name__ == "__main__" : 
