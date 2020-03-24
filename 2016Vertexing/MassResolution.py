@@ -76,9 +76,6 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 
 		P_positron_Smear = random.gauss(events.posP, events.posP*pos_smear)
 		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
-		print("Positron: Smear: {0}  P: {1}  Sigma: {2}".format(P_positron_Smear,events.posP,pos_smear))
-		print("Electron: Smear: {0}  P: {1}  Sigma: {2}".format(P_electron_Smear,events.eleP,ele_smear))
-		print("")
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
 		histo.Fill(MSmear*1000-mass)
