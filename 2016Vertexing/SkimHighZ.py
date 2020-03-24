@@ -47,6 +47,6 @@ nevents = events.GetEntries()
 for entry in xrange(nevents):
 	events.GetEntry(entry)
 	if(events.uncVZ < maxVZ): continue
-	outfile.write("{0} {1}".format(events.run,events.event))
+	outfile.write("{0} {1}\n".format(events.run,events.event))
 
 outfile.close()
