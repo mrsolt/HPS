@@ -25,15 +25,17 @@ def main() :
 
     outdir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/analysisnoteplots/'
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
-    singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1_compare'
+    singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/singleV0_L1L1_compare'
     tailfitsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L1/compare_tailfits_L1L1'
     isoplotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L1/isoplots_L1L1'
     applotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L1/ap-beam_'
+    massResL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/L1L1/massRes_L1L1'
     tightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2'
-    singleL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2_compare'
+    singleL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/singleV0_L1L2_compare'
     #tailfitsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L2/compare_tailfits_L1L2'
     isoplotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L2/isoplots_L1L2'
     applotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L2/ap-beam_'
+    massResL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/L1L2/massRes_L1L2'
 
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L1')) #Tight Cutflow L1L1
     copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl')) #Positron IP Exclusion
@@ -75,12 +77,6 @@ def main() :
     copyfile('{0}4.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdir,'sigma_slice')) #Compare Vertex Resolution
     copyfile('{0}74.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdir,'mass_slice')) #Mass Slice Compare
 
-    #copyfile('{0}1.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_z')) #100 MeV A' Isocut Vz
-    #copyfile('{0}2.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z')) #80 MeV A' Isocut Vz
-    #copyfile('{0}3.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_goodbad_z')) #Good Bad Tracks Comparison
-    #copyfile('{0}4.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_iso')) #Isolation Value
-    #copyfile('{0}5.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut')) #Isocut Value
-
     copyfile('{0}3.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_z')) #100 MeV A' Isocut Vz
     copyfile('{0}4.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_isocut_z')) #100 MeV A' Isocut vs Vz
     copyfile('{0}5.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z')) #80 MeV A' Isocut Vz
@@ -109,7 +105,11 @@ def main() :
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_ip_n_1_z')) #100 MeV A' IP n-1 Vz
     copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_singleV0')) #100 MeV A' Single V0 Vz
 
-
+    copyfile('{0}1.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdir,'massResL1L1')) #Mass Resolution L1L1
+    copyfile('{0}60.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdir,'massResL1L1_ap100MeV_m_z')) #100 MeV A' Mass vs Z L1L1
+    copyfile('{0}61.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdir,'massResL1L1_ap100MeV_smeared')) #100 MeV Mass Resolution L1L1
+    copyfile('{0}62.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdir,'massResL1L1_ap100MeV')) #100 MeV Mass Resolution L1L1
+    copyfile('{0}58.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdir,'massResL1L1_ap100MeV_z')) #100 MeV z L1L1
 
     copyfile('{0}_compare1.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'tightcutflowL1L2')) #Tight Cutflow L1L2
     copyfile('{0}_compare2.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdir,'z0pos_excl_L1L2')) #Positron IP Exclusion L1L2
@@ -151,12 +151,6 @@ def main() :
     #copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
     #copyfile('{0}74.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdir,'mass_slice_L1L2')) #Mass Slice Compare L1L2
 
-    #copyfile('{0}1.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_z_L1L2')) #100 MeV A' Isocut Vz L1L2
-    #copyfile('{0}2.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z_L1L2')) #80 MeV A' Isocut Vz L1L2
-    #copyfile('{0}3.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_goodbad_z_L1L2')) #Good Bad Tracks Comparison L1L2
-    #copyfile('{0}4.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_iso_L1L2')) #Isolation Value L1L2
-    #copyfile('{0}5.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_isocut_L1L2')) #Isocut Value L1L2
-
     copyfile('{0}3.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_z_L1L2')) #100 MeV A' Isocut Vz L1L2
     copyfile('{0}4.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap100MeV_isocut_z_L1L2')) #100 MeV A' Isocut vs Vz L1L2
     copyfile('{0}5.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdir,'isocut_ap80MeV_z_L1L2')) #80 MeV A' Isocut Vz L1L2
@@ -184,6 +178,12 @@ def main() :
     copyfile('{0}{1}MeV_{2}50.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_isocut_n_1_z_L1L2')) #100 MeV A' Isocut n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_ip_n_1_z_L1L2')) #100 MeV A' IP n-1 Vz L1L2
     copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L2dir,'100','L1L2'),'{0}{1}.pdf'.format(outdir,'ap_100MeV_singleV0_L1L2')) #100 MeV A' Single V0 Vz L1L2
+
+    copyfile('{0}1.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdir,'massResL1L2')) #Mass Resolution L1L2
+    copyfile('{0}60.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdir,'massResL1L2_ap100MeV_m_z')) #100 MeV A' Mass vs Z L1L2
+    copyfile('{0}61.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdir,'massResL1L2_ap100MeV_smeared')) #100 MeV Mass Resolution L1L2
+    copyfile('{0}62.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdir,'massResL1L2_ap100MeV')) #100 MeV Mass Resolution L1L2
+    copyfile('{0}58.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdir,'massResL1L2_ap100MeV_z')) #100 MeV z L1L2
 
 
 if __name__ == "__main__" : 
