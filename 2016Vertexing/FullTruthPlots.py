@@ -118,7 +118,7 @@ minVZ = -30
 maxVZ = 30
 savePDF = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'l:m:n:ph')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lm:n:ph')
 
 # Parse the command line arguments
 for opt, arg in options:
