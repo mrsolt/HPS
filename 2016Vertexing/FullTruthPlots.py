@@ -66,7 +66,6 @@ def getScatter(actsensor,inactsensor):
 	scatter = actsensor
 	if(scatter < -9998):
 		scatter = inactsensor
-		print scatter
 	return scatter
 
 def openPDF(outfile,canvas):
