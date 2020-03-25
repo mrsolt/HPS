@@ -27,13 +27,14 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-def savehisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
+def savehisto(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0,logZ=1):
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	#histo.SetStats(stats)
 	histo.Draw("COLZ")
 	canvas.SetLogy(logY)
+	canvas.SetLogz(logZ)
 	canvas.Print(outfile+".pdf")
 	histo.Write(plotTitle)
 
