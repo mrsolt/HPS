@@ -95,6 +95,8 @@ def saveTupleFitPlotSmeared(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	sigma = f1.GetParameter(2)
 	meanerror = f1.GetParError(1)
 	sigmaerror = f1.GetParError(2)
+	outfileroot.cd()
+	canvas.Write()
 	del f1
 	del histo
 	return mean, sigma, meanerror, sigmaerror
@@ -112,6 +114,8 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	sigma = f1.GetParameter(2)
 	meanerror = f1.GetParError(1)
 	sigmaerror = f1.GetParError(2)
+	outfileroot.cd()
+	canvas.Write()
 	del f1
 	del histo
 	return mean, sigma, meanerror, sigmaerror
@@ -124,6 +128,8 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	histo.GetYaxis().SetTitle("Reconstructed Mass (MeV)")
 	histo.Draw("COLZ")
 	canvas.Print(outfile+".pdf")
+	outfileroot.cd()
+	canvas.Write()
 	z = array.array('d')
 	fittedmean = array.array('d')
 	fittedsigma = array.array('d')
@@ -154,12 +160,15 @@ def saveTupleFitPlotsZ(events,inHisto,mass,nBins,minX,maxX,zbin,zTarg,maxZ,outfi
 	gr_mean.GetYaxis().SetTitle("Mean (MeV)")
 	gr_mean.GetYaxis().SetRangeUser(-5,5)
 	canvas.Print(outfile+".pdf")
+	outfileroot.cd()
+	canvas.Write()
 	gr_sigma.Draw("AP")
 	gr_sigma.SetTitle("Fitted Mass Resolution {0:.0f} MeV A'".format(mass))
 	gr_sigma.GetXaxis().SetTitle("Truth Z (mm)")
 	gr_sigma.GetYaxis().SetTitle("Sigma (MeV)")
 	gr_sigma.GetYaxis().SetRangeUser(0,8)
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 	del histo
 	del gr_mean
 	del gr_sigma
@@ -293,13 +302,14 @@ gr_moller_mc = TGraphErrors(1,moller_mass_mc_arr,moller_mass_res_mc_arr,moller_m
 gr_moller_mc_smeared = TGraphErrors(1,moller_mass_mc_smeared_arr,moller_mass_res_mc_smeared_arr,moller_mass_mc_smeared_err_arr,moller_mass_res_mc_smeared_err_arr)
 
 outfileroot.cd()
-gr_mean.Draw("AP")
+c.Clear()
 gr_mean.SetTitle("Fitted Mass - Truth Mass Mean")
 gr_mean.GetXaxis().SetTitle("Truth Mass (MeV)")
-gr_mean.GetYaxis().SetTitle("Mean (MeV)")
+gr_mean.GetYaxis().SetTitle("Fitted Mean (MeV)")
+gr_mean.Draw("AP")
 gr_mean_smeared.SetLineColor(2)
 gr_mean_smeared.SetMarkerColor(2)
-gr_mean_smeared.Draw("APsame")
+gr_mean_smeared.Draw("Psame")
 legend = TLegend(.08,.46,.42,.87)
 legend.SetBorderSize(0)
 legend.SetFillColor(0)
@@ -373,8 +383,8 @@ mg.Draw("AP")
 mg.GetXaxis().SetTitle("Truth Mass (MeV)")
 mg.GetYaxis().SetTitle("Sigma (MeV)")
 mg.GetXaxis().SetLimits(0,200)
-mg.GetYaxis().SetLimits(0,8)
-mg.Draw("AP")
+mg.SetMinimum(0)
+mg.SetMaximum(10)
 c.BuildLegend(.1,.56,.35,.87)
 c.Print(outfile+".pdf")
 c.Write()
