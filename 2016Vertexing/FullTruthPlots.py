@@ -123,7 +123,7 @@ options, remainder = getopt.gnu_getopt(sys.argv[1:], 'l:m:n:ph')
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-l':
-			L1L2 = float(arg)
+			L1L2 = True
 		if opt=='-m':
 			minVZ = float(arg)
 		if opt=='-n':
