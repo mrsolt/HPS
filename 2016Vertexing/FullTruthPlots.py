@@ -116,15 +116,14 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 L1L2 = False
 minVZ = -30
 maxVZ = 30
-clusterT = 43
 savePDF = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:m:n:ph')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'l:m:n:ph')
 
 # Parse the command line arguments
 for opt, arg in options:
-		if opt=='-c':
-			clusterT = float(arg)
+		if opt=='-l':
+			L1L2 = float(arg)
 		if opt=='-m':
 			minVZ = float(arg)
 		if opt=='-n':
