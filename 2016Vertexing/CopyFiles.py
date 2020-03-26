@@ -24,9 +24,9 @@ def main() :
         time.sleep(0.1)
 
     outdir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/analysisnoteplots/'
-    outdirSelection = '{0}/selection/'format(outdir)
-    outdirResults = '{0}/results/'format(outdir)
-    outdirMassRes = '{0}/MassRes/'format(outdir)
+    outdirSelection = '{0}/selection/'.format(outdir)
+    outdirResults = '{0}/results/'.format(outdir)
+    outdirMassRes = '{0}/MassRes/'.format(outdir)
 
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
     singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/singleV0_L1L1_compare'
