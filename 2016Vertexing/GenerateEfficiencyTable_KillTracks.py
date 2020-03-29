@@ -567,11 +567,9 @@ def CompareHisto(events1,events2,truthevents,nBins,targZ,maxZ,outfileroot,canvas
 
 def CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,truthevents,nBins,targZ,outfileroot,canvas,outfile,mass):
     output = outfile+"_comparekill"
-    openPDF(output,canvas)
     CompareHisto(L1L1events,L1L1killevents,truthevents,nBins,targZ,80,outfileroot,canvas,output,mass,"L1L1")
     CompareHisto(L1L2events,L1L2killevents,truthevents,nBins,targZ,90,outfileroot,canvas,output,mass,"L1L2")
     CompareHisto(L2L2events,L2L2killevents,truthevents,nBins,targZ,160,outfileroot,canvas,output,mass,"L2L2")
-    closePDF(output,canvas)
 
 
 
@@ -744,10 +742,12 @@ for i in range(nMass):
     #L1L2killevents.append(L1L2events[i])
     #L2L2killevents.append(L2L2events[i])
     eventstruth.append(inputTruthFile.Get(tupleName))
+    openPDF(outfile+"_comparekill",c)
     CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
-    del eventsL1L1
-    del eventsL1L2
-    del eventsL2L2
+    closePDF(outfile+"_comparekill",canvas)
+    #del eventsL1L1
+    #del eventsL1L2
+    #del eventsL2L2
 
 histosL1L1 = []
 histosL1L2 = []
@@ -756,6 +756,7 @@ histosTruth = []
 normArr = []
 
 for i in range(nMass):
+    print("Mass {0:0.0f}".format(mass[i]*1000))
     L1L1events[i].Draw("triEndZ>>histoReconL1L1_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL1L1 = ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000))
     histosL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000)))
