@@ -377,7 +377,8 @@ if len(remainder)!=5:
     sys.exit(0)
 
 if killInTrackSlope:
-    effSlopeFileName = '/home/mrsolt/hps/test/EmGamma-L1HitEfficiencyResults-2016.root'
+    #effSlopeFileName = '/home/mrsolt/hps/test/EmGamma-L1HitEfficiencyResults-2016.root'
+    effSlopeFileName = 'EmGamma-L1HitEfficiencyResults-2016.root'
     effRatioName = 'p2slopehps_007963.1GamEm_L1HitInefficiency'
     effSlopeFile = ROOT.TFile(effSlopeFileName)      
     effSlopeData = getEffTH1(effSlopeFile,effRatioName)
