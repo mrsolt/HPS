@@ -744,7 +744,7 @@ for i in range(nMass):
     eventstruth.append(inputTruthFile.Get(tupleName))
     openPDF(outfile+"_comparekill",c)
     CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
-    closePDF(outfile+"_comparekill",canvas)
+    closePDF(outfile+"_comparekill",c)
     #del eventsL1L1
     #del eventsL1L2
     #del eventsL2L2
