@@ -227,8 +227,6 @@ triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins,minP,maxP)
 wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP)
 dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP)
 
-file.Close()
-
 openPDF(outfile,c)
 
 saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, c)
@@ -242,3 +240,4 @@ saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 M
 
 closePDF(outfile,c)
 outfileroot.Close()
+file.Close()
