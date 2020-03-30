@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend, TPad
 sys.argv = tmpargv
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:', ['help',])
@@ -162,6 +162,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 
 
 def truthMatch(events,cut):
+	file = TFile("rad_cut.root","recreate")
 	cutevents = events.CopyTree(cut)
 	return cutevents
 
