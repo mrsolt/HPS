@@ -271,15 +271,9 @@ def plotEff2(histos,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,us
 
 def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,title=""):
     outfileroot.cd()
-    canvas.Clear()
-    legend = TLegend(.68,.70,.92,.90)
-    legend.SetBorderSize(0)
-    legend.SetFillColor(0)
-    legend.SetFillStyle(0)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.035)
     maximum = 0
     for i in range(len(mass)):
+        canvas.Clear()
         histosL1L1[i].SetLineColor(1)
         histosL1L2[i].SetLineColor(2)
         histosL2L2[i].SetLineColor(4)
@@ -291,6 +285,12 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         sumhisto.Add(histosL2L2[i])
         sumhisto.SetLineColor(28)
         maximum = sumhisto.GetMaximum()
+        legend = TLegend(.68,.70,.92,.90)
+        legend.SetBorderSize(0)
+        legend.SetFillColor(0)
+        legend.SetFillStyle(0)
+        legend.SetTextFont(42)
+        legend.SetTextSize(0.035)
         legend.AddEntry(histosL1L1[i],"L1L1","LP")
         legend.AddEntry(histosL1L2[i],"L1L2","LP")
         legend.AddEntry(histosL2L2[i],"L2L2","LP")
@@ -309,6 +309,7 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         canvas.Print(outPDF+".pdf")
         canvas.Write()
 
+        canvas.Clear()
         histosL1L1[i].Scale(1/normArr[i])
         histosL1L2[i].Scale(1/normArr[i])
         histosL2L2[i].Scale(1/normArr[i])
@@ -329,7 +330,10 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         legend.Draw()
         canvas.Print(output+".png")
         canvas.Print(outPDF+".pdf")
-        outfileroot.Write()
+        canvas.Write()
+        del sumhisto
+        del sumhistonorm
+        del legend
 
 def getEffTH1(hfile, hname):
     print 'Getting Efficiency Graph...converting to TH1'
@@ -725,29 +729,6 @@ L1L2killevents = []
 L2L2events = []
 L2L2killevents = []
 eventstruth = []
-#Loop over all values of mass
-for i in range(nMass):
-    inputL1L1ReconFile = TFile(str(L1L1Files[i])) #L1L1 tuple files after cuts
-    inputL1L2ReconFile = TFile(str(L1L2Files[i])) #L1L2 tuple files after cuts
-    inputL2L2ReconFile = TFile(str(L2L2Files[i])) #L2L2 tuple files after cuts
-    inputTruthFile = TFile(str(truthFiles[i])) #truth files
-    L1L1events.append(inputL1L1ReconFile.Get(tupleName))
-    L1L2events.append(inputL1L2ReconFile.Get(tupleName))
-    L2L2events.append(inputL2L2ReconFile.Get(tupleName))
-    eventsL1L1, eventsL1L2, eventsL2L2 = KillHits(inputL1L1ReconFile.Get(tupleName),inputL1L2ReconFile.Get(tupleName),inputL2L2ReconFile.Get(tupleName),mass[i],L2L2Files[i])
-    L1L1killevents.append(eventsL1L1)
-    L1L2killevents.append(eventsL1L2)
-    L2L2killevents.append(eventsL2L2)
-    #L1L1killevents.append(L1L1events[i])
-    #L1L2killevents.append(L1L2events[i])
-    #L2L2killevents.append(L2L2events[i])
-    eventstruth.append(inputTruthFile.Get(tupleName))
-    openPDF(outfile+"_comparekill",c)
-    CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
-    closePDF(outfile+"_comparekill",c)
-    #del eventsL1L1
-    #del eventsL1L2
-    #del eventsL2L2
 
 histosL1L1 = []
 histosL1L2 = []
@@ -755,18 +736,61 @@ histosL2L2 = []
 histosTruth = []
 normArr = []
 
+histosL1L1kill = []
+histosL1L2kill = []
+histosL2L2kill = []
+normkillArr = []
+
+openPDF(outfile+"_comparekill",c)
+#Loop over all values of mass
 for i in range(nMass):
+    inputL1L1ReconFile = TFile(str(L1L1Files[i])) #L1L1 tuple files after cuts
+    inputL1L2ReconFile = TFile(str(L1L2Files[i])) #L1L2 tuple files after cuts
+    inputL2L2ReconFile = TFile(str(L2L2Files[i])) #L2L2 tuple files after cuts
+    inputTruthFile = TFile(str(truthFiles[i])) #truth files
+    #L1L1events.append(inputL1L1ReconFile.Get(tupleName))
+    #L1L2events.append(inputL1L2ReconFile.Get(tupleName))
+    #L2L2events.append(inputL2L2ReconFile.Get(tupleName))
+    L1L1events = inputL1L1ReconFile.Get(tupleName)
+    L1L2events = inputL1L2ReconFile.Get(tupleName)
+    L2L2events = inputL2L2ReconFile.Get(tupleName)
+    L1L1killevents, L1L2killevents, L2L2killevents = KillHits(inputL1L1ReconFile.Get(tupleName),inputL1L2ReconFile.Get(tupleName),inputL2L2ReconFile.Get(tupleName),mass[i],L2L2Files[i])
+    #L1L1killevents.append(eventsL1L1)
+    #L1L2killevents.append(eventsL1L2)
+    #L2L2killevents.append(eventsL2L2)
+    #L1L1killevents.append(L1L1events[i])
+    #L1L2killevents.append(L1L2events[i])
+    #L2L2killevents.append(L2L2events[i])
+    #L1L1killevents = eventsL1L1
+    #L1L2killevents = eventsL1L2
+    #L2L2killevents = eventsL2L2
+    #eventstruth.append(inputTruthFile.Get(tupleName))
+    eventstruth = inputTruthFile.Get(tupleName)
+    #CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
+    CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,eventstruth,nBins,targZ,outfileroot,c,outfile,mass[i])
+#closePDF(outfile+"_comparekill",c)
+    #del eventsL1L1
+    #del eventsL1L2
+    #del eventsL2L2
+
+#histosL1L1 = []
+#histosL1L2 = []
+#histosL2L2 = []
+#histosTruth = []
+#normArr = []
+
+#for i in range(nMass):
     print("Mass {0:0.0f}".format(mass[i]*1000))
-    L1L1events[i].Draw("triEndZ>>histoReconL1L1_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+    L1L1events.Draw("triEndZ>>histoReconL1L1_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL1L1 = ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000))
     histosL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000)))
-    L1L2events[i].Draw("triEndZ>>histoReconL1L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+    L1L2events.Draw("triEndZ>>histoReconL1L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL1L2 = ROOT.gROOT.FindObject("histoReconL1L2_{0:0.0f}".format(mass[i]*1000))
     histosL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_{0:0.0f}".format(mass[i]*1000)))
-    L2L2events[i].Draw("triEndZ>>histoReconL2L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+    L2L2events.Draw("triEndZ>>histoReconL2L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL2L2 = ROOT.gROOT.FindObject("histoReconL2L2_{0:0.0f}".format(mass[i]*1000))
     histosL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_{0:0.0f}".format(mass[i]*1000)))
-    eventstruth[i].Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),"triStartP>0.8*{0}".format(eBeam))
+    eventstruth.Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),"triStartP>0.8*{0}".format(eBeam))
     #histoTruth = ROOT.gROOT.FindObject("histoTruth".format(mass[i]*1000))
     histosTruth.append(ROOT.gROOT.FindObject("histoTruth_{0:0.0f}".format(mass[i]*1000)))
     #histoReconL1L1.Sumw2()
@@ -829,26 +853,26 @@ for i in range(nMass):
     textfileL2L2.write("\n")
     textfileL2L2Norm.write("\n")
 
-textfileL1L1.close()
-textfileL1L1Norm.close()
-textfileL1L2.close()
-textfileL1L2Norm.close()
-textfileL2L2.close()
-textfileL2L2Norm.close()
+#textfileL1L1.close()
+#textfileL1L1Norm.close()
+#textfileL1L2.close()
+#textfileL1L2Norm.close()
+#textfileL2L2.close()
+#textfileL2L2Norm.close()
 
-histosL1L1kill = []
-histosL1L2kill = []
-histosL2L2kill = []
-normkillArr = []
+#histosL1L1kill = []
+#histosL1L2kill = []
+#histosL2L2kill = []
+#normkillArr = []
 
-for i in range(nMass):
-    L1L1killevents[i].Draw("triEndZ>>histoReconL1L1_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+#for i in range(nMass):
+    L1L1killevents.Draw("triEndZ>>histoReconL1L1_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL1L1 = ROOT.gROOT.FindObject("histoReconL1L1")
     histosL1L1kill.append(ROOT.gROOT.FindObject("histoReconL1L1_kill_{0:0.0f}".format(mass[i]*1000)))
-    L1L2killevents[i].Draw("triEndZ>>histoReconL1L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+    L1L2killevents.Draw("triEndZ>>histoReconL1L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL1L2 = ROOT.gROOT.FindObject("histoReconL1L2")
     histosL1L2kill.append(ROOT.gROOT.FindObject("histoReconL1L2_kill_{0:0.0f}".format(mass[i]*1000)))
-    L2L2killevents[i].Draw("triEndZ>>histoReconL2L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
+    L2L2killevents.Draw("triEndZ>>histoReconL2L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     #histoReconL2L2 = ROOT.gROOT.FindObject("histoReconL2L2")
     histosL2L2kill.append(ROOT.gROOT.FindObject("histoReconL2L2_kill_{0:0.0f}".format(mass[i]*1000)))
     #eventstruth[i].Draw("triEndZ>>histoTruth({0},{1},{2})".format(nBins,targZ,maxZ),"triStartP>0.8*{0}".format(eBeam))
@@ -909,6 +933,24 @@ for i in range(nMass):
     textfileL1L2KilledNorm.write("\n")
     textfileL2L2Killed.write("\n")
     textfileL2L2KilledNorm.write("\n")
+    del L1L1events
+    del L1L2events
+    del L2L2events
+    del L1L1killevents
+    del L1L2killevents
+    del L2L2killevents
+    del eventstruth
+    del inputL1L1ReconFile
+    del inputL1L2ReconFile
+    del inputL2L2ReconFile
+    del inputTruthFile
+
+textfileL1L1.close()
+textfileL1L1Norm.close()
+textfileL1L2.close()
+textfileL1L2Norm.close()
+textfileL2L2.close()
+textfileL2L2Norm.close()
 
 textfileL1L1Killed.close()
 textfileL1L1KilledNorm.close()
@@ -916,6 +958,8 @@ textfileL1L2Killed.close()
 textfileL1L2KilledNorm.close()
 textfileL2L2Killed.close()
 textfileL2L2KilledNorm.close()
+
+closePDF(outfile+"_comparekill",c)
 
 #Make test plots if desired
 if(makeTestPlots):
