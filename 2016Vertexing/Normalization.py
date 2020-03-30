@@ -160,12 +160,6 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
 
-
-def truthMatch(events,cut):
-	file = TFile("rad_cut.root","recreate")
-	cutevents = events.CopyTree(cut)
-	return cutevents
-
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
 
@@ -214,7 +208,9 @@ weight = 1.
 
 #radEventsTruth = truthMatch(radEvents,truthcut)
 
+file = TFile("rad_cut.root","recreate")
 radEventsTruth = radEvents.CopyTree(truthcut)
+radEventsTruth.Write()
 
 radEventsTruth.SetWeight(weight/radLum)
 triEvents.SetWeight(weight/triLum)
@@ -230,6 +226,9 @@ radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins,minP,maxP)
 triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins,minP,maxP)
 wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP)
 dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP)
+
+file.Close()
+delete file
 
 openPDF(outfile,c)
 
