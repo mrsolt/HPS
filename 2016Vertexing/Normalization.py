@@ -192,13 +192,13 @@ maxP = 2.7
 #width = 0.1
 #scaling = nbins/width#500
 radXS = 81.61 #microbarn
-triXS = 1.416 #millibarn
-wabXS = 0.1985 #barn
+triXS = 1.416/1000. #millibarn/1000
+wabXS = 0.1985/1e6 #barn/1e6
 radNGen = 10000*10000
 triNGen = 50000*2000
 wabNGen = 100000*1000
 
-dataLum = 1101 #nb^-1
+dataLum = 1101*1000 #nb^-1*1000
 
 radLum = radNGen / radXS
 triLum = triNGen / triXS
