@@ -228,7 +228,6 @@ wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP)
 dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP)
 
 file.Close()
-delete file
 
 openPDF(outfile,c)
 
