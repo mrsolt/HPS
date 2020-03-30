@@ -212,7 +212,9 @@ wabLum = wabNGen / wabXS
 
 weight = 1.
 
-radEventsTruth = truthMatch(radEvents,truthcut)
+#radEventsTruth = truthMatch(radEvents,truthcut)
+
+radEventsTruth = radEvents.CopyTree(truthcut)
 
 radEventsTruth.SetWeight(weight/radLum)
 triEvents.SetWeight(weight/triLum)
