@@ -33,16 +33,27 @@ for opt, arg in options:
 			print_usage()
 			sys.exit(0)
 
-def tupleToMassHisto(events,histo,nBins,minX,maxX):
+def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
+	histo.Scale(factor)
 	return histo
 
-def tupleToPHisto(events,histo,nBins,minX,maxX):
+def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
+	eleMass = 0.00051099895
+	truthMass = "sqrt(eleP^2+posP^2+2*{0}^2+2*sqrt((eleP^2+{0}^2)*(posP^2+{0}^2))-((elePX+posPX)^2+(elePY+posPY)^2+(elePZ+posPZ)^2))".format(eleMass)
+	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX))
+	histo = ROOT.gROOT.FindObject(histo)
+	histo.Sumw2()
+	histo.Scale(factor)
+	return histo
+
+def tupleToPHisto(events,histo,nBins,minX,maxX,factor):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncP",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
+	histo.Scale(factor)
 	return histo
 
 def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
@@ -192,13 +203,13 @@ maxP = 2.7
 #width = 0.1
 #scaling = nbins/width#500
 radXS = 81.61 #microbarn
-triXS = 1.416/1000. #millibarn/1000
-wabXS = 0.1985/1e6 #barn/1e6
+triXS = 1.416*1000. #millibarn*1000
+wabXS = 0.1985*1e6 #barn*1e6
 radNGen = 10000*10000
 triNGen = 50000*2000
 wabNGen = 100000*1000
 
-dataLum = 1101*1000 #nb^-1*1000
+dataLum = 1101/1000 #nb^-1/1000
 
 radLum = radNGen / radXS
 triLum = triNGen / triXS
@@ -212,20 +223,20 @@ file = TFile("rad_cut.root","recreate")
 radEventsTruth = radEvents.CopyTree(truthcut)
 radEventsTruth.Write()
 
-radEventsTruth.SetWeight(weight/radLum)
-triEvents.SetWeight(weight/triLum)
-wabEvents.SetWeight(weight/wabLum)
-dataEvents.SetWeight(weight/dataLum)
+#radEventsTruth.SetWeight(weight/radLum)
+#triEvents.SetWeight(weight/triLum)
+#wabEvents.SetWeight(weight/wabLum)
+#dataEvents.SetWeight(weight/dataLum)
 
-radMassHisto = tupleToMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass)
-triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass)
-wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass)
-dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass)
+radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum)
+triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,weight/triLum)
+wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum)
+dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum)
 
-radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins,minP,maxP)
-triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins,minP,maxP)
-wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP)
-dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP)
+radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins,minP,maxP,weight/radLum)
+triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins,minP,maxP,weight/triLum)
+wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP,weight/wabLum)
+dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP,weight/dataLum)
 
 openPDF(outfile,c)
 
