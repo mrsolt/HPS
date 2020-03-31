@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 #import utilities as utils
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TLatex, TPad
 sys.argv = tmpargv
 
 #List arguments
@@ -37,6 +37,22 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	outfileroot.cd()
 	canvas.Clear()
 
+	RatioMin = 0.5
+	RatioMax = 1.5
+
+	top = TPad("top","top",0,0.42,1,1)
+	top.SetLogy(1)
+    
+	bot = TPad("bot","bot",0,0,1,0.38)
+    
+	top.Draw()
+	top.SetBottomMargin(0)
+	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+	bot.Draw()
+	bot.SetTopMargin(0)
+	bot.SetBottomMargin(0.4)
+	top.cd()
+
 	label1 = label[3*i+2]
 	label2 = label[3*i+3]
 	label3 = label[3*i+4]
@@ -66,9 +82,40 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	legend.AddEntry(histo3,"{0}".format(label2),"LP")
 	legend.AddEntry(histo4,"{0}".format(label3),"LP")
 	legend.Draw("same")
+
+	bot.cd()
+	reference = histo.Clone("reference")
+	reference.GetYaxis().SetTitle("Ratio")
+	reference.GetYaxis().SetTitleSize(0.06)
+	reference.GetYaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetLabelSize(0.1)
+	reference.GetXaxis().SetTitle(XaxisTitle)
+	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+	reference.GetYaxis().SetNdivisions(508)
+	reference.GetYaxis().SetDecimals(True)
+	reference.Draw("axis")
+	ratio = histo.Clone("Ratio"+histo.GetName())
+	ratio.Divide(reference)
+	ratio.SetLineColor(1)
+	ratio.DrawCopy("pe same")
+	ratio2 = histo2.Clone("Ratio"+histo2.GetName())
+	ratio2.Divide(reference)
+	ratio2.SetLineColor(2)
+	ratio2.DrawCopy("pe same")
+	ratio3 = histo3.Clone("Ratio"+histo3.GetName())
+	ratio3.Divide(reference)
+	ratio3.SetLineColor(4)
+	ratio3.DrawCopy("pe same")
+	ratio4 = histo4.Clone("Ratio"+histo4.GetName())
+	ratio4.Divide(reference)
+	ratio4.SetLineColor(6)
+	ratio4.DrawCopy("pe same")
+	legend.Draw()
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
 
+	canvas.Clear()
 	canvas.SetLogy(0)
 	histo5.Draw("COLZ")
 	histo5.SetTitle("Vz vs Mass " + label1 + " Exclusive")
@@ -77,6 +124,7 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	histo5.SetStats(stats)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo5.Write(histo5.GetName())
 
 	histo6.Draw("COLZ")
 	histo6.SetTitle("Vz vs Mass " + label1)
@@ -85,6 +133,7 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	histo6.SetStats(stats)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo6.Write(histo6.GetName())
 
 	histo7.Draw("COLZ")
 	histo7.SetTitle("Vz vs Mass " + label2)
@@ -93,6 +142,7 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	histo7.SetStats(stats)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo7.Write(histo7.GetName())
 
 	histo8.Draw("COLZ")
 	histo8.SetTitle("Vz vs Mass " + label3)
@@ -101,6 +151,7 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	histo8.SetStats(stats)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo8.Write(histo8.GetName())
 
 	canvas.SetLogy(logY)
 
@@ -119,24 +170,21 @@ c = TCanvas("c","c",800,600)
 label = []
 label.append("Preselection")
 label.append("e+e- L1 & L2")
-label.append("V0 Position 3 sigma")
-label.append("V0 Position 2 sigma")
-label.append("V0 Position 4 sigma")
-label.append("V0 Projection 3 sigma")
-label.append("V0 Projection 2 sigma")
-label.append("V0 Projection 4 sigma")
+label.append("V0 Projection 2#sigma")
+label.append("V0 Projection 1.5#sigma")
+label.append("V0 Projection 2.5#sigma")
 label.append("Unconstrained Vertex Chisq < 4")
 label.append("Unconstrained Vertex Chisq < 3")
 label.append("Unconstrained Vertex Chisq < 5")
 label.append("V0 momentum > 2.0 GeV")
 label.append("V0 momentum > 1.9 GeV")
 label.append("V0 momentum > 2.1 GeV")
-label.append("Isolation Cut")
-label.append("Isolation Cut")
-label.append("Isolation Cut")
-label.append("Impact Parameter Cuts")
-label.append("Impact Parameter Cuts + 0.1 mm")
-label.append("Impact Parameter Cuts + 0.2 mm")
+label.append("Isolation Cut 3#sigma")
+label.append("Isolation Cut 2.5#sigma")
+label.append("Isolation Cut 3.5#sigma")
+label.append("Impact Parameter Cuts #alpha = 10%")
+label.append("Impact Parameter Cuts #alpha = 5%")
+label.append("Impact Parameter Cuts #alpha = 20%")
 
 plot = "uncVZ"
 

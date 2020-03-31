@@ -74,8 +74,11 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 			else:
 				pos_smear = smear_Top6hits
 
-		P_positron_Smear = random.gauss(events.posP, events.posP*pos_smear)
-		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
+		#P_positron_Smear = random.gauss(events.posP, events.posP*pos_smear)
+		#P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
+
+		print("Electron: Nhits = {0}  Slope = {1:0.3f}  Smear: {2}  Ele Smear = {3}".format(events.eleNTrackHits,events.eleTrkLambda,ele_smear,P_electron_Smear))
+		print("Positron: Nhits = {0}  Slope = {1:0.3f}  Semar: {2}  Pos Smear = {3}".format(events.posNTrackHits,events.posTrkLambda,pos_smear,P_positron_Smear))
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
 		histo.Fill(MSmear*1000-mass)
