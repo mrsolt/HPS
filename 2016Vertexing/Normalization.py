@@ -84,6 +84,8 @@ def saveNHisto(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisT
 		maximum = wabHisto.GetMaximum()
 	if(dataHisto.GetMaximum() > maximum):
 		maximum = dataHisto.GetMaximum()
+	if(sumHisto.GetMaximum() > maximum):
+		maximum = sumHisto.GetMaximum()
 	radHisto.GetYaxis().SetRangeUser(0,1.3*maximum)
 	triHisto.SetLineColor(2)
 	wabHisto.SetLineColor(3)
@@ -145,6 +147,8 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 		maximum = wabHisto.GetMaximum()
 	if(dataHisto.GetMaximum() > maximum):
 		maximum = dataHisto.GetMaximum()
+	if(sumHisto.GetMaximum() > maximum):
+		maximum = sumHisto.GetMaximum()
 	radHisto.GetYaxis().SetRangeUser(maximum/1e7,1.3*maximum)
 	triHisto.SetLineColor(2)
 	wabHisto.SetLineColor(3)
@@ -222,8 +226,8 @@ radXS = 81.61 #microbarn
 triXS = 1.416*1000. #millibarn*1000
 wabXS = 0.1985*1e6 #barn*1e6
 radNGen = 10000*10000
-triNGen = 50000*2000
-wabNGen = 100000*1000
+triNGen = 50000*10000
+wabNGen = 100000*10000
 
 dataLum = 1101*1000 #nb^-1/1000
 
