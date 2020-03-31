@@ -225,7 +225,7 @@ radNGen = 10000*10000
 triNGen = 50000*2000
 wabNGen = 100000*1000
 
-dataLum = 1101/1000 #nb^-1/1000
+dataLum = 1101*1000 #nb^-1/1000
 
 radLum = radNGen / radXS
 triLum = triNGen / triXS
