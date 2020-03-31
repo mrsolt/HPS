@@ -27,6 +27,7 @@ def main() :
     outdirSelection = '{0}/selection/'.format(outdir)
     outdirResults = '{0}/results/'.format(outdir)
     outdirMassRes = '{0}/MassRes/'.format(outdir)
+    outdirSystematics = '{0}/Systematics/'.format(outdir)
 
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
     singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/singleV0_L1L1_compare'
@@ -34,12 +35,18 @@ def main() :
     isoplotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L1/isoplots_L1L1'
     applotsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L1/ap-beam_'
     massResL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/L1L1/massRes_L1L1'
+    datatightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_floatcut'
+    mctightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L1/L1L1_floatcut_tritrig-wab-beam'
+    aptightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L1/ap-beam_'
     tightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/cutflow_L1L2'
     singleL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L2/singleV0_L1L2_compare'
     tailfitsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L2/compare_tailfits_L1L2'
     isoplotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/IsoPlots/L1L2/isoplots_L1L2'
     applotsL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L2/ap-beam_'
     massResL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/L1L2/massRes_L1L2'
+    datatightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_floatcut'
+    mctightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L1/L1L1_floatcut_tritrig-wab-beam'
+    aptightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L1/ap-beam_'
 
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'tightcutflowL1L1')) #Tight Cutflow L1L1
     copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0pos_excl')) #Positron IP Exclusion
@@ -115,6 +122,30 @@ def main() :
     copyfile('{0}62.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV')) #100 MeV Mass Resolution L1L1
     copyfile('{0}58.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV_z')) #100 MeV z L1L1
 
+    copyfile('{0}5.pdf'.format(datatightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_ip')) #Data L1L1 Float Cut IP
+    copyfile('{0}10.pdf'.format(datatightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_iso')) #Data L1L1 Float Cut Isocut
+    copyfile('{0}15.pdf'.format(datatightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_v0p')) #Data L1L1 Float Cut V0 Momentum
+    copyfile('{0}20.pdf'.format(datatightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_uncChisq')) #Data L1L1 Float Cut uncChisq
+    copyfile('{0}25.pdf'.format(datatightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_v0proj')) #Data L1L1 Float Cut V0 Projection
+
+    copyfile('{0}5.pdf'.format(mctightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_ip')) #MC L1L1 Float Cut IP
+    copyfile('{0}10.pdf'.format(mctightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_iso')) #MC L1L1 Float Cut Isocut
+    copyfile('{0}15.pdf'.format(mctightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_v0p')) #MC L1L1 Float Cut V0 Momentum
+    copyfile('{0}20.pdf'.format(mctightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_uncChisq')) #MC L1L1 Float Cut uncChisq
+    copyfile('{0}25.pdf'.format(mctightL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_v0proj')) #MC L1L1 Float Cut V0 Projection
+
+    copyfile('{0}{1}MeV_floatcut5.pdf'.format(aptightL1L1dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_ip')) #80 MeV A' L1L1 Float Cut IP
+    copyfile('{0}{1}MeV_floatcut10.pdf'.format(aptightL1L1dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_iso')) #80 MeV A' L1L1 Float Cut Isocut
+    copyfile('{0}{1}MeV_floatcut15.pdf'.format(aptightL1L1dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_v0p')) #80 MeV A' L1L1 Float Cut V0 Momentum
+    copyfile('{0}{1}MeV_floatcut20.pdf'.format(aptightL1L1dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_uncChisq')) #80 MeV A' L1L1 Float Cut uncChisq
+    copyfile('{0}{1}MeV_floatcut25.pdf'.format(aptightL1L1dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_v0proj')) #80 MeV A' L1L1 Float Cut V0 Projection
+
+    copyfile('{0}{1}MeV_floatcut5.pdf'.format(aptightL1L1dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_ip')) #100 MeV A' L1L1 Float Cut IP
+    copyfile('{0}{1}MeV_floatcut10.pdf'.format(aptightL1L1dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_iso')) #100 MeV A' L1L1 Float Cut Isocut
+    copyfile('{0}{1}MeV_floatcut15.pdf'.format(aptightL1L1dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0p')) #100 MeV A' L1L1 Float Cut V0 Momentum
+    copyfile('{0}{1}MeV_floatcut20.pdf'.format(aptightL1L1dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_uncChisq')) #100 MeV A' L1L1 Float Cut uncChisq
+    copyfile('{0}{1}MeV_floatcut25.pdf'.format(aptightL1L1dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0proj')) #100 MeV A' L1L1 Float Cut V0 Projection
+
     copyfile('{0}_compare1.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'tightcutflowL1L2')) #Tight Cutflow L1L2
     copyfile('{0}_compare2.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'z0pos_excl_L1L2')) #Positron IP Exclusion L1L2
     copyfile('{0}_compare3.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'z0ele_excl_L1L2')) #Electron IP Exclusion L1L2
@@ -188,6 +219,30 @@ def main() :
     copyfile('{0}61.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L2_ap100MeV_smeared')) #100 MeV Mass Resolution L1L2
     copyfile('{0}62.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L2_ap100MeV')) #100 MeV Mass Resolution L1L2
     copyfile('{0}58.pdf'.format(massResL1L2dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L2_ap100MeV_z')) #100 MeV z L1L2
+
+    copyfile('{0}5.pdf'.format(datatightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_ip_L1L2')) #Data L1L2 Float Cut IP
+    copyfile('{0}10.pdf'.format(datatightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_iso_L1L2')) #Data L1L2 Float Cut Isocut
+    copyfile('{0}15.pdf'.format(datatightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_v0p_L1L2')) #Data L1L2 Float Cut V0 Momentum
+    copyfile('{0}20.pdf'.format(datatightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_uncChisq_L1L2')) #Data L1L2 Float Cut uncChisq
+    copyfile('{0}25.pdf'.format(datatightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_floatcut_v0proj_L1L2')) #Data L1L2 Float Cut V0 Projection
+
+    copyfile('{0}5.pdf'.format(mctightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_ip_L1L2')) #MC L1L2 Float Cut IP
+    copyfile('{0}10.pdf'.format(mctightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_iso_L1L2')) #MC L1L2 Float Cut Isocut
+    copyfile('{0}15.pdf'.format(mctightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_v0p_L1L2')) #MC L1L2 Float Cut V0 Momentum
+    copyfile('{0}20.pdf'.format(mctightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_uncChisq_L1L2')) #MC L1L2 Float Cut uncChisq
+    copyfile('{0}25.pdf'.format(mctightL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_floatcut_v0proj_L1L2')) #MC L1L2 Float Cut V0 Projection
+
+    copyfile('{0}{1}MeV_floatcut5.pdf'.format(aptightL1L2dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_ip_L1L2')) #80 MeV A' L1L2 Float Cut IP
+    copyfile('{0}{1}MeV_floatcut10.pdf'.format(aptightL1L2dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_iso_L1L2')) #80 MeV A' L1L2 Float Cut Isocut
+    copyfile('{0}{1}MeV_floatcut15.pdf'.format(aptightL1L2dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_v0p_L1L2')) #80 MeV A' L1L2 Float Cut V0 Momentum
+    copyfile('{0}{1}MeV_floatcut20.pdf'.format(aptightL1L2dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_uncChisq_L1L2')) #80 MeV A' L1L2 Float Cut uncChisq
+    copyfile('{0}{1}MeV_floatcut25.pdf'.format(aptightL1L2dir,'80'),'{0}{1}.pdf'.format(outdirSystematics,'ap80MeV_floatcut_v0proj_L1L2')) #80 MeV A' L1L2 Float Cut V0 Projection
+
+    copyfile('{0}{1}MeV_floatcut5.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_ip_L1L2')) #100 MeV A' L1L2 Float Cut IP
+    copyfile('{0}{1}MeV_floatcut10.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_iso_L1L2')) #100 MeV A' L1L2 Float Cut Isocut
+    copyfile('{0}{1}MeV_floatcut15.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0p_L1L2')) #100 MeV A' L1L2 Float Cut V0 Momentum
+    copyfile('{0}{1}MeV_floatcut20.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_uncChisq_L1L2')) #100 MeV A' L1L2 Float Cut uncChisq
+    copyfile('{0}{1}MeV_floatcut25.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0proj_L1L2')) #100 MeV A' L1L2 Float Cut V0 Projection
 
 
 if __name__ == "__main__" : 
