@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex
 sys.argv = tmpargv
 
 #List arguments
@@ -273,14 +273,26 @@ else:
 		x0_cut1_neg_x1 = 0.02016
 		x1_cut1_neg_x1 = 0.05854
 
-		eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
-		posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL1_1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-2.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL1_1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-2.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL1_2 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL1_2 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL1_3 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL1_3 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
 
-		eleisoL2 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
-		posisoL2 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL2_1 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-2.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL2_1 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-2.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL2_2 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL2_2 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleisoL2_3 = "eleMinPositiveIso+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posisoL2_3 = "posMinPositiveIso+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
 
-		eleiso = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1,eleisoL2)
-		posiso = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
+		eleiso_1 = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1_1,eleisoL2_1)
+		posiso_1 = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1_1,posisoL2_1)
+		eleiso_2 = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1_2,eleisoL2_2)
+		posiso_2 = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1_2,posisoL2_2)
+		eleiso_3 = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1_3,eleisoL2_3)
+		posiso_3 = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1_3,posisoL2_3)
 
 		z0cut2 = "((eleTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-posTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0}))))".format(dz) #80%
 		z0cut3 = "((eleTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0}))))".format(dz) #70%
@@ -305,8 +317,12 @@ else:
 		x0_cut1_neg_x1 = 0.0091
 		x1_cut1_neg_x1 = 0.2341
 
-		eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
-		posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleiso_1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-2.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posiso_1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-2.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleiso_2 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posiso_2 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+		eleiso_3 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+		posiso_3 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
 
 		#z0cut2 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_2,cut1_neg_2)
 		#z0cut3 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_3,cut1_neg_3)
@@ -325,33 +341,31 @@ else:
 	cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
 
 	z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
-	isocut = "({0}&&{1})".format(eleiso,posiso)
+	isocut1 = "({0}&&{1})".format(eleiso_1,posiso_1)
+	isocut2 = "({0}&&{1})".format(eleiso_2,posiso_2)
+	isocut3 = "({0}&&{1})".format(eleiso_3,posiso_3)
 
-	cuts.append("sqrt((abs(uncVX-{0})/(3*{1}))^2+(abs(uncVY-{2})/(3*{3}))^2)<1".format(uncVX,uncVXSig,uncVY,uncVYSig))
 	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(3*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(3*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
 	cuts.append("uncChisq<4")
 	cuts.append("uncP>2.0")
-	cuts.append(isocut)
+	cuts.append(isocut2)
 	cuts.append(z0cut2)
 
-	label.append("V0 Position 3 sigma")
-	label.append("V0 Position 2 sigma")
-	label.append("V0 Position 4 sigma")
-	label.append("V0 Projection 3 sigma")
-	label.append("V0 Projection 2 sigma")
-	label.append("V0 Projection 4 sigma")
+	label.append("V0 Projection 2#sigma")
+	label.append("V0 Projection 1.5#sigma")
+	label.append("V0 Projection 2.5#sigma")
 	label.append("Unconstrained Vertex Chisq < 4")
 	label.append("Unconstrained Vertex Chisq < 3")
 	label.append("Unconstrained Vertex Chisq < 5")
 	label.append("V0 momentum > 2.0 GeV")
 	label.append("V0 momentum > 1.9 GeV")
 	label.append("V0 momentum > 2.1 GeV")
-	label.append("Isolation Cut")
-	label.append("Isolation Cut")
-	label.append("Isolation Cut")
-	label.append("Impact Parameter Cuts Nominal")
-	label.append("Impact Parameter Cuts Loose")
-	label.append("Impact Parameter Cuts Tight")
+	label.append("Isolation Cut 3#sigma")
+	label.append("Isolation Cut 2.5#sigma")
+	label.append("Isolation Cut 3.5#sigma")
+	label.append("Impact Parameter Cuts #alpha = 10%")
+	label.append("Impact Parameter Cuts #alpha = 5%")
+	label.append("Impact Parameter Cuts #alpha = 20%")
 
 	#cut1_pos_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_pos,x1_cut1_pos,dz)
 	#cut1_neg_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_neg,x1_cut1_neg,dz)
@@ -366,8 +380,8 @@ else:
 	floatcuts.append("uncChisq<5")
 	floatcuts.append("uncP>1.9")
 	floatcuts.append("uncP>2.1")
-	floatcuts.append(isocut)
-	floatcuts.append(isocut)
+	floatcuts.append(isocut1)
+	floatcuts.append(isocut3)
 	floatcuts.append(z0cut)
 	floatcuts.append(z0cut3)
 

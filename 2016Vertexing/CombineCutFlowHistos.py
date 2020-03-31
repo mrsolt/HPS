@@ -34,6 +34,8 @@ def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
 def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
+	RatioMin = 0.5
+	RatioMax = 1.5
 	outfileroot.cd()
 	canvas.Clear()
 	histos[0].SetTitle(plotTitle + " Inclusive")
@@ -83,6 +85,21 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 	canvas.Write()
 	canvas.SetLogy(logY)
 	for i in range(len(histos2)):
+		canvas.Clear()
+			
+		top = TPad("top","top",0,0.42,1,1)
+		top.SetLogy(1)
+    
+		bot = TPad("bot","bot",0,0,1,0.38)
+    
+		top.Draw()
+		top.SetBottomMargin(0)
+		#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
+		bot.Draw()
+		bot.SetTopMargin(0)
+		bot.SetBottomMargin(0.4)
+		top.cd()
+
 		histos[0].SetLineColor(1)
 		histos[0].Draw()
 		histos[0].SetTitle(plotTitle + " " + labels[i] + " Exclusive")
@@ -105,14 +122,44 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		legend3.AddEntry(histos2[i],"Without " + labels[i],"LP")
 		legend3.AddEntry(histos3[i],"With " + labels[i],"LP")
 		legend3.Draw("same")
+
+		bot.cd()
+		reference = histos[0].Clone("reference")
+		reference.GetYaxis().SetTitle("Ratio")
+		reference.GetYaxis().SetTitleSize(0.06)
+		reference.GetYaxis().SetLabelSize(0.1)
+		reference.GetXaxis().SetTitleSize(0.1)
+		reference.GetXaxis().SetLabelSize(0.1)
+		reference.GetXaxis().SetTitle(XaxisTitle)
+		reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
+		reference.GetYaxis().SetNdivisions(508)
+		reference.GetYaxis().SetDecimals(True)
+		reference.Draw("axis")
+		ratio = histos[0].Clone("Ratio"+histos[0].GetName())
+		ratio.Divide(reference)
+		ratio.SetLineColor(1)
+		ratio.DrawCopy("pe same")
+		ratio2 = histos2[i].Clone("Ratio"+histos2[i].GetName())
+		ratio2.Divide(reference)
+		ratio2.SetLineColor(2)
+		ratio2.DrawCopy("pe same")
+		ratio3 = histos3[i].Clone("Ratio"+histos3[i].GetName())
+		ratio3.Divide(reference)
+		ratio3.SetLineColor(4)
+		ratio3.DrawCopy("pe same")
+		legend.Draw()
+
 		canvas.Print(outfile+".pdf")
 		canvas.Write()
-		canvas.SetLogy(0)
+		top.cd()
+		top.SetLogy(0)
 		canvas.Print(outfile+".pdf")
 		canvas.Write()
 		canvas.SetLogy(logY)
 		histos2[i].Write("Without " + labels[i]+" "+inHisto)
 		histos3[i].Write("With " + labels[i]+" "+inHisto)
+
+	canvas.Clear()
 	histos2[0].SetTitle(plotTitle + " Exclusive")
 	histos2[0].GetXaxis().SetTitle(XaxisTitle)
 	histos2[0].GetYaxis().SetTitle(YaxisTitle)
