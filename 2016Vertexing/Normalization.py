@@ -3,7 +3,7 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend, TPad
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:', ['help',])
@@ -77,6 +77,14 @@ def saveNHisto(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisT
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
 	radHisto.SetTitle(PlotTitle)
+	maximum = radHisto.GetMaximum()
+	if(triHisto.GetMaximum() > maximum):
+		maximum = triHisto.GetMaximum()
+	if(wabHisto.GetMaximum() > maximum):
+		maximum = wabHisto.GetMaximum()
+	if(dataHisto.GetMaximum() > maximum):
+		maximum = dataHisto.GetMaximum()
+	radHisto.GetYaxis().SetRangeUser(0,1.3*maximum)
 	triHisto.SetLineColor(2)
 	wabHisto.SetLineColor(3)
 	dataHisto.SetLineColor(4)
@@ -130,6 +138,14 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
 	radHisto.SetTitle(PlotTitle)
+	maximum = radHisto.GetMaximum()
+	if(triHisto.GetMaximum() > maximum):
+		maximum = triHisto.GetMaximum()
+	if(wabHisto.GetMaximum() > maximum):
+		maximum = wabHisto.GetMaximum()
+	if(dataHisto.GetMaximum() > maximum):
+		maximum = dataHisto.GetMaximum()
+	radHisto.GetYaxis().SetRangeUser(maximum/1e7,1.3*maximum)
 	triHisto.SetLineColor(2)
 	wabHisto.SetLineColor(3)
 	dataHisto.SetLineColor(4)
@@ -154,7 +170,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 
 	bot.cd()
 	reference = sumHisto.Clone("reference")
-	reference.GetYaxis().SetTitle("Ratio")
+	reference.GetYaxis().SetTitle("Radiative Fraction")
 	reference.GetYaxis().SetTitleSize(0.06)
 	reference.GetYaxis().SetLabelSize(0.1)
 	reference.GetXaxis().SetTitleSize(0.1)
@@ -199,7 +215,7 @@ nBins = 50
 minMass = 0.0
 maxMass = 0.2
 minP = 0.0
-maxP = 2.7
+maxP = 2.5
 #width = 0.1
 #scaling = nbins/width#500
 radXS = 81.61 #microbarn
@@ -217,8 +233,6 @@ wabLum = wabNGen / wabXS
 
 weight = 1.
 
-#radEventsTruth = truthMatch(radEvents,truthcut)
-
 file = TFile("rad_cut.root","recreate")
 radEventsTruth = radEvents.CopyTree(truthcut)
 radEventsTruth.Write()
@@ -233,10 +247,10 @@ triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,w
 wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum)
 dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum)
 
-radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins,minP,maxP,weight/radLum)
-triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins,minP,maxP,weight/triLum)
-wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins,minP,maxP,weight/wabLum)
-dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins,minP,maxP,weight/dataLum)
+radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins/2,minP,maxP,weight/radLum)
+triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins/2,minP,maxP,weight/triLum)
+wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins/2,minP,maxP,weight/wabLum)
+dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins/2,minP,maxP,weight/dataLum)
 
 openPDF(outfile,c)
 
@@ -244,10 +258,10 @@ saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, c)
 massSumHisto = addTriWabHisto(triMassHisto, wabMassHisto)
 pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
 
-saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "Cross Section [ub]", "")
-saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [MeV]", "Cross Section [ub]", "")
-saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "Cross Section [ub]", "")
-saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [MeV]", "Cross Section [ub]", "")
+saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
+saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
+saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
+saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
 
 closePDF(outfile,c)
 outfileroot.Close()
