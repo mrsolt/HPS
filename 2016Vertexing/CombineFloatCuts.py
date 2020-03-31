@@ -59,6 +59,10 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 
 	canvas.SetLogy(1)
 	canvas.SetLogz(1)
+	histo.Sumw2()
+	histo2.Sumw2()
+	histo3.Sumw2()
+	histo4.Sumw2()
 	histo.SetLineColor(1)
 	histo.Draw()
 	histo.SetTitle(plotTitle)
