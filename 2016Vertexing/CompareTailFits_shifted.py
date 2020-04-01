@@ -3,20 +3,25 @@ tmpargv = sys.argv
 sys.argv = []
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
 #List arguments
 def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-g: number of sigma of fit (default 1)'
     print '\t-h: this help message'
     print
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+nsig = 1.
+
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'g:h')
 
 # Parse the command line arguments
 for opt, arg in options:
+		if opt=='-g':
+			nsig = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -96,12 +101,14 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	histo1.Write("{0} {1}".format(histo1.GetTitle(),label1))
 	histo2.Write("{0} {1}".format(histo2.GetTitle(),label2))
 
-def savegraph(graph1,graph2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
+def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymaxXaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
 	canvas.SetLogy(logY)	
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
+	graph1.GetXaxis().SetRangeUser(xmin,xmax)
+	graph1.GetYaxis().SetRangeUser(ymin,ymax)
 	graph1.Draw("AP")
 	graph2.SetMarkerColor(2)
 	graph2.SetLineColor(2)
@@ -120,6 +127,35 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	canvas.Write()
 	graph1.Write("{0} {1}".format(graph1.GetTitle(),label1))
 	graph2.Write("{0} {1}".format(graph2.GetTitle(),label2))
+
+def savegraph3(graph1,graph2,graph3,label1,label2,label3,outfile,canvas,xmin,xmax,ymin,ymaxXaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
+	canvas.Clear()
+	canvas.SetLogy(logY)	
+	graph1.SetTitle(plotTitle)
+	graph1.GetXaxis().SetTitle(XaxisTitle)
+	graph1.GetYaxis().SetTitle(YaxisTitle)
+	graph1.GetXaxis().SetRangeUser(xmin,xmax)
+	graph1.GetYaxis().SetRangeUser(ymin,ymax)
+	graph1.Draw("AP")
+	graph3.SetMarkerColor(4)
+	graph3.SetLineColor(4)
+	graph3.Draw("Psame")
+	graph2.SetMarkerColor(2)
+	graph2.SetLineColor(2)
+	graph2.Draw("Psame")
+	legend = TLegend(.68,.66,.92,.87)
+	legend.SetBorderSize(0)
+	legend.SetFillColor(0)
+	legend.SetFillStyle(0)
+	legend.SetTextFont(42)
+	legend.SetTextSize(0.035)
+	legend.AddEntry(graph1,label1,"P")
+	legend.AddEntry(graph3,label2,"P")
+	legend.AddEntry(graph2,label3,"P")
+	legend.Draw("")
+	canvas.Print(outfile+".pdf")
+	outfileroot.cd()
+	canvas.Write()
 
 #gStyle.SetOptStat(0)
 gStyle.SetOptStat(110011)
@@ -177,7 +213,7 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
 infile2.cd()
 graph2 = infile2.Get("mean")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
-savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,-5,-3.5,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
@@ -187,7 +223,7 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
 infile2.cd()
 graph2 = infile2.Get("sigma")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
-savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,0,5,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
@@ -197,7 +233,7 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
 infile2.cd()
 graph2 = infile2.Get("breakz")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
-savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,0,3,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
@@ -207,7 +243,7 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
 infile2.cd()
 graph2 = infile2.Get("zcut")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
-savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
@@ -217,9 +253,58 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
 infile2.cd()
 graph2 = infile2.Get("zcutscaled")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
-savegraph(graph1,graph2,label1,label2,outfile,c,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
+
+infile1.cd()
+graph1 = infile1.Get("zcutscaled")
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph3 = infile1.Get("zcut")
+graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol3"))
+infile2.cd()
+graph2 = infile2.Get("zcutscaled")
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+savegraph3(graph1,graph2,graph3,"Data 10%","Data Scaled","MC",outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+del graph1
+del graph2
+del graph3
+
+infile1.cd()
+graph1 = infile1.Get("zcut")
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph2 = infile1.Get("zcut2")
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph3 = infile1.Get("zcut3")
+graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol3"))
+savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% +{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Data 10% +/-{0}#sigma".format(nsig))
+del graph1
+del graph2
+del graph3
+
+infile2.cd()
+graph1 = infile2.Get("zcut")
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph2 = infile2.Get("zcut2")
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph3 = infile2.Get("zcut3")
+graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol3"))
+savegraph3(graph1,graph2,graph3,"MC 10% Nominal","MC 10% +{0}#sigma".format(nsig),"MC 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut MC +/-{0}#sigma".format(nsig))
+del graph1
+del graph2
+del graph3
+
+infile1.cd()
+graph1 = infile1.Get("zcutscaled")
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph2 = infile1.Get("zcutscaled2")
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph3 = infile1.Get("zcutscaled3")
+graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol3"))
+savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% +{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Scaled Data 10% +/-{0}#sigma".format(nsig))
+del graph1
+del graph2
+del graph3
 
 closePDF(outfile,c)
 outfileroot.Close()
