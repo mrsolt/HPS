@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 #import utilities as utils
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TLatex
 sys.argv = tmpargv
 
 #List arguments
@@ -138,7 +138,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		ratio = histos[0].Clone("Ratio"+histos[0].GetName())
 		ratio.Divide(reference)
 		ratio.SetLineColor(1)
-		ratio.DrawCopy("pe same")
+		ratio.DrawCopy("hist p same")
 		ratio2 = histos2[i].Clone("Ratio"+histos2[i].GetName())
 		ratio2.Divide(reference)
 		ratio2.SetLineColor(2)
@@ -147,7 +147,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		ratio3.Divide(reference)
 		ratio3.SetLineColor(4)
 		ratio3.DrawCopy("pe same")
-		legend.Draw()
+		#legend.Draw()
 
 		canvas.Print(outfile+".pdf")
 		canvas.Write()
@@ -215,8 +215,8 @@ c = TCanvas("c","c",800,600)
 label = []
 label.append("Preselection")
 label.append("e+e- Layer Requirement")
-label.append("V0 Projection 2 sigma")
-label.append("Unconstrained Vertex Chisq < 4")
+label.append("V0 Projection 2#sigma")
+label.append("Unconstrained Vertex #chi{^2} < 4")
 label.append("V0 momentum > 2.0 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
@@ -238,8 +238,8 @@ setlog.append(0)
 
 xlabel = []
 xlabel.append("Passes Layer Requirement")
-xlabel.append("V0 Projection to Target N Sigma")
-xlabel.append("Unconstrainced Chisq")
+xlabel.append("V0 Projection to Target N#sigma")
+xlabel.append("Unconstrainced #chi{^2}")
 xlabel.append("V0 Momentum (GeV)")
 xlabel.append("Electron Isolation Cut Value (mm)")
 xlabel.append("Positron Isolation Cut Value (mm)")
