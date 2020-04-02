@@ -84,9 +84,20 @@ def main() :
     copyfile('{0}5.pdf'.format(singleL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare')) #Data/MC Compare Final Selection
     copyfile('{0}6.pdf'.format(singleL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'final_selection_cutflow')) #Compare Tight to Final Selection
 
-    copyfile('{0}5.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice')) #Compare Vertex Mean
-    copyfile('{0}4.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice')) #Compare Vertex Resolution
-    copyfile('{0}74.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice')) #Mass Slice Compare
+    copyfile('{0}9.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice')) #Compare Vertex Mean
+    copyfile('{0}8.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice')) #Compare Vertex Resolution
+    copyfile('{0}78.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice')) #Mass Slice Compare
+    copyfile('{0}4.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'zcut')) #Zcut L1L1
+    copyfile('{0}7.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'tailz')) #TailZ L1L1
+
+    copyfile('{0}3.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_1sig')) #Data 1 sigma Zcut L1L1
+    copyfile('{0}2.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_1sig')) #MC 1 sigma Zcut L1L1
+    copyfile('{0}_5sig3.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_5sig')) #Data 5 sigma Zcut L1L1
+    copyfile('{0}_5sig2.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_5sig')) #MC 5 sigma Zcut L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_1sig')) #Data 1 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_5sig')) #Data 5 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_1sig')) #MC 1 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_5sig')) #MC 5 sigma Fit Slice L1L1
 
     copyfile('{0}3.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_z')) #100 MeV A' Isocut Vz
     copyfile('{0}4.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_isocut_z')) #100 MeV A' Isocut vs Vz
@@ -182,9 +193,20 @@ def main() :
     copyfile('{0}5.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare_L1L2')) #Data/MC Compare Final Selection L1L2
     copyfile('{0}6.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_selection_cutflow_L1L2')) #Compare Tight to Final Selection L1L2
 
-    copyfile('{0}5.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
-    copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
-    copyfile('{0}74.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice_L1L2')) #Mass Slice Compare L1L2
+    copyfile('{0}9.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
+    copyfile('{0}8.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
+    copyfile('{0}78.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice_L1L2')) #Mass Slice Compare L1L2
+    copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'zcut_L1L2')) #Zcut L1L1
+    copyfile('{0}7.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'tailz_L1L2')) #TailZ L1L1
+
+    copyfile('{0}3.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_1sigL1L2')) #Data 1 sigma Zcut L1L2
+    copyfile('{0}2.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_1sig_L1L2')) #MC 1 sigma Zcut L1L2
+    copyfile('{0}_5sig3.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_5sig_L1L2')) #Data 5 sigma Zcut L1L2
+    copyfile('{0}_5sig2.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_5sig_L1L2')) #MC 5 sigma Zcut L1L2
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L2_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_1sig_L1L2')) #Data 1 sigma Fit Slice L1L2
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L2_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_5sig_L1L2')) #Data 5 sigma Fit Slice L1L2
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L2_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_1sig_L1L2')) #MC 1 sigma Fit Slice L1L2
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L2_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_5sig_L1L2')) #MC 5 sigma Fit Slice L1L2
 
     copyfile('{0}3.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_z_L1L2')) #100 MeV A' Isocut Vz L1L2
     copyfile('{0}4.pdf'.format(isoplotsL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_isocut_z_L1L2')) #100 MeV A' Isocut vs Vz L1L2
