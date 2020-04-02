@@ -172,7 +172,7 @@ infile1.cd()
 histos1 = []
 for h in infile1.GetListOfKeys():
 	h = h.ReadObj()
-	if(h.ClassName() == TCanvas):
+	if(h.ClassName() == "TCanvas"):
 		continue
 	plotHisto = True
 	for i in range(len(histos1)):
@@ -194,7 +194,7 @@ histos2 = []
 histos2_2D = []
 for h in infile2.GetListOfKeys():
 	h = h.ReadObj()
-	if(h.ClassName() == TCanvas):
+	if(h.ClassName() == "TCanvas"):
 		continue
 	plotHisto = True
 	for i in range(len(histos2)):
