@@ -266,6 +266,26 @@ def main() :
     copyfile('{0}{1}MeV_L1L2_floatcut20.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_uncChisq_L1L2')) #100 MeV A' L1L2 Float Cut uncChisq
     copyfile('{0}{1}MeV_L1L2_floatcut25.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0proj_L1L2')) #100 MeV A' L1L2 Float Cut V0 Projection
 
+    copyfile('{0}2.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac','radfraclog')) #Radiative Fraction Log
+    copyfile('{0}r.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac','radfrac')) #Radiative Fraction
+
+    copyfile('{0}3.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV_HitKill_norm')) #100 MeV A' Acceptance with Hit Killing Normalized
+    copyfile('{0}4.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV_HitKill')) #100 MeV A' Acceptance with Hit Killing
+    copyfile('{0}5.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_80MeV_HitKill_norm')) #80 MeV A' Acceptance with Hit Killing Normalized
+    copyfile('{0}6.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_80MeV_HitKill')) #80 MeV A' Acceptance with Hit Killing
+    copyfile('{0}9.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV_norm')) #100 MeV A' Acceptance Normalized
+    copyfile('{0}10.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV')) #100 MeV A' Acceptance 
+    copyfile('{0}11.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_80MeV_norm')) #80 MeV A' Acceptance Normalized
+    copyfile('{0}12.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_80MeV')) #80 MeV A' Acceptance
+    copyfile('{0}17.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L2_HitKill_norm')) #L1L2 Acceptance with Hit Killing Normalized
+    copyfile('{0}18.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L2_HitKill')) #L1L2 Acceptance with Hit Killing
+    copyfile('{0}21.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L1_HitKill_norm')) #L1L1 Acceptance with Hit Killing Normalized
+    copyfile('{0}22.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L1_HitKill')) #L1L1 Acceptance with Hit Killing
+    copyfile('{0}19.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L2_norm')) #L1L2 AcceptanceNormalized
+    copyfile('{0}20.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L2')) #L1L2 Acceptance
+    copyfile('{0}23.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L1_norm')) #L1L1 Acceptance Normalized
+    copyfile('{0}24.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_L1L1')) #L1L1 Acceptance
+
 
 if __name__ == "__main__" : 
     main() 
