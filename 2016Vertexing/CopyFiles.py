@@ -94,10 +94,10 @@ def main() :
     copyfile('{0}2.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_1sig')) #MC 1 sigma Zcut L1L1
     copyfile('{0}_5sig3.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_5sig')) #Data 5 sigma Zcut L1L1
     copyfile('{0}_5sig2.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_5sig')) #MC 5 sigma Zcut L1L1
-    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/TailFits/plots/10per_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_1sig')) #Data 1 sigma Fit Slice L1L1
-    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/TailFits/plots/10per_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_5sig')) #Data 5 sigma Fit Slice L1L1
-    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_1sig')) #MC 1 sigma Fit Slice L1L1
-    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/Tailfits/plots/tritrig-wab-beam_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_5sig')) #MC 5 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_1sig')) #Data 1 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/Tailfits/plots/10per_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'data_fitslice_5sig')) #Data 5 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/TailFits/plots/tritrig-wab-beam_L1L1_tailfits'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_1sig')) #MC 1 sigma Fit Slice L1L1
+    copyfile('{0}35.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/TailFits/plots/tritrig-wab-beam_L1L1_tailfits_5sig'),'{0}{1}.pdf'.format(outdirSystematics,'mc_fitslice_5sig')) #MC 5 sigma Fit Slice L1L1
 
     copyfile('{0}3.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_z')) #100 MeV A' Isocut Vz
     copyfile('{0}4.pdf'.format(isoplotsL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_ap100MeV_isocut_z')) #100 MeV A' Isocut vs Vz
