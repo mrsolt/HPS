@@ -178,7 +178,12 @@ for h in infile1.GetListOfKeys():
 			plotHisto = False
 			continue
 	if(not plotHisto): continue
-	h.GetListOfFunctions().Remove(h.GetFunction("fitfunc"))
+	if(h.GetFunction("fitfunc") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc"))
+	if(h.GetFunction("fitfunc2") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc2"))
+	if(h.GetFunction("fitfunc3") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc3"))
 	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
 		#h.GetFunction("fitfunc").SetLineColor(4)
 		histos1.append(h)
@@ -197,7 +202,12 @@ for h in infile2.GetListOfKeys():
 			plotHisto = False
 			continue
 	if(not plotHisto): continue
-	h.GetListOfFunctions().Remove(h.GetFunction("fitfunc"))
+	if(h.GetFunction("fitfunc") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc"))
+	if(h.GetFunction("fitfunc2") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc2"))
+	if(h.GetFunction("fitfunc3") is not None):
+		h.GetListOfFunctions().Remove(h.GetFunction("fitfunc3"))
 	if(h.ClassName() == "TH1F" or h.ClassName() == "TH1D"):
 		histos2.append(h)
 	if(h.ClassName() == "TH2F" or h.ClassName() == "TH2D"):
