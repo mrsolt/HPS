@@ -103,7 +103,7 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 
 def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymaxXaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
-	canvas.SetLogy(logY)	
+	#canvas.SetLogy(logY)	
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
@@ -130,7 +130,7 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymaxXaxi
 
 def savegraph3(graph1,graph2,graph3,label1,label2,label3,outfile,canvas,xmin,xmax,ymin,ymaxXaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
-	canvas.SetLogy(logY)	
+	#canvas.SetLogy(logY)	
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
