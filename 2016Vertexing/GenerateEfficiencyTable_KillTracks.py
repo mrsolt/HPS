@@ -1165,7 +1165,7 @@ c13.Print(outfile+"_plots.pdf")
 graph.Write("Gamma")
 
 def MakeGammaHistos(histo,mass,canvas,output):
-    histo.SetTitle("{0}".format(mass) + " MeV A' Truth Energy / E_{beam}")
+    histo.SetTitle("{0:0.0f}".format(mass) + " MeV A' Truth Energy / E_{beam}")
     histo.GetXaxis().SetTitle("Truth Energy /E_{beam}")
     histo.GetYaxis().SetTitle("")
     histo.Sumw2()
@@ -1175,7 +1175,7 @@ def MakeGammaHistos(histo,mass,canvas,output):
     histo.Write("{0} MeV A' Energy".format(mass))
 
 for i in range(len(mass)):
-    MakeGammaHistos(histosgamma[i],mass[i],c13,outfile+"_plots")
+    MakeGammaHistos(histosgamma[i],mass[i]*1000,c13,outfile+"_plots")
 
 
 c13.Print(outfile+"_plots.pdf]") 
