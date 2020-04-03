@@ -5,7 +5,7 @@ import array, math
 import numpy as np
 import random
 import ROOT
-from ROOT import gROOT, gStyle, TFile, TTree, TChain, TMVA, TCut, TCanvas, gDirectory, TH1, TGraph, gPad, TF1, TH1F, TLegend
+from ROOT import gROOT, gStyle, TFile, TTree, TChain, TMVA, TCut, TCanvas, gDirectory, TH1, TGraph, gPad, TF1, TH1F, TLegend, TLatex, TGraphErrors
 import getopt
 
 def print_usage():
@@ -615,6 +615,8 @@ L1L2Files = []
 L2L2Files = []
 truthFiles = []
 
+histosgamma = []
+
 #Read files from L1L1 input text file
 for line in (raw.strip().split() for raw in L1L1file):
             L1L1Files.append(line[0])
@@ -740,6 +742,9 @@ histosL1L1kill = []
 histosL1L2kill = []
 histosL2L2kill = []
 normkillArr = []
+gammamean = array.array('d')
+gammameanerror = array.array('d')
+zeros = array.array('d')
 
 openPDF(outfile+"_comparekill",c)
 #Loop over all values of mass
@@ -764,6 +769,9 @@ for i in range(nMass):
     #L1L1killevents = eventsL1L1
     #L1L2killevents = eventsL1L2
     #L2L2killevents = eventsL2L2
+    #L1L1killevents = L1L1events
+    #L1L2killevents = L1L2events
+    #L2L2killevents = L2L2events
     #eventstruth.append(inputTruthFile.Get(tupleName))
     eventstruth = inputTruthFile.Get(tupleName)
     #CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
@@ -852,6 +860,12 @@ for i in range(nMass):
     textfileL1L2Norm.write("\n")
     textfileL2L2.write("\n")
     textfileL2L2Norm.write("\n")
+    L1L1events.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam))
+    histosgamma.append(ROOT.gROOT.FindObject("gammahisto_{0:0.0f}".format(mass[i]*1000)))
+    gammamean.append(histosgamma[i].GetMean())
+    print(histosgamma[i].GetMean())
+    gammameanerror.append(histosgamma[i].GetMeanError())
+    zeros.append(0.)
 
 #textfileL1L1.close()
 #textfileL1L1Norm.close()
@@ -1139,6 +1153,30 @@ passed.SetStats(0)
 passed.Draw()
 c13.Print(outfile+"_plots.pdf") 
 passed.Write("Efficiency")
+
+graph = TGraphErrors(len(mass),mass,gammamean,zeros,gammameanerror)
+graph.SetTitle("A' Truth Energy / E_{beam}")
+graph.GetXaxis().SetTitle("Truth Mass (GeV)")
+graph.GetYaxis().SetTitle("Fraction of E_{beam}")
+graph.GetXaxis().SetRangeUser(0,.2)
+graph.GetYaxis().SetRangeUser(0.9,1.0)
+graph.Draw("AP")
+c13.Print(outfile+"_plots.pdf") 
+graph.Write("Gamma")
+
+def MakeGammaHistos(histo,mass,canvas,output):
+    histo.SetTitle("{0}".format(mass) + " MeV A' Truth Energy / E_{beam}")
+    histo.GetXaxis().SetTitle("Truth Energy /E_{beam}")
+    histo.GetYaxis().SetTitle("")
+    histo.Sumw2()
+    histo.SetStats(0)
+    histo.Draw()
+    canvas.Print(output+".pdf") 
+    histo.Write("{0} MeV A' Energy".format(mass))
+
+for i in range(len(mass)):
+    MakeGammaHistos(histosgamma[i],mass[i],c13,outfile+"_plots")
+
 
 c13.Print(outfile+"_plots.pdf]") 
 outfileroot.Close()
