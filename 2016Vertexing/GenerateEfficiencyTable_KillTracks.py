@@ -467,13 +467,13 @@ def RemoveHit(slp):
         passed.Fill(slp)
         return False
 
-def NewEventsL1L1(events,mass):
+def NewEventsL1L1(events,mass,outfile):
     eleNTrackHits = array.array('d',[0])
     posNTrackHits = array.array('d',[0])
     eleTrkLambda = array.array('d',[0])
     posTrkLambda = array.array('d',[0])
 
-    file = TFile("dumL1L1_{0:0.0f}.root".format(mass*1000),"recreate")
+    file = TFile("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
     events1 = events.CloneTree(0)
     events2 = events.CloneTree(0)
     events3 = events.CloneTree(0)
@@ -509,7 +509,7 @@ def NewEventsL1L1(events,mass):
     del file
     return events1, events2, events3
 
-def NewEventsL1L2(events,mass):
+def NewEventsL1L2(events,mass,outfile):
     eleNTrackHits = array.array('d',[0])
     posNTrackHits = array.array('d',[0])
     eleTrkLambda = array.array('d',[0])
@@ -517,7 +517,7 @@ def NewEventsL1L2(events,mass):
     eleHasL1 = array.array('d',[0])
     posHasL1 = array.array('d',[0])
 
-    file = TFile("dumL1L2_{0:0.0f}.root".format(mass*1000),"recreate")
+    file = TFile("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
     events1 = events.CloneTree(0)
     events2 = events.CloneTree(0)
     events3 = events.CloneTree(0)
@@ -558,19 +558,19 @@ def NewEventsL1L2(events,mass):
     return events2, events3
 
 
-def KillHits(events1, events2, events3, mass, inputL2L2ReconFile):
-    newevents1, newevents2_L1L1, newevents3_L1L1 = NewEventsL1L1(events1,mass)
-    newevents2_L1L2, newevents3_L1L2 = NewEventsL1L2(events2, mass)
+def KillHits(events1, events2, events3, mass, inputL2L2ReconFile,outfile):
+    newevents1, newevents2_L1L1, newevents3_L1L1 = NewEventsL1L1(events1,mass,outfile)
+    newevents2_L1L2, newevents3_L1L2 = NewEventsL1L2(events2, mass,outfile)
 
     newevents1 = TChain("ntuple_L1L1")
-    newevents1.Add("dumL1L1_{0:0.0f}.root".format(mass*1000))
-    newevents1.Add("dumL1L2_{0:0.0f}.root".format(mass*1000))
+    newevents1.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
+    newevents1.Add("dumL1L2_{0:0.0f} {1}.root".format(mass*1000,outfile))
 
     newevents2 = TChain("ntuple_L1L2")
-    newevents2.Add("dumL1L1_{0:0.0f}.root".format(mass*1000))
-    newevents2.Add("dumL1L2_{0:0.0f}.root".format(mass*1000))
+    newevents2.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
+    newevents2.Add("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
 
-    file = TFile("dumL2L2_{0:0.0f}.root".format(mass*1000),"recreate")
+    file = TFile("dumL2L2_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
     eventsL2L2 = events3.CloneTree(0)
     eventsL2L2.SetName("ntuple_L2L2")
     nevents = events3.GetEntries()
@@ -581,9 +581,9 @@ def KillHits(events1, events2, events3, mass, inputL2L2ReconFile):
     eventsL2L2.AutoSave()
 
     newevents3 = TChain("ntuple_L2L2")
-    newevents3.Add("dumL1L1_{0:0.0f}.root".format(mass*1000))
-    newevents3.Add("dumL1L2_{0:0.0f}.root".format(mass*1000))
-    newevents3.Add("dumL2L2_{0:0.0f}.root".format(mass*1000))
+    newevents3.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
+    newevents3.Add("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
+    newevents3.Add("dumL2L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
 
     del file
 
@@ -854,7 +854,7 @@ for i in range(nMass):
     L1L1events = inputL1L1ReconFile.Get(tupleName)
     L1L2events = inputL1L2ReconFile.Get(tupleName)
     L2L2events = inputL2L2ReconFile.Get(tupleName)
-    L1L1killevents, L1L2killevents, L2L2killevents = KillHits(inputL1L1ReconFile.Get(tupleName),inputL1L2ReconFile.Get(tupleName),inputL2L2ReconFile.Get(tupleName),mass[i],L2L2Files[i])
+    L1L1killevents, L1L2killevents, L2L2killevents = KillHits(inputL1L1ReconFile.Get(tupleName),inputL1L2ReconFile.Get(tupleName),inputL2L2ReconFile.Get(tupleName),mass[i],L2L2Files[i],outfile)
     #L1L1killevents.append(eventsL1L1)
     #L1L2killevents.append(eventsL1L2)
     #L2L2killevents.append(eventsL2L2)
