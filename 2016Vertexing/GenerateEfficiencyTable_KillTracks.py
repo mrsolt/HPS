@@ -30,6 +30,7 @@ nBins = 50
 zRange = 100
 nNorm = 4
 tupleName = "ntuple"
+fittype = 4
 
 #Function to plot efficiency tests of known masses
 def plotTest(iMass,inputFile,output,targZ,maxZ,canvas):
@@ -272,17 +273,25 @@ def plotEff2(histos,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,us
 def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,title=""):
     outfileroot.cd()
     maximum = 0
+    histos_copy_L1L1 = []
+    histos_copy_L1L2 = []
+    histos_copy_L2L2 = []
+    for i in range(len(mass)):
+        histos_copy_L1L1.append(histosL1L1[i].Clone())
+        histos_copy_L1L2.append(histosL1L2[i].Clone())
+        histos_copy_L2L2.append(histosL2L2[i].Clone())
+
     for i in range(len(mass)):
         canvas.Clear()
-        histosL1L1[i].SetLineColor(1)
-        histosL1L2[i].SetLineColor(2)
-        histosL2L2[i].SetLineColor(4)
-        histosL1L1[i].Divide(histosTruth[i])
-        histosL1L2[i].Divide(histosTruth[i])
-        histosL2L2[i].Divide(histosTruth[i])
-        sumhisto = histosL1L1[i].Clone()
-        sumhisto.Add(histosL1L2[i])
-        sumhisto.Add(histosL2L2[i])
+        histos_copy_L1L1[i].SetLineColor(1)
+        histos_copy_L1L2[i].SetLineColor(2)
+        histos_copy_L2L2[i].SetLineColor(4)
+        histos_copy_L1L1[i].Divide(histosTruth[i])
+        histos_copy_L1L2[i].Divide(histosTruth[i])
+        histos_copy_L2L2[i].Divide(histosTruth[i])
+        sumhisto = histos_copy_L1L1[i].Clone()
+        sumhisto.Add(histos_copy_L1L2[i])
+        sumhisto.Add(histos_copy_L2L2[i])
         sumhisto.SetLineColor(28)
         maximum = sumhisto.GetMaximum()
         legend = TLegend(.68,.70,.92,.90)
@@ -295,14 +304,14 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         legend.AddEntry(histosL1L2[i],"L1L2","LP")
         legend.AddEntry(histosL2L2[i],"L2L2","LP")
         legend.AddEntry(sumhisto,"Sum","LP")
-        histosL1L1[i].Draw()
-        histosL1L1[i].SetStats(0)
-        histosL1L1[i].GetXaxis().SetTitle("z [mm]")
-        histosL1L1[i].GetYaxis().SetTitle("efficiency")
-        histosL1L1[i].SetTitle("A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass[i]*1000,title))
-        histosL1L1[i].GetYaxis().SetRangeUser(0,1.3*maximum)
-        histosL1L2[i].Draw("same")
-        histosL2L2[i].Draw("same")
+        histos_copy_L1L1[i].Draw()
+        histos_copy_L1L1[i].SetStats(0)
+        histos_copy_L1L1[i].GetXaxis().SetTitle("z [mm]")
+        histos_copy_L1L1[i].GetYaxis().SetTitle("efficiency")
+        histos_copy_L1L1[i].SetTitle("A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass[i]*1000,title))
+        histos_copy_L1L1[i].GetYaxis().SetRangeUser(0,1.3*maximum)
+        histos_copy_L1L2[i].Draw("same")
+        histos_copy_L2L2[i].Draw("same")
         sumhisto.Draw("same")
         legend.Draw()
         canvas.Print(output+".png")
@@ -310,22 +319,22 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         canvas.Write()
 
         canvas.Clear()
-        histosL1L1[i].Scale(1/normArr[i])
-        histosL1L2[i].Scale(1/normArr[i])
-        histosL2L2[i].Scale(1/normArr[i])
-        sumhistonorm = histosL1L1[i].Clone()
-        sumhistonorm.Add(histosL1L2[i])
-        sumhistonorm.Add(histosL2L2[i])
+        histos_copy_L1L1[i].Scale(1/normArr[i])
+        histos_copy_L1L2[i].Scale(1/normArr[i])
+        histos_copy_L2L2[i].Scale(1/normArr[i])
+        sumhistonorm = histos_copy_L1L1[i].Clone()
+        sumhistonorm.Add(histos_copy_L1L2[i])
+        sumhistonorm.Add(histos_copy_L2L2[i])
         sumhistonorm.SetLineColor(28)
         maximum = sumhistonorm.GetMaximum()
-        histosL1L1[i].Draw()
-        histosL1L1[i].SetStats(0)
-        histosL1L1[i].GetXaxis().SetTitle("Truth z [mm]")
-        histosL1L1[i].GetYaxis().SetTitle("efficiency")
-        histosL1L1[i].SetTitle("Normalized A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass[i]*1000,title))
-        histosL1L1[i].GetYaxis().SetRangeUser(0,1.3*maximum)
-        histosL1L2[i].Draw("same")
-        histosL2L2[i].Draw("same")
+        histos_copy_L1L1[i].Draw()
+        histos_copy_L1L1[i].SetStats(0)
+        histos_copy_L1L1[i].GetXaxis().SetTitle("Truth z [mm]")
+        histos_copy_L1L1[i].GetYaxis().SetTitle("efficiency")
+        histos_copy_L1L1[i].SetTitle("Normalized A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass[i]*1000,title))
+        histos_copy_L1L1[i].GetYaxis().SetRangeUser(0,1.3*maximum)
+        histos_copy_L1L2[i].Draw("same")
+        histos_copy_L2L2[i].Draw("same")
         sumhistonorm.Draw("same")
         legend.Draw()
         canvas.Print(output+".png")
@@ -334,6 +343,59 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         del sumhisto
         del sumhistonorm
         del legend
+    del histos_copy_L1L1
+    del histos_copy_L1L2
+    del histos_copy_L2L2
+
+def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,canvas,mass,targZ,title=""):
+    outfileroot.cd()
+    maximum = 0
+    histo_copy_L1L1 = histoL1L1.Clone()
+    histo_copy_L1L2 = histoL1L2.Clone()
+    histo_copy_L2L2 = histoL2L2.Clone()
+        
+    canvas.Clear()
+    histo_copy_L1L1.SetLineColor(1)
+    histo_copy_L1L2.SetLineColor(2)
+    histo_copy_L2L2.SetLineColor(4)
+    histo_copy_L1L1.Divide(histoTruth)
+    histo_copy_L1L2.Divide(histoTruth)
+    histo_copy_L2L2.Divide(histoTruth)
+    sumhisto = histo_copy_L1L1.Clone()
+    sumhisto.Add(histo_copy_L1L2)
+    sumhisto.Add(histo_copy_L2L2)
+    sumhisto.SetLineColor(28)
+    sumhisto.Fit("exppol4","QR")
+    maximum = sumhisto.GetMaximum()
+    legend = TLegend(.68,.70,.92,.90)
+    legend.SetBorderSize(0)
+    legend.SetFillColor(0)
+    legend.SetFillStyle(0)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.035)
+    legend.AddEntry(histoL1L1,"L1L1","LP")
+    legend.AddEntry(histoL1L2,"L1L2","LP")
+    legend.AddEntry(histoL2L2,"L2L2","LP")
+    legend.AddEntry(sumhisto,"Sum","LP")
+    histo_copy_L1L1.SetStats(0)
+    histo_copy_L1L1.Draw()
+    histo_copy_L1L1.GetXaxis().SetTitle("z [mm]")
+    histo_copy_L1L1.GetYaxis().SetTitle("efficiency")
+    histo_copy_L1L1.SetTitle("A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass*1000,title))
+    histo_copy_L1L1.GetYaxis().SetRangeUser(0,1.3*maximum)
+    histo_copy_L1L2.Draw("same")
+    histo_copy_L2L2.Draw("same")
+    sumhisto.Draw("same")
+    legend.Draw()
+    canvas.Print(outPDF+".pdf")
+    canvas.Write()
+
+    del sumhisto
+    del legend
+    del histo_copy_L1L1
+    del histo_copy_L1L2
+    del histo_copy_L2L2
+    return exppol4.Eval(targZ)
 
 def getEffTH1(hfile, hname):
     print 'Getting Efficiency Graph...converting to TH1'
@@ -354,7 +416,7 @@ def getEffTH1(hfile, hname):
         effHist.SetBinContent(histBin,y)   
     return effHist
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:TN:s:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:TN:s:f:h')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -372,6 +434,8 @@ for opt, arg in options:
         nNorm = int(arg)
     if opt=='-s':
         tupleName = str(arg)
+    if opt=='-f':
+        fittype = int(arg)
     if opt=='-h':
         print_usage()
         sys.exit(0)
@@ -396,8 +460,8 @@ def RemoveHit(slp):
     ibin = effSlopeData.FindBin(slp)
     eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
     total.Fill(slp) 
-    if rndm > eff:
-    #if rndm > 0.5:
+    #if rndm > eff:
+    if rndm > 0.8:
         return True
     else:
         passed.Fill(slp)
@@ -654,6 +718,36 @@ for i in range(nMass):
 for i in range(nBins):
     z.append(targZ+i*(maxZ-targZ)/float(nBins))
 
+#Function to fit for normalization
+if(fittype == 0):
+    exppol4=TF1("exppol4","exp(pol2(0))",-5,50)
+elif(fittype == 1):
+    exppol4=TF1("exppol4","exp(pol2(0))",-5,100)
+elif(fittype == 2):
+    exppol4=TF1("exppol4","exp(pol3(0))",-5,50)
+elif(fittype == 3):
+    exppol4=TF1("exppol4","exp(pol3(0))",-5,100)
+elif(fittype == 4):
+    exppol4=TF1("exppol4","exp(pol4(0))",-5,50)
+elif(fittype == 5):
+    exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
+elif(fittype == 6):
+    exppol4=TF1("exppol4","pol3",-5,50)
+elif(fittype == 7):
+    exppol4=TF1("exppol4","pol3",-5,100)
+elif(fittype == 8):
+    exppol4=TF1("exppol4","pol4",-5,50)
+elif(fittype == 9):
+    exppol4=TF1("exppol4","pol4",-5,100)
+elif(fittype == 10):
+    exppol4=TF1("exppol4","pol5",-5,50)
+elif(fittype == 11):
+    exppol4=TF1("exppol4","pol5",-5,100)
+elif(fittype == 12):
+    exppol4=TF1("exppol4","pol6",-5,50)
+else:
+    exppol4=TF1("exppol4","pol6",-5,100)
+
 #Create text files to write to
 textfileL1L1 = open(outfile + "_L1L1.eff","w")
 textfileL1L1Norm = open(outfile + "_L1L1_norm.eff","w")
@@ -747,6 +841,7 @@ gammameanerror = array.array('d')
 zeros = array.array('d')
 
 openPDF(outfile+"_comparekill",c)
+openPDF(outfile+"_fitplots",c)
 #Loop over all values of mass
 for i in range(nMass):
     inputL1L1ReconFile = TFile(str(L1L1Files[i])) #L1L1 tuple files after cuts
@@ -774,8 +869,7 @@ for i in range(nMass):
     #L2L2killevents = L2L2events
     #eventstruth.append(inputTruthFile.Get(tupleName))
     eventstruth = inputTruthFile.Get(tupleName)
-    #CompareKill(L1L1events[i],L1L1killevents[i],L1L2events[i],L1L2killevents[i],L2L2events[i],L2L2killevents[i],eventstruth[i],nBins,targZ,outfileroot,c,outfile,mass[i])
-    CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,eventstruth,nBins,targZ,outfileroot,c,outfile,mass[i])
+    #CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,eventstruth,nBins,targZ,outfileroot,c,outfile,mass[i])
 #closePDF(outfile+"_comparekill",c)
     #del eventsL1L1
     #del eventsL1L2
@@ -816,16 +910,18 @@ for i in range(nMass):
     histosTruth[i].Write("Truth {0:0.0f} MeV".format(mass[i]*1000))
 
     #Find the normalization based on a certain number of bins
-    norm = 0.0
-    for j in range(nNorm):
+    norm = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="Without Hit Killing")
+    #norm = 0.0
+    #for j in range(nNorm):
         #if (histoTruth.GetBinContent(j+1) != 0): 
         #    norm += histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)
-        if (histosTruth[i].GetBinContent(j+1) != 0): 
-            norm += histosL1L1[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)
-        else: 
-            norm = 0.0
-            break
-    norm = norm/nNorm
+    #    if (histosTruth[i].GetBinContent(j+1) != 0): 
+    #        norm += histosL1L1[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)
+    #    else: 
+    #        norm = 0.0
+    #        break
+    #norm = norm/nNorm
+    print norm
     normArr.append(norm)
     #Write the efficiency for a given mass (row) as function of z
     for j in range(nBins):
@@ -903,17 +999,19 @@ for i in range(nMass):
     histosL1L2kill[i].Write("L1L2 {0:0.0f} MeV Hit Killed".format(mass[i]*1000))
     histosL2L2kill[i].Write("L2L2 {0:0.0f} MeV Hit Killed".format(mass[i]*1000))
     #Find the normalization based on a certain number of bins
-    norm = 0.0
-    for j in range(nNorm):
+    normKill = plotFit(histosL1L1kill[i],histosL1L2kill[i],histosL2L2kill[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="With Hit Killing")
+    #norm = 0.0
+    #for j in range(nNorm):
         #if (histoTruth.GetBinContent(j+1) != 0): 
         #    norm += histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)
-        if (histosTruth[i].GetBinContent(j+1) != 0): 
-            norm += (histosL1L1kill[i].GetBinContent(j+1)+histosL1L2kill[i].GetBinContent(j+1)+histosL2L2kill[i].GetBinContent(j+1))/histosTruth[i].GetBinContent(j+1)
-        else: 
-            norm = 0.0
-            break
-    norm = norm/nNorm
-    normkillArr.append(norm)
+    #    if (histosTruth[i].GetBinContent(j+1) != 0): 
+    #        norm += (histosL1L1kill[i].GetBinContent(j+1)+histosL1L2kill[i].GetBinContent(j+1)+histosL2L2kill[i].GetBinContent(j+1))/histosTruth[i].GetBinContent(j+1)
+    #    else: 
+    #        norm = 0.0
+    #        break
+    #norm = norm/nNorm
+    print normKill
+    normkillArr.append(normKill)
     #Write the efficiency for a given mass (row) as function of z
     for j in range(nBins):
         if (histosTruth[i].GetBinContent(j+1) == 0):
@@ -974,6 +1072,7 @@ textfileL2L2Killed.close()
 textfileL2L2KilledNorm.close()
 
 closePDF(outfile+"_comparekill",c)
+closePDF(outfile+"_fitplots",c)
 
 #Make test plots if desired
 if(makeTestPlots):
