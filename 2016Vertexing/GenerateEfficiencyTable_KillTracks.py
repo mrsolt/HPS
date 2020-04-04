@@ -460,8 +460,8 @@ def RemoveHit(slp):
     ibin = effSlopeData.FindBin(slp)
     eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
     total.Fill(slp) 
-    #if rndm > eff:
-    if rndm > 0.8:
+    if rndm > eff:
+    #if rndm > 0.8:
         return True
     else:
         passed.Fill(slp)
