@@ -303,7 +303,7 @@ openPDF(outfile,c)
 for i in range(len(mass)):
 	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	meansmeared, sigmasmeared, meansmearderror, sigmasmearederror = saveTupleFitPlotSmeared(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
-	mean_targ, sigma_targ, meanerror_targ, sigmaerror_targ = saveTupleFitPlot(events[i],"(tarcM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
+	mean_targ, sigma_targ, meanerror_targ, sigmaerror_targ = saveTupleFitPlot(events[i],"(tarM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	meansmeared_targ, sigmasmeared_targ, meansmearderror_targ, sigmasmearederror_targ = saveTupleFitPlotSmeared(events[i],"(tarM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	#saveTupleFitPlotsZ(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
 	fittedmean.append(mean)
