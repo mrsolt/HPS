@@ -31,7 +31,7 @@ gStyle.SetOptStat(0)
 gStyle.SetOptFit(1011)
 c = TCanvas("c","c",800,600)
 
-def SmearHisto(events,nBins,minX,maxX,mass):
+def SmearHisto(events,nBins,minX,maxX,mass,isTar=False):
 	smear_Top5hits = 0.0589307 
 	smear_Top6hits = 0.0433669 
 	smear_Bot5hits = 0.0551252 
@@ -40,6 +40,7 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 	eleP = array.array('d',[0])
 	posP = array.array('d',[0])
 	uncM = array.array('d',[0])
+	tarM = array.array('d',[0])
 	eleNTrackHits = array.array('d',[0])
 	posNTrackHits = array.array('d',[0])
 	eleTrkLambda = array.array('d',[0])
@@ -47,6 +48,7 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 	events.Branch("eleP",eleP,"eleP/D")
 	events.Branch("posP",posP,"posP/D")
 	events.Branch("uncM",uncM,"uncM/D")
+	events.Branch("tarM",tarM,"tarM/D")
 	events.Branch("eleNTrackHits",eleNTrackHits,"eleNTrackHits/I")
 	events.Branch("posNTrackHits",posNTrackHits,"posNTrackHits/I")
 	events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda/D")
@@ -80,14 +82,17 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 		#print("Electron: Nhits = {0}  Slope = {1:0.3f}  Smear: {2}  Ele Smear = {3}".format(events.eleNTrackHits,events.eleTrkLambda,ele_smear,P_electron_Smear))
 		#print("Positron: Nhits = {0}  Slope = {1:0.3f}  Semar: {2}  Pos Smear = {3}".format(events.posNTrackHits,events.posTrkLambda,pos_smear,P_positron_Smear))
 
-		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
+		if(not isTar):
+			MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
+		else:
+			MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.tarM
 		histo.Fill(MSmear*1000-mass)
 
 	return histo
 
 
-def saveTupleFitPlotSmeared(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
-	histo = SmearHisto(events,nBins,minX,maxX,mass)
+def saveTupleFitPlotSmeared(events,inHisto,mass,nBins,minX,maxX,outfile,canvas,isTar=False):
+	histo = SmearHisto(events,nBins,minX,maxX,mass,isTar)
 	histo.SetTitle("Reconstructed Mass Smeared {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
 	f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
@@ -304,7 +309,7 @@ for i in range(len(mass)):
 	mean, sigma, meanerror, sigmaerror = saveTupleFitPlot(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	meansmeared, sigmasmeared, meansmearderror, sigmasmearederror = saveTupleFitPlotSmeared(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
 	mean_targ, sigma_targ, meanerror_targ, sigmaerror_targ = saveTupleFitPlot(events[i],"(tarM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
-	meansmeared_targ, sigmasmeared_targ, meansmearderror_targ, sigmasmearederror_targ = saveTupleFitPlotSmeared(events[i],"(tarM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c)
+	meansmeared_targ, sigmasmeared_targ, meansmearderror_targ, sigmasmearederror_targ = saveTupleFitPlotSmeared(events[i],"(tarM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,outfile,c,True)
 	#saveTupleFitPlotsZ(events[i],"(uncM*1000-{0:.0f})".format(mass[i]),mass[i],nBins,minX,maxX,zbin,zTarg,maxZ,outfile,c)
 	fittedmean.append(mean)
 	fittedsigma.append(sigma)
