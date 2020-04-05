@@ -30,7 +30,7 @@ nBins = 50
 zRange = 100
 nNorm = 4
 tupleName = "ntuple"
-fittype = 4
+fittype = 5
 
 #Function to plot efficiency tests of known masses
 def plotTest(iMass,inputFile,output,targZ,maxZ,canvas):
@@ -564,7 +564,7 @@ def KillHits(events1, events2, events3, mass, inputL2L2ReconFile,outfile):
 
     newevents1 = TChain("ntuple_L1L1")
     newevents1.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
-    newevents1.Add("dumL1L2_{0:0.0f} {1}.root".format(mass*1000,outfile))
+    newevents1.Add("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
 
     newevents2 = TChain("ntuple_L1L2")
     newevents2.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
@@ -830,12 +830,12 @@ histosL1L1 = []
 histosL1L2 = []
 histosL2L2 = []
 histosTruth = []
-normArr = []
+normArr = array.array('d')
 
 histosL1L1kill = []
 histosL1L2kill = []
 histosL2L2kill = []
-normkillArr = []
+normkillArr = array.array('d')
 gammamean = array.array('d')
 gammameanerror = array.array('d')
 zeros = array.array('d')
@@ -1275,6 +1275,32 @@ def MakeGammaHistos(histo,mass,canvas,output):
 
 for i in range(len(mass)):
     MakeGammaHistos(histosgamma[i],mass[i]*1000,c13,outfile+"_plots")
+
+graph = TGraph(len(mass),mass,normArr)
+graph2 = TGraph(len(mass),mass,normkillArr)
+graph.SetTitle("Prompt A' Acceptance * Efficiency")
+graph.GetXaxis().SetTitle("Truth Mass (GeV)")
+graph.GetYaxis().SetTitle("Efficiency")
+graph.GetXaxis().SetRangeUser(0,.2)
+graph.GetYaxis().SetRangeUser(0,0.4)
+graph.SetLineColor(1)
+graph.SetMarkerColor(1)
+graph2.SetLineColor(2)
+graph2.SetMarkerColor(2)
+graph.Draw("AP")
+graph2.Draw("P same")
+legend = TLegend(.58,.66,.92,.87)
+legend.SetBorderSize(0)
+legend.SetFillColor(0)
+legend.SetFillStyle(0)
+legend.SetTextFont(42)
+legend.SetTextSize(0.035)
+legend.AddEntry(graph,"No L1 Hit Killing","LP")
+legend.AddEntry(graph2,"With L1 Hit Killing","LP")
+legend.Draw("same")
+c13.Print(outfile+"_plots.pdf") 
+graph.Write("Prompt Acceptance")
+graph2.Write("Prompt Acceptance With Hit Killing")
 
 
 c13.Print(outfile+"_plots.pdf]") 
