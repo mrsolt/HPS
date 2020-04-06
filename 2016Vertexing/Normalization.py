@@ -207,6 +207,7 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 parentID = 622
+truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
