@@ -64,7 +64,7 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	radfracHisto.SetTitle("Radiative Fraction")
 	radfracHisto.GetYaxis().SetRangeUser(0,0.4)
-	radfracHisto.Fit("pol5")
+	radfracHisto.Fit("pol5","pol5","",0.04,0.2)
 	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
 	canvas.Print(outfile+".pdf")
@@ -190,7 +190,8 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	ratio = radHisto.Clone("Ratio"+radHisto.GetName())
 	ratio.Divide(reference)
 	ratio.SetLineColor(1)
-	ratio.Fit("pol5")
+	ratio.Fit("pol5","pol5","",0.04,0.2)
+	ratio.GetXaxis().SetRangeUser(0,0.2)
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
@@ -206,7 +207,6 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 parentID = 622
-truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
