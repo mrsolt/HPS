@@ -124,7 +124,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	RatioMax = 0.15
 
 	top = TPad("top","top",0,0.42,1,1)
-	top.SetLogy(1)
+	top.SetLogy(0)
     
 	bot = TPad("bot","bot",0,0,1,0.38)
     
