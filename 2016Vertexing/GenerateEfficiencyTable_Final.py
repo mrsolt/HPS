@@ -9,14 +9,13 @@ from ROOT import gROOT, gStyle, TFile, TTree, TChain, TMVA, TCut, TCanvas, gDire
 import getopt
 
 def print_usage():
-    print "\nUsage: {0} <output file basename> <L1L1 input files list> <L1L2 input files list> <L2L2 input files list> <input recon truth tuple files list>".format(sys.argv[0])
+    print "\nUsage: {0} <output file basename> <input recon files list> <input recon truth tuple files list>".format(sys.argv[0])
     print "Arguments: "
     print '\t-e: use this beam energy <default 2.3 GeV>'
     print '\t-t: use this target position <default -4.3 mm>'
     print '\t-n: number of bins in histograms <default 50>'
     print '\t-z: total range in z covered <default 100 mm>'
     print '\t-T: plot Test plots'
-    print '\t-N: number of bins from target to normalize to <default is 4>'
     print '\t-s: tuple name <default is "ntuple">'
     print '\t-h: this help message'
     print
@@ -28,9 +27,7 @@ killInTrackSlope = True
 targZ = -4.3
 nBins = 50
 zRange = 100
-nNorm = 4
 tupleName = "ntuple"
-fittype = 5
 
 #Function to plot efficiency tests of known masses
 def plotTest(iMass,inputFile,output,targZ,maxZ,canvas):
@@ -197,42 +194,7 @@ def Bilinear(x,y,x1,x2,y1,y2,Q11,Q12,Q21,Q22):
     t4 = (x-x1)*(y-y1)/denom*Q22
     return t1+t2+t3+t4
 
-def plotEff(inputFile,output,nBins,targZ,maxZ,canvas):
-    inputfile = open(inputFile,"r")
-    mass = getMassArray(inputFile)
-    z = getZArray(inputFile)
-    eff = getEfficiency(inputFile)
-    histos = []
-    for i in range(len(mass)):
-        histos.append(TH1F("histo{0}".format(mass[i]),"histo{0}".format(mass[i]),nBins,targZ,maxZ))
-    legend = TLegend(.68,.50,.92,.97)
-    legend.SetBorderSize(0)
-    legend.SetFillColor(0)
-    legend.SetFillStyle(0)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.035)
-    maximum = 0
-    for i in range(len(mass)):
-        for j in range(len(z)):
-            histos[i].SetBinContent(j+1,eff[i][j])
-            if(eff[i][0] > maximum):
-                maximum = eff[i][0]
-        #legend.AddEntry(histos[i],str().format('{0:.3f}',mass[i]*1000)+" MeV","LP")
-        legend.AddEntry(histos[i],str("%.3g" % (mass[i] * 1000))+" MeV","LP")
-        if(i == 0):
-            histos[i].Draw()
-            histos[i].SetStats(0)
-            histos[i].GetXaxis().SetTitle("z [mm]")
-            histos[i].GetYaxis().SetTitle("efficiency")
-            histos[i].SetTitle("A' Acceptance * Efficiency")
-        else:
-            histos[i].Draw("same")
-        histos[i].SetLineColor(i+1)
-    histos[0].GetYaxis().SetRangeUser(0,0.13)
-    legend.Draw()
-    canvas.Print(output+".png")
-
-def plotEff2(histos,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,useNorm,title=""):
+def plotEff(histos,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,useNorm,title=""):
     outfileroot.cd()
     canvas.Clear()
     legend = TLegend(.68,.50,.92,.97)
@@ -379,7 +341,7 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     legend.AddEntry(sumhisto,"Sum","LP")
     histo_copy_L1L1.SetStats(0)
     histo_copy_L1L1.Draw()
-    histo_copy_L1L1.GetXaxis().SetTitle("z [mm]")
+    histo_copy_L1L1.GetXaxis().SetTitle("Truth z [mm]")
     histo_copy_L1L1.GetYaxis().SetTitle("efficiency")
     histo_copy_L1L1.SetTitle("A' Acceptance * Efficiency {0:0.0f} MeV A' {1}".format(mass*1000,title))
     histo_copy_L1L1.GetYaxis().SetRangeUser(0,1.3*maximum)
@@ -416,7 +378,7 @@ def getEffTH1(hfile, hname):
         effHist.SetBinContent(histBin,y)   
     return effHist
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:TN:s:f:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Ts:h')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -430,17 +392,13 @@ for opt, arg in options:
         zRange=float(arg)
     if opt=='-T':
         makeTestPlots = True
-    if opt=='-N':
-        nNorm = int(arg)
     if opt=='-s':
         tupleName = str(arg)
-    if opt=='-f':
-        fittype = int(arg)
     if opt=='-h':
         print_usage()
         sys.exit(0)
 
-if len(remainder)!=5:
+if len(remainder)!=3:
     print_usage()
     sys.exit(0)
 
@@ -557,10 +515,24 @@ def NewEventsL1L2(events,mass,outfile):
     del file
     return events2, events3
 
+def GetCategories(events,mass,outfile):
 
-def KillHits(events1, events2, events3, mass, inputL2L2ReconFile,outfile):
-    newevents1, newevents2_L1L1, newevents3_L1L1 = NewEventsL1L1(events1,mass,outfile)
-    newevents2_L1L2, newevents3_L1L2 = NewEventsL1L2(events2, mass,outfile)
+    L1L1cut = "eleHasL1&&posHasL1"
+    L1L2cut = "(!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1)"
+    L2L2cut = "!eleHasL1&&!posHasL1"
+    file = TFile("dum_laycut_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
+    eventsL1L1 = events.CopyTree(L1L1cut)
+    eventsL1L2 = events.CopyTree(L1L2cut)
+    eventsL2L2 = events.CopyTree(L2L2cut)
+    eventsL1L1.SetName("ntuple_L1L1")
+    eventsL1L2.SetName("ntuple_L1L2")
+    eventsL2L2.SetName("ntuple_L2L2")
+    eventsL1L1.Write()
+    eventsL1L2.Write()
+    eventsL2L2.Write()
+
+    newevents1, newevents2_L1L1, newevents3_L1L1 = NewEventsL1L1(eventsL1L1,mass,outfile)
+    newevents2_L1L2, newevents3_L1L2 = NewEventsL1L2(eventsL1L2, mass,outfile)
 
     newevents1 = TChain("ntuple_L1L1")
     newevents1.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
@@ -570,22 +542,10 @@ def KillHits(events1, events2, events3, mass, inputL2L2ReconFile,outfile):
     newevents2.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
     newevents2.Add("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
 
-    file = TFile("dumL2L2_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
-    eventsL2L2 = events3.CloneTree(0)
-    eventsL2L2.SetName("ntuple_L2L2")
-    nevents = events3.GetEntries()
-
-    for entry in xrange(nevents):
-        events3.GetEntry(entry)
-        eventsL2L2.Fill()
-    eventsL2L2.AutoSave()
-
     newevents3 = TChain("ntuple_L2L2")
     newevents3.Add("dumL1L1_{0:0.0f}_{1}.root".format(mass*1000,outfile))
     newevents3.Add("dumL1L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
-    newevents3.Add("dumL2L2_{0:0.0f}_{1}.root".format(mass*1000,outfile))
-
-    del file
+    newevents3.Add("dum_laycut_{0:0.0f}_{1}.root".format(mass*1000,outfile))
 
     return newevents1, newevents2, newevents3
 
@@ -595,73 +555,6 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
     canvas.Print(outfile+".pdf]")
 
-def CompareHisto(events1,events2,truthevents,nBins,targZ,maxZ,outfileroot,canvas,outfile,mass,title=""):
-    outfileroot.cd()
-    canvas.Clear()
-    events1.Draw("triEndZ>>histo1({0},{1},{2})".format(nBins,targZ,maxZ))
-    histo1 = ROOT.gROOT.FindObject("histo1")
-    events2.Draw("triEndZ>>histo2({0},{1},{2})".format(nBins,targZ,maxZ))
-    histo2 = ROOT.gROOT.FindObject("histo2")
-    truthevents.Draw("triEndZ>>truthhisto({0},{1},{2})".format(nBins,targZ,maxZ))
-    truthhisto = ROOT.gROOT.FindObject("truthhisto")
-
-    histo1.Sumw2()
-    histo2.Sumw2()
-    truthhisto.Sumw2()
-
-    histo1.Divide(truthhisto)
-    histo2.Divide(truthhisto)
-
-    histo1.Draw()
-    histo1.SetStats(0)
-    histo1.SetTitle("Compare Hit Killing {0:0.0f} MeV A' for {1}".format(mass*1000,title))
-    histo1.GetXaxis().SetTitle("Truth z (mm)")
-    histo1.GetYaxis().SetTitle("efficiency")
-    histo2.SetLineColor(2)
-    histo2.Draw("same")
-
-    legend = TLegend(.58,.66,.92,.87)
-    legend.SetBorderSize(0)
-    legend.SetFillColor(0)
-    legend.SetFillStyle(0)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.035)
-    legend.AddEntry(histo1,"No L1 Hit Killing","LP")
-    legend.AddEntry(histo2,"With L1 Hit Killing","LP")
-    legend.Draw("same")
-
-    canvas.Print(outfile+".pdf")
-    canvas.Write()
-
-def CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,truthevents,nBins,targZ,outfileroot,canvas,outfile,mass):
-    output = outfile+"_comparekill"
-    CompareHisto(L1L1events,L1L1killevents,truthevents,nBins,targZ,80,outfileroot,canvas,output,mass,"L1L1")
-    CompareHisto(L1L2events,L1L2killevents,truthevents,nBins,targZ,90,outfileroot,canvas,output,mass,"L1L2")
-    CompareHisto(L2L2events,L2L2killevents,truthevents,nBins,targZ,160,outfileroot,canvas,output,mass,"L2L2")
-
-
-
-#removedL1Hit={}   #dictionary...for c++/java you can use a map or something...
-#for fsp in <fspInV0> : 
-#    if isMC and trackKiller and killInTrackSlope :
-#        track=fsp.getTracks()[0]
-#        nHits=len(track.getSvtHits())
-#        slp=track.getTanLambda()
-#        rndm=random.random()           
-#        ibin=effSlopeData.FindBin(slp)
-#        eff=1-effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency                       
-#        if rndm>eff:
-#            if nHits==5:
-#                print(str(fsp)+'::  Removing this particle due to L1 inefficiency')
-#                nKilled+=1
-#                continue
-#            else :                           
-#                print(str(fsp)+'::  Removing this particle L1 hit due to inefficiency')
-#                removedL1Hit[fsp]=True
-#        else:
-#            print(str(fsp)+'::  Leaving this particle alone')
-#            removedL1Hit[fsp]=False  
-
 gROOT.SetBatch(True)
 c = TCanvas("c","c",1200,900)
 maxZ = targZ + zRange #Define Maximum Z
@@ -669,36 +562,23 @@ maxZ = targZ + zRange #Define Maximum Z
 #Set outfile and grab infile
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+"_all.root","RECREATE")
-L1L1file = open(remainder[1],"r")
-L1L2file = open(remainder[2],"r")
-L2L2file = open(remainder[3],"r")
-truthfile = open(remainder[4],"r")
-
-L1L1Files = []
-L1L2Files = []
-L2L2Files = []
+infile = open(remainder[1],"r")
+truthfile = open(remainder[2],"r")
+infiles = []
 truthFiles = []
 
 histosgamma = []
 
 #Read files from L1L1 input text file
-for line in (raw.strip().split() for raw in L1L1file):
-            L1L1Files.append(line[0])
-
-#Read files from L1L2 input text file
-for line in (raw.strip().split() for raw in L1L2file):
-            L1L2Files.append(line[0])
-
-#Read files from L1L1 input text file
-for line in (raw.strip().split() for raw in L2L2file):
-            L2L2Files.append(line[0])
+for line in (raw.strip().split() for raw in infile):
+            infiles.append(line[0])
 
 #Read files from input text truth file
 for line in (raw.strip().split() for raw in truthfile):
             truthFiles.append(line[0])
 
-if (len(truthFiles) != len(L1L1Files) or len(truthFiles) != len(L1L2Files) or len(truthFiles) != len(L2L2Files)):
-    print "The number of L1L1 files, input files, or truth files do not match!"
+if (len(truthFiles) != len(infiles)):
+    print "The number of recon files and truth files do not match!"
     print_usage()
     sys.exit(0)
 
@@ -719,208 +599,191 @@ for i in range(nBins):
     z.append(targZ+i*(maxZ-targZ)/float(nBins))
 
 #Function to fit for normalization
-if(fittype == 0):
-    exppol4=TF1("exppol4","exp(pol2(0))",-5,50)
-elif(fittype == 1):
-    exppol4=TF1("exppol4","exp(pol2(0))",-5,100)
-elif(fittype == 2):
-    exppol4=TF1("exppol4","exp(pol3(0))",-5,50)
-elif(fittype == 3):
-    exppol4=TF1("exppol4","exp(pol3(0))",-5,100)
-elif(fittype == 4):
-    exppol4=TF1("exppol4","exp(pol4(0))",-5,50)
-elif(fittype == 5):
-    exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
-elif(fittype == 6):
-    exppol4=TF1("exppol4","pol3",-5,50)
-elif(fittype == 7):
-    exppol4=TF1("exppol4","pol3",-5,100)
-elif(fittype == 8):
-    exppol4=TF1("exppol4","pol4",-5,50)
-elif(fittype == 9):
-    exppol4=TF1("exppol4","pol4",-5,100)
-elif(fittype == 10):
-    exppol4=TF1("exppol4","pol5",-5,50)
-elif(fittype == 11):
-    exppol4=TF1("exppol4","pol5",-5,100)
-elif(fittype == 12):
-    exppol4=TF1("exppol4","pol6",-5,50)
-else:
-    exppol4=TF1("exppol4","pol6",-5,100)
+exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
+
+uncTargProjX = -0.0917593000854 
+uncTargProjXSig = 0.215671748567
+uncTargProjY = -0.0772518524373
+uncTargProjYSig = 0.0862582336468
+
+eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(targZ)
+posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(targZ)
+
+isocut = "({0}&&{1})".format(eleiso,posiso)
+
+a0 = -0.177913468428
+a1 = -0.932330924205
+a2 = 0.00961915803124
+a3 = 0.228303547556
+b0 = 0.0115212779435
+b1 = -0.651929048499
+b2 = 0.0125216209858
+b3 = 0.217752673675
+dz = 0.
+
+eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+
+z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
+
+cutsL1L1 = []
+cutsL1L1.append("eleHasL1&&posHasL1")
+cutsL1L1.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,targZ))
+cutsL1L1.append(isocut)
+cutsL1L1.append(z0cut)
+
+cutL1L1 = cutsL1L1[0]
+for i in range(1,len(cutsL1L1)):
+    cutL1L1 = cutL1L1 + "&&" + cutsL1L1[i]
+
+eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(targZ)
+posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(targZ)
+
+eleisoL2 = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(targZ)
+posisoL2 = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(targZ)
+
+eleiso_L1L2 = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1,eleisoL2)
+posiso_L1L2 = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
+
+isocut_L1L2 = "({0}&&{1})".format(eleiso_L1L2,posiso_L1L2)
+
+uncTargProjXSigL1L2 = 1.25 * uncTargProjXSig
+uncTargProjYSigL1L2 = 1.5 * uncTargProjYSig
+
+a0 = -0.204298550172
+a1 = -0.819203072994
+a2 = 0.0215541584276
+a3 = 0.0769066743212
+b0 = -0.0131964462788
+b1 = -0.356152922206
+b2 = 0.0199952852357
+b3 = 0.0682704240163
+
+eleZ0_up_L1L2 = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+posZ0_up_L1L2 = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+
+eleZ0_down_L1L2 = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+posZ0_down_L1L2 = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+
+z0cut_L1L2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up_L1L2,posZ0_down_L1L2,posZ0_up_L1L2,eleZ0_down_L1L2)
+
+cutsL1L2 = []
+cutsL1L2.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))")
+cutsL1L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+cutsL1L2.append(isocut_L1L2)
+cutsL1L2.append(z0cut_L1L2)
+
+cutL1L2 = cutsL1L2[0]
+for i in range(1,len(cutsL1L2)):
+    cutL1L2 = cutL1L2 + "&&" + cutsL1L2[i]
+
+cutsL2L2 = []
+cutsL2L2.append("(!eleHasL1&&!posHasL1)")
+cutsL2L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+cutsL2L2.append("({0}&&{1})".format(eleisoL2,posisoL2))
+cutsL2L2.append(z0cut_L1L2)
+
+cutL2L2 = cutsL2L2[0]
+for i in range(1,len(cutsL2L2)):
+    cutL2L2 = cutL2L2 + "&&" + cutsL2L2[i]
 
 #Create text files to write to
 textfileL1L1 = open(outfile + "_L1L1.eff","w")
 textfileL1L1Norm = open(outfile + "_L1L1_norm.eff","w")
-textfileL1L1Killed = open(outfile + "_L1L1_kill.eff","w")
-textfileL1L1KilledNorm = open(outfile + "_L1L1_kill_norm.eff","w")
 
 textfileL1L2 = open(outfile + "_L1L2.eff","w")
 textfileL1L2Norm = open(outfile + "_L1L2_norm.eff","w")
-textfileL1L2Killed = open(outfile + "_L1L2_kill.eff","w")
-textfileL1L2KilledNorm = open(outfile + "_L1L2_kill_norm.eff","w")
 
 textfileL2L2 = open(outfile + "_L2L2.eff","w")
 textfileL2L2Norm = open(outfile + "_L2L2_norm.eff","w")
-textfileL2L2Killed = open(outfile + "_L2L2_kill.eff","w")
-textfileL2L2KilledNorm = open(outfile + "_L2L2_kill_norm.eff","w")
-
 #Write values of mass in the first row
 for i in range(nMass):
     textfileL1L1.write(str(mass[i]) + " ")
     textfileL1L1Norm.write(str(mass[i]) + " ")
-    textfileL1L1Killed.write(str(mass[i]) + " ")
-    textfileL1L1KilledNorm.write(str(mass[i]) + " ")
     textfileL1L2.write(str(mass[i]) + " ")
     textfileL1L2Norm.write(str(mass[i]) + " ")
-    textfileL1L2Killed.write(str(mass[i]) + " ")
-    textfileL1L2KilledNorm.write(str(mass[i]) + " ")
     textfileL2L2.write(str(mass[i]) + " ")
     textfileL2L2Norm.write(str(mass[i]) + " ")
-    textfileL2L2Killed.write(str(mass[i]) + " ")
-    textfileL2L2KilledNorm.write(str(mass[i]) + " ")
 textfileL1L1.write("\n")
 textfileL1L1Norm.write("\n")
-textfileL1L1Killed.write("\n")
-textfileL1L1KilledNorm.write("\n")
 textfileL1L2.write("\n")
 textfileL1L2Norm.write("\n")
-textfileL1L2Killed.write("\n")
-textfileL1L2KilledNorm.write("\n")
 textfileL2L2.write("\n")
 textfileL2L2Norm.write("\n")
-textfileL2L2Killed.write("\n")
-textfileL2L2KilledNorm.write("\n")
 
 #Write values of z in the 2nd row
 for i in range(nBins):
     textfileL1L1.write(str(z[i]) + " ") 
-    textfileL1L1Norm.write(str(z[i]) + " ") 
-    textfileL1L1Killed.write(str(z[i]) + " ") 
-    textfileL1L1KilledNorm.write(str(z[i]) + " ")  
+    textfileL1L1Norm.write(str(z[i]) + " ")  
     textfileL1L2.write(str(z[i]) + " ") 
     textfileL1L2Norm.write(str(z[i]) + " ") 
-    textfileL1L2Killed.write(str(z[i]) + " ") 
-    textfileL1L2KilledNorm.write(str(z[i]) + " ")  
     textfileL2L2.write(str(z[i]) + " ") 
     textfileL2L2Norm.write(str(z[i]) + " ") 
-    textfileL2L2Killed.write(str(z[i]) + " ") 
-    textfileL2L2KilledNorm.write(str(z[i]) + " ")  
 textfileL1L1.write("\n")
 textfileL1L1Norm.write("\n")
-textfileL1L1Killed.write("\n")
-textfileL1L1KilledNorm.write("\n")
 textfileL1L2.write("\n")
 textfileL1L2Norm.write("\n")
-textfileL1L2Killed.write("\n")
-textfileL1L2KilledNorm.write("\n")
 textfileL2L2.write("\n")
 textfileL2L2Norm.write("\n")
-textfileL2L2Killed.write("\n")
-textfileL2L2KilledNorm.write("\n")
-
-L1L1events = []
-L1L1killevents = []
-L1L2events = []
-L1L2killevents = []
-L2L2events = []
-L2L2killevents = []
-eventstruth = []
 
 histosL1L1 = []
 histosL1L2 = []
 histosL2L2 = []
 histosTruth = []
+histoscutL1L1 = []
+histoscutL1L2 = []
+histoscutL2L2 = []
 normArr = array.array('d')
 
-histosL1L1kill = []
-histosL1L2kill = []
-histosL2L2kill = []
-normkillArr = array.array('d')
 gammamean = array.array('d')
 gammameanerror = array.array('d')
 zeros = array.array('d')
 
-openPDF(outfile+"_comparekill",c)
 openPDF(outfile+"_fitplots",c)
 #Loop over all values of mass
 for i in range(nMass):
-    inputL1L1ReconFile = TFile(str(L1L1Files[i])) #L1L1 tuple files after cuts
-    inputL1L2ReconFile = TFile(str(L1L2Files[i])) #L1L2 tuple files after cuts
-    inputL2L2ReconFile = TFile(str(L2L2Files[i])) #L2L2 tuple files after cuts
-    inputTruthFile = TFile(str(truthFiles[i])) #truth files
-    #L1L1events.append(inputL1L1ReconFile.Get(tupleName))
-    #L1L2events.append(inputL1L2ReconFile.Get(tupleName))
-    #L2L2events.append(inputL2L2ReconFile.Get(tupleName))
-    L1L1events = inputL1L1ReconFile.Get(tupleName)
-    L1L2events = inputL1L2ReconFile.Get(tupleName)
-    L2L2events = inputL2L2ReconFile.Get(tupleName)
-    L1L1killevents, L1L2killevents, L2L2killevents = KillHits(inputL1L1ReconFile.Get(tupleName),inputL1L2ReconFile.Get(tupleName),inputL2L2ReconFile.Get(tupleName),mass[i],L2L2Files[i],outfile)
-    #L1L1killevents.append(eventsL1L1)
-    #L1L2killevents.append(eventsL1L2)
-    #L2L2killevents.append(eventsL2L2)
-    #L1L1killevents.append(L1L1events[i])
-    #L1L2killevents.append(L1L2events[i])
-    #L2L2killevents.append(L2L2events[i])
-    #L1L1killevents = eventsL1L1
-    #L1L2killevents = eventsL1L2
-    #L2L2killevents = eventsL2L2
-    #L1L1killevents = L1L1events
-    #L1L2killevents = L1L2events
-    #L2L2killevents = L2L2events
-    #eventstruth.append(inputTruthFile.Get(tupleName))
+    inputReconFile = TFile(str(infiles[i]))
+    L1L1events, L1L2events, L2L2events = GetCategories(inputReconFile.Get(tupleName),mass[i],outfile)
     eventstruth = inputTruthFile.Get(tupleName)
-    CompareKill(L1L1events,L1L1killevents,L1L2events,L1L2killevents,L2L2events,L2L2killevents,eventstruth,nBins,targZ,outfileroot,c,outfile,mass[i])
-#closePDF(outfile+"_comparekill",c)
-    #del eventsL1L1
-    #del eventsL1L2
-    #del eventsL2L2
 
-#histosL1L1 = []
-#histosL1L2 = []
-#histosL2L2 = []
-#histosTruth = []
-#normArr = []
-
-#for i in range(nMass):
     print("Mass {0:0.0f}".format(mass[i]*1000))
     L1L1events.Draw("triEndZ>>histoReconL1L1_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL1L1 = ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000))
     histosL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_{0:0.0f}".format(mass[i]*1000)))
     L1L2events.Draw("triEndZ>>histoReconL1L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL1L2 = ROOT.gROOT.FindObject("histoReconL1L2_{0:0.0f}".format(mass[i]*1000))
     histosL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_{0:0.0f}".format(mass[i]*1000)))
     L2L2events.Draw("triEndZ>>histoReconL2L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL2L2 = ROOT.gROOT.FindObject("histoReconL2L2_{0:0.0f}".format(mass[i]*1000))
     histosL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_{0:0.0f}".format(mass[i]*1000)))
     eventstruth.Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),"triStartP>0.8*{0}".format(eBeam))
-    #histoTruth = ROOT.gROOT.FindObject("histoTruth".format(mass[i]*1000))
     histosTruth.append(ROOT.gROOT.FindObject("histoTruth_{0:0.0f}".format(mass[i]*1000)))
-    #histoReconL1L1.Sumw2()
-    #histoReconL1L2.Sumw2()
-    #histoReconL2L2.Sumw2()
-    #histoTruth.Sumw2()
+
+    L1L1events.Draw("triEndZ>>histoReconL1L1_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L1)
+    histoscutL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_cut_{0:0.0f}".format(mass[i]*1000)))
+    L1L2events.Draw("triEndZ>>histoReconL1L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L2)
+    histoscutL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_cut_{0:0.0f}".format(mass[i]*1000)))
+    L2L2events.Draw("triEndZ>>histoReconL2L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL2L2)
+    histoscutL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_cut_{0:0.0f}".format(mass[i]*1000)))
+
     histosL1L1[i].Sumw2()
     histosL1L2[i].Sumw2()
     histosL2L2[i].Sumw2()
+    histoscutL1L1[i].Sumw2()
+    histoscutL1L2[i].Sumw2()
+    histoscutL2L2[i].Sumw2()
     histosTruth[i].Sumw2()
     outfileroot.cd()
     histosL1L1[i].Write("L1L1 {0:0.0f} MeV".format(mass[i]*1000))
     histosL1L2[i].Write("L1L2 {0:0.0f} MeV".format(mass[i]*1000))
     histosL2L2[i].Write("L2L2 {0:0.0f} MeV".format(mass[i]*1000))
+    histoscutL1L1[i].Write("L1L1 Cut {0:0.0f} MeV".format(mass[i]*1000))
+    histoscutL1L2[i].Write("L1L2 Cut {0:0.0f} MeV".format(mass[i]*1000))
+    histoscutL2L2[i].Write("L2L2 Cut {0:0.0f} MeV".format(mass[i]*1000))
     histosTruth[i].Write("Truth {0:0.0f} MeV".format(mass[i]*1000))
 
     #Find the normalization based on a certain number of bins
-    norm = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="Without Hit Killing")
-    #norm = 0.0
-    #for j in range(nNorm):
-        #if (histoTruth.GetBinContent(j+1) != 0): 
-        #    norm += histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)
-    #    if (histosTruth[i].GetBinContent(j+1) != 0): 
-    #        norm += histosL1L1[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)
-    #    else: 
-    #        norm = 0.0
-    #        break
-    #norm = norm/nNorm
+    norm = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="")
     print norm
     normArr.append(norm)
     #Write the efficiency for a given mass (row) as function of z
@@ -933,19 +796,13 @@ for i in range(nMass):
             textfileL2L2.write("0.0 ")
             textfileL2L2Norm.write("0.0 ")
         else:
-            #textfileL1L1.write(str(histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            #textfileL1L2.write(str(histoReconL1L2.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            #textfileL2L2.write(str(histoReconL2L2.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            textfileL1L1.write(str(histosL1L1[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
-            textfileL1L2.write(str(histosL1L2[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
-            textfileL2L2.write(str(histosL2L2[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
+            textfileL1L1.write(str(histoscutL1L1[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
+            textfileL1L2.write(str(histoscutL1L2[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
+            textfileL2L2.write(str(histoscutL2L2[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
             if(norm != 0):
-                #textfileL1L1Norm.write(str(histoReconL1L1.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                #textfileL1L2Norm.write(str(histoReconL1L2.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                #textfileL2L2Norm.write(str(histoReconL2L2.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                textfileL1L1Norm.write(str(histosL1L1[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
-                textfileL1L2Norm.write(str(histosL1L2[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
-                textfileL2L2Norm.write(str(histosL2L2[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
+                textfileL1L1Norm.write(str(histoscutL1L1[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
+                textfileL1L2Norm.write(str(histoscutL1L2[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
+                textfileL2L2Norm.write(str(histoscutL2L2[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
             else:
                 textfileL1L1Norm.write("0.0 ")
                 textfileL1L2Norm.write("0.0 ")
@@ -956,106 +813,12 @@ for i in range(nMass):
     textfileL1L2Norm.write("\n")
     textfileL2L2.write("\n")
     textfileL2L2Norm.write("\n")
-    L1L1events.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam))
+    L1L1events.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam),cutL1L1)
     histosgamma.append(ROOT.gROOT.FindObject("gammahisto_{0:0.0f}".format(mass[i]*1000)))
     gammamean.append(histosgamma[i].GetMean())
     print(histosgamma[i].GetMean())
     gammameanerror.append(histosgamma[i].GetMeanError())
     zeros.append(0.)
-
-#textfileL1L1.close()
-#textfileL1L1Norm.close()
-#textfileL1L2.close()
-#textfileL1L2Norm.close()
-#textfileL2L2.close()
-#textfileL2L2Norm.close()
-
-#histosL1L1kill = []
-#histosL1L2kill = []
-#histosL2L2kill = []
-#normkillArr = []
-
-#for i in range(nMass):
-    L1L1killevents.Draw("triEndZ>>histoReconL1L1_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL1L1 = ROOT.gROOT.FindObject("histoReconL1L1")
-    histosL1L1kill.append(ROOT.gROOT.FindObject("histoReconL1L1_kill_{0:0.0f}".format(mass[i]*1000)))
-    L1L2killevents.Draw("triEndZ>>histoReconL1L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL1L2 = ROOT.gROOT.FindObject("histoReconL1L2")
-    histosL1L2kill.append(ROOT.gROOT.FindObject("histoReconL1L2_kill_{0:0.0f}".format(mass[i]*1000)))
-    L2L2killevents.Draw("triEndZ>>histoReconL2L2_kill_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
-    #histoReconL2L2 = ROOT.gROOT.FindObject("histoReconL2L2")
-    histosL2L2kill.append(ROOT.gROOT.FindObject("histoReconL2L2_kill_{0:0.0f}".format(mass[i]*1000)))
-    #eventstruth[i].Draw("triEndZ>>histoTruth({0},{1},{2})".format(nBins,targZ,maxZ),"triStartP>0.8*{0}".format(eBeam))
-    #histoTruth = ROOT.gROOT.FindObject("histoTruth")
-    #histoReconL1L1.Sumw2()
-    #histoReconL1L2.Sumw2()
-    #histoReconL2L2.Sumw2()
-    #histoTruth.Sumw2()
-    histosL1L1kill[i].Sumw2()
-    histosL1L2kill[i].Sumw2()
-    histosL2L2kill[i].Sumw2()
-    outfileroot.cd()
-    histosL1L1kill[i].Write("L1L1 {0:0.0f} MeV Hit Killed".format(mass[i]*1000))
-    histosL1L2kill[i].Write("L1L2 {0:0.0f} MeV Hit Killed".format(mass[i]*1000))
-    histosL2L2kill[i].Write("L2L2 {0:0.0f} MeV Hit Killed".format(mass[i]*1000))
-    #Find the normalization based on a certain number of bins
-    normKill = plotFit(histosL1L1kill[i],histosL1L2kill[i],histosL2L2kill[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="With Hit Killing")
-    #norm = 0.0
-    #for j in range(nNorm):
-        #if (histoTruth.GetBinContent(j+1) != 0): 
-        #    norm += histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)
-    #    if (histosTruth[i].GetBinContent(j+1) != 0): 
-    #        norm += (histosL1L1kill[i].GetBinContent(j+1)+histosL1L2kill[i].GetBinContent(j+1)+histosL2L2kill[i].GetBinContent(j+1))/histosTruth[i].GetBinContent(j+1)
-    #    else: 
-    #        norm = 0.0
-    #        break
-    #norm = norm/nNorm
-    print normKill
-    normkillArr.append(normKill)
-    #Write the efficiency for a given mass (row) as function of z
-    for j in range(nBins):
-        if (histosTruth[i].GetBinContent(j+1) == 0):
-            textfileL1L1Killed.write("0.0 ")
-            textfileL1L1KilledNorm.write("0.0 ")
-            textfileL1L2Killed.write("0.0 ")
-            textfileL1L2KilledNorm.write("0.0 ")
-            textfileL2L2Killed.write("0.0 ")
-            textfileL2L2KilledNorm.write("0.0 ")
-        else:
-            #textfileL1L1Killed.write(str(histoReconL1L1.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            #textfileL1L2Killed.write(str(histoReconL1L2.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            #textfileL2L2Killed.write(str(histoReconL2L2.GetBinContent(j+1)/histoTruth.GetBinContent(j+1)) + " ")
-            textfileL1L1Killed.write(str(histosL1L1kill[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
-            textfileL1L2Killed.write(str(histosL1L2kill[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
-            textfileL2L2Killed.write(str(histosL2L2kill[i].GetBinContent(j+1)/histosTruth[i].GetBinContent(j+1)) + " ")
-            if(norm != 0):
-                #textfileL1L1KilledNorm.write(str(histoReconL1L1.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                #textfileL1L2KilledNorm.write(str(histoReconL1L2.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                #textfileL2L2KilledNorm.write(str(histoReconL2L2.GetBinContent(j+1)/(histoTruth.GetBinContent(j+1)*norm)) + " ")
-                textfileL1L1KilledNorm.write(str(histosL1L1kill[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
-                textfileL1L2KilledNorm.write(str(histosL1L2kill[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
-                textfileL2L2KilledNorm.write(str(histosL2L2kill[i].GetBinContent(j+1)/(histosTruth[i].GetBinContent(j+1)*norm)) + " ")
-            else:
-                textfileL1L1KilledNorm.write("0.0 ")
-                textfileL1L2KilledNorm.write("0.0 ")
-                textfileL2L2KilledNorm.write("0.0 ")
-    textfileL1L1Killed.write("\n")
-    textfileL1L1KilledNorm.write("\n")
-    textfileL1L2Killed.write("\n")
-    textfileL1L2KilledNorm.write("\n")
-    textfileL2L2Killed.write("\n")
-    textfileL2L2KilledNorm.write("\n")
-    del L1L1events
-    del L1L2events
-    del L2L2events
-    del L1L1killevents
-    del L1L2killevents
-    del L2L2killevents
-    del eventstruth
-    del inputL1L1ReconFile
-    del inputL1L2ReconFile
-    del inputL2L2ReconFile
-    del inputTruthFile
 
 textfileL1L1.close()
 textfileL1L1Norm.close()
@@ -1064,20 +827,12 @@ textfileL1L2Norm.close()
 textfileL2L2.close()
 textfileL2L2Norm.close()
 
-textfileL1L1Killed.close()
-textfileL1L1KilledNorm.close()
-textfileL1L2Killed.close()
-textfileL1L2KilledNorm.close()
-textfileL2L2Killed.close()
-textfileL2L2KilledNorm.close()
-
-closePDF(outfile+"_comparekill",c)
 closePDF(outfile+"_fitplots",c)
 
 #Make test plots if desired
 if(makeTestPlots):
     #Make Absolute Efficiency Plots
-    c1 = TCanvas("c","c",1200,900)
+    c1 = TCanvas("c1","c1",1200,900)
     c1.Print(outfile+"_L1L1.pdf[")   
 
     for i in range(1,nMass-1):
@@ -1088,7 +843,7 @@ if(makeTestPlots):
     del c1
     
     #Make Normalized Efficiency Plots
-    c2 = TCanvas("c","c",1200,900)
+    c2 = TCanvas("c2","c2",1200,900)
     c2.Print(outfile+"_L1L1_norm.pdf[")
 
     for i in range(1,nMass-1):
@@ -1099,148 +854,61 @@ if(makeTestPlots):
     del c2
 
     #Make Absolute Efficiency Plots
-    c3 = TCanvas("c","c",1200,900)
-    c3.Print(outfile+"_L1L1_kill.pdf[")   
+    c3 = TCanvas("c3","c3",1200,900)
+    c3.Print(outfile+"_L1L2.pdf[")   
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L1_kill.eff",outfile,targZ,maxZ,c3)
+        plotTest(i,outfile+"_L1L2.eff",outfile,targZ,maxZ,c3)
 
-    c3.Print(outfile+"_L1L1_kill.pdf]")
+    c3.Print(outfile+"_L1L2.pdf]")
 
     del c3
     
     #Make Normalized Efficiency Plots
-    c4 = TCanvas("c","c",1200,900)
-    c4.Print(outfile+"_L1L1_kill_norm.pdf[")
+    c4 = TCanvas("c4","c4",1200,900)
+    c4.Print(outfile+"_L1L2_norm.pdf[")
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L1_kill_norm.eff",outfileNorm,targZ,maxZ,c4)
+        plotTest(i,outfile+"_L1L2_norm.eff",outfileNorm,targZ,maxZ,c4)
 
-    c4.Print(outfile+"_L1L1_kill_norm.pdf]")
+    c4.Print(outfile+"_L1L2_norm.pdf]")
 
     del c4
 
-
-        #Make Absolute Efficiency Plots
-    c5 = TCanvas("c","c",1200,900)
-    c5.Print(outfile+"_L1L2.pdf[")   
+    #Make Absolute Efficiency Plots
+    c5 = TCanvas("c5","c5",1200,900)
+    c5.Print(outfile+"_L2L2.pdf[")   
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2.eff",outfile,targZ,maxZ,c5)
+        plotTest(i,outfile+"_L2L2.eff",outfile,targZ,maxZ,c5)
 
-    c5.Print(outfile+"_L1L2.pdf]")
+    c5.Print(outfile+"_L2L2.pdf]")
 
     del c5
     
     #Make Normalized Efficiency Plots
-    c6 = TCanvas("c","c",1200,900)
-    c6.Print(outfile+"_L1L2_norm.pdf[")
+    c6 = TCanvas("c6","c6",1200,900)
+    c6.Print(outfile+"_L2L2_norm.pdf[")
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2_norm.eff",outfileNorm,targZ,maxZ,c6)
+        plotTest(i,outfile+"_L2L2_norm.eff",outfileNorm,targZ,maxZ,c6)
 
-    c6.Print(outfile+"_L1L2_norm.pdf]")
+    c6.Print(outfile+"_L2L2_norm.pdf]")
 
     del c6
 
-    #Make Absolute Efficiency Plots
-    c7 = TCanvas("c","c",1200,900)
-    c7.Print(outfile+"_L1L2_kill.pdf[")   
+c7 = TCanvas("c7","c7",1200,900)
 
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2_kill.eff",outfile,targZ,maxZ,c7)
+c7.Print(outfile+"_plots.pdf[") 
 
-    c7.Print(outfile+"_L1L2_kill.pdf]")
+plotEff(histoscutL1L1,histosTruth,normArr,outfile+"_L1L1",outfile+"_plots",outfileroot,c7,mass,False,title="L1L1")
+plotEff(histoscutL1L1,histosTruth,normArr,outfile+"_L1L1_norm",outfile+"_plots",outfileroot,c7,mass,True,title="L1L1 Normalized")
+plotEff(histoscutL1L2,histosTruth,normArr,outfile+"_L1L2",outfile+"_plots",outfileroot,c7,mass,False,title="L1L2")
+plotEff(histoscutL1L2,histosTruth,normArr,outfile+"_L1L2_norm",outfile+"_plots",outfileroot,c7,mass,True,title="L2L2 Normalized")
+plotEff(histoscutL2L2,histosTruth,normArr,outfile+"_L2L2",outfile+"_plots",outfileroot,c7,mass,False,title="L2L2")
+plotEff(histoscutL2L2,histosTruth,normArr,outfile+"_L2L2_norm",outfile+"_plots",outfileroot,c7,mass,True,title="L2L2 Normalized")
 
-    del c7
-    
-    #Make Normalized Efficiency Plots
-    c8 = TCanvas("c","c",1200,900)
-    c8.Print(outfile+"_L1L2_kill_norm.pdf[")
-
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2_kill_norm.eff",outfileNorm,targZ,maxZ,c8)
-
-    c8.Print(outfile+"_L1L2_kill_norm.pdf]")
-
-    del c8
-
-
-        #Make Absolute Efficiency Plots
-    c9 = TCanvas("c","c",1200,900)
-    c9.Print(outfile+"_L2L2.pdf[")   
-
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2.eff",outfile,targZ,maxZ,c9)
-
-    c9.Print(outfile+"_L2L2.pdf]")
-
-    del c9
-    
-    #Make Normalized Efficiency Plots
-    c10 = TCanvas("c","c",1200,900)
-    c10.Print(outfile+"_L2L2_norm.pdf[")
-
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2_norm.eff",outfileNorm,targZ,maxZ,c10)
-
-    c10.Print(outfile+"_L2L2_norm.pdf]")
-
-    del c10
-
-    #Make Absolute Efficiency Plots
-    c11 = TCanvas("c","c",1200,900)
-    c11.Print(outfile+"_L2L2_kill.pdf[")   
-
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2_kill.eff",outfile,targZ,maxZ,c11)
-
-    c11.Print(outfile+"_L2L2_kill.pdf]")
-
-    del c11
-    
-    #Make Normalized Efficiency Plots
-    c12 = TCanvas("c","c",1200,900)
-    c12.Print(outfile+"_L2L2_kill_norm.pdf[")
-
-    for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2_kill_norm.eff",outfileNorm,targZ,maxZ,c12)
-
-    c12.Print(outfile+"_L2L2_kill_norm.pdf]")
-
-    del c12
-
-c13 = TCanvas("c","c",1200,900)
-#plotEff(outfile+"_L1L1.eff",outfile+"_L1L1",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L1_norm.eff",outfile+"_L1L1_norm",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L1_kill.eff",outfile+"_L1L1_kill",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L1_kill_norm.eff",outfile+"_L1L1_kill_norm",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L2.eff",outfile+"_L1L2",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L2_norm.eff",outfile+"_L1L2_norm",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L2_kill.eff",outfile+"_L1L2_kill",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L1L2_kill_norm.eff",outfile+"_L1L2_kill_norm",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L2L2.eff",outfile+"_L2L2",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L2L2_norm.eff",outfile+"_L2L2_norm",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L2L2_kill.eff",outfile+"_L2L2_kill",nBins,targZ,maxZ,c13)
-#plotEff(outfile+"_L2L2_kill_norm.eff",outfile+"_L2L2_kill_norm",nBins,targZ,maxZ,c13)
-
-c13.Print(outfile+"_plots.pdf[") 
-
-plotEff2(histosL1L1,histosTruth,normArr,outfile+"_L1L1",outfile+"_plots",outfileroot,c13,mass,False,title="L1L1")
-plotEff2(histosL1L1,histosTruth,normArr,outfile+"_L1L1_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L1L1 Normalized")
-plotEff2(histosL1L1kill,histosTruth,normkillArr,outfile+"_L1L1_kill",outfile+"_plots",outfileroot,c13,mass,False,title="L1L1 Hit Killed")
-plotEff2(histosL1L1kill,histosTruth,normkillArr,outfile+"_L1L1_kill_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L1L1 Normalized Hit Killed")
-plotEff2(histosL1L2,histosTruth,normArr,outfile+"_L1L2",outfile+"_plots",outfileroot,c13,mass,False,title="L1L2")
-plotEff2(histosL1L2,histosTruth,normArr,outfile+"_L1L2_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L2L2 Normalized")
-plotEff2(histosL1L2kill,histosTruth,normkillArr,outfile+"_L1L2_kill",outfile+"_plots",outfileroot,c13,mass,False,title="L1L2 Hit Killed")
-plotEff2(histosL1L2kill,histosTruth,normkillArr,outfile+"_L1L2_kill_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L1L2 Normalized Hit Killed")
-plotEff2(histosL2L2,histosTruth,normArr,outfile+"_L2L2",outfile+"_plots",outfileroot,c13,mass,False,title="L2L2")
-plotEff2(histosL2L2,histosTruth,normArr,outfile+"_L2L2_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L2L2 Normalized")
-plotEff2(histosL2L2kill,histosTruth,normkillArr,outfile+"_L2L2_kill",outfile+"_plots",outfileroot,c13,mass,False,title="L2L2 Hit Killed")
-plotEff2(histosL2L2kill,histosTruth,normkillArr,outfile+"_L2L2_kill_norm",outfile+"_plots",outfileroot,c13,mass,True,title="L2L2 Normalized Hit Killed")
-
-plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,outfile+"_all",outfile+"_plots",outfileroot,c13,mass)
-plotAll(histosL1L1kill,histosL1L2kill,histosL2L2kill,histosTruth,normkillArr,outfile+"_kill_all",outfile+"_plots",outfileroot,c13,mass,title="With Hit Killing")
+plotAll(histoscutL1L1,histoscutL1L2,histoscutL2L2,histosTruth,normArr,outfile+"_all",outfile+"_plots",outfileroot,c7,mass)
 
 passed.Sumw2()
 total.Sumw2()
@@ -1250,7 +918,7 @@ passed.GetXaxis().SetTitle("Track Slope")
 passed.GetYaxis().SetTitle("Efficiency")
 passed.SetStats(0)
 passed.Draw()
-c13.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf") 
 passed.Write("Efficiency")
 
 graph = TGraphErrors(len(mass),mass,gammamean,zeros,gammameanerror)
@@ -1260,7 +928,7 @@ graph.GetYaxis().SetTitle("Fraction of E_{beam}")
 graph.GetXaxis().SetRangeUser(0,.2)
 graph.GetYaxis().SetRangeUser(0.9,1.0)
 graph.Draw("AP")
-c13.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf") 
 graph.Write("Gamma")
 
 def MakeGammaHistos(histo,mass,canvas,output):
@@ -1274,10 +942,9 @@ def MakeGammaHistos(histo,mass,canvas,output):
     histo.Write("{0} MeV A' Energy".format(mass))
 
 for i in range(len(mass)):
-    MakeGammaHistos(histosgamma[i],mass[i]*1000,c13,outfile+"_plots")
+    MakeGammaHistos(histosgamma[i],mass[i]*1000,c7,outfile+"_plots")
 
 graph = TGraph(len(mass),mass,normArr)
-graph2 = TGraph(len(mass),mass,normkillArr)
 graph.SetTitle("Prompt A' Acceptance * Efficiency")
 graph.GetXaxis().SetTitle("Truth Mass (GeV)")
 graph.GetYaxis().SetTitle("Efficiency")
@@ -1285,23 +952,9 @@ graph.GetXaxis().SetRangeUser(0,.2)
 graph.GetYaxis().SetRangeUser(0,0.4)
 graph.SetLineColor(1)
 graph.SetMarkerColor(1)
-graph2.SetLineColor(2)
-graph2.SetMarkerColor(2)
 graph.Draw("AP*")
-graph2.Draw("P* same")
-legend = TLegend(.58,.66,.92,.87)
-legend.SetBorderSize(0)
-legend.SetFillColor(0)
-legend.SetFillStyle(0)
-legend.SetTextFont(42)
-legend.SetTextSize(0.035)
-legend.AddEntry(graph,"No L1 Hit Killing","LP")
-legend.AddEntry(graph2,"With L1 Hit Killing","LP")
-legend.Draw("same")
-c13.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf") 
 graph.Write("Prompt Acceptance")
-graph2.Write("Prompt Acceptance With Hit Killing")
 
-
-c13.Print(outfile+"_plots.pdf]") 
+c7.Print(outfile+"_plots.pdf]") 
 outfileroot.Close()
