@@ -63,6 +63,9 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Divide(totalHisto)
 	radfracHisto.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	radfracHisto.SetTitle("Radiative Fraction")
+	radfracHisto.GetYaxis().SetRangeUser(0,0.4)
+	radfracHisto.Fit("pol5")
+	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
 	canvas.Print(outfile+".pdf")
 
@@ -198,6 +201,7 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
+gStyle.SetOptFit(1)
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
@@ -263,6 +267,7 @@ saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, c)
 massSumHisto = addTriWabHisto(triMassHisto, wabMassHisto)
 pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
 
+gStyle.SetOptFit(0)
 saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
 saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
 saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
