@@ -187,6 +187,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	ratio = radHisto.Clone("Ratio"+radHisto.GetName())
 	ratio.Divide(reference)
 	ratio.SetLineColor(1)
+	ratio.Fit("pol5")
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
