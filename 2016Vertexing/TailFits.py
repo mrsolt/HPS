@@ -2,7 +2,7 @@
 import sys, array,math
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TLegend, TH1D, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooGlobalFunc, RooFit, RooAbsReal, RooArgList, gPad, TLatex
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TLegend, TH1D, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooGlobalFunc, RooFit, RooAbsReal, RooArgList, gPad, TLatex, TH1F
 
 def print_usage():
     print "\nUsage: {0} <output basename> <input ROOT file>".format(sys.argv[0])
@@ -95,12 +95,17 @@ zcutscaledarray3=array.array('d')
 meanErr=array.array('d')
 sigmaErr=array.array('d')
 breakzErr=array.array('d')
+maxZarr=array.array('d')
 #zcutErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
 n_massbins=50
 minmass=0.04
 maxmass=0.15
+
+massWidth = (maxmass-minmass)/((n_massbins-1)*2)
+histozcut = TH1F("histozcut","histozcut",n_massbins,minmass-massWidth,maxmass+massWidth)
+histozcutscaled = TH1F("histozcutscaled","histozcutscaled",n_massbins,minmass,maxmass)
 
 mres_p0 = 1.364/1000.
 mres_p1 = 0.02608
@@ -152,6 +157,11 @@ for i in range(0,n_massbins):
     zcutscaledarray.append(zcut_scaled)
     #zcutscaledErr.append(0)
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
+    histozcut.SetBinContent(i+1,zcut)
+    histozcutscaled.SetBinContent(i+1,zcut_scaled)
+
+    cutevents = events.CopyTree("abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres))
+    maxZarr.append(cutevents.GetMaximum("uncVZ"))
 
     c.Clear()
     c.SetLogy(1)
@@ -289,7 +299,23 @@ graph.Fit("pol3","","",0.05,0.15)
 graph.Write("zcutscaled3")
 c.Print(remainder[0]+".pdf","Title:zcutscaled")
 
+graph=TGraph(len(massarray),massarray,maxZarr)
+graph.Draw("A*")
+graph.SetTitle("Maximum Z in Mass Bin")
+graph.GetXaxis().SetTitle("mass [GeV]")
+graph.GetYaxis().SetTitle("max Z [mm]")
+graph.Write("maxZ")
+c.Print(remainder[0]+".pdf","Title:maxZ")
+
 c.Print(remainder[0]+".pdf]")
 outfile.Write()
 outfile.Close()
+
+outfile2 = TFile(remainder[0]+"_zcut.root","RECREATE")
+
+outfile2.cd()
+histozcut.Write("zcut")
+histozcutscaled.Write("zcutscaled")
+
+outfile2.Close()
 sys.exit(0)
