@@ -242,7 +242,7 @@ wabLum = wabNGen / wabXS
 
 weight = 1.
 
-file = TFile("rad_cut.root","recreate")
+file = TFile("rad_cut_{0}.root".format(outfile),"recreate")
 radEventsTruth = radEvents.CopyTree(truthcut)
 radEventsTruth.Write()
 
