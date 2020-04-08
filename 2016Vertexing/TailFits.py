@@ -208,10 +208,10 @@ for i in range(0,n_massbins):
 
     if(shift_mean):
         c.Clear()
-        events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres,label),"")
+        events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
         h1d_shift = gDirectory.Get("hnew1d_shift")
         h1d_shift.GetXaxis().SetTitle("Reconstructed z (mm)")
-        h1d_shift.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV: Mean Shifted {2}".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
+        h1d_shift.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV: Mean Shifted {2}".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000,label))
         h1d_shift.Write("{0} < uncM < {1} Mean Shifted".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
 
 c.Clear()
