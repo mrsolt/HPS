@@ -2,7 +2,7 @@
 import sys, array,math
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TLegend, TH1D, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooGlobalFunc, RooFit, RooAbsReal, RooArgList, gPad, TLatex
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TLegend, TH1D, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooGlobalFunc, RooFit, RooAbsReal, RooArgList, gPad, TLatex, TH1F
 
 def print_usage():
     print "\nUsage: {0} <output basename> <input ROOT file>".format(sys.argv[0])
@@ -12,10 +12,11 @@ def print_usage():
     print '\t-s: scale factor (default is 1)'
     print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-g: number of sigma to plot fit error (default is 1)'
+    print '\t-y: add label to plots'
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmz:s:g:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmz:s:y:g:h')
 
 massVar = "uncM"
 masscut_nsigma = 2.80
@@ -23,6 +24,7 @@ scale = 1.
 zcut_val = 0.5
 shift_mean = False
 nsig = 1.
+label = ""
 
 for opt, arg in options:
     if opt=='-n':
@@ -33,6 +35,8 @@ for opt, arg in options:
         zcut_val = float(arg)
     if opt=='-s':
         scale = float(arg)
+    if opt=='-y':
+        label = str(arg)
     if opt=='-g':
         nsig = float(arg)
     if opt=='-h':
@@ -95,15 +99,22 @@ zcutscaledarray3=array.array('d')
 meanErr=array.array('d')
 sigmaErr=array.array('d')
 breakzErr=array.array('d')
+maxZarr=array.array('d')
 #zcutErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
 n_massbins=50
 minmass=0.04
-maxmass=0.15
+maxmass=0.175
 
-mres_p0 = 1.364/1000.
-mres_p1 = 0.02608
+massWidth = (maxmass-minmass)/((n_massbins-1)*2)
+histozcut = TH1F("histozcut","histozcut",n_massbins,minmass-massWidth,maxmass+massWidth)
+histozcutscaled = TH1F("histozcutscaled","histozcutscaled",n_massbins,minmass,maxmass)
+
+#mres_p0 = 1.364/1000.
+#mres_p1 = 0.02608
+mres_p0 = 10.95/1000.
+mres_p1 = 0.04305
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
@@ -137,7 +148,7 @@ for i in range(0,n_massbins):
     fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
     outfile.cd()
     h1d.GetXaxis().SetTitle("Reconstructed z (mm)")
-    h1d.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
+    h1d.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV {2}".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000,label))
     h1d.Write("{0} < uncM < {1}".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
     meanarray.append(fit.Get().Parameter(1))
     sigmaarray.append(fit.Get().Parameter(2))
@@ -152,6 +163,9 @@ for i in range(0,n_massbins):
     zcutscaledarray.append(zcut_scaled)
     #zcutscaledErr.append(0)
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
+
+    cutevents = events.CopyTree("abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres))
+    maxZarr.append(cutevents.GetMaximum("uncVZ"))
 
     c.Clear()
     c.SetLogy(1)
@@ -187,12 +201,17 @@ for i in range(0,n_massbins):
     c.Write()
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
 
+    histozcut.SetBinContent(i+1,zcut)
+    histozcut.SetBinError(i+1,zcut2-zcut)
+    histozcutscaled.SetBinContent(i+1,zcut_scaled)
+    histozcutscaled.SetBinError(i+1,zcut2-zcut)
+
     if(shift_mean):
         c.Clear()
-        events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres),"")
+        events.Draw("uncVZ-{0}>>hnew1d_shift(200,-50,50)".format(fit.Get().Parameter(1)),"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres,label),"")
         h1d_shift = gDirectory.Get("hnew1d_shift")
         h1d_shift.GetXaxis().SetTitle("Reconstructed z (mm)")
-        h1d_shift.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV: Mean Shifted".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
+        h1d_shift.SetTitle("{0:0.1f} MeV < Mass < {1:0.1f} MeV: Mean Shifted {2}".format((mass-masscut_nsigma/2*mres)*1000,(mass+masscut_nsigma/2*mres)*1000))
         h1d_shift.Write("{0} < uncM < {1} Mean Shifted".format(mass-masscut_nsigma/2*mres,mass+masscut_nsigma/2*mres))
 
 c.Clear()
@@ -202,7 +221,7 @@ c.SetLogy(0)
 graph=TGraph(len(massarray),massarray,meanarray)
 graph=TGraphErrors(len(massarray),massarray,meanarray,zeroArr,meanErr)
 graph.Draw("A*")
-graph.SetTitle("Fitted Mean")
+graph.SetTitle("Fitted Mean {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("mean [mm]")
 graph.Fit("pol3")
@@ -212,7 +231,7 @@ c.Print(remainder[0]+".pdf","Title:mean")
 graph=TGraph(len(massarray),massarray,sigmaarray)
 graph=TGraphErrors(len(massarray),massarray,sigmaarray,zeroArr,sigmaErr)
 graph.Draw("A*")
-graph.SetTitle("Fitted Sigma")
+graph.SetTitle("Fitted Sigma {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("sigma [mm]")
 graph.Fit("pol3")
@@ -222,7 +241,7 @@ c.Print(remainder[0]+".pdf","Title:sigma")
 graph=TGraph(len(massarray),massarray,breakzarray)
 graph=TGraphErrors(len(massarray),massarray,breakzarray,zeroArr,breakzErr)
 graph.Draw("A*")
-graph.SetTitle("Tail Z")
+graph.SetTitle("Tail Z {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("tail Z [mm]")
 graph.Fit("pol3")
@@ -232,64 +251,80 @@ c.Print(remainder[0]+".pdf","Title:tailz")
 graph=TGraph(len(massarray),massarray,zcutarray)
 #graph=TGraphErrors(len(massarray),massarray,zcutarray,zeroArr,zcutErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut at {0:.1f} Background".format(zcut_val))
+graph.SetTitle("Zcut at {0:.1f} Background {1}".format(zcut_val,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcut")
 c.Print(remainder[0]+".pdf","Title:zcut")
 
 graph=TGraph(len(massarray),massarray,zcutscaledarray)
 #graph=TGraphErrors(len(massarray),massarray,zcutscaledarray,zeroArr,zcutscaledErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background".format(scale,zcut_val))
+graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background {2}".format(scale,zcut_val,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcutscaled")
 c.Print(remainder[0]+".pdf","Title:zcutscaled")
 
 graph=TGraph(len(massarray),massarray,zcutarray2)
 #graph=TGraphErrors(len(massarray),massarray,zcutarray,zeroArr,zcutErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut at {0:.1f} Background +{1}#sigma".format(zcut_val,nsig))
+graph.SetTitle("Zcut at {0:.1f} Background +{1}#sigma {2}".format(zcut_val,nsig,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcut2")
 c.Print(remainder[0]+".pdf","Title:zcut")
 
 graph=TGraph(len(massarray),massarray,zcutscaledarray2)
 #graph=TGraphErrors(len(massarray),massarray,zcutscaledarray,zeroArr,zcutscaledErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background +{2}#sigma".format(scale,zcut_val,nsig))
+graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background +{2}#sigma {3}".format(scale,zcut_val,nsig,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcutscaled2")
 c.Print(remainder[0]+".pdf","Title:zcutscaled")
 
 graph=TGraph(len(massarray),massarray,zcutarray3)
 #graph=TGraphErrors(len(massarray),massarray,zcutarray,zeroArr,zcutErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut at {0:.1f} Background -{1}#sigma".format(zcut_val,nsig))
+graph.SetTitle("Zcut at {0:.1f} Background -{1}#sigma {2}".format(zcut_val,nsig,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcut3")
 c.Print(remainder[0]+".pdf","Title:zcut")
 
 graph=TGraph(len(massarray),massarray,zcutscaledarray3)
 #graph=TGraphErrors(len(massarray),massarray,zcutscaledarray,zeroArr,zcutscaledErr)
 graph.Draw("A*")
-graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background -{2}#sigma".format(scale,zcut_val,nsig))
+graph.SetTitle("Zcut Scaled x{0:.2f} at {1:.1f} Background -{2}#sigma {3}".format(scale,zcut_val,nsig,label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("zcut [mm]")
-graph.Fit("pol3","","",0.05,0.15)
+graph.Fit("pol5","","",0.05,0.15)
 graph.Write("zcutscaled3")
 c.Print(remainder[0]+".pdf","Title:zcutscaled")
+
+graph=TGraph(len(massarray),massarray,maxZarr)
+graph.Draw("A*")
+graph.SetTitle("Maximum Z in Mass Bin {0}".label)
+graph.GetXaxis().SetTitle("mass [GeV]")
+graph.GetYaxis().SetTitle("max Z [mm]")
+graph.Write("maxZ")
+c.Print(remainder[0]+".pdf","Title:maxZ")
 
 c.Print(remainder[0]+".pdf]")
 outfile.Write()
 outfile.Close()
+
+outfile2 = TFile(remainder[0]+"_zcut.root","RECREATE")
+
+outfile2.cd()
+histozcut.Write("zcut")
+histozcutscaled.Write("zcutscaled")
+
+outfile2.Close()
 sys.exit(0)
