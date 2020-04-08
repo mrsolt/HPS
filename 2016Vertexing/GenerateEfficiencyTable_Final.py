@@ -262,9 +262,9 @@ def plotAll(histosL1L1,histosL1L2,histosL2L2,histosTruth,normArr,output,outPDF,o
         legend.SetFillStyle(0)
         legend.SetTextFont(42)
         legend.SetTextSize(0.035)
-        legend.AddEntry(histosL1L1[i],"L1L1","LP")
-        legend.AddEntry(histosL1L2[i],"L1L2","LP")
-        legend.AddEntry(histosL2L2[i],"L2L2","LP")
+        legend.AddEntry(histos_copy_L1L1[i],"L1L1","LP")
+        legend.AddEntry(histos_copy_L1L2[i],"L1L2","LP")
+        legend.AddEntry(histos_copy_L2L2[i],"L2L2","LP")
         legend.AddEntry(sumhisto,"Sum","LP")
         histos_copy_L1L1[i].Draw()
         histos_copy_L1L1[i].SetStats(0)
@@ -335,9 +335,9 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     legend.SetFillStyle(0)
     legend.SetTextFont(42)
     legend.SetTextSize(0.035)
-    legend.AddEntry(histoL1L1,"L1L1","LP")
-    legend.AddEntry(histoL1L2,"L1L2","LP")
-    legend.AddEntry(histoL2L2,"L2L2","LP")
+    legend.AddEntry(histo_copy_L1L1,"L1L1","LP")
+    legend.AddEntry(histo_copy_L1L2,"L1L2","LP")
+    legend.AddEntry(histo_copy_L2L2,"L2L2","LP")
     legend.AddEntry(sumhisto,"Sum","LP")
     histo_copy_L1L1.SetStats(0)
     histo_copy_L1L1.Draw()
@@ -509,9 +509,9 @@ def NewEventsL1L2(events,mass,outfile):
             events3.Fill()
         else:
             print("You missed a category for L1L1")
-        events1.AutoSave()
-        events2.AutoSave()
-        events3.AutoSave()
+    events1.AutoSave()
+    events2.AutoSave()
+    events3.AutoSave()
     del file
     return events2, events3
 
