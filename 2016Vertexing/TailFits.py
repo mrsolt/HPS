@@ -310,7 +310,7 @@ c.Print(remainder[0]+".pdf","Title:zcutscaled")
 
 graph=TGraph(len(massarray),massarray,maxZarr)
 graph.Draw("A*")
-graph.SetTitle("Maximum Z in Mass Bin {0}".label)
+graph.SetTitle("Maximum Z in Mass Bin {0}"format.(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("max Z [mm]")
 graph.Write("maxZ")
