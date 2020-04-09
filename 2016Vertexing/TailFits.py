@@ -9,6 +9,7 @@ def print_usage():
     print "Arguments: "
     print '\t-n: width of mass bins in nsigma (default is 2.80)'
     print '\t-m: shift mean (default false)'
+    print '\t-r: is L1L2 (default false)'
     print '\t-s: scale factor (default is 1)'
     print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-g: number of sigma to plot fit error (default is 1)'
@@ -16,7 +17,7 @@ def print_usage():
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmz:s:y:g:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrz:s:y:g:h')
 
 massVar = "uncM"
 masscut_nsigma = 2.80
@@ -25,12 +26,15 @@ zcut_val = 0.5
 shift_mean = False
 nsig = 1.
 label = ""
+isL1L2 = False
 
 for opt, arg in options:
     if opt=='-n':
         n = float(arg)
     if opt=='-m':
         shift_mean = True
+    if opt=='-r':
+        isL1L2 = True
     if opt=='-z':
         zcut_val = float(arg)
     if opt=='-s':
@@ -85,6 +89,13 @@ fitfunc3.SetParName(1,"Mean")
 fitfunc3.SetParName(2,"Sigma")
 fitfunc3.SetParName(3,"Tail Z")
 
+if(not isL1L2): 
+    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
+    label = label + " L1L1"
+else:
+    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
+    label = label + " L1L2"
+
 massarray=array.array('d')
 zeroArr=array.array('d')
 meanarray=array.array('d')
@@ -113,15 +124,14 @@ histozcutscaled = TH1F("histozcutscaled","histozcutscaled",n_massbins,minmass,ma
 
 #mres_p0 = 1.364/1000.
 #mres_p1 = 0.02608
-mres_p0 = 10.95/1000.
-mres_p1 = 0.04305
 
 for i in range(0,n_massbins):
     mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
     massarray.append(mass)
     zeroArr.append(0)
 
-    mres = mres_p0 + mres_p1*mass
+    #mres = mres_p0 + mres_p1*mass
+    mresf = mresf.Eval(mass)
 
     c.Clear()
     c.Divide(1,2)
@@ -224,7 +234,7 @@ graph.Draw("A*")
 graph.SetTitle("Fitted Mean {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("mean [mm]")
-graph.Fit("pol3")
+graph.Fit("pol5")
 graph.Write("mean")
 c.Print(remainder[0]+".pdf","Title:mean")
 
@@ -234,7 +244,7 @@ graph.Draw("A*")
 graph.SetTitle("Fitted Sigma {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("sigma [mm]")
-graph.Fit("pol3")
+graph.Fit("pol5")
 graph.Write("sigma")
 c.Print(remainder[0]+".pdf","Title:sigma")
 
@@ -244,7 +254,7 @@ graph.Draw("A*")
 graph.SetTitle("Tail Z {0}".format(label))
 graph.GetXaxis().SetTitle("mass [GeV]")
 graph.GetYaxis().SetTitle("tail Z [mm]")
-graph.Fit("pol3")
+graph.Fit("pol5")
 graph.Write("breakz")
 c.Print(remainder[0]+".pdf","Title:tailz")
 
