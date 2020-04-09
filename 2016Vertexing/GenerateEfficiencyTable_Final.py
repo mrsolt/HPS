@@ -836,7 +836,7 @@ if(makeTestPlots):
     c1.Print(outfile+"_L1L1.pdf[")   
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L1.eff",outfile,targZ,maxZ,c1)
+        plotTest(i,outfile+"_L1L1.eff",outfile+"_L1L1",targZ,maxZ,c1)
 
     c1.Print(outfile+"_L1L1.pdf]")
 
@@ -847,7 +847,7 @@ if(makeTestPlots):
     c2.Print(outfile+"_L1L1_norm.pdf[")
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L1_norm.eff",outfile+"_norm",targZ,maxZ,c2)
+        plotTest(i,outfile+"_L1L1_norm.eff",outfile+"_L1L1_norm",targZ,maxZ,c2)
 
     c2.Print(outfile+"_L1L1_norm.pdf]")
 
@@ -858,7 +858,7 @@ if(makeTestPlots):
     c3.Print(outfile+"_L1L2.pdf[")   
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2.eff",outfile,targZ,maxZ,c3)
+        plotTest(i,outfile+"_L1L2.eff",outfile+"_L1L2",targZ,maxZ,c3)
 
     c3.Print(outfile+"_L1L2.pdf]")
 
@@ -869,7 +869,7 @@ if(makeTestPlots):
     c4.Print(outfile+"_L1L2_norm.pdf[")
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L1L2_norm.eff",outfile+"_norm",targZ,maxZ,c4)
+        plotTest(i,outfile+"_L1L2_norm.eff",outfile+"_L1L2_norm",targZ,maxZ,c4)
 
     c4.Print(outfile+"_L1L2_norm.pdf]")
 
@@ -880,7 +880,7 @@ if(makeTestPlots):
     c5.Print(outfile+"_L2L2.pdf[")   
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2.eff",outfile,targZ,maxZ,c5)
+        plotTest(i,outfile+"_L2L2.eff",outfile+"_L2L2",targZ,maxZ,c5)
 
     c5.Print(outfile+"_L2L2.pdf]")
 
@@ -891,7 +891,7 @@ if(makeTestPlots):
     c6.Print(outfile+"_L2L2_norm.pdf[")
 
     for i in range(1,nMass-1):
-        plotTest(i,outfile+"_L2L2_norm.eff",outfile+"_norm",targZ,maxZ,c6)
+        plotTest(i,outfile+"_L2L2_norm.eff",outfile+"_L2L2_norm",targZ,maxZ,c6)
 
     c6.Print(outfile+"_L2L2_norm.pdf]")
 
