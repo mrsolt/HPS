@@ -223,30 +223,30 @@ for i in range(len(histos1)):
 
 infile1.cd()
 graph1 = infile1.Get("mean")
-graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol5"))
 infile2.cd()
 graph2 = infile2.Get("mean")
-graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,-5,-3.5,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
 infile1.cd()
 graph1 = infile1.Get("sigma")
-graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol5"))
 infile2.cd()
 graph2 = infile2.Get("sigma")
-graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,0,5,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 
 infile1.cd()
 graph1 = infile1.Get("breakz")
-graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol3"))
+graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol5"))
 infile2.cd()
 graph2 = infile2.Get("breakz")
-graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol3"))
+graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 savegraph(graph1,graph2,label1,label2,outfile,c,0,0.15,0,3,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
