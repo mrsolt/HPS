@@ -57,16 +57,31 @@ def tupleToPHisto(events,histo,nBins,minX,maxX,factor):
 	return histo
 
 def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
+	outfileroot.cd()
 	totalHisto = triMassHisto.Clone("total")
 	totalHisto.Add(wabMassHisto)
 	radfracHisto = radMassHisto.Clone("radfrac")
 	radfracHisto.Divide(totalHisto)
 	radfracHisto.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	radfracHisto.SetTitle("Radiative Fraction")
-	radfracHisto.GetYaxis().SetRangeUser(0,0.4)
+	radfracHisto.GetYaxis().SetRangeUser(0,0.2)
 	radfracHisto.Fit("pol5","pol5","",0.04,0.2)
 	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
+	histo.Write("Radiative Fraction")
+	canvas.Print(outfile+".pdf")
+
+def saveDataMassHisto(events,nBins,canvas):
+	outfileroot.cd()
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",nBins,0,0.2))
+	histo = ROOT.gROOT.FindObject("histo")
+	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
+	histo.SetTitle("Radiative Fraction")
+	histo.GetXaxis().SetRangeUser(0,0.2)
+	histo.Fit("pol5","pol5","",0.04,0.2)
+	histo.SetStats(1)
+	histo.Draw()
+	histo.Write("Data Mass")
 	canvas.Print(outfile+".pdf")
 
 def addTriWabHisto(triHisto, wabHisto):
@@ -192,6 +207,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	ratio.SetLineColor(1)
 	ratio.Fit("pol5","pol5","",0.04,0.2)
 	ratio.GetXaxis().SetRangeUser(0,0.2)
+	ratio.GetYaxis().SetRangeUser(0,0.2)
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
@@ -264,6 +280,7 @@ dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins/2,minP,maxP,weight/data
 
 openPDF(outfile,c)
 
+saveDataMassHisto(dataEvents,nBins,c)
 saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, c)
 massSumHisto = addTriWabHisto(triMassHisto, wabMassHisto)
 pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
@@ -271,7 +288,7 @@ pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
 gStyle.SetOptFit(0)
 saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
 saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
-saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
+saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "Radiative Fraction")
 saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
 
 closePDF(outfile,c)
