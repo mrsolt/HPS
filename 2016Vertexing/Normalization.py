@@ -68,7 +68,7 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Fit("pol5","pol5","",0.04,0.2)
 	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
-	histo.Write("Radiative Fraction")
+	radfracHisto.Write("Radiative Fraction")
 	canvas.Print(outfile+".pdf")
 
 def saveDataMassHisto(events,nBins,canvas):
