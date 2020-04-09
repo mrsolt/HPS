@@ -131,7 +131,7 @@ for i in range(0,n_massbins):
     zeroArr.append(0)
 
     #mres = mres_p0 + mres_p1*mass
-    mresf = mresf.Eval(mass)
+    mres = mresf.Eval(mass)
 
     c.Clear()
     c.Divide(1,2)
