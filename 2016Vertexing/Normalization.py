@@ -78,7 +78,7 @@ def saveDataMassHisto(events,nBins,canvas):
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	histo.SetTitle("Radiative Fraction")
 	histo.GetXaxis().SetRangeUser(0,0.2)
-	histo.Fit("pol5","pol5","",0.04,0.2)
+	#histo.Fit("pol5","pol5","",0.04,0.2)
 	histo.SetStats(1)
 	histo.Draw()
 	histo.Write("Data Mass")
