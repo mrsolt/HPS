@@ -526,6 +526,7 @@ if(makeCutflow):
 	legend.Draw()
 
 	c.Print(outfile+".pdf")
+	c.Write()
 	histo_cutflow_data.Write("histo_cutflow_data")
 	histo_cutflow_mc.Write("histo_cutflow_mc")
 	histo_cutflow_ap1.Write("histo_cutflow_ap1")

@@ -29,6 +29,7 @@ def main() :
     outdirMassRes = '{0}/MassRes/'.format(outdir)
     outdirSystematics = '{0}/Systematics/'.format(outdir)
 
+    preselectiondir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Preselection/plots/preselection'
     tightL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/cutflow_L1L1'
     singleL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/Tight/L1L1/singleV0_L1L1_compare'
     tailfitsL1L1dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/DataMCCompare/TailFits/L1L1/compare_tailfits_L1L1'
@@ -47,6 +48,31 @@ def main() :
     datatightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L2/L1L2_floatcut'
     mctightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_floatcut_tritrig-wab-beam'
     aptightL1L2dir = '/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/L1L2/ap-beam_'
+
+    copyfile('{0}28.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_data')) #Preselection Cutflow Data
+    copyfile('{0}26.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_mc')) #Preselection Cutflow MC
+    copyfile('{0}24.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_data')) #Preselection Cutflow A' 80 MeV
+    copyfile('{0}22.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_data')) #Preselection Cutflow A' 100 MeV
+    copyfile('{0}21.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncM_data')) #Preselection Cutflow Data Mass
+    copyfile('{0}20.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncM_mc')) #Preselection Cutflow MC Mass
+    copyfile('{0}17.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncM_data')) #Preselection Cutflow A' 80 MeV Mass
+    copyfile('{0}18.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncM_data')) #Preselection Cutflow A' 100 MeV Mass
+    copyfile('{0}17.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncP_data')) #Preselection Cutflow Data Momentum
+    copyfile('{0}16.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncP_mc')) #Preselection Cutflow MC Momentum
+    copyfile('{0}15.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncP_data')) #Preselection Cutflow A' 80 MeV Momentum
+    copyfile('{0}14.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow_uncP_data')) #Preselection Cutflow A' 100 MeV Momentum
+    copyfile('{0}12.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_eleMatchChisq')) #Preselection Electron Match Chisq
+    copyfile('{0}11.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_posMatchChisq')) #Preselection Positron Match Chisq
+    copyfile('{0}10.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_clT')) #Preselection Cluster Time Diff
+    copyfile('{0}9.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_eleTrkT')) #Preselection Electron Track Cluster Time Diff
+    copyfile('{0}8.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_posTrkT')) #Preselection Positron Track Cluster Time Diff
+    copyfile('{0}7.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_eleP')) #Preselection Electron Momentum
+    copyfile('{0}6.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_eleTrkChisq')) #Preselection Electron Track Chisq
+    copyfile('{0}5.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_posTrkChisq')) #Preselection Positron Track Chisq
+    copyfile('{0}4.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_uncChisq')) #Preselection Unconstrained Chisq
+    copyfile('{0}3.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_posP')) #Preselection Positron Momentum
+    copyfile('{0}2.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_uncP')) #Preselection V0 Momentum
+    copyfile('{0}1.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow')) #Preselection Cutflow
 
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'tightcutflowL1L1')) #Tight Cutflow L1L1
     copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0pos_excl')) #Positron IP Exclusion
