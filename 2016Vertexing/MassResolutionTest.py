@@ -95,7 +95,7 @@ def saveTupleFitPlotSmeared(events,inHisto,mass,nBins,minX,maxX,outfile,canvas,i
 	histo = SmearHisto(events,nBins,minX,maxX,mass,isTar)
 	histo.SetTitle("Reconstructed Mass Smeared {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
-	f1 = TF1("f1","gaus",histo.GetMean()-1.*histo.GetRMS(),histo.GetMean()+1.*histo.GetRMS())
+	f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
 	histo.Fit("f1","R")
 	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
@@ -114,7 +114,10 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle("Reconstructed Mass {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
-	f1 = TF1("f1","gaus",histo.GetMean()-1.*histo.GetRMS(),histo.GetMean()+1.*histo.GetRMS())
+	if(mass>95):
+		f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
+	else:
+		f1 = TF1("f1","gaus",histo.GetMean()-1.0*histo.GetRMS(),histo.GetMean()+1.0*histo.GetRMS())
 	histo.Fit("f1","R")
 	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
