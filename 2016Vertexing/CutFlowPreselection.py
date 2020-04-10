@@ -30,7 +30,9 @@ maxVZ = 100
 nBins = 200
 makeCutflow = False
 makeNewTree = False
-clusterT = 56
+clusterTdata = 56
+clusterTmc = 43
+clusterTap = 45
 Label = ""
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:y:wx')
@@ -139,14 +141,14 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 
 	del histos
 
-def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,label,var,outfile,canvas,legendpos,XaxisTitle="",YaxisTitle="",stats=0,logY=0):
+def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,label,var,varmc,varap,outfile,canvas,legendpos,XaxisTitle="",YaxisTitle="",stats=0,logY=0):
 	dataevents.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo5{0}data".format(i),nBins,minX,maxX))
 	histo5data = ROOT.gROOT.FindObject("histo5{0}data".format(i))
-	mcevents.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo5{0}mc".format(i),nBins,minX,maxX))
+	mcevents.Draw("{0}>>{1}({2},{3},{4})".format(varmc,"histo5{0}mc".format(i),nBins,minX,maxX))
 	histo5mc = ROOT.gROOT.FindObject("histo5{0}mc".format(i))
-	apevents1.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo5{0}ap1".format(i),nBins,minX,maxX))
+	apevents1.Draw("{0}>>{1}({2},{3},{4})".format(varap,"histo5{0}ap1".format(i),nBins,minX,maxX))
 	histo5ap1 = ROOT.gROOT.FindObject("histo5{0}ap1".format(i))
-	apevents2.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo5{0}ap2".format(i),nBins,minX,maxX))
+	apevents2.Draw("{0}>>{1}({2},{3},{4})".format(varap,"histo5{0}ap2".format(i),nBins,minX,maxX))
 	histo5ap2 = ROOT.gROOT.FindObject("histo5{0}ap2".format(i))
 
 	canvas.SetLogy(logY)
@@ -171,18 +173,18 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 		maximum = histo5ap1.GetMaximum()
 	if(histo5ap2.GetMaximum() > maximum):
 		maximum = histo5ap2.GetMaximum()
-	minimum = histo5data.GetMinimum()
-	if(histo5mc.GetMinimum() < minimum):
-		minimum = histo5mc.GetMinimum()
-	if(histo5ap1.GetMinimum() < minimum):
-		minimum = histo5ap1.GetMinimum()
-	if(histo5ap2.GetMinimum() < minimum):
-		minimum = histo5ap2.GetMinimum()
+	minimum = histo5data.GetMinimum(0)
+	if(histo5mc.GetMinimum(0) < minimum):
+		minimum = histo5mc.GetMinimum(0)
+	if(histo5ap1.GetMinimum(0) < minimum):
+		minimum = histo5ap1.GetMinimum(0)
+	if(histo5ap2.GetMinimum(0) < minimum):
+		minimum = histo5ap2.GetMinimum(0)
 	histo5data.Draw()
 	histo5data.SetTitle(label)
 	histo5data.GetXaxis().SetTitle(XaxisTitle)
 	histo5data.GetYaxis().SetTitle(YaxisTitle)
-	histo5data.GetYaxis().SetRangeUser(0.001,maximum*10)
+	histo5data.GetYaxis().SetRangeUser(minimum/2,maximum*10)
 	histo5data.SetStats(stats)
 	histo5mc.SetLineColor(2)
 	histo5mc.Draw("same")
@@ -306,12 +308,26 @@ cuts.append("uncP<9999")
 cuts.append("isPair1")
 cuts.append("eleMatchChisq<10&&posMatchChisq<10")
 cuts.append("abs(eleClT-posClT)<1.45")
-cuts.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterT))
+cuts.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterTdata))
 cuts.append("eleP<1.75")
 cuts.append("eleTrkChisq/(2*eleNTrackHits-5)<6&&posTrkChisq/(2*posNTrackHits-5)<6")
 cuts.append("uncChisq<10")
 cuts.append("eleP>0.4&&posP>0.4")
 cuts.append("uncP<2.4")
+
+cutsmc = []
+for i in range(len(cuts)):
+	if(i == 4):
+		cutsmc.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterTmc))
+	else:
+		cutsmc.append(cuts[i])
+
+cutsap = []
+for i in range(len(cuts)):
+	if(i == 4):
+		cutsap.append("abs(eleClT-eleTrkT-{0})<4&&abs(posClT-posTrkT-{0})<4".format(clusterTap))
+	else:
+		cutsap.append(cuts[i])
 
 label.append("Preprocessing")
 label.append("Pair1 Trigger")
@@ -328,14 +344,32 @@ var.append("isPair1 -1 2")
 var.append("eleMatchChisq 0 15")
 var.append("posMatchChisq 0 15")
 var.append("eleClT-posClT -6 6")
-var.append("eleClT-eleTrkT-{0} -10 10".format(clusterT))
-var.append("posClT-posTrkT-{0} -10 10".format(clusterT))
+var.append("eleClT-eleTrkT-{0} -10 10".format(clusterTdata))
+var.append("posClT-posTrkT-{0} -10 10".format(clusterTdata))
 var.append("eleP 0 2.5")
 var.append("eleTrkChisq/(2*eleNTrackHits-5) 0 12")
 var.append("posTrkChisq/(2*posNTrackHits-5) 0 12")
 var.append("uncChisq 0 20")
 var.append("posP 0 2.5")
 var.append("uncP 0 2.8")
+
+varmc = []
+for i in range(len(var)):
+	if(i == 4):
+		varmc.append("eleClT-eleTrkT-{0} -10 10".format(clusterTmc))
+	elif(i == 5):
+		varmc.append("posClT-posTrkT-{0} -10 10".format(clusterTmc))
+	else:
+		varmc.append(var[i])
+
+varap = []
+for i in range(len(var)):
+	if(i == 4):
+		varap.append("eleClT-eleTrkT-{0} -10 10".format(clusterTap))
+	elif(i == 5):
+		varap.append("posClT-posTrkT-{0} -10 10".format(clusterTap))
+	else:
+		varap.append(var[i])
 
 xlabel = []
 xlabel.append("Passes Trigger Requirement")
@@ -414,24 +448,17 @@ if(makeCutflow):
 		maximum = getMax(plots[i])
 		plotlabel = plotlabels[i]
 		saveCutFlow(dataevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,'Run 7800'),stats=0,logY=setlog[i])
-		saveCutFlow(mcevents,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,'MC'),stats=0,logY=setlog[i])
-		saveCutFlow(apevents1,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,"80 MeV A'"),stats=0,logY=setlog[i])
-		saveCutFlow(apevents2,plot,cuts,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,"100 MeV A'"),stats=0,logY=setlog[i])
+		saveCutFlow(mcevents,plot,cutsmc,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,'MC'),stats=0,logY=setlog[i])
+		saveCutFlow(apevents1,plot,cutsap,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,"80 MeV A'"),stats=0,logY=setlog[i])
+		saveCutFlow(apevents2,plot,cutsap,nBins,minimum,maximum,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle=plotlabel+ " {0} {1}".format(Label,"100 MeV A'"),stats=0,logY=setlog[i])
 
 	for i in range(len(var)):
 		plot = getPlot(var[i])
+		plotmc = getPlot(varmc[i])
+		plotap = getPlot(varap[i])
 		minimum = getMin(var[i])
 		maximum = getMax(var[i])
-		#cut_1 = ""
-		#cut = cuts[index[i]]
-		#for j in range(len(cuts)):
-		#	if(j != index[i]):
-		#		if(cut_1 != ""):
-		#			cut_1 = cut_1 + "&&" + cuts[j]
-		#		else:
-		#			cut_1 = cuts[j]
-		#saveCuts(events,i,cut_1,nBins,minimum,maximum,label[index[i]],plot,outfile,c,XaxisTitle=xlabel[i],logY=1)
-		saveCuts(dataevents,mcevents,apevents1,apevents2,i,lines[i],nBins,minimum,maximum,label[index[i]],plot,outfile,c,legendpos[i],XaxisTitle=xlabel[i],logY=1)
+		saveCuts(dataevents,mcevents,apevents1,apevents2,i,lines[i],nBins,minimum,maximum,label[index[i]],plot,plotmc,plotap,outfile,c,legendpos[i],XaxisTitle=xlabel[i],logY=1)
 
 	histo_cutflow_data = TH1F("histo_cutflow_data","histo_cutflow_data",len(cuts),0,len(cuts))
 	histo_cutflow_mc = TH1F("histo_cutflow_mc","histo_cutflow_mc",len(cuts),0,len(cuts))
@@ -441,12 +468,16 @@ if(makeCutflow):
 	for i in range(len(cuts)):
 		if(i == 0):
 			cut_tot = cuts[i]
+			cut_totmc = cuts[i]
+			cut_totap = cuts[i]
 		else:
 			cut_tot = cut_tot + "&&" + cuts[i]
+			cut_totmc = cut_totmc + "&&" + cutsmc[i]
+			cut_totap = cut_totap + "&&" + cutsap[i]
 		n_data = getNEvents(dataevents,cut_tot,i)
-		n_mc = getNEvents(mcevents,cut_tot,i)
-		n_ap1 = getNEvents(apevents1,cut_tot,i)
-		n_ap2 = getNEvents(apevents2,cut_tot,i)
+		n_mc = getNEvents(mcevents,cut_totmc,i)
+		n_ap1 = getNEvents(apevents1,cut_totap,i)
+		n_ap2 = getNEvents(apevents2,cut_totap,i)
 		print("Cut {0}: Data Entries {1},  MC Entries {2},  80 MeV A' Entries {3},  100 MeV A' Entries {4}".format(label[i],n_data,n_mc,n_ap1,n_ap2))
 		print("Fractional Cut {0}: Data Entries {1},  MC Entries {2},  80 MeV A' Entries {3},  100 MeV A' Entries {4}".format(label[i],n_data/getNEvents(dataevents,"",i),n_mc/getNEvents(mcevents,"",i),n_ap1/getNEvents(apevents1,"",i),n_ap2/getNEvents(apevents2,"",i)))
 		histo_cutflow_data.SetBinContent(i+1,n_data)
