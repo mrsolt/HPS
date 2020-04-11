@@ -43,10 +43,10 @@ def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
 def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
 	eleMass = 0.00051099895
 	#truthMass = "sqrt(eleP^2+posP^2+2*{0}^2+2*sqrt((eleP^2+{0}^2)*(posP^2+{0}^2))-((elePX+posPX)^2+(elePY+posPY)^2+(elePZ+posPZ)^2))".format(eleMass)
-	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format(elePX,elePY,elePZ,eleMass)
-	e2 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format(posPX,posPY,posPZ,eleMass)
+	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('elePX','elePY','elePZ',eleMass)
+	e2 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('posPX','posPY','posPZ',eleMass)
 	esum = "({0}+{1})".format(e1,e2)
-	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format(elePX,posPX,elePY,posPY,elePZ,posPZ)
+	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format('elePX','posPX','elePY','posPY','elePZ','posPZ')
 	truthMass = "sqrt({0}^2-{1}^2)".format(esum,psum)
 	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
