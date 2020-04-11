@@ -37,8 +37,8 @@ def saveCutFlow(i,histo,histo2,histo3,histo4,histo5,histo6,histo7,histo8,label,o
 	outfileroot.cd()
 	canvas.Clear()
 
-	RatioMin = 0.5
-	RatioMax = 1.5
+	RatioMin = 0.0
+	RatioMax = 1.0
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(1)

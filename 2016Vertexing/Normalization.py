@@ -34,7 +34,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -73,12 +73,15 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 
 def saveDataMassHisto(events,nBins,canvas):
 	outfileroot.cd()
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",nBins,0,0.2))
+	massBin = 0.001
+	maxMass = 0.2
+	massbins = maxMass/massBin
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM","histo",massbins,0,maxMass))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
-	histo.SetTitle("Radiative Fraction")
+	histo.SetTitle("Radiative Selection Invariant Mass Distribution")
 	histo.GetXaxis().SetRangeUser(0,0.2)
-	#histo.Fit("pol5","pol5","",0.04,0.2)
+	histo.Fit("exp(pol5)","exp(pol5)","",0.04,0.2)
 	histo.SetStats(1)
 	histo.Draw()
 	histo.Write("Data Mass")
@@ -224,6 +227,7 @@ c = TCanvas("c","c",800,600)
 
 parentID = 622
 truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
+#truthcut = ""
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
