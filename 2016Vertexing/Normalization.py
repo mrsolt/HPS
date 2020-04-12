@@ -75,6 +75,7 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Draw()
 	radfracHisto.Write("Radiative Fraction")
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 
 def saveDataMassHisto(events,nBins,canvas):
 	outfileroot.cd()

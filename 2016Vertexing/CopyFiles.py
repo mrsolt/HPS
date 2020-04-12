@@ -293,8 +293,8 @@ def main() :
     copyfile('{0}{1}MeV_L1L2_floatcut25.pdf'.format(aptightL1L2dir,'100'),'{0}{1}.pdf'.format(outdirSystematics,'ap100MeV_floatcut_v0proj_L1L2')) #100 MeV A' L1L2 Float Cut V0 Projection
 
     copyfile('{0}2.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac/','radfracall')) #Radiative Fraction Log
-    copyfile('{0}4.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac/','radfrac')) #Radiative Fraction
-    copyfile('{0}5.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac/','invmass')) #Invariant Mass with Rad Frac selections
+    copyfile('{0}5.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac/','radfrac')) #Radiative Fraction
+    copyfile('{0}6.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/RadFrad/plots/radfrac'),'{0}{1}.pdf'.format(outdir+'/radfrac/','invmass')) #Invariant Mass with Rad Frac selections
 
     copyfile('{0}3.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV_HitKill_norm')) #100 MeV A' Acceptance with Hit Killing Normalized
     copyfile('{0}4.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/plots/acceptance_plots'),'{0}{1}.pdf'.format(outdirResults,'accept_100MeV_HitKill')) #100 MeV A' Acceptance with Hit Killing
