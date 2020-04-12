@@ -34,7 +34,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -55,7 +55,7 @@ def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
 	return histo
 
 def tupleToPHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncP",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarP",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
