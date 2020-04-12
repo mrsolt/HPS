@@ -94,6 +94,7 @@ def saveDataMassHisto(events,nBins,canvas):
 	histo.Draw()
 	histo.Write("Data Mass")
 	canvas.Print(outfile+".pdf")
+	canvas.Write()
 
 def addTriWabHisto(triHisto, wabHisto):
 	totalHisto = triHisto.Clone("total")
