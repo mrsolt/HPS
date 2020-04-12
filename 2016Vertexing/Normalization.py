@@ -34,7 +34,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -81,9 +81,10 @@ def saveDataMassHisto(events,nBins,canvas):
 	massBin = 0.001
 	maxMass = 0.2
 	massbins = maxMass/massBin
-	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM","histo",massbins,0,maxMass))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",massbins,0,maxMass))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
+	histo.GetXaxis().SetTitle("dN/dm [1/MeV]")
 	histo.SetTitle("Radiative Selection Invariant Mass Distribution")
 	histo.GetXaxis().SetRangeUser(0,0.2)
 	histo.Sumw2()
@@ -234,8 +235,8 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 parentID = 622
-#truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
-truthcut = ""
+truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
+#truthcut = ""
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
@@ -249,9 +250,10 @@ triEvents = triFile.Get("ntuple")
 wabEvents = wabFile.Get("ntuple")
 dataEvents = dataFile.Get("ntuple")
 
-nBins = 50
+massBin = 0.001
 minMass = 0.0
 maxMass = 0.2
+nBins = maxMass/massBin
 minP = 0.0
 maxP = 2.5
 #width = 0.1
@@ -298,10 +300,10 @@ massSumHisto = addTriWabHisto(triMassHisto, wabMassHisto)
 pSumHisto = addTriWabHisto(triPHisto, wabPHisto)
 
 gStyle.SetOptFit(0)
-saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "")
-saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
-saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/4 MeV]", "Radiative Fraction")
-saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/0.1 GeV]", "")
+saveNHisto(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/MeV]", "")
+saveNHisto(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/12.5 MeV]", "")
+saveNHistoRatio(radMassHisto, triMassHisto, wabMassHisto, dataMassHisto, massSumHisto, c, "Invariant Mass [MeV]", "d#sigma/dm [#mub/MeV]", "Radiative Fraction")
+saveNHistoRatio(radPHisto, triPHisto, wabPHisto, dataPHisto, pSumHisto, c, "V0 Momentum [GeV]", "d#sigma/dP [#mub/12.5 MeV]", "")
 
 closePDF(outfile,c)
 outfileroot.Close()
