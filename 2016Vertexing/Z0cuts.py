@@ -19,10 +19,10 @@ def print_usage():
     print '\t-h: this help message'
     print
 
-minVZ = 0
-maxVZ = 30
-nZ = 20
-zBin = 5
+minVZ = 7
+maxVZ = 32
+nZ = 25
+zBin = 4
 saveFits = False
 frac = 0.9
 beamY = -0.0768593640179
@@ -108,8 +108,8 @@ def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,in
 		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,beamY))
 	elif(index == 1):
 		bound = "<"
-		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,beamY))
-		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,beamY))
+		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,beamY))
+		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,beamY))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo2 = ROOT.gROOT.FindObject("histo2")
 	histo.Add(histo2)
@@ -159,7 +159,7 @@ for i in range(len(apfiles)):
 	del dummy
 
 plot = "uncVZ"
-minX = -2
+minX = -5
 maxX = -minX
 
 #openPDF(outfile,c)
@@ -389,7 +389,7 @@ openPDF(outfile+"_2D",c)
 
 for i in range(len(masses)):
 	mass = masses[i]
-	draw2DHisto(apevents[i],nBins,minVZ,maxVZ,minX,maxX,outfile+"_2D",c,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
+	draw2DHisto(apevents[i],nBins,0,60,minX,maxX,outfile+"_2D",c,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
 
 closePDF(outfile+"_2D",c)
 print(cut)
