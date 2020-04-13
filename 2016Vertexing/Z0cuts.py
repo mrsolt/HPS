@@ -20,8 +20,8 @@ def print_usage():
     print
 
 minVZ = 7
-maxVZ = 32
-nZ = 25
+maxVZ = 57
+nZ = 50
 zBin = 4
 saveFits = False
 frac = 0.9
@@ -265,12 +265,12 @@ for j in range(len(masses)):
 
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
-histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.3,0.3)
+histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.5,0)
 histoMassCut1x0pos.Fit("pol1")
 fitx0pos = histoMassCut1x0pos.GetFunction("pol1")
 histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
-histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.3,0.3)
+histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.5,0)
 histoMassCut1x0neg.Fit("pol1")
 fitx0neg = histoMassCut1x0neg.GetFunction("pol1")
 
@@ -317,7 +317,7 @@ histoslope.Fit("pol1")
 fitslope = histoslope.GetFunction("pol1")
 histointercept.GetXaxis().SetTitle("Mass (GeV)")
 histointercept.SetTitle("Y Intercept")
-histointercept.GetYaxis().SetRangeUser(-0.2,0)
+histointercept.GetYaxis().SetRangeUser(-0.5,0)
 histointercept.Fit("pol1")
 fitintercept = histointercept.GetFunction("pol1")
 histoxintercept.GetXaxis().SetTitle("Mass (GeV)")
