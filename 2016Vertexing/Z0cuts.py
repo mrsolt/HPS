@@ -25,6 +25,7 @@ nZ = 20
 zBin = 5
 saveFits = False
 frac = 0.9
+beamY = -0.08
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
@@ -99,16 +100,16 @@ def saveHisto(histo,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTit
 	canvas.Print(outfile+".pdf")
 	return [x0, x1, x0Err, x1Err]
 
-def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z0mean=-0.1,z=0,zRange=9999,saveFits=False,frac1=0.9):
+def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z0mean=-0.1,z=0,zRange=9999,saveFits=False,frac1=0.9,beamY=0.):
 	ex = "Null Fit"
 	if(index == 0):
 		bound = ">"
-		events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
-		events.Draw("{0}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
+		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean,beamY))
+		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean,beamY))
 	elif(index == 1):
 		bound = "<"
-		events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
-		events.Draw("{0}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
+		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean,beamY))
+		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean,beamY))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo2 = ROOT.gROOT.FindObject("histo2")
 	histo.Add(histo2)
@@ -239,14 +240,15 @@ histoMassCut1x0neg = TH1F("histoMassCut1x0neg","histoMassCut1x0neg",len(masses),
 histoMassCut1x1neg = TH1F("histoMassCut1x1neg","histoMassCut1x1nge",len(masses),masses[0],masses[len(masses)-1])
 histoslope = TH1F("histoslope","histoslope",len(masses),masses[0],masses[len(masses)-1])
 histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
+histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
 for j in range(len(masses)):
 	mass = masses[j]
 	histoCut1pos = TH1F("histoCut1pos","histoCut1pos",nZ,minVZ,maxVZ)
 	histoCut1neg = TH1F("histoCut1neg","histoCut1neg",nZ,minVZ,maxVZ)
 	for k in range(nZ):
 		z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
-		cut1pos = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,0,z0mean,z,zBin,saveFits,frac)
-		cut1neg = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,1,z0mean,z,zBin,saveFits,frac)
+		cut1pos = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,0,z0mean,z,zBin,saveFits,frac,beamY)
+		cut1neg = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,1,z0mean,z,zBin,saveFits,frac,beamY)
 		histoCut1pos.SetBinContent(k+1,cut1pos)
 		histoCut1neg.SetBinContent(k+1,cut1neg)
 	outfileroot.cd()
@@ -257,9 +259,11 @@ for j in range(len(masses)):
 	histoMassCut1x0neg.SetBinContent(j+1,x0Cut1neg)
 	histoMassCut1x1neg.SetBinContent(j+1,x1Cut1neg)
 	slope = (x1Cut1pos+x1Cut1neg)/2.
-	intercept = (x0Cut1pos+x0Cut1neg)/(2.*slope)
+	intercept = (x0Cut1pos+x0Cut1neg)/(2.)
+	xintercept = -(x0Cut1pos+x0Cut1neg)/(2.*m)
 	histoslope.SetBinContent(j+1,slope)
 	histointercept.SetBinContent(j+1,intercept)
+	histoxintercept.SetBinContent(j+1,xintercept)
 
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
@@ -309,14 +313,38 @@ histoslope.SetTitle("Slope")
 histoslope.Fit("pol1")
 fitslope = histoslope.GetFunction("pol1")
 histointercept.GetXaxis().SetTitle("Mass (GeV)")
-histointercept.SetTitle("Intercept")
+histointercept.SetTitle("Y Intercept")
 histointercept.Fit("pol1")
 fitintercept = histointercept.GetFunction("pol1")
+histoxintercept.GetXaxis().SetTitle("Mass (GeV)")
+histoxintercept.SetTitle("X Intercept")
+histoxintercept.Fit("pol1")
+fitxintercept = histoxintercept.GetFunction("pol1")
+
+histoslope.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+
+histointercept.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+
+histoxintercept.Draw()
+c.Write()
+c.Print(outfile+".pdf")
 
 slope_x0 = fitslope.GetParameter(0)
 slope_x1 = fitslope.GetParameter(1)
 intercept_x0 = fitintercept.GetParameter(0)
 intercept_x1 = fitintercept.GetParameter(1)
+
+eleZ0_up = "(eleTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+posZ0_up = "(posTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+
+eleZ0_down = "(-eleTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+posZ0_down = "(-posTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+
+cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
 outfileroot.Close()
 closePDF(outfile,c)
@@ -339,13 +367,13 @@ print("b1 = {0}".format(b1))
 print("b2 = {0}".format(b2))
 print("b3 = {0}".format(b3))
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
-posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+#eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
+#posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
-posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+#eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
+#posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(b0,b1,b2,b3)
 
-cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
+#cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
 openPDF(outfile+"_2D",c)
 
