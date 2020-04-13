@@ -34,7 +34,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -55,7 +55,7 @@ def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
 	return histo
 
 def tupleToPHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("tarP",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -82,7 +82,7 @@ def saveDataMassHisto(events,nBins,canvas):
 	massBin = 0.001
 	maxMass = 0.2
 	massbins = maxMass/massBin
-	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM","histo",massbins,0,maxMass))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",massbins,0,maxMass))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	histo.GetXaxis().SetTitle("dN/dm [1/MeV]")
