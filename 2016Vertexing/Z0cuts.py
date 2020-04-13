@@ -25,7 +25,7 @@ nZ = 20
 zBin = 5
 saveFits = False
 frac = 0.9
-beamY = -0.08
+beamY = -0.0768593640179
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
@@ -100,16 +100,16 @@ def saveHisto(histo,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTit
 	canvas.Print(outfile+".pdf")
 	return [x0, x1, x0Err, x1Err]
 
-def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z0mean=-0.1,z=0,zRange=9999,saveFits=False,frac1=0.9,beamY=0.):
+def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,index=0,z=0,zRange=9999,saveFits=False,frac1=0.9,beamY=0.):
 	ex = "Null Fit"
 	if(index == 0):
 		bound = ">"
-		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
-		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
+		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,beamY))
+		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,beamY))
 	elif(index == 1):
 		bound = "<"
-		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
-		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
+		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,beamY))
+		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,beamY))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo2 = ROOT.gROOT.FindObject("histo2")
 	histo.Add(histo2)
@@ -159,10 +159,8 @@ for i in range(len(apfiles)):
 	del dummy
 
 plot = "uncVZ"
-minX = -5
+minX = -2
 maxX = -minX
-z0mean = -0.1
-side = ""
 
 #openPDF(outfile,c)
 
@@ -247,8 +245,8 @@ for j in range(len(masses)):
 	histoCut1neg = TH1F("histoCut1neg","histoCut1neg",nZ,minVZ,maxVZ)
 	for k in range(nZ):
 		z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
-		cut1pos = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,0,z0mean,z,zBin,saveFits,frac,beamY)
-		cut1neg = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,1,z0mean,z,zBin,saveFits,frac,beamY)
+		cut1pos = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,0,z,zBin,saveFits,frac,beamY)
+		cut1neg = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,1,z,zBin,saveFits,frac,beamY)
 		histoCut1pos.SetBinContent(k+1,cut1pos)
 		histoCut1neg.SetBinContent(k+1,cut1neg)
 	outfileroot.cd()
@@ -267,10 +265,12 @@ for j in range(len(masses)):
 
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
+histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.3,0.3)
 histoMassCut1x0pos.Fit("pol1")
 fitx0pos = histoMassCut1x0pos.GetFunction("pol1")
 histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
+histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.3,0.3)
 histoMassCut1x0neg.Fit("pol1")
 fitx0neg = histoMassCut1x0neg.GetFunction("pol1")
 
@@ -288,10 +288,12 @@ c.Print(outfile+".pdf")
 
 histoMassCut1x1pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x1pos.SetTitle("Cut 1 x1 Positive")
+histoMassCut1x1pos.GetYaxis().SetRangeUser(0,0.05)
 histoMassCut1x1pos.Fit("pol1")
 fitx1pos = histoMassCut1x1pos.GetFunction("pol1")
 histoMassCut1x1neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x1neg.SetTitle("Cut 1 x1 Negative")
+histoMassCut1x1neg.GetYaxis().SetRangeUser(0,0.05)
 histoMassCut1x1neg.Fit("pol1")
 fitx1neg = histoMassCut1x1pos.GetFunction("pol1")
 
@@ -310,14 +312,17 @@ c.Print(outfile+".pdf")
 
 histoslope.GetXaxis().SetTitle("Mass (GeV)")
 histoslope.SetTitle("Slope")
+histoslope.GetYaxis().SetRangeUser(0,0.05)
 histoslope.Fit("pol1")
 fitslope = histoslope.GetFunction("pol1")
 histointercept.GetXaxis().SetTitle("Mass (GeV)")
 histointercept.SetTitle("Y Intercept")
+histointercept.GetYaxis().SetRangeUser(-0.2,0)
 histointercept.Fit("pol1")
 fitintercept = histointercept.GetFunction("pol1")
 histoxintercept.GetXaxis().SetTitle("Mass (GeV)")
 histoxintercept.SetTitle("X Intercept")
+histoxintercept.GetYaxis().SetRangeUser(5,8)
 histoxintercept.Fit("pol1")
 fitxintercept = histoxintercept.GetFunction("pol1")
 
@@ -337,6 +342,11 @@ slope_x0 = fitslope.GetParameter(0)
 slope_x1 = fitslope.GetParameter(1)
 intercept_x0 = fitintercept.GetParameter(0)
 intercept_x1 = fitintercept.GetParameter(1)
+
+print("slope_x0 = {0}".format(slope_x0))
+print("slope_x1 = {0}".format(slope_x1))
+print("intercept_x0 = {0}".format(intercept_x0))
+print("intercept_x1 = {0}".format(intercept_x1))
 
 eleZ0_up = "(eleTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
 posZ0_up = "(posTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
@@ -379,7 +389,7 @@ openPDF(outfile+"_2D",c)
 
 for i in range(len(masses)):
 	mass = masses[i]
-	draw2DHisto(apevents[i],nBins,minVZ,maxVZ,minX,maxX,outfile+"_2D",c,cut,plotTitle="VZ vs Z0 {0:.3f} GeV A' ".format(mass))
+	draw2DHisto(apevents[i],nBins,minVZ,maxVZ,minX,maxX,outfile+"_2D",c,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
 
 closePDF(outfile+"_2D",c)
 print(cut)
