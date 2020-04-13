@@ -260,7 +260,7 @@ for j in range(len(masses)):
 	histoMassCut1x1neg.SetBinContent(j+1,x1Cut1neg)
 	slope = (x1Cut1pos+x1Cut1neg)/2.
 	intercept = (x0Cut1pos+x0Cut1neg)/(2.)
-	xintercept = -(x0Cut1pos+x0Cut1neg)/(2.*m)
+	xintercept = -(x0Cut1pos+x0Cut1neg)/(2.*slope)
 	histoslope.SetBinContent(j+1,slope)
 	histointercept.SetBinContent(j+1,intercept)
 	histoxintercept.SetBinContent(j+1,xintercept)
