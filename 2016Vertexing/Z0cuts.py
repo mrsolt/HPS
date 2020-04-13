@@ -20,12 +20,12 @@ def print_usage():
     print
 
 minVZ = 7
-maxVZ = 57
-nZ = 50
-zBin = 4
+maxVZ = 32
+nZ = 25
+zBin = 2
 saveFits = False
 frac = 0.9
-beamY = -0.0768593640179
+beamY = 0. #-0.0768593640179
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
