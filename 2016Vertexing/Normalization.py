@@ -34,7 +34,7 @@ for opt, arg in options:
 			sys.exit(0)
 
 def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM",histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -43,10 +43,10 @@ def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
 def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
 	eleMass = 0.00051099895
 	#truthMass = "sqrt(eleP^2+posP^2+2*{0}^2+2*sqrt((eleP^2+{0}^2)*(posP^2+{0}^2))-((elePX+posPX)^2+(elePY+posPY)^2+(elePZ+posPZ)^2))".format(eleMass)
-	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('elePX','elePY','elePZ',eleMass)
-	e2 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('posPX','posPY','posPZ',eleMass)
+	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('eleStartPX','eleStartPY','eleStartPZ',eleMass)
+	e2 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('posStartPX','posStartPY','posStartPZ',eleMass)
 	esum = "({0}+{1})".format(e1,e2)
-	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format('elePX','posPX','elePY','posPY','elePZ','posPZ')
+	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format('eleStartPX','posStartPX','eleStartPY','posStartPY','eleStartPZ','posStartPZ')
 	truthMass = "sqrt({0}^2-{1}^2)".format(esum,psum)
 	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX))
 	histo = ROOT.gROOT.FindObject(histo)
@@ -82,7 +82,7 @@ def saveDataMassHisto(events,nBins,canvas):
 	massBin = 0.001
 	maxMass = 0.2
 	massbins = maxMass/massBin
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",massbins,0,maxMass))
+	events.Draw("{0}>>{1}({2},{3},{4})".format("tarM","histo",massbins,0,maxMass))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	histo.GetXaxis().SetTitle("dN/dm [1/MeV]")
@@ -170,7 +170,8 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	radHisto.SetLineColor(1)
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
-	radHisto.SetTitle(PlotTitle)
+	radHisto.SetTitle("Differential Cross Section")
+	radHisto.SetStats(0)
 	maximum = radHisto.GetMaximum()
 	if(triHisto.GetMaximum() > maximum):
 		maximum = triHisto.GetMaximum()
@@ -180,7 +181,8 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 		maximum = dataHisto.GetMaximum()
 	if(sumHisto.GetMaximum() > maximum):
 		maximum = sumHisto.GetMaximum()
-	radHisto.GetYaxis().SetRangeUser(maximum/1e7,1.3*maximum)
+	#radHisto.GetYaxis().SetRangeUser(maximum/1e7,1.3*maximum)
+	radHisto.GetYaxis().SetRangeUser(0,1.3*maximum)
 	triHisto.SetLineColor(2)
 	wabHisto.SetLineColor(3)
 	dataHisto.SetLineColor(4)
@@ -222,6 +224,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	ratio.GetXaxis().SetRangeUser(0,0.2)
 	ratio.GetYaxis().SetRangeUser(0,0.2)
 	ratio.GetYaxis().SetTitle("Radiative Fraction")
+	ratio.SetStats(0)
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
