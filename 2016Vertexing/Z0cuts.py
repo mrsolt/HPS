@@ -313,7 +313,7 @@ fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (
 histoslope.GetXaxis().SetTitle("Mass (GeV)")
 histoslope.SetTitle("Slope")
 histoslope.GetYaxis().SetRangeUser(0,0.05)
-expfit=TF1("expfit","[0]+[1]/x^2",0.06,0.15)
+expfit=TF1("expfit","[0]+[1]/x^3",0.06,0.15)
 expfit.SetParameters(0.035,-1)
 histoslope.Fit("expfit")
 fitslope = histoslope.GetFunction("expfit")
