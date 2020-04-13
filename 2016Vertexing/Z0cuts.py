@@ -20,11 +20,11 @@ def print_usage():
     print
 
 minVZ = 0
-maxVZ = 60
+maxVZ = 30
 nZ = 20
 zBin = 5
 saveFits = False
-frac = 0.8
+frac = 0.9
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'c:d:sm:n:f:h')
 
@@ -163,62 +163,62 @@ maxX = -minX
 z0mean = -0.1
 side = ""
 
-openPDF(outfile,c)
+#openPDF(outfile,c)
 
-for i in [0,1]:
-	histoMassCut1x0 = TH1F("histoMassCut1x0","histoMassCut1x0",len(masses),masses[0],masses[len(masses)-1])
-	histoMassCut1x1 = TH1F("histoMassCut1x1","histoMassCut1x1",len(masses),masses[0],masses[len(masses)-1])
-	for j in range(len(masses)):
-		mass = masses[j]
-		histoCut1 = TH1F("histoCut1","histoCut1",nZ,minVZ,maxVZ)
-		for k in range(nZ):
-			z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
-			cut1 = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,i,z0mean,z,zBin,saveFits,frac)
-			histoCut1.SetBinContent(k+1,cut1)
-		outfileroot.cd()
-		x0Cut1, x1Cut1, _, _ = saveHisto(histoCut1,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
-		histoMassCut1x0.SetBinContent(j+1,x0Cut1)
-		histoMassCut1x1.SetBinContent(j+1,x1Cut1)
-	if(i == 0):
-		side = "Positive"
-	else:
-		side = "Negative"
+#for i in [0,1]:
+#	histoMassCut1x0 = TH1F("histoMassCut1x0","histoMassCut1x0",len(masses),masses[0],masses[len(masses)-1])
+#	histoMassCut1x1 = TH1F("histoMassCut1x1","histoMassCut1x1",len(masses),masses[0],masses[len(masses)-1])
+#	for j in range(len(masses)):
+#		mass = masses[j]
+#		histoCut1 = TH1F("histoCut1","histoCut1",nZ,minVZ,maxVZ)
+#		for k in range(nZ):
+#			z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
+#			cut1 = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,i,z0mean,z,zBin,saveFits,frac)
+#			histoCut1.SetBinContent(k+1,cut1)
+#		outfileroot.cd()
+#		x0Cut1, x1Cut1, _, _ = saveHisto(histoCut1,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
+#		histoMassCut1x0.SetBinContent(j+1,x0Cut1)
+#		histoMassCut1x1.SetBinContent(j+1,x1Cut1)
+#	if(i == 0):
+#		side = "Positive"
+#	else:
+#		side = "Negative"
 
-	histoMassCut1x0.GetXaxis().SetTitle("Mass (GeV)")
-	histoMassCut1x0.SetTitle("Cut 1 x0 {0}".format(side))
-	histoMassCut1x0.Fit("pol1")
-	fitx0 = histoMassCut1x0.GetFunction("pol1")
-	if(i == 0):
-		x0_cut1_pos_x0 = fitx0.GetParameter(0)
-		x1_cut1_pos_x0 = fitx0.GetParameter(1)
-	else:
-		x0_cut1_neg_x0 = fitx0.GetParameter(0)
-		x1_cut1_neg_x0 = fitx0.GetParameter(1)
-	histoMassCut1x0.Draw()
-	c.Write()
-	c.Print(outfile+".pdf")
+#	histoMassCut1x0.GetXaxis().SetTitle("Mass (GeV)")
+#	histoMassCut1x0.SetTitle("Cut 1 x0 {0}".format(side))
+#	histoMassCut1x0.Fit("pol1")
+#	fitx0 = histoMassCut1x0.GetFunction("pol1")
+#	if(i == 0):
+#		x0_cut1_pos_x0 = fitx0.GetParameter(0)
+#		x1_cut1_pos_x0 = fitx0.GetParameter(1)
+#	else:
+#		x0_cut1_neg_x0 = fitx0.GetParameter(0)
+#		x1_cut1_neg_x0 = fitx0.GetParameter(1)
+#	histoMassCut1x0.Draw()
+#	c.Write()
+#	c.Print(outfile+".pdf")
 
-	histoMassCut1x1.GetXaxis().SetTitle("Mass (GeV)")
-	histoMassCut1x1.SetTitle("Cut 1 x1 {0}".format(side))
-	histoMassCut1x1.Fit("pol1")
-	fitx1 = histoMassCut1x1.GetFunction("pol1")
-	if(i == 0):
-		x0_cut1_pos_x1 = fitx1.GetParameter(0)
-		x1_cut1_pos_x1 = fitx1.GetParameter(1)
-	else:
-		x0_cut1_neg_x1 = fitx1.GetParameter(0)
-		x1_cut1_neg_x1 = fitx1.GetParameter(1)
-	histoMassCut1x1.Draw()
-	c.Write()
-	c.Print(outfile+".pdf")
+#	histoMassCut1x1.GetXaxis().SetTitle("Mass (GeV)")
+#	histoMassCut1x1.SetTitle("Cut 1 x1 {0}".format(side))
+#	histoMassCut1x1.Fit("pol1")
+#	fitx1 = histoMassCut1x1.GetFunction("pol1")
+#	if(i == 0):
+#		x0_cut1_pos_x1 = fitx1.GetParameter(0)
+#		x1_cut1_pos_x1 = fitx1.GetParameter(1)
+#	else:
+#		x0_cut1_neg_x1 = fitx1.GetParameter(0)
+#		x1_cut1_neg_x1 = fitx1.GetParameter(1)
+#	histoMassCut1x1.Draw()
+#	c.Write()
+#	c.Print(outfile+".pdf")
 
-	del histoMassCut1x0
-	del histoMassCut1x1
-	del fitx0
-	del fitx1
+#	del histoMassCut1x0
+#	del histoMassCut1x1
+#	del fitx0
+#	del fitx1
 
-outfileroot.Close()
-closePDF(outfile,c)
+#outfileroot.Close()
+#closePDF(outfile,c)
 
 
 #x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
@@ -230,6 +230,96 @@ closePDF(outfile,c)
 #cut1_neg = "({0}+{1}*uncVZ)".format(x0_cut1_neg,x1_cut1_neg)
 
 #cut = "(eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1})".format(cut1_pos,cut1_neg)
+
+openPDF(outfile,c)
+
+histoMassCut1x0pos = TH1F("histoMassCut1x0pos","histoMassCut1x0pos",len(masses),masses[0],masses[len(masses)-1])
+histoMassCut1x1pos = TH1F("histoMassCut1x1pos","histoMassCut1x1pos",len(masses),masses[0],masses[len(masses)-1])
+histoMassCut1x0neg = TH1F("histoMassCut1x0neg","histoMassCut1x0neg",len(masses),masses[0],masses[len(masses)-1])
+histoMassCut1x1neg = TH1F("histoMassCut1x1neg","histoMassCut1x1nge",len(masses),masses[0],masses[len(masses)-1])
+histoslope = TH1F("histoslope","histoslope",len(masses),masses[0],masses[len(masses)-1])
+histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
+for j in range(len(masses)):
+	mass = masses[j]
+	histoCut1pos = TH1F("histoCut1pos","histoCut1pos",nZ,minVZ,maxVZ)
+	histoCut1neg = TH1F("histoCut1neg","histoCut1neg",nZ,minVZ,maxVZ)
+	for k in range(nZ):
+		z = minVZ + (k+0.5) * (maxVZ - minVZ)/float(nZ)
+		cut1pos = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,0,z0mean,z,zBin,saveFits,frac)
+		cut1neg = fitSlice(apevents[j],plot,nBins,minX,maxX,nBins,minVZ,maxVZ,outfile,c,1,z0mean,z,zBin,saveFits,frac)
+		histoCut1pos.SetBinContent(k+1,cut1pos)
+		histoCut1neg.SetBinContent(k+1,cut1neg)
+	outfileroot.cd()
+	x0Cut1pos, x1Cut1pos, _, _ = saveHisto(histoCut1pos,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
+	x0Cut1neg, x1Cut1neg, _, _ = saveHisto(histoCut1neg,-1,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
+	histoMassCut1x0pos.SetBinContent(j+1,x0Cut1pos)
+	histoMassCut1x1pos.SetBinContent(j+1,x1Cut1pos)
+	histoMassCut1x0neg.SetBinContent(j+1,x0Cut1neg)
+	histoMassCut1x1neg.SetBinContent(j+1,x1Cut1neg)
+	slope = (x1Cut1pos+x1Cut1neg)/2.
+	intercept = (x0Cut1pos+x0Cut1neg)/(2.*slope)
+	histoslope.SetBinContent(j+1,slope)
+	histointercept.SetBinContent(j+1,intercept)
+
+histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
+histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
+histoMassCut1x0pos.Fit("pol1")
+fitx0pos = histoMassCut1x0pos.GetFunction("pol1")
+histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
+histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
+histoMassCut1x0neg.Fit("pol1")
+fitx0neg = histoMassCut1x0neg.GetFunction("pol1")
+
+x0_cut1_pos_x0 = fitx0pos.GetParameter(0)
+x1_cut1_pos_x0 = fitx0pos.GetParameter(1)
+x0_cut1_neg_x0 = fitx0neg.GetParameter(0)
+x1_cut1_neg_x0 = fitx0neg.GetParameter(1)
+
+histoMassCut1x0pos.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+histoMassCut1x0neg.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+
+histoMassCut1x1pos.GetXaxis().SetTitle("Mass (GeV)")
+histoMassCut1x1pos.SetTitle("Cut 1 x1 Positive")
+histoMassCut1x1pos.Fit("pol1")
+fitx1pos = histoMassCut1x1pos.GetFunction("pol1")
+histoMassCut1x1neg.GetXaxis().SetTitle("Mass (GeV)")
+histoMassCut1x1neg.SetTitle("Cut 1 x1 Negative")
+histoMassCut1x1neg.Fit("pol1")
+fitx1neg = histoMassCut1x1pos.GetFunction("pol1")
+
+x0_cut1_pos_x1 = fitx1pos.GetParameter(0)
+x1_cut1_pos_x1 = fitx1pos.GetParameter(1)
+x0_cut1_neg_x1 = fitx1neg.GetParameter(0)
+x1_cut1_neg_x1 = fitx1neg.GetParameter(1)
+
+histoMassCut1x1pos.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+
+histoMassCut1x1neg.Draw()
+c.Write()
+c.Print(outfile+".pdf")
+
+histoslope.GetXaxis().SetTitle("Mass (GeV)")
+histoslope.SetTitle("Slope")
+histoslope.Fit("pol1")
+fitslope = histoslope.GetFunction("pol1")
+histointercept.GetXaxis().SetTitle("Mass (GeV)")
+histointercept.SetTitle("Intercept")
+histointercept.Fit("pol1")
+fitintercept = histointercept.GetFunction("pol1")
+
+slope_x0 = fitslope.GetParameter(0)
+slope_x1 = fitslope.GetParameter(1)
+intercept_x0 = fitintercept.GetParameter(0)
+intercept_x1 = fitintercept.GetParameter(1)
+
+outfileroot.Close()
+closePDF(outfile,c)
 
 a0 = x0_cut1_pos_x0
 a1 = x1_cut1_pos_x0
