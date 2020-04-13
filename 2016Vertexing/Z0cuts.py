@@ -240,7 +240,7 @@ histoMassCut1x0neg = TH1F("histoMassCut1x0neg","histoMassCut1x0neg",len(masses),
 histoMassCut1x1neg = TH1F("histoMassCut1x1neg","histoMassCut1x1nge",len(masses),masses[0],masses[len(masses)-1])
 histoslope = TH1F("histoslope","histoslope",len(masses),masses[0],masses[len(masses)-1])
 histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
-histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
+histoxintercept = TH1F("histoxintercept","histoxintercept",len(masses),masses[0],masses[len(masses)-1])
 for j in range(len(masses)):
 	mass = masses[j]
 	histoCut1pos = TH1F("histoCut1pos","histoCut1pos",nZ,minVZ,maxVZ)
