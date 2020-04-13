@@ -104,12 +104,12 @@ def fitSlice(events,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,in
 	ex = "Null Fit"
 	if(index == 0):
 		bound = ">"
-		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean,beamY))
-		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean,beamY))
+		events.Draw("{0}-{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
+		events.Draw("{0}-{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
 	elif(index == 1):
 		bound = "<"
-		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean,beamY))
-		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean,beamY))
+		events.Draw("{0}+{8}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,"-eleTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"eleTrkZ0",bound,z0mean))
+		events.Draw("{0}+{8}:{1}>>histo2({2},{3},{4},{5},{6},{7})".format(inHisto2,"-posTrkZ0",nBinsX,minX,maxX,nBinsY,minY,maxY,beamY),"uncVZ>{0}-{1}&&uncVZ<{0}+{1}&&{2}{3}{4}".format(z,zRange,"posTrkZ0",bound,z0mean))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo2 = ROOT.gROOT.FindObject("histo2")
 	histo.Add(histo2)
