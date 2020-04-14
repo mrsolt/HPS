@@ -292,7 +292,7 @@ radEventsTruth.Write()
 #triEvents.SetWeight(weight/triLum)
 #wabEvents.SetWeight(weight/wabLum)
 #dataEvents.SetWeight(weight/dataLum)
-,
+
 radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum,cuts)
 triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,weight/triLum,cuts)
 wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum,cuts)
