@@ -53,26 +53,39 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 
 	nevents = events.GetEntries()
 
+	ntop5 = 0
+	ntop6 = 0
+	nbot5 = 0
+	nbot6 = 0
+
 	for entry in xrange(nevents):
 		events.GetEntry(entry)
 		if(events.eleTrkLambda > 0):
 			if(events.eleNTrackHits == 5):
 				ele_smear = smear_Top5hits
+				ntop5 = ntop5 + 1
 			else:
 				ele_smear = smear_Top6hits
+				ntop6 = ntop6 + 1
 			if(events.posNTrackHits == 5):
 				pos_smear = smear_Bot5hits
+				nbot5 = nbot5 + 1
 			else:
 				pos_smear = smear_Bot6hits
+				nbot6 = nbot6 + 1
 		else:
 			if(events.eleNTrackHits == 5):
 				ele_smear = smear_Bot5hits
+				nbot5 = nbot5 + 1
 			else:
 				ele_smear = smear_Bot6hits
+				nbot6 = nbot6 + 1
 			if(events.posNTrackHits == 5):
 				pos_smear = smear_Top5hits
+				ntop5 = ntop5 + 1
 			else:
 				pos_smear = smear_Top6hits
+				ntop6 = ntop6 + 1
 
 		P_positron_Smear = random.gauss(events.posP, events.posP*pos_smear)
 		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
@@ -82,6 +95,7 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
 		histo.Fill(MSmear*1000-mass)
+		print("Mass: {0}  N5hitstop: {1}  N6hitstop: {2}  N5hitsbot: {3}  N6hitsbot: {4}".format(mass,ntop5,ntop6,nbot5,nbot6))
 
 	return histo
 
