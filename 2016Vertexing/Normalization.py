@@ -16,8 +16,11 @@ for opt, arg in options:
         print '\t-r: rad file path'
         print '\t-t: tritrig file path'
         print '\t-d: data file path'
+        print '\t-p: radiative cut (default 0.0)'
         print "\n"
         sys.exit(0)
+
+pcut = 0.0
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -29,18 +32,20 @@ for opt, arg in options:
 			triFilePath = arg
 		if opt=='-d':
 			dataFilePath = arg
+		if opt=='-p':
+			pcut = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
 
-def tupleToMassHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
+def tupleToMassHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX),cuts)
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
 	return histo
 
-def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
+def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
 	eleMass = 0.00051099895
 	#truthMass = "sqrt(eleP^2+posP^2+2*{0}^2+2*sqrt((eleP^2+{0}^2)*(posP^2+{0}^2))-((elePX+posPX)^2+(elePY+posPY)^2+(elePZ+posPZ)^2))".format(eleMass)
 	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('eleStartPX','eleStartPY','eleStartPZ',eleMass)
@@ -48,14 +53,14 @@ def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor):
 	esum = "({0}+{1})".format(e1,e2)
 	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format('eleStartPX','posStartPX','eleStartPY','posStartPY','eleStartPZ','posStartPZ')
 	truthMass = "sqrt({0}^2-{1}^2)".format(esum,psum)
-	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX))
+	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX),cuts)
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
 	return histo
 
-def tupleToPHisto(events,histo,nBins,minX,maxX,factor):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX))
+def tupleToPHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX),cuts)
 	histo = ROOT.gROOT.FindObject(histo)
 	histo.Sumw2()
 	histo.Scale(factor)
@@ -241,6 +246,7 @@ c = TCanvas("c","c",800,600)
 
 parentID = 622
 truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
+cuts = "eleHasL2&&posHasL2&&uncChisq<4&&uncP<{0}".format(pcut)
 #truthcut = ""
 
 outfile = remainder[0]
@@ -286,16 +292,16 @@ radEventsTruth.Write()
 #triEvents.SetWeight(weight/triLum)
 #wabEvents.SetWeight(weight/wabLum)
 #dataEvents.SetWeight(weight/dataLum)
+,
+radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum,cuts)
+triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,weight/triLum,cuts)
+wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum,cuts)
+dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum,cuts)
 
-radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum)
-triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,weight/triLum)
-wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum)
-dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum)
-
-radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins/2,minP,maxP,weight/radLum)
-triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins/2,minP,maxP,weight/triLum)
-wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins/2,minP,maxP,weight/wabLum)
-dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins/2,minP,maxP,weight/dataLum)
+radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins/2,minP,maxP,weight/radLum,cuts)
+triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins/2,minP,maxP,weight/triLum,cuts)
+wabPHisto = tupleToPHisto(wabEvents,"wabPHisto",nBins/2,minP,maxP,weight/wabLum,cuts)
+dataPHisto = tupleToPHisto(dataEvents,"dataPHisto",nBins/2,minP,maxP,weight/dataLum,cuts)
 
 openPDF(outfile,c)
 
