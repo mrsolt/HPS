@@ -266,12 +266,12 @@ for j in range(len(masses)):
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
 histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.5,0)
-histoMassCut1x0pos.Fit("pol0","pol0","",0.07,0.15)
+histoMassCut1x0pos.Fit("pol0")
 fitx0pos = histoMassCut1x0pos.GetFunction("pol0")
 histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
 histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.5,0)
-histoMassCut1x0neg.Fit("pol0","pol0","",0.07,0.15)
+histoMassCut1x0neg.Fit("pol0")
 fitx0neg = histoMassCut1x0neg.GetFunction("pol0")
 
 x0_cut1_pos_x0 = fitx0pos.GetParameter(0)
@@ -328,8 +328,8 @@ fitslope = histoslope.GetFunction("expfit")
 histointercept.GetXaxis().SetTitle("Mass (GeV)")
 histointercept.SetTitle("Y Intercept")
 histointercept.GetYaxis().SetRangeUser(-0.5,0)
-histointercept.Fit("pol0")
-fitintercept = histointercept.GetFunction("pol0")
+histointercept.Fit("pol0","pol0","",0.07,0.15)
+fitintercept = histointercept.GetFunction("pol0","pol0","",0.07,0.15)
 histoxintercept.GetXaxis().SetTitle("Mass (GeV)")
 histoxintercept.SetTitle("X Intercept")
 histoxintercept.GetYaxis().SetRangeUser(5,8)
@@ -367,11 +367,13 @@ c.Print(outfile+".pdf")
 
 #cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
-a0 = x0_cut1_pos_x0
+#a0 = x0_cut1_pos_x0
+a0 = fitintercept.GetParameter(0)
 a1 = x1_cut1_pos_x0
 a2 = x0_cut1_pos_x1
 a3 = x1_cut1_pos_x1
 
+b0 = fitintercept.GetParameter(0)
 b0 = x0_cut1_neg_x0
 b1 = x1_cut1_neg_x0
 b2 = x0_cut1_neg_x1
@@ -397,23 +399,23 @@ cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 outfileroot.Close()
 closePDF(outfile,c)
 
-a0 = x0_cut1_pos_x0
-a1 = x1_cut1_pos_x0
-a2 = x0_cut1_pos_x1
-a3 = x1_cut1_pos_x1
-b0 = x0_cut1_neg_x0
-b1 = x1_cut1_neg_x0
-b2 = x0_cut1_neg_x1
-b3 = x1_cut1_neg_x1
+#a0 = x0_cut1_pos_x0
+#a1 = x1_cut1_pos_x0
+#a2 = x0_cut1_pos_x1
+#a3 = x1_cut1_pos_x1
+#b0 = x0_cut1_neg_x0
+#b1 = x1_cut1_neg_x0
+#b2 = x0_cut1_neg_x1
+#b3 = x1_cut1_neg_x1
 
-print("a0 = {0}".format(a0))
-print("a1 = {0}".format(a1))
-print("a2 = {0}".format(a2))
-print("a3 = {0}".format(a3))
-print("b0 = {0}".format(b0))
-print("b1 = {0}".format(b1))
-print("b2 = {0}".format(b2))
-print("b3 = {0}".format(b3))
+#print("a0 = {0}".format(a0))
+#print("a1 = {0}".format(a1))
+#print("a2 = {0}".format(a2))
+#print("a3 = {0}".format(a3))
+#print("b0 = {0}".format(b0))
+#print("b1 = {0}".format(b1))
+#print("b2 = {0}".format(b2))
+#print("b3 = {0}".format(b3))
 
 #eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
 #posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(a0,a1,a2,a3)
