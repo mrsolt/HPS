@@ -266,12 +266,12 @@ for j in range(len(masses)):
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
 histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.5,0)
-histoMassCut1x0pos.Fit("pol0")
+histoMassCut1x0pos.Fit("pol0",0.07,0.15)
 fitx0pos = histoMassCut1x0pos.GetFunction("pol0")
 histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
 histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.5,0)
-histoMassCut1x0neg.Fit("pol0")
+histoMassCut1x0neg.Fit("pol0",0.07,0.15)
 fitx0neg = histoMassCut1x0neg.GetFunction("pol0")
 
 x0_cut1_pos_x0 = fitx0pos.GetParameter(0)
@@ -386,11 +386,11 @@ print("b1 = {0}".format(b1))
 print("b2 = {0}".format(b2))
 print("b3 = {0}".format(b3))
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(a0,a1,a2,a3)
-posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(a0,a1,a2,a3)
+eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(a0,a1,a2,a3)
+posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(a0,a1,a2,a3)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(b0,b1,b2,b3)
-posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(b0,b1,b2,b3)
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(b0,b1,b2,b3)
+posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(b0,b1,b2,b3)
 
 cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
