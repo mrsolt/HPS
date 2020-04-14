@@ -51,7 +51,7 @@ gStyle.SetOptStat(0)
 gStyle.SetOptFit(1011)
 c = TCanvas("c","c",800,600)
 
-def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,cut="",XaxisTitle="Reconstructed z (mm)",YaxisTitle="Z0 (mm)",plotTitle="",stats=0):
+def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,fitfuncpos,fitfuncneg,cut="",XaxisTitle="Reconstructed z (mm)",YaxisTitle="Z0 (mm)",plotTitle="",stats=0):
 	events.Draw("{1}:{0}>>histo({2},{3},{4},{5},{6},{7})".format("uncVZ","eleTrkZ0",nBins,minX,maxX,nBins,minY,maxY))
 	events.Draw("{1}:{0}>>histo2({2},{3},{4},{5},{6},{7})".format("uncVZ","posTrkZ0",nBins,minX,maxX,nBins,minY,maxY))
 	events.Draw("{1}:{0}>>histocut({2},{3},{4},{5},{6},{7})".format("uncVZ","eleTrkZ0",nBins,minX,maxX,nBins,minY,maxY),cut)
@@ -62,12 +62,16 @@ def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,cut="",XaxisTitl
 	histocut2 = ROOT.gROOT.FindObject("histocut2")
 	histo.Add(histo2)
 	histocut.Add(histocut2)
+	fitfuncpos.SetParameters(mass)
+	fitfuncneg.SetParameters(mass)
 	canvas.SetLogz()
 	histo.Draw("COLZ")
 	histo.SetTitle(plotTitle+" No IP Cut")
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
+	fitfuncpos.Draw()
+	fitfuncneg.Draw()
 	#canvas.Write()
 	canvas.Print(outfile+".pdf")
 	histocut.Draw("COLZ")
@@ -76,6 +80,8 @@ def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,cut="",XaxisTitl
 	histocut.GetYaxis().SetTitle(YaxisTitle)
 	histocut.SetStats(stats)
 	#canvas.Write()
+	fitfuncpos.Draw()
+	fitfuncneg.Draw()
 	canvas.Print(outfile+".pdf")
 	del histo
 	del histo2
@@ -317,7 +323,6 @@ c.Print(outfile+".pdf")
 histoMassCut1x1neg.Draw()
 c.Write()
 c.Print(outfile+".pdf")
-fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
 histoslope.GetXaxis().SetTitle("Mass (GeV)")
 histoslope.SetTitle("Slope")
 histoslope.GetYaxis().SetRangeUser(0,0.05)
@@ -369,32 +374,26 @@ c.Print(outfile+".pdf")
 
 #cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
-#a0 = x0_cut1_pos_x0
-a0 = fitintercept.GetParameter(0)
-a1 = x1_cut1_pos_x0
-a2 = x0_cut1_pos_x1
-a3 = x1_cut1_pos_x1
+m0 = fitintercept.GetParameter(0)
+a0 = x0_cut1_pos_x1
+a1 = x1_cut1_pos_x1
+b0 = x0_cut1_neg_x1
+b1 = x1_cut1_neg_x1
 
-b0 = fitintercept.GetParameter(0)
-b0 = x0_cut1_neg_x0
-b1 = x1_cut1_neg_x0
-b2 = x0_cut1_neg_x1
-b3 = x1_cut1_neg_x1
-
+print("m0 = {0}".format(m0))
 print("a0 = {0}".format(a0))
 print("a1 = {0}".format(a1))
-print("a2 = {0}".format(a2))
-print("a3 = {0}".format(a3))
 print("b0 = {0}".format(b0))
 print("b1 = {0}".format(b1))
-print("b2 = {0}".format(b2))
-print("b3 = {0}".format(b3))
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(a0,a1,a2,a3)
-posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(a0,a1,a2,a3)
+fitfuncpos = Fit("fitfuncpos","{0}+({1}+{2}/[0]^4)*x".format(m0,a0,a1),0,100)
+fitfuncneg = Fit("fitfuncneg","-({0}+({1}+{2}/[0]^4)*x)".format(m0,b0,b1),0,100)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(b0,b1,b2,b3)
-posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^4*(uncVZ))".format(b0,b1,b2,b3)
+eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,a0,a1)
+posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,a0,a1)
+
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,b0,b1)
+posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,b0,b1)
 
 cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
@@ -431,7 +430,7 @@ openPDF(outfile+"_2D",c)
 
 for i in range(len(masses)):
 	mass = masses[i]
-	draw2DHisto(apevents[i],nBins,0,60,minX,maxX,outfile+"_2D",c,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
+	draw2DHisto(apevents[i],nBins,0,60,minX,maxX,outfile+"_2D",c,fitfuncpos,fitfuncneg,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
 
 closePDF(outfile+"_2D",c)
 print(cut)
