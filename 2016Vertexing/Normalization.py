@@ -6,7 +6,7 @@ import ROOT
 from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:', ['help',])
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:p:', ['help',])
 
 for opt, arg in options:
     if opt in ('-h', '--help'):
