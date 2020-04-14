@@ -386,8 +386,8 @@ print("a1 = {0}".format(a1))
 print("b0 = {0}".format(b0))
 print("b1 = {0}".format(b1))
 
-fitfuncpos = Fit("fitfuncpos","{0}+({1}+{2}/[0]^4)*x".format(m0,a0,a1),0,100)
-fitfuncneg = Fit("fitfuncneg","-({0}+({1}+{2}/[0]^4)*x)".format(m0,b0,b1),0,100)
+fitfuncpos = TF1("fitfuncpos","{0}+({1}+{2}/[0]^4)*x".format(m0,a0,a1),0,100)
+fitfuncneg = TF1("fitfuncneg","-({0}+({1}+{2}/[0]^4)*x)".format(m0,b0,b1),0,100)
 
 eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,a0,a1)
 posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^4*(uncVZ))".format(m0,a0,a1)
