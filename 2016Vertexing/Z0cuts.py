@@ -235,7 +235,7 @@ openPDF(outfile,c)
 histoMassCut1x0pos = TH1F("histoMassCut1x0pos","histoMassCut1x0pos",len(masses),masses[0],masses[len(masses)-1])
 histoMassCut1x1pos = TH1F("histoMassCut1x1pos","histoMassCut1x1pos",len(masses),masses[0],masses[len(masses)-1])
 histoMassCut1x0neg = TH1F("histoMassCut1x0neg","histoMassCut1x0neg",len(masses),masses[0],masses[len(masses)-1])
-histoMassCut1x1neg = TH1F("histoMassCut1x1neg","histoMassCut1x1nge",len(masses),masses[0],masses[len(masses)-1])
+histoMassCut1x1neg = TH1F("histoMassCut1x1neg","histoMassCut1x1neg",len(masses),masses[0],masses[len(masses)-1])
 histoslope = TH1F("histoslope","histoslope",len(masses),masses[0],masses[len(masses)-1])
 histointercept = TH1F("histointercept","histointercept",len(masses),masses[0],masses[len(masses)-1])
 histoxintercept = TH1F("histoxintercept","histoxintercept",len(masses),masses[0],masses[len(masses)-1])
@@ -289,13 +289,19 @@ c.Print(outfile+".pdf")
 histoMassCut1x1pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x1pos.SetTitle("Cut 1 x1 Positive")
 histoMassCut1x1pos.GetYaxis().SetRangeUser(0,0.05)
-histoMassCut1x1pos.Fit("pol1")
-fitx1pos = histoMassCut1x1pos.GetFunction("pol1")
+expfit=TF1("expfit","[0]+[1]/x^3",0.06,0.15)
+expfit.SetParameters(0.035,-1)
+histoMassCut1x1pos.Fit("expfit")
+fitx1pos = histoMassCut1x1pos.GetFunction("expfit")
+#histoMassCut1x1pos.Fit("pol1")
+#fitx1pos = histoMassCut1x1pos.GetFunction("pol1")
 histoMassCut1x1neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x1neg.SetTitle("Cut 1 x1 Negative")
 histoMassCut1x1neg.GetYaxis().SetRangeUser(0,0.05)
-histoMassCut1x1neg.Fit("pol1")
-fitx1neg = histoMassCut1x1pos.GetFunction("pol1")
+histoMassCut1x1neg.Fit("expfit")
+fitx1neg = histoMassCut1x1neg.GetFunction("expfit")
+#histoMassCut1x1neg.Fit("pol1")
+#fitx1neg = histoMassCut1x1pos.GetFunction("pol1")
 
 x0_cut1_pos_x1 = fitx1pos.GetParameter(0)
 x1_cut1_pos_x1 = fitx1pos.GetParameter(1)
@@ -313,8 +319,8 @@ fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (
 histoslope.GetXaxis().SetTitle("Mass (GeV)")
 histoslope.SetTitle("Slope")
 histoslope.GetYaxis().SetRangeUser(0,0.05)
-expfit=TF1("expfit","[0]+[1]/x^3",0.06,0.15)
-expfit.SetParameters(0.035,-1)
+#expfit=TF1("expfit","[0]+[1]/x^3",0.06,0.15)
+#expfit.SetParameters(0.035,-1)
 histoslope.Fit("expfit")
 fitslope = histoslope.GetFunction("expfit")
 histointercept.GetXaxis().SetTitle("Mass (GeV)")
@@ -340,22 +346,49 @@ histoxintercept.Draw()
 c.Write()
 c.Print(outfile+".pdf")
 
-slope_x0 = fitslope.GetParameter(0)
-slope_x1 = fitslope.GetParameter(1)
-intercept_x0 = fitintercept.GetParameter(0)
+#slope_x0 = fitslope.GetParameter(0)
+#slope_x1 = fitslope.GetParameter(1)
+#intercept_x0 = fitintercept.GetParameter(0)
 #intercept_x1 = fitintercept.GetParameter(1)
-intercept_x1 = 0
+#intercept_x1 = 0
 
-print("slope_x0 = {0}".format(slope_x0))
-print("slope_x1 = {0}".format(slope_x1))
-print("intercept_x0 = {0}".format(intercept_x0))
-print("intercept_x1 = {0}".format(intercept_x1))
+#print("slope_x0 = {0}".format(slope_x0))
+#print("slope_x1 = {0}".format(slope_x1))
+#print("intercept_x0 = {0}".format(intercept_x0))
+#print("intercept_x1 = {0}".format(intercept_x1))
 
-eleZ0_up = "(eleTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
-posZ0_up = "(posTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+#eleZ0_up = "(eleTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+#posZ0_up = "(posTrkZ0-{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
 
-eleZ0_down = "(-eleTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
-posZ0_down = "(-posTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+#eleZ0_down = "(-eleTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+#posZ0_down = "(-posTrkZ0+{4}>{0}+{1}*uncM+{2}*(uncVZ)+{3}*uncM*(uncVZ))".format(intercept_x0,intercept_x1,slope_x0,slope_x1,beamY)
+
+#cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
+
+a0 = x0_cut1_pos_x0
+a1 = x1_cut1_pos_x0
+a2 = x0_cut1_pos_x1
+a3 = x1_cut1_pos_x1
+
+b0 = x0_cut1_neg_x0
+b1 = x1_cut1_neg_x0
+b2 = x0_cut1_neg_x1
+b3 = x1_cut1_neg_x1
+
+print("a0 = {0}".format(a0))
+print("a1 = {0}".format(a1))
+print("a2 = {0}".format(a2))
+print("a3 = {0}".format(a3))
+print("b0 = {0}".format(b0))
+print("b1 = {0}".format(b1))
+print("b2 = {0}".format(b2))
+print("b3 = {0}".format(b3))
+
+eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(a0,a1,a2,a3)
+posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(a0,a1,a2,a3)
+
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(b0,b1,b2,b3)
+posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ)+{3}*1/uncM^3*(uncVZ))".format(b0,b1,b2,b3)
 
 cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
