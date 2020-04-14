@@ -95,7 +95,7 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
 		histo.Fill(MSmear*1000-mass)
-		print("Mass: {0}  N5hitstop: {1}  N6hitstop: {2}  N5hitsbot: {3}  N6hitsbot: {4}".format(mass,ntop5,ntop6,nbot5,nbot6))
+	print("Mass: {0}  N5hitstop: {1}  N6hitstop: {2}  N5hitsbot: {3}  N6hitsbot: {4}".format(mass,ntop5,ntop6,nbot5,nbot6))
 
 	return histo
 

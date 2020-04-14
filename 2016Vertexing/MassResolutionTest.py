@@ -100,7 +100,7 @@ def SmearHisto(events,nBins,minX,maxX,mass,isTar=False):
 		else:
 			MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.tarM
 		histo.Fill(MSmear*1000-mass)
-		print("Is tar: {5}  Mass: {0}  N5hitstop: {1}  N6hitstop: {2}  N5hitsbot: {3}  N6hitsbot: {4}".format(mass,ntop5,ntop6,nbot5,nbot6,isTar))
+	print("Is tar: {5}  Mass: {0}  N5hitstop: {1}  N6hitstop: {2}  N5hitsbot: {3}  N6hitsbot: {4}".format(mass,ntop5,ntop6,nbot5,nbot6,isTar))
 
 	return histo
 
@@ -109,7 +109,7 @@ def saveTupleFitPlotSmeared(events,inHisto,mass,nBins,minX,maxX,outfile,canvas,i
 	histo = SmearHisto(events,nBins,minX,maxX,mass,isTar)
 	histo.SetTitle("Reconstructed Mass Smeared {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
-	f1 = TF1("f1","gaus",histo.GetMean()-1.25*histo.GetRMS(),histo.GetMean()+1.25*histo.GetRMS())
+	f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
 	histo.Fit("f1","R")
 	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
@@ -128,7 +128,8 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle("Reconstructed Mass {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
-	f1 = TF1("f1","gaus",histo.GetMean()-1.25*histo.GetRMS(),histo.GetMean()+1.25*histo.GetRMS())
+	window = (1.5-1.0)*(mass - 50)/(150-50) + 1.0
+	f1 = TF1("f1","gaus",histo.GetMean()-window*histo.GetRMS(),histo.GetMean()+window*histo.GetRMS())
 	histo.Fit("f1","R")
 	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
