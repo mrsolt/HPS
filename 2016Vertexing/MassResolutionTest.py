@@ -114,10 +114,7 @@ def saveTupleFitPlot(events,inHisto,mass,nBins,minX,maxX,outfile,canvas):
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle("Reconstructed Mass {0:.0f} MeV A'".format(mass))
 	histo.GetXaxis().SetTitle("Reconstructed Mass (MeV)")
-	if(mass>95):
-		f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
-	else:
-		f1 = TF1("f1","gaus",histo.GetMean()-1.0*histo.GetRMS(),histo.GetMean()+1.0*histo.GetRMS())
+	f1 = TF1("f1","gaus",histo.GetMean()-1.5*histo.GetRMS(),histo.GetMean()+1.5*histo.GetRMS())
 	histo.Fit("f1","R")
 	histo.Draw("PE")
 	canvas.Print(outfile+".pdf")
@@ -260,7 +257,7 @@ moller_mass_res_mc_targ = 0.000957*1000
 
 ratio_targ = moller_mass_res_data_targ / moller_mass_res_mc_targ
 
-nBins = 50
+nBins = 200
 maxX = 15.
 minX = -maxX
 
