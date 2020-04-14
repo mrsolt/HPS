@@ -70,8 +70,8 @@ def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,fitfuncpos,fitfu
 	histo.GetXaxis().SetTitle(XaxisTitle)
 	histo.GetYaxis().SetTitle(YaxisTitle)
 	histo.SetStats(stats)
-	fitfuncpos.Draw()
-	fitfuncneg.Draw()
+	fitfuncpos.Draw("same")
+	fitfuncneg.Draw("same")
 	#canvas.Write()
 	canvas.Print(outfile+".pdf")
 	histocut.Draw("COLZ")
@@ -80,8 +80,8 @@ def draw2DHisto(events,nBins,minX,maxX,minY,maxY,outfile,canvas,fitfuncpos,fitfu
 	histocut.GetYaxis().SetTitle(YaxisTitle)
 	histocut.SetStats(stats)
 	#canvas.Write()
-	fitfuncpos.Draw()
-	fitfuncneg.Draw()
+	fitfuncpos.Draw("same")
+	fitfuncneg.Draw("same")
 	canvas.Print(outfile+".pdf")
 	del histo
 	del histo2
