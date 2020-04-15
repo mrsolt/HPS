@@ -112,14 +112,27 @@ for line in (raw.strip().split() for raw in infile):
 	filenames.append(line[0])
 	infiles.append(TFile(line[0]))
 
+
+angleMC = 0.111025680707
+angleData = 0.0386557750132
+
+if(isMC):
+	angle = angleMC
+else:
+	angle = angleData
+
+xProj = "(uncVX-(uncVZ+4.3)*uncPX/uncPZ)"
+yProj = "(uncVY-(uncVZ+4.3)*uncPY/uncPZ)"
+
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+
 fitGaus = []
 fitGaus.append("uncVX -2 2")
 fitGaus.append("uncVY -1 1")
 fitGaus.append("uncVZ -35 25")
-#fitGaus.append("uncTargProjX -2 2")
-#fitGaus.append("uncTargProjY -1 1")
-fitGaus.append("uncVX-(uncVZ+4.3)*uncPX/uncPZ -2 2")
-fitGaus.append("uncVY-(uncVZ+4.3)*uncPY/uncPZ -1 1")
+fitGaus.append("{0} -2 2".format(xProj_rot))
+fitGaus.append("{0} -1 1".format(yProj_rot))
 
 nBins = 100
 beamX = []
@@ -141,9 +154,9 @@ for i in range(len(fitGaus)):
 	minX = getMinX(fitGaus[i])
 	maxX = getMaxX(fitGaus[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
-	if(plot == "uncVX-(uncVZ+4.3)*uncPX/uncPZ"):
+	if(plot == xProj_rot):
 		pdfFileName = outfile+"_uncTargProjX_fit"
-	if(plot == "uncVY-(uncVZ+4.3)*uncPY/uncPZ"):
+	if(plot == yProj_rot):
 		pdfFileName = outfile+"_uncTargProjY_fit"
 	openPDF(pdfFileName,c)
 	mean = []
@@ -172,12 +185,10 @@ for i in range(len(fitGaus)):
 	if(plot == "uncVZ"):
 		beamZ = mean
 		beamZSig = sigma
-	#if(plot == "uncTargProjX"):
-	if(plot == "uncVX-(uncVZ+4.3)*uncPX/uncPZ"):
+	if(plot == xProj_rot):
 		targX = mean
 		targXSig = sigma
-	#if(plot == "uncTargProjY"):
-	if(plot == "uncVY-(uncVZ+4.3)*uncPY/uncPZ"):
+	if(plot == yProj_rot):
 		targY = mean
 		targYSig = sigma
 	del mean
