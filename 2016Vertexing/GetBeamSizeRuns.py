@@ -116,23 +116,27 @@ for line in (raw.strip().split() for raw in infile):
 angleMC = 0.111025680707
 angleData = 0.0386557750132
 
-if(isMC):
-	angle = angleMC
-else:
-	angle = angleData
-
 xProj = "(uncVX-(uncVZ+4.3)*uncPX/uncPZ)"
 yProj = "(uncVY-(uncVZ+4.3)*uncPY/uncPZ)"
 
-xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
-yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+xProj_rot_data = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angleData)
+yProj_rot_data = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angleData)
+xProj_rot_mc = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angleMC)
+yProj_rot_mc = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angleMC)
 
-fitGaus = []
-fitGaus.append("uncVX -2 2")
-fitGaus.append("uncVY -1 1")
-fitGaus.append("uncVZ -35 25")
-fitGaus.append("{0} -2 2".format(xProj_rot))
-fitGaus.append("{0} -1 1".format(yProj_rot))
+fitGaus_data = []
+fitGaus_data.append("uncVX -2 2")
+fitGaus_data.append("uncVY -1 1")
+fitGaus_data.append("uncVZ -35 25")
+fitGaus_data.append("{0} -2 2".format(xProj_rot_data))
+fitGaus_data.append("{0} -1 1".format(yProj_rot_data))
+
+fitGaus_mc = []
+fitGaus_mc.append("uncVX -2 2")
+fitGaus_mc.append("uncVY -1 1")
+fitGaus_mc.append("uncVZ -35 25")
+fitGaus_mc.append("{0} -2 2".format(xProj_rot_mc))
+fitGaus_mc.append("{0} -1 1".format(yProj_rot_mc))
 
 nBins = 100
 beamX = []
@@ -149,14 +153,14 @@ Run = []
 
 gStyle.SetOptFit()
 
-for i in range(len(fitGaus)):
-	plot = getPlot(fitGaus[i])
-	minX = getMinX(fitGaus[i])
-	maxX = getMaxX(fitGaus[i])
+for i in range(len(fitGaus_data)):
+	plot = getPlot(fitGaus_data[i])
+	minX = getMinX(fitGaus_data[i])
+	maxX = getMaxX(fitGaus_data[i])
 	pdfFileName = outfile+"_"+plot+"_fit"
-	if(plot == xProj_rot):
+	if(plot == xProj_rot_data or plot == xProj_rot_mc):
 		pdfFileName = outfile+"_uncTargProjX_fit"
-	if(plot == yProj_rot):
+	if(plot == yProj_rot_data or plot == yProj_rot_mc):
 		pdfFileName = outfile+"_uncTargProjY_fit"
 	openPDF(pdfFileName,c)
 	mean = []
@@ -168,6 +172,8 @@ for i in range(len(fitGaus)):
 		run = array('d',[0])
 		event.Branch("run",run,"run")
 		event.GetEntry(0)
+		if(event.run == 5772):
+			plot = getPlot(fitGaus_mc[i])
 		params = saveFitPlot(event,plot,pdfFileName,c,nBins,minX,maxX,plot,"","Run " + str(event.run),useSingleGaus)
 		mean.append(params[0])
 		meanErr.append(params[1])
@@ -185,10 +191,10 @@ for i in range(len(fitGaus)):
 	if(plot == "uncVZ"):
 		beamZ = mean
 		beamZSig = sigma
-	if(plot == xProj_rot):
+	if(plot == xProj_rot_data or plot == xProj_rot_mc):
 		targX = mean
 		targXSig = sigma
-	if(plot == yProj_rot):
+	if(plot == yProj_rot_data or plot == yProj_rot_mc):
 		targY = mean
 		targYSig = sigma
 	del mean
