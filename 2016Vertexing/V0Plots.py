@@ -1,9 +1,10 @@
 import sys
 tmpargv = sys.argv
 sys.argv = []
+import numpy as np
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1, TLatex, TEllipse
 sys.argv = tmpargv
 
 #List arguments
@@ -75,28 +76,28 @@ events = file.Get("ntuple")
 label = ""
 label = str(remainder[2])
 
-xProj = "uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg)
-yProj = "uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg)
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
 
 events.Draw("uncVY:uncVX>>V0_pos(100,-1.5,1.5,100,-1,1)")
 #events.Draw("uncTargProjY:uncTargProjX>>V0_proj(100,-1.5,1.5,100,-1,1)")
 events.Draw("{1}:{0}>>V0_proj(100,-1.5,1.5,100,-1,1)".format(xProj,yProj))
 
 events.Draw("(uncVY-{2})/{3}:(uncVX-{0})/{1}>>V0_pos_sig(100,-4,4,100,-4,4)".format(uncVX,uncVXSig,uncVY,uncVYSig))
-events.Draw("({5}-{2})/{3}:({4}-{0})/{1}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj,yProj))
 
 V0_pos = gDirectory.FindObject("V0_pos")
 V0_proj = gDirectory.FindObject("V0_proj")
 V0_pos_sig = gDirectory.FindObject("V0_pos_sig")
-V0_proj_sig = gDirectory.FindObject("V0_proj_sig")
 
-f1 = TF1("f1","sqrt(9-x**2)",-3,3)
-f2 = TF1("f2","-sqrt(9-x**2)",-3,3)
-f1.SetLineColor(2)
-f1.SetLineWidth(3)
-f2.SetLineColor(2)
-f2.SetLineWidth(3)
+V0_proj.Fit("pol1","pol1","",-0.5,0.5)
+fit = V0_proj.GetFunction("pol1")
+angle = np.arctan(fit.GetParameter(1))
+print("Angle = {0} rad".format(angle))
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
 
+events.Draw("{1}:{0}>>V0_proj_rot(100,-1.5,1.5,100,-1,1)".format(xProj_rot,yProj_rot))
+V0_proj_rot = gDirectory.FindObject("V0_proj_rot")
 
 openPDF(outfile,c)
 
@@ -114,26 +115,38 @@ V0_proj.GetXaxis().SetTitle("x (mm)")
 V0_proj.GetYaxis().SetTitle("y (mm)")
 V0_proj.SetTitle("V0 Projection To Target {0}".format(label))
 V0_proj.Draw("COLZ")
+V0_proj.Fit("pol1")
 c.Print(outfile+".pdf")
 c.Write()
 
-V0_pos_sig.GetXaxis().SetTitle("x/sigma_x")
-V0_pos_sig.GetYaxis().SetTitle("y/sigma_y")
-V0_pos_sig.SetTitle("V0 Position N Sigma {0}".format(label))
+V0_proj_rot.GetXaxis().SetTitle("x (mm)")
+V0_proj_rot.GetYaxis().SetTitle("y (mm)")
+V0_proj_rot.SetTitle("Rotated V0 Projection To Target {0}".format(label))
+V0_proj_rot.Draw("COLZ")
+c.Print(outfile+".pdf")
+c.Write()
+
+V0_pos_sig.GetXaxis().SetTitle("x-#mu_{x}/#sigma_{x}")
+V0_pos_sig.GetYaxis().SetTitle("y-#mu_{x}/#sigma_{y}")
+V0_pos_sig.SetTitle("V0 Position N#sigma {0}".format(label))
 V0_pos_sig.Draw("COLZ")
-f1.Draw("same")
-f2.Draw("same")
 c.Print(outfile+".pdf")
 c.Write()
 
-V0_proj_sig.GetXaxis().SetTitle("x/sigma_x")
-V0_proj_sig.GetYaxis().SetTitle("y/sigma_y")
-V0_proj_sig.SetTitle("V0 Projection To Target N Sigma {0}".format(label))
+events.Draw("({5}-{2})/{3}:({4}-{0})/{1}>>V0_proj_sig(100,-4,4,100,-4,4)".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot))
+V0_proj_sig = gDirectory.FindObject("V0_proj_sig")
+V0_proj_sig.GetXaxis().SetTitle("x-#mu_{x}/#sigma_{x}")
+V0_proj_sig.GetYaxis().SetTitle("y-#mu_{y}/#sigma_{y}")
+V0_proj_sig.SetTitle("Rotated V0 Projection To Target N#sigma {0}".format(label))
 V0_proj_sig.Draw("COLZ")
-f1.Draw("same")
-f2.Draw("same")
+ell = TEllipse(0, 0, 3, 3,0,360,0)
+ell.SetLineColor(2)
+ell.SetLineWidth(3)
+ell.SetFillColorAlpha(0,0)
+ell.Draw("same")
 c.Print(outfile+".pdf")
 c.Write()
+
 
 closePDF(outfile,c)
 outfileroot.Close()
