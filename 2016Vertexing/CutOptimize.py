@@ -282,10 +282,10 @@ for i in range(len(cuts)):
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 
 label.append("No V0 Proj Cut")
-label.append("V0 Proj 3#sigma")
-label.append("V0 Proj 2.5#sigma")
-label.append("V0 Proj 2#sigma")
 label.append("V0 Proj 1.5#sigma")
+label.append("V0 Proj 2#sigma")
+label.append("V0 Proj 2.5#sigma")
+label.append("V0 Proj 3#sigma")
 
 #label.append("No IP Cut")
 #label.append("IP Cut #alpha = 10%")
