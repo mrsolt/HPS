@@ -282,29 +282,29 @@ for i in range(len(cuts)):
 	else:
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 
-label.append("No V0 Proj Cut")
-label.append("V0 Proj 1.5#sigma")
-label.append("V0 Proj 2#sigma")
-label.append("V0 Proj 2.5#sigma")
-label.append("V0 Proj 3#sigma")
+#label.append("No V0 Proj Cut")
+#label.append("V0 Proj 1.5#sigma")
+#label.append("V0 Proj 2#sigma")
+#label.append("V0 Proj 2.5#sigma")
+#label.append("V0 Proj 3#sigma")
 
-#label.append("No IP Cut")
-#label.append("IP Cut #alpha = 10%")
-#label.append("IP Cut #alpha = 15%")
-#label.append("IP Cut #alpha = 20%")
-#label.append("IP Cut #alpha = 25%")
+label.append("No IP Cut")
+label.append("IP Cut #alpha = 10%")
+label.append("IP Cut #alpha = 15%")
+label.append("IP Cut #alpha = 20%")
+label.append("IP Cut #alpha = 25%")
 
 floatcuts.append("uncP<9999")
 
-floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
-floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.0))
-floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.5))
-floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,3.0))
+#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
+#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.0))
+#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.5))
+#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,3.0))
 
-#floatcuts.append(z0cut1)
-#floatcuts.append(z0cut2)
-#floatcuts.append(z0cut3)
-#floatcuts.append(z0cut4)
+floatcuts.append(z0cut1)
+floatcuts.append(z0cut2)
+floatcuts.append(z0cut3)
+floatcuts.append(z0cut4)
 
 openPDF(outfile,c)
 
