@@ -270,6 +270,7 @@ z0cut4 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up4,posZ0_down4,posZ0_up4,eleZ0
 #cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
 #cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cuts.append("uncChisq<4")
+cuts.append("uncM<0.16")
 cuts.append("uncP>2.0")
 cuts.append(isocut)
 cuts.append(z0cut2)
@@ -282,10 +283,10 @@ for i in range(len(cuts)):
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 
 label.append("No V0 Proj Cut")
-label.append("V0 Proj 3#sigma")
-label.append("V0 Proj 2.5#sigma")
-label.append("V0 Proj 2#sigma")
 label.append("V0 Proj 1.5#sigma")
+label.append("V0 Proj 2#sigma")
+label.append("V0 Proj 2.5#sigma")
+label.append("V0 Proj 3#sigma")
 
 #label.append("No IP Cut")
 #label.append("IP Cut #alpha = 10%")
