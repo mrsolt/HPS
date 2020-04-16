@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 #import utilities as utils
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TLatex
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TLatex, TPad
 sys.argv = tmpargv
 
 #List arguments
