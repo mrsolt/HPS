@@ -306,6 +306,18 @@ setlog.append(1)
 setlog.append(1)
 setlog.append(0)
 
+angleMC = 0.111025680707
+angleData = 0.0386557750132
+if(useData):
+	angle = angleData
+else:
+	angle = angleMC
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+nSig = 2
+
 label = []
 cuts = []
 var = []
@@ -348,14 +360,20 @@ if(useData):
 dz = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3".format(c0,c1,c2,c3)
 
 if(L1L2):
-	a0 = -0.204298550172
-	a1 = -0.819203072994
-	a2 = 0.0215541584276
-	a3 = 0.0769066743212
-	b0 = -0.0131964462788
-	b1 = -0.356152922206
-	b2 = 0.0199952852357
-	b3 = 0.0682704240163
+	#a0 = -0.204298550172
+	#a1 = -0.819203072994
+	#a2 = 0.0215541584276
+	#a3 = 0.0769066743212
+	#b0 = -0.0131964462788
+	#b1 = -0.356152922206
+	#b2 = 0.0199952852357
+	#b3 = 0.0682704240163
+
+	m0 = -0.144047348514
+	a0 = 0.00744446817538
+	a1 = 0.000733701536088
+	b0 = 0.00396086083746
+	b1 = 0.00141551321138
 
 	eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 	posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
@@ -374,14 +392,20 @@ if(L1L2):
 	uncTargProjYSig = 1.5 * uncTargProjYSig
 
 else:
-	a0 = -0.177913468428
-	a1 = -0.932330924205
-	a2 = 0.00961915803124
-	a3 = 0.228303547556
-	b0 = 0.0115212779435
-	b1 = -0.651929048499
-	b2 = 0.0125216209858
-	b3 = 0.217752673675
+	#a0 = -0.177913468428
+	#a1 = -0.932330924205
+	#a2 = 0.00961915803124
+	#a3 = 0.228303547556
+	#b0 = 0.0115212779435
+	#b1 = -0.651929048499
+	#b2 = 0.0125216209858
+	#b3 = 0.217752673675
+
+	m0 = -0.220979312259
+	a0 = 0.0454134504877
+	a1 = -0.00194343184899
+	b0 = 0.0448779386535
+	b1 = -0.000904925763122
 
 	eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 	posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
@@ -394,15 +418,21 @@ else:
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
-posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+#eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+#posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
-posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+
+eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
+posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
+posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
 
 z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
-cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+#cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cuts.append("uncChisq<4")
 cuts.append("uncP>2.0")
 cuts.append(isocut)
@@ -414,7 +444,8 @@ label.append("V0 momentum > 2.0 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
-var.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2) 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+#var.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2) 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+var.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 var.append("uncChisq 0 10")
 var.append("uncP 0 2.4")
 var.append("eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega))) -3 7".format(zTarg))
