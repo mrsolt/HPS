@@ -20,7 +20,7 @@ options, remainder = getopt.gnu_getopt(sys.argv[1:], 'cfy:h')
 
 is80 = False
 is100 = False
-label = ""
+Label = ""
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -29,7 +29,7 @@ for opt, arg in options:
 		if opt=='-f':
 			is100 = True
 		if opt=='-y':
-			label=str(arg)
+			Label=str(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -133,21 +133,17 @@ histo3.Write("Integral tritrig")
 histo4.Write("Integral ap 80")
 histo5.Write("Integral ap 100")
 
-textFileName = ""
-if(is80):
-	textFileName = outfile+"_table_{0}.txt".format('80')
-if(is100):
-	textFileName = outfile+"_table_{0}.txt".format('100')
+textFileName = outfile+"_table.txt"
 textFile = open(textFileName,"w")
 
 for i in range(histo1.GetNbinsX()):
 	ibin = i + 1
 	if(is80):
-		textFile.write('{0} & {1} & {2:0.2f} & {3} & {4:0.2f} & {5} & {6:0.2f} & {7} & {8:0.2f} \\ \n'.format(label,histo1.GetBinContent(ibin),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
+		textFile.write('{0} & {1} & {2:0.2f} & {3} & {4:0.2f} & {5} & {6:0.2f} & {7:0.3f} & {8:0.2f} \\ \n'.format(Label,histo1.GetBinContent(ibin),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
 			histo2.GetBinContent(ibin),histo2.GetBinContent(ibin)/histo2.GetBinContent(1),histo3.GetBinContent(ibin),histo3.GetBinContent(ibin)/histo3.GetBinContent(1),
 			histo4.GetBinContent(ibin),histo4.GetBinContent(ibin)/histo4.GetBinContent(1)))
 	if(is100):
-		textFile.write('{0} & {1} & {2:0.2f} & {3} & {4:0.2f} & {5} & {6:0.2f} & {7} & {8:0.2f} \\ \n'.format(label,histo1.GetBinContent(ibin),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
+		textFile.write('{0} & {1} & {2:0.2f} & {3} & {4:0.2f} & {5} & {6:0.2f} & {7:0.3f} & {8:0.2f} \\ \n'.format(Label,histo1.GetBinContent(ibin),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
 			histo2.GetBinContent(ibin),histo2.GetBinContent(ibin)/histo2.GetBinContent(1),histo3.GetBinContent(ibin),histo3.GetBinContent(ibin)/histo3.GetBinContent(1),
 			histo5.GetBinContent(ibin),histo5.GetBinContent(ibin)/histo5.GetBinContent(1)))
 
