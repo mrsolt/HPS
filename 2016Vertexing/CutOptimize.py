@@ -340,7 +340,7 @@ if(is80):
 	label2 = " 70 < mass < 90 MeV"
 if(is100):
 	cuts.append("uncM<0.110&&uncM>0.090")
-		label2 = " 90 < mass < 110 MeV"
+	label2 = " 90 < mass < 110 MeV"
 
 floatcuts.append("uncP<9999")
 
