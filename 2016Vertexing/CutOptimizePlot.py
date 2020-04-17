@@ -90,7 +90,7 @@ if(histo5.GetMaximum() > maximum2):
 histo4.SetLineColor(1)
 histo4.GetXaxis().SetTitle("Cut Number")
 histo4.GetYaxis().SetRangeUser(0,maximum2*1.3)
-histo4.SetTitle("Events Past Zcut")
+histo4.SetTitle("Integrated Signal Past Zcut")
 histo4.Draw()
 histo5.SetLineColor(2)
 histo5.Draw("same")

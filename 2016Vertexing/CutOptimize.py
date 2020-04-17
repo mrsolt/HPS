@@ -133,7 +133,7 @@ def saveCutFlow(events,eventstruth,useAp,is80,is100,inHisto,cuts,floatcuts,nBins
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.035)
 
-	histointegral = TH1F("histointegral","histointegral",len(floatcuts),0,len(floatcuts)+1)
+	histointegral = TH1F("histointegral","histointegral",len(floatcuts),0,len(floatcuts))
 
 	for i in range(len(histos)):
 		color = color + 1
@@ -334,10 +334,13 @@ z0cut4 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up4,posZ0_down4,posZ0_up4,eleZ0
 cuts.append("uncP>2.0")
 cuts.append(isocut)
 
+label2 = ""
 if(is80):
 	cuts.append("uncM<0.090&&uncM>0.070")
+	label2 = " 70 < mass < 90 MeV"
 if(is100):
 	cuts.append("uncM<0.110&&uncM>0.090")
+		label2 = " 90 < mass < 110 MeV"
 
 floatcuts.append("uncP<9999")
 
@@ -390,7 +393,7 @@ for i in range(len(cuts)):
 
 openPDF(outfile,c)
 
-saveCutFlow(events,eventstruth,useAp,is80,is100,plot,nomcut,floatcuts,nBins,minVZ,maxVZ,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle="Events Past Zcut {0}".format(Label))
+saveCutFlow(events,eventstruth,useAp,is80,is100,plot,nomcut,floatcuts,nBins,minVZ,maxVZ,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle="Events Past Zcut {0}{1}".format(Label,label2))
 
 closePDF(outfile,c)
 outfileroot.Close()
