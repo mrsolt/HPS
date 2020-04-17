@@ -59,6 +59,12 @@ histo4 = infile4.Get("Integral")
 infile5.cd()
 histo5 = infile5.Get("Integral")
 
+label = ""
+if(is80):
+	label = " 70 < mass < 90 MeV"
+if(is100):
+	label = " 90 < mass < 110 MeV"
+
 openPDF(outfile,c)
 
 outfileroot.cd()
@@ -71,7 +77,7 @@ if(histo3.GetMaximum() > maximum):
 histo1.SetLineColor(1)
 histo1.GetXaxis().SetTitle("Cut Number")
 histo1.GetYaxis().SetRangeUser(0,maximum*1.3)
-histo1.SetTitle("Events Past Zcut{0}"format(label))
+histo1.SetTitle("Events Past Zcut{0}".format(label))
 histo1.Draw()
 histo2.SetLineColor(2)
 histo2.Draw("same")
@@ -91,12 +97,6 @@ legend.Draw("")
 
 c.Print(outfile+".pdf")
 c.Write()
-
-label = ""
-if(is80):
-	label = " 70 < mass < 90 MeV"
-if(is100):
-	label = " 90 < mass < 110 MeV"
 
 maximum2 = histo4.GetMaximum()
 if(histo5.GetMaximum() > maximum2):
