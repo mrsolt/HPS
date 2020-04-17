@@ -11,12 +11,21 @@ def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
     print '\t-h: this help message'
+    print '\t-c: is 80 MeV Ap (default False)'
+    print '\t-f: is 100 MeV ap (default False)'
     print
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'cfh')
+
+is80 = False
+is100 = False
 
 # Parse the command line arguments
 for opt, arg in options:
+		if opt=='-c':
+			is80 = True
+		if opt=='-f':
+			is100 = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -83,6 +92,12 @@ legend.Draw("")
 c.Print(outfile+".pdf")
 c.Write()
 
+label = ""
+if(is80):
+	label = " 70 < mass < 90 MeV"
+if(is100):
+	label = " 90 < mass < 110 MeV"
+
 maximum2 = histo4.GetMaximum()
 if(histo5.GetMaximum() > maximum2):
 	maximum2 = histo5.GetMaximum()
@@ -90,7 +105,7 @@ if(histo5.GetMaximum() > maximum2):
 histo4.SetLineColor(1)
 histo4.GetXaxis().SetTitle("Cut Number")
 histo4.GetYaxis().SetRangeUser(0,maximum2*1.3)
-histo4.SetTitle("Integrated Signal Past Zcut")
+histo4.SetTitle("Integrated Signal Past Zcut{0}".format(label))
 histo4.Draw()
 histo5.SetLineColor(2)
 histo5.Draw("same")
