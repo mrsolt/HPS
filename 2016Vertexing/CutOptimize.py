@@ -2,8 +2,9 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import getopt
+import math
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1
 sys.argv = tmpargv
 
 #List arguments
@@ -12,23 +13,24 @@ def print_usage():
     print 'Note: Even when not using a data, MC, or Ap file, you must feed a dummy text file'
     print "Arguments: "
     print '\t-z: target position (default -4.3 mm)'
-    print '\t-g: minimum uncVZ (default -60 mm)'
-    print '\t-i: maximum uncVZ (default 80 mm)'
+    print '\t-g: minimum uncVZ (default 0 mm)'
+    print '\t-i: maximum uncVZ (default 50 mm)'
     print '\t-e: beam energy (default 2.3 GeV)'
     print '\t-q: number of bins (default 140)'
     print '\t-t: cluster time offset (default 56 ns)'
-    print '\t-j: uncVX mean (default 0)'
-    print '\t-k: uncVX sigma (default 9999)'
-    print '\t-m: uncVY mean (default 0)'
-    print '\t-n: uncVY sigma (default 9999)'
     print '\t-o: uncTargProjX mean (default 0)'
     print '\t-p: uncTargProjX sigma (default 9999)'
     print '\t-a: uncTargProjY mean (default 0)'
     print '\t-b: uncTargProjY sigma (default 9999)'
-    print '\t-f: use preprocessing cuts and labels (default false)'
     print '\t-r: is L1L2 category (default false)'
     print '\t-y: plot label'
     print '\t-d: use data file (default False)'
+    print '\t-j: use Ap (default False)'
+    print '\t-k: do uncChisq (default False)'
+    print '\t-m: do V0 Proj (default False)'
+    print '\t-n: do IP Cut (default False)'
+    print '\t-c: is 80 MeV Ap (default False)'
+    print '\t-f: is 100 MeV ap (default False)'
     print '\t-h: this help message'
     print
 
@@ -39,18 +41,20 @@ maxVZ = 50
 nBins = 50
 L1L2 = False
 useData = False
+useAp = False
+doUncChisq = False
+doV0Proj = False
+doIP = False
+is80 = False
+is100 = False
 clusterT = 56
-uncVX = 0.
-uncVXSig = 9999.
-uncVY = 0.
-uncVYSig = 9999.
 uncTargProjX = 0.
 uncTargProjXSig = 9999.
 uncTargProjY = 0.
 uncTargProjYSig = 9999.
 Label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:y:rd')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:jkmncfo:p:a:b:y:rd')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -66,14 +70,6 @@ for opt, arg in options:
 			nBins = float(arg)
 		if opt=='-t':
 			clusterT = float(arg)
-		if opt=='-j':
-			uncVX=float(arg)
-		if opt=='-k':
-			uncVXSig=float(arg)
-		if opt=='-m':
-			uncVY=float(arg)
-		if opt=='-n':
-			uncVYSig=float(arg)
 		if opt=='-o':
 			uncTargProjX=float(arg)
 		if opt=='-p':
@@ -88,6 +84,18 @@ for opt, arg in options:
 			L1L2 = True
 		if opt=='-d':
 			useData = True
+		if opt=='-j':
+			useAp = True
+		if opt=='-k':
+			doUncChisq = True
+		if opt=='-m':
+			doV0Proj = True
+		if opt=='-n':
+			doIP = True
+		if opt=='-c':
+			is80 = True
+		if opt=='-f':
+			is100 = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -95,15 +103,28 @@ for opt, arg in options:
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
-def saveCutFlow(events,inHisto,cuts,floatcuts,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
+radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.2018,-2.342,12.86,25.88,-405.8,898.6),0.04,0.2)
+num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(4.903,208.3,-1880,-1868,68700,-198000),0.04,0.2)
+
+def saveCutFlow(events,eventstruth,useAp,is80,is100,inHisto,cuts,floatcuts,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	outfileroot.cd()
+	exppol1=TF1("exppol1","exp(pol1(0))",-5,100)
 	histos = []
+	histos2 = []
 	color = 0
 	for i in range(len(floatcuts)):
 		cutstot = "{0}&&{1}".format(cuts,floatcuts[i])
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo{0}".format(i),nBins,minX,maxX),cutstot)
 		histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 		histos[i].Sumw2()
+		if(useAp):
+			events.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histo2{0}".format(i),nBins,minX,maxX),cutstot)
+			histos2.append(ROOT.gROOT.FindObject("histo2{0}".format(i)))
+			histos2[i].Sumw2()
+	if(useAp):
+		eventstruth.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histotruth",nBins,minX,maxX))
+		histostruth = ROOT.gROOT.FindObject("histotruth")
+		histostruth.Sumw2()
 
 	legend = TLegend(.58,.66,.92,.87)
 	legend.SetBorderSize(0)
@@ -111,6 +132,8 @@ def saveCutFlow(events,inHisto,cuts,floatcuts,nBins,minX,maxX,label,outfile,canv
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.035)
+
+	histointegral = TH1F("histointegral","histointegral",len(floatcuts),0,len(floatcuts)+1)
 
 	for i in range(len(histos)):
 		color = color + 1
@@ -128,10 +151,47 @@ def saveCutFlow(events,inHisto,cuts,floatcuts,nBins,minX,maxX,label,outfile,canv
 			histos[i].Draw("same")
 		histos[i].Write("histo{0}".format(i))
 		legend.AddEntry(histos[i],label[i],"LP")
+		if(useAp):
+			deltaM = 0.001
+			if(is80):
+				mass = 0.080
+				eps = 3e-9
+				num_rad = radfracf.Eval(mass)*num_pairsf.Eval(mass)
+				norm = 0.04
+			elif(is100):
+				mass = 0.100
+				eps = 2e-9
+				num_rad = radfracf.Eval(mass)*num_pairsf.Eval(mass)
+				norm = 0.14
+			else:
+				num_rad = 0
+				mass = -9999
+				eps = -9999
+				norm = 1.0
+			ap_yield= 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
+			hbar_c = 1.973e-13
+			gamma = 0.965
+			gammact = hbar_c*3.0*2.3*gamma/(mass*mass*(1/137.036)*eps)
+			exppol1.SetParameters(zTarg/gammact-math.log(gammact),-1.0/gammact)
+			histos2[i].Divide(histostruth)
+			histos2[i].Scale(ap_yield*eps/norm)
+			for j in range(histos2[i].GetNbinsX()):
+				sig_bin = histos2[i].GetBinContent(j+1) * exppol1.Eval(histos2[i].GetBinCenter(j+1))
+				histos2[i].SetBinContent(j+1,sig_bin)
+			print("{0} Number of Events: {1}".format(label[i],histos2[i].Integral()))
+			histointegral.SetBinContent(i+1,histos2[i].Integral())
+		else:
+			print("{0} Number of Events: {1}".format(label[i],histos[i].Integral()))
+			histointegral.SetBinContent(i+1,histos[i].Integral())
 
 	legend.Draw()
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histointegral.SetTitle(Label)
+	histointegral.GetXaxis().SetTitle("Cut Number")
+	histointegral.Draw()
+	canvas.Print(outfile+".pdf")
+	histointegral.Write("Integral")
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
@@ -145,6 +205,9 @@ outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 file = TFile(remainder[1])
 events = file.Get("ntuple")
+
+file2 = TFile(remainder[2])
+eventstruth = file2.Get("ntuple")
 
 plot = "uncVZ"
 plotlabel = "Reconstructed z [mm]"
@@ -267,13 +330,56 @@ eleZ0_down4 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,b0_
 posZ0_down4 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,b0_4,b1_4)
 z0cut4 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up4,posZ0_down4,posZ0_up4,eleZ0_down4)
 
-#cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
 cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
-cuts.append("uncChisq<4")
-cuts.append("uncM<0.16")
 cuts.append("uncP>2.0")
 cuts.append(isocut)
-#cuts.append(z0cut2)
+
+if(is80):
+	cuts.append("uncM<0.090&&uncM>0.070")
+if(is100):
+	cuts.append("uncM<0.110&&uncM>0.090")
+
+floatcuts.append("uncP<9999")
+
+if(doUncChisq):
+	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	cuts.append(z0cut2)
+	label.append("unc #chi^{2} < 10")
+	label.append("unc #chi^{2} < 6")
+	label.append("unc #chi^{2} < 5")
+	label.append("unc #chi^{2} < 4")
+	label.append("unc #chi^{2} < 3")
+	floatcuts.append("uncChisq<6")
+	floatcuts.append("uncChisq<5")
+	floatcuts.append("uncChisq<4")
+	floatcuts.append("uncChisq<3")
+
+if(doV0Proj):
+	cuts.append(z0cut2)
+	cuts.append("uncChisq<4")
+	label.append("No V0 Proj Cut")
+	label.append("V0 Proj 3#sigma")
+	label.append("V0 Proj 2.5#sigma")
+	label.append("V0 Proj 2#sigma")
+	label.append("V0 Proj 1.5#sigma")
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,3.0))
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.5))
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.0))
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
+
+if(doIP):
+	cuts.append("uncChisq<4")
+	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	label.append("No IP Cut")
+	label.append("IP Cut #alpha = 10%")
+	label.append("IP Cut #alpha = 15%")
+	label.append("IP Cut #alpha = 20%")
+	label.append("IP Cut #alpha = 25%")
+	floatcuts.append(z0cut1)
+	floatcuts.append(z0cut2)
+	floatcuts.append(z0cut3)
+	floatcuts.append(z0cut4)
+
 
 nomcut = ""
 for i in range(len(cuts)):
@@ -282,33 +388,9 @@ for i in range(len(cuts)):
 	else:
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 
-#label.append("No V0 Proj Cut")
-#label.append("V0 Proj 1.5#sigma")
-#label.append("V0 Proj 2#sigma")
-#label.append("V0 Proj 2.5#sigma")
-#label.append("V0 Proj 3#sigma")
-
-label.append("No IP Cut")
-label.append("IP Cut #alpha = 10%")
-label.append("IP Cut #alpha = 15%")
-label.append("IP Cut #alpha = 20%")
-label.append("IP Cut #alpha = 25%")
-
-floatcuts.append("uncP<9999")
-
-#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
-#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.0))
-#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.5))
-#floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,3.0))
-
-floatcuts.append(z0cut1)
-floatcuts.append(z0cut2)
-floatcuts.append(z0cut3)
-floatcuts.append(z0cut4)
-
 openPDF(outfile,c)
 
-saveCutFlow(events,plot,nomcut,floatcuts,nBins,minVZ,maxVZ,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle="Events Past Zcut {0}".format(Label))
+saveCutFlow(events,eventstruth,useAp,is80,is100,plot,nomcut,floatcuts,nBins,minVZ,maxVZ,label,outfile,c,XaxisTitle=plotlabel,YaxisTitle="",plotTitle="Events Past Zcut {0}".format(Label))
 
 closePDF(outfile,c)
 outfileroot.Close()
