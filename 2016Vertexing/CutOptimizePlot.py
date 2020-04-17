@@ -54,8 +54,14 @@ openPDF(outfile,c)
 
 outfileroot.cd()
 
+maximum = histo1.GetMaximum()
+if(histo2.GetMaximum() > maximum):
+	maximum = histo2.GetMaximum()
+if(histo3.GetMaximum() > maximum):
+	maximum = histo3.GetMaximum()
 histo1.SetLineColor(1)
 histo1.GetXaxis().SetTitle("Cut Number")
+histo1.GetYaxis().SetRangeUser(0,maximum*1.3)
 histo1.SetTitle("Events Past Zcut")
 histo1.Draw()
 histo2.SetLineColor(2)
@@ -77,8 +83,13 @@ legend.Draw("")
 c.Print(outfile+".pdf")
 c.Write()
 
+maximum2 = histo4.GetMaximum()
+if(histo5.GetMaximum() > maximum2):
+	maximum2 = histo5.GetMaximum()
+
 histo4.SetLineColor(1)
 histo4.GetXaxis().SetTitle("Cut Number")
+histo4.GetYaxis().SetRangeUser(0,maximum2*1.3)
 histo4.SetTitle("Events Past Zcut")
 histo4.Draw()
 histo5.SetLineColor(2)
