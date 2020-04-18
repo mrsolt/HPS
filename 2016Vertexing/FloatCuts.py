@@ -226,6 +226,18 @@ events = file.Get("ntuple")
 plot = "uncVZ"
 plotlabel = "Reconstructed z [mm]"
 
+angleMC = 0.111025680707
+angleData = 0.0386557750132
+if(useData):
+	angle = angleData
+else:
+	angle = angleMC
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+nSig = 2
+
 dz = "0."
 if(useData):
 	dz = "((-3.517-13.41*uncM+88.16*uncM^2-173.1*uncM^3)-(-3.14-27.2*uncM+144*uncM^2-257.1*uncM^3))"
@@ -261,17 +273,17 @@ else:
 	label.append("Preselection")
 
 	if(L1L2):
-		x0_cut1_pos_x0 = -0.3187
-		x1_cut1_pos_x0 = -0.9498
+		#x0_cut1_pos_x0 = -0.3187
+		#x1_cut1_pos_x0 = -0.9498
 
-		x0_cut1_neg_x0 = -0.09418
-		x1_cut1_neg_x0 = -0.7761
+		#x0_cut1_neg_x0 = -0.09418
+		#x1_cut1_neg_x0 = -0.7761
 
-		x0_cut1_pos_x1 = 0.02095
-		x1_cut1_pos_x1 = 0.05914
+		#x0_cut1_pos_x1 = 0.02095
+		#x1_cut1_pos_x1 = 0.05914
 
-		x0_cut1_neg_x1 = 0.02016
-		x1_cut1_neg_x1 = 0.05854
+		#x0_cut1_neg_x1 = 0.02016
+		#x1_cut1_neg_x1 = 0.05854
 
 		eleisoL1_1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-2.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 		posisoL1_1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-2.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
@@ -294,8 +306,8 @@ else:
 		eleiso_3 = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1_3,eleisoL2_3)
 		posiso_3 = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1_3,posisoL2_3)
 
-		z0cut2 = "((eleTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-posTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0}))))".format(dz) #80%
-		z0cut3 = "((eleTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0}))))".format(dz) #70%
+		#z0cut2 = "((eleTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-posTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.204298550172+-0.819203072994*uncM)+(0.0215541584276+0.0769066743212*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((-0.0131964462788+-0.356152922206*uncM)+(0.0199952852357+0.0682704240163*uncM)*(uncVZ+{0}))))".format(dz) #80%
+		#z0cut3 = "((eleTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.160212840296+-0.711401031858*uncM)+(0.0235892675119+0.0868362671156*uncM)*(uncVZ+{0}))&&-eleTrkZ0>((0.0074583976511+-0.335278819542*uncM)+(0.0213379480119+0.0830900617137*uncM)*(uncVZ+{0}))))".format(dz) #70%
 
 		cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
 		label.append("e- (!L1 & L2) or e+ (!L1 & L2)")
@@ -304,18 +316,54 @@ else:
 		uncTargProjXSig = 1.25 * uncTargProjXSig
 		uncTargProjYSig = 1.5 * uncTargProjYSig
 
+		m0_1 = -0.144047348514
+		a0_1 = 0.00744446817538
+		a1_1 = 0.000733701536088
+		b0_1 = 0.00396086083746
+		b1_1 = 0.00141551321138
+
+		m0_2 = -0.167438502208
+		a0_2 = 0.016762652862
+		a1_2 = 0.00033162637213
+		b0_2 = 0.0207347770085
+		b1_2 = 0.000331699098944
+
+		m0_3 = -0.165901413074
+		a0_3 = 0.0224285926089
+		a1_3 = 9.77428404087e-05
+		b0_3 = 0.0266646866578
+		b1_3 = -1.95809258016e-05
+
+		eleZ0_up1 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
+		posZ0_up1 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
+		eleZ0_down1 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+		posZ0_down1 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+		z0cut1 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up1,posZ0_down1,posZ0_up1,eleZ0_down1)
+
+		eleZ0_up2 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
+		posZ0_up2 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
+		eleZ0_down2 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+		posZ0_down2 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+		z0cut2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up2,posZ0_down2,posZ0_up2,eleZ0_down2)
+
+		eleZ0_up3 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
+		posZ0_up3 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
+		eleZ0_down3 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+		posZ0_down3 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+		z0cut3 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up3,posZ0_down3,posZ0_up3,eleZ0_down3)
+
 	else:
-		x0_cut1_pos_x0 = -0.2289
-		x1_cut1_pos_x0 = -1.09
+		#x0_cut1_pos_x0 = -0.2289
+		#x1_cut1_pos_x0 = -1.09
 
-		x0_cut1_neg_x0 = -0.0009241
-		x1_cut1_neg_x0 = -1.612
+		#x0_cut1_neg_x0 = -0.0009241
+		#x1_cut1_neg_x0 = -1.612
 
-		x0_cut1_pos_x1 = 0.009205
-		x1_cut1_pos_x1 = 0.2069
+		#x0_cut1_pos_x1 = 0.009205
+		#x1_cut1_pos_x1 = 0.2069
 
-		x0_cut1_neg_x1 = 0.0091
-		x1_cut1_neg_x1 = 0.2341
+		#x0_cut1_neg_x1 = 0.0091
+		#x1_cut1_neg_x1 = 0.2341
 
 		eleiso_1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-2.5*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 		posiso_1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-2.5*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
@@ -326,26 +374,64 @@ else:
 
 		#z0cut2 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_2,cut1_neg_2)
 		#z0cut3 = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos_3,cut1_neg_3)
-		z0cut2 = "((eleTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*uncVZ)&&-eleTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0}))))".format(dz) #80%
-		z0cut3 = "((eleTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*uncVZ)&&-eleTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*(uncVZ+{0}))))".format(dz) #70%
+		#z0cut2 = "((eleTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.177913468428+-0.932330924205*uncM)+(0.00961915803124+0.228303547556*uncM)*uncVZ)&&-eleTrkZ0>((0.0115212779435+-0.651929048499*uncM)+(0.0125216209858+0.217752673675*uncM)*(uncVZ+{0}))))".format(dz) #80%
+		#z0cut3 = "((eleTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*(uncVZ+{0}))&&-posTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*(uncVZ+{0})))||(posTrkZ0>((-0.168325129572+-0.764572061732*uncM)+(0.0117844556696+0.238831014837*uncM)*uncVZ)&&-eleTrkZ0>((0.0144335686792+-0.576408853332*uncM)+(0.0158057745213+0.223434276362*uncM)*(uncVZ+{0}))))".format(dz) #70%
 
 		cuts.append("eleHasL1&&posHasL1&&eleHasL2&&posHasL2")
 		label.append("e+e- L1 & L2")
 
-	x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
-	x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
-	cut1_pos = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_pos,x1_cut1_pos,dz)
+		m0_1 = -0.220979312259
+		a0_1 = 0.0454134504877
+		a1_1 = -0.00194343184899
+		b0_1 = 0.0448779386535
+		b1_1 = -0.000904925763122
 
-	x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
-	x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
-	cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
+		m0_2 = -0.201776054859
+		a0_2 = 0.0518988558564
+		a1_2 = -0.00230111045957
+		b0_2 = 0.0471576968062
+		b1_2 = -0.00108639651791
 
-	z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
+		m0_3 = -0.182785054865
+		a0_3 = 0.0548318052232
+		a1_3 = -0.00237467958982
+		b0_3 = 0.0510079099013
+		b1_3 = -0.00139764921133
+
+
+		eleZ0_up1 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
+		posZ0_up1 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
+		eleZ0_down1 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+		posZ0_down1 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+		z0cut1 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up1,posZ0_down1,posZ0_up1,eleZ0_down1)
+
+		eleZ0_up2 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
+		posZ0_up2 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
+		eleZ0_down2 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+		posZ0_down2 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+		z0cut2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up2,posZ0_down2,posZ0_up2,eleZ0_down2)
+
+		eleZ0_up3 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
+		posZ0_up3 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
+		eleZ0_down3 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+		posZ0_down3 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+		z0cut3 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up3,posZ0_down3,posZ0_up3,eleZ0_down3)
+
+	#x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
+	#x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
+	#cut1_pos = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_pos,x1_cut1_pos,dz)
+
+	#x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
+	#x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
+	#cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
+
+	#z0cut = "((eleTrkZ0>{0}&&-posTrkZ0>{1})||(posTrkZ0>{0}&&-eleTrkZ0>{1}))".format(cut1_pos,cut1_neg)
 	isocut1 = "({0}&&{1})".format(eleiso_1,posiso_1)
 	isocut2 = "({0}&&{1})".format(eleiso_2,posiso_2)
 	isocut3 = "({0}&&{1})".format(eleiso_3,posiso_3)
 
-	cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	#cuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 	cuts.append("uncChisq<4")
 	cuts.append("uncP>2.0")
 	cuts.append(isocut2)
@@ -363,8 +449,8 @@ else:
 	label.append("Isolation Cut 3#sigma")
 	label.append("Isolation Cut 2.5#sigma")
 	label.append("Isolation Cut 3.5#sigma")
+	label.append("Impact Parameter Cuts #alpha = 15%")
 	label.append("Impact Parameter Cuts #alpha = 10%")
-	label.append("Impact Parameter Cuts #alpha = 5%")
 	label.append("Impact Parameter Cuts #alpha = 20%")
 
 	#cut1_pos_2 = "({0}+{1}*(uncVZ+{2}))+0.1".format(x0_cut1_pos,x1_cut1_pos,dz)
@@ -372,15 +458,17 @@ else:
 	#cut1_pos_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_pos,x1_cut1_pos,dz)
 	#cut1_neg_3 = "({0}+{1}*(uncVZ+{2}))+0.2".format(x0_cut1_neg,x1_cut1_neg,dz)
 
-	floatcuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(1.5*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(1.5*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
-	floatcuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2.5*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2.5*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	#floatcuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(1.5*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(1.5*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	#floatcuts.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2.5*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2.5*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
+	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.5))
 	floatcuts.append("uncChisq<3")
 	floatcuts.append("uncChisq<5")
 	floatcuts.append("uncP>1.9")
 	floatcuts.append("uncP>2.1")
 	floatcuts.append(isocut1)
 	floatcuts.append(isocut3)
-	floatcuts.append(z0cut)
+	floatcuts.append(z0cut1)
 	floatcuts.append(z0cut3)
 
 cuts_1_arr = []

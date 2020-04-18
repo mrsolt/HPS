@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 #import utilities as utils
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
 #List arguments
@@ -192,7 +192,7 @@ c = TCanvas("c","c",800,600)
 labels = []
 labels.append("Preselection")
 labels.append("e+e- Layer Requirement")
-labels.append("V0 Projection 2 sigma")
+labels.append("V0 Projection 2#sigma")
 labels.append("Unconstrained Vertex Chisq < 4")
 labels.append("V0 momentum > 2.0 GeV")
 labels.append("Isolation Cut")
@@ -210,7 +210,7 @@ plotlabels.append("V0 Momentum [GeV]")
 
 xlabel = []
 xlabel.append("Passes Layer Requirement")
-xlabel.append("V0 Projection to Target N Sigma")
+xlabel.append("V0 Projection to Target N#sigma")
 xlabel.append("Unconstrainced Chisq")
 xlabel.append("V0 Momentum (GeV)")
 xlabel.append("Electron Isolation Cut Value (mm)")
