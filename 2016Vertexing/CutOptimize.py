@@ -269,8 +269,6 @@ if(L1L2):
 	b1_4 = -0.000292916678252
 
 	cuts.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))&&eleHasL2&&posHasL2")
-	uncVXSig = 1.25 * uncVXSig
-	uncVYSig = 1.5 * uncVYSig
 	uncTargProjXSig = 1.25 * uncTargProjXSig
 	uncTargProjYSig = 1.5 * uncTargProjYSig
 
