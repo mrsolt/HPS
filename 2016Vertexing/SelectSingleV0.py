@@ -18,7 +18,7 @@ def print_usage():
     print '\t-m: use MC information'
     print '\t-t: use MC full truth information'
     print '\t-p: make Plots'
-    print '\t-s: remove shared hits (default False)'
+    print '\t-s: remove shared hits (default True)'
     print '\t-g: minimum VZ (default -30 mm)'
     print '\t-i: maximum VZ (default 60 mm)'
     print '\t-h: this help message'
@@ -31,7 +31,7 @@ onlyOnly = False
 useMC = False
 useFullTruth = False
 makePlots = False
-removeSharedHits = False
+removeSharedHits = True
 minVZ = -30
 maxVZ = 60
 
@@ -53,7 +53,7 @@ for opt, arg in options:
         if opt=='-p':
             makePlots = True
         if opt=='-s':
-            removeSharedHits = True
+            removeSharedHits = False
         if opt=='-g':
             minVZ = float(arg)
         if opt=='-i':
