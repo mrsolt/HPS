@@ -211,7 +211,7 @@ plotlabels.append("V0 Momentum [GeV]")
 xlabel = []
 xlabel.append("Passes Layer Requirement")
 xlabel.append("V0 Projection to Target N#sigma")
-xlabel.append("Unconstrainced #chi^{2}")
+xlabel.append("Unconstrainced #chi{^2}")
 xlabel.append("V0 Momentum (GeV)")
 xlabel.append("Electron Isolation Cut Value (mm)")
 xlabel.append("Positron Isolation Cut Value (mm)")
