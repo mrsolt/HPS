@@ -369,11 +369,11 @@ if(L1L2):
 	#b2 = 0.0199952852357
 	#b3 = 0.0682704240163
 
-	m0 = -0.144047348514
-	a0 = 0.00744446817538
-	a1 = 0.000733701536088
-	b0 = 0.00396086083746
-	b1 = 0.00141551321138
+	m0 = -0.167438502208
+	a0 = 0.016762652862
+	a1 = 0.00033162637213
+	b0 = 0.0207347770085
+	b1 = 0.000331699098944
 
 	eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 	posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
@@ -401,11 +401,11 @@ else:
 	#b2 = 0.0125216209858
 	#b3 = 0.217752673675
 
-	m0 = -0.220979312259
-	a0 = 0.0454134504877
-	a1 = -0.00194343184899
-	b0 = 0.0448779386535
-	b1 = -0.000904925763122
+	m0 = -0.201776054859
+	a0 = 0.0518988558564
+	a1 = -0.00230111045957
+	b0 = 0.0471576968062
+	b1 = -0.00108639651791
 
 	eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
 	posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
