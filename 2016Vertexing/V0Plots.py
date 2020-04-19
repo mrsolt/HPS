@@ -19,6 +19,8 @@ def print_usage():
     print '\t-p: uncTargProjX sigma (default 9999)'
     print '\t-a: uncTargProjY mean (default 0)'
     print '\t-b: uncTargProjY sigma (default 9999)'
+    print '\t-d: is data (default false)'
+    print '\t-c: is MC (default false)'
     print '\t-h: this help message'
     print
 
@@ -31,8 +33,13 @@ uncTargProjX = 0.
 uncTargProjXSig = 9999.
 uncTargProjY = 0.
 uncTargProjYSig = 9999.
+isData = False
+isMC = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:j:k:m:n:o:p:a:b:h')
+angleMC = 0.111025680707
+angleData = 0.0386557750132
+
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'z:j:k:m:n:o:p:a:b:dch')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -54,6 +61,10 @@ for opt, arg in options:
 			uncTargProjY=float(arg)
 		if opt=='-b':
 			uncTargProjYSig=float(arg)
+		if opt=='-d':
+			isData = True
+		if opt=='-c':
+			isMC = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -92,6 +103,11 @@ V0_pos_sig = gDirectory.FindObject("V0_pos_sig")
 V0_proj.Fit("pol1","pol1","",-0.5,0.5)
 fit = V0_proj.GetFunction("pol1")
 angle = np.arctan(fit.GetParameter(1))
+print("Angle = {0} rad".format(angle))
+if(isData):
+	angle = angleData
+if(isMC):
+	angle = angleMC
 print("Angle = {0} rad".format(angle))
 xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
 yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
@@ -139,7 +155,7 @@ V0_proj_sig.GetXaxis().SetTitle("x-#mu_{x}/#sigma_{x}")
 V0_proj_sig.GetYaxis().SetTitle("y-#mu_{y}/#sigma_{y}")
 V0_proj_sig.SetTitle("Rotated V0 Projection To Target N#sigma {0}".format(label))
 V0_proj_sig.Draw("COLZ")
-ell = TEllipse(0, 0, 3, 3,0,360,0)
+ell = TEllipse(0, 0, 2, 2,0,360,0)
 ell.SetLineColor(2)
 ell.SetLineWidth(3)
 ell.SetFillColorAlpha(0,0)
