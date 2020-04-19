@@ -162,6 +162,7 @@ ell.SetFillColorAlpha(0,0)
 ell.Draw("same")
 c.Print(outfile+".pdf")
 c.Write()
+V0_proj_sig.Write("V0_proj_sig")
 
 
 closePDF(outfile,c)
