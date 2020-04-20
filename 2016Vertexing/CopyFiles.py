@@ -74,6 +74,19 @@ def main() :
     copyfile('{0}2.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_uncP')) #Preselection V0 Momentum
     copyfile('{0}1.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow')) #Preselection Cutflow
 
+    copyfile('{0}70.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L1_tight_vz_mass')) #Data Tight L1L1 Vz vs Mass
+    copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_vz')) #Data Tight Cutflow L1L1 Vz
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_mass')) #Data Tight Cutflow L1L1 Mass
+    copyfile('{0}26.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_p')) #Data Tight Cutflow L1L1 P
+    copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L1/L1L1_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L1_vz')) #MC Tight Cutflow L1L1 Vz
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L1/L1L1_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L1_mass')) #MC Tight Cutflow L1L1 Mass
+    copyfile('{0}26.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L1/L1L1_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L1_p')) #MC Tight Cutflow L1L1 P
+
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L1_final'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L1_final_vz_mass')) #Data Final L1L1 Vz vs Mass
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L1_final_zcut'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L1_final_vz_mass_zcut')) #Data Final L1L1 Vz vs Mass Zcut
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L1_final'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L1_final_vz_mass')) #Mass Final L1L1 Vz vs Mass
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L1_final_zcut'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L1_final_vz_mass_zcut')) #Mass Final L1L1 Vz vs Mass Zcut
+
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'tightcutflowL1L1')) #Tight Cutflow L1L1
     copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0pos_excl')) #Positron IP Exclusion
     copyfile('{0}_compare3.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0ele_excl')) #Electron IP Exclusion
@@ -214,6 +227,18 @@ def main() :
     copyfile('{0}52.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'v0p_n_1_z_L1L2')) #V0 Momentum n-1 Vz L1L2
     copyfile('{0}50.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'isocut_n_1_z_L1L2')) #Isocut n-1 Vz L1L2
     copyfile('{0}48.pdf'.format(tightL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'ip_n_1_z_L1L2')) #IP n-1 Vz L1L2
+
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L2_final'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L2_final_vz_mass')) #Data Final L1L2 Vz vs Mass
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L2_final_zcut'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L2_final_vz_mass_zcut')) #Data Final L1L2 Vz vs Mass Zcut
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L2_final'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L2_final_vz_mass')) #Mass Final L1L2 Vz vs Mass
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L2_final_zcut'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L2_final_vz_mass_zcut')) #Mass Final L1L2 Vz vs Mass Zcut
+    copyfile('{0}70.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L2/L1L2_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L2_tight_vz_mass')) #Data Tight L1L2 Vz vs Mass
+    copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L2/L1L2_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L2_vz')) #Data Tight Cutflow L1L2 Vz
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L2/L1L2_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L2_mass')) #Data Tight Cutflow L1L2 Mass
+    copyfile('{0}26.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L2/L1L2_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L2_p')) #Data Tight Cutflow L1L2 P
+    copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_vz')) #MC Tight Cutflow L1L2 Vz
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_mass')) #MC Tight Cutflow L1L2 Mass
+    copyfile('{0}26.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_p')) #MC Tight Cutflow L1L2 P
 
     copyfile('{0}4.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'tightcuts_compare_L1L2')) #Data/MC Compare Tight Cuts L1L2
     copyfile('{0}5.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare_L1L2')) #Data/MC Compare Final Selection L1L2
