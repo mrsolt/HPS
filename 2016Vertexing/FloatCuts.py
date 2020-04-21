@@ -260,12 +260,12 @@ if(preproc):
 
 	label.append("Preprocessing")
 	label.append("Pair1 Trigger")
-	label.append("Track/Cluster Match #chi{^2} < 10")
+	label.append("Track/Cluster Match #chi^{2} < 10")
 	label.append("Cluster Time Diff < 1.45 ns")
 	label.append("Track/Cluster Time Diff < 4 ns")
 	label.append("e- Momentum < 1.75 GeV")
 	label.append("Track Chisq / dof < 6")
-	label.append("Unconstrained Vertex #chi{^2} < 10")
+	label.append("Unconstrained Vertex #chi^{2} < 10")
 	label.append("e- and e+ Momentum > 0.4 GeV")
 	label.append("e+ e- Momentum Sum < 2.4 GeV")
 

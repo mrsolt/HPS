@@ -34,8 +34,8 @@ def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
 def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
-	RatioMin = 0.5
-	RatioMax = 1.5
+	RatioMin = 0.
+	RatioMax = 1.
 	outfileroot.cd()
 	canvas.Clear()
 	histos[0].SetTitle(plotTitle + " Inclusive")
@@ -216,7 +216,7 @@ label = []
 label.append("Preselection")
 label.append("e+e- Layer Requirement")
 label.append("V0 Projection 2#sigma")
-label.append("Unconstrained Vertex #chi{^2} < 4")
+label.append("Unconstrained Vertex #chi^{2} < 4")
 label.append("V0 momentum > 2.0 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
@@ -239,7 +239,7 @@ setlog.append(0)
 xlabel = []
 xlabel.append("Passes Layer Requirement")
 xlabel.append("V0 Projection to Target N#sigma")
-xlabel.append("Unconstrainced #chi{^2}")
+xlabel.append("Unconstrainced #chi^{2}")
 xlabel.append("V0 Momentum (GeV)")
 xlabel.append("Electron Isolation Cut Value (mm)")
 xlabel.append("Positron Isolation Cut Value (mm)")
