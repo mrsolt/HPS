@@ -179,7 +179,7 @@ for h in infile1.GetListOfKeys():
 		if(histos1[i].GetTitle() == h.GetTitle()): 
 			plotHisto = False
 			continue
-	if(not plotHisto): 
+	if(not plotHisto): continue
 	for f in h.GetListOfFunctions():
 		h.GetListOfFunctions().Remove(h.GetFunction(f.GetName()))
 	#if(h.GetFunction("fitfunc") is not None):
