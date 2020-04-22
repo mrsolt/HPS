@@ -141,16 +141,16 @@ for i in range(histo1.GetNbinsX()):
 	ibin = i + 1
 	if(is80):
 		textFile.write('{0} & {1}$\pm${2:0.1f} & {3:0.2f} & {4:0.1f}$\pm${5:0.1f} & {6:0.2f} & {7:0.1f}$\pm${8:0.1f} & {9:0.2f} & {10:0.3f} & {11:0.2f} \\ \n'.format(Label,
-			histo1.GetBinContent(ibin),math.sqrt(histo1.GetBinContent(ibin)),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
-			histo2.GetBinContent(ibin)/10,math.sqrt(histo2.GetBinContent(ibin))/10,histo2.GetBinContent(ibin)/histo2.GetBinContent(1),
-			histo3.GetBinContent(ibin)/30,math.sqrt(histo3.GetBinContent(ibin))/30,histo3.GetBinContent(ibin)/histo3.GetBinContent(1),
-			histo4.GetBinContent(ibin),histo4.GetBinContent(ibin)/histo4.GetBinContent(1)))
+			histo1.GetBinContent(ibin),math.sqrt(histo1.GetBinContent(ibin)),histo1.GetBinContent(ibin)/(histo1.GetBinContent(1)+1e-10),
+			histo2.GetBinContent(ibin)/10,math.sqrt(histo2.GetBinContent(ibin))/10,histo2.GetBinContent(ibin)/(histo2.GetBinContent(1)+1e-10),
+			histo3.GetBinContent(ibin)/30,math.sqrt(histo3.GetBinContent(ibin))/30,histo3.GetBinContent(ibin)/(histo3.GetBinContent(1)+1e-10),
+			histo4.GetBinContent(ibin),histo4.GetBinContent(ibin)/(histo4.GetBinContent(1)+1e-10)))
 	if(is100):
 		textFile.write('{0} & {1}$\pm${2:0.1f} & {3:0.2f} & {4:0.1f}$\pm${5:0.1f} & {6:0.2f} & {7:0.1f}$\pm${8:0.1f} & {9:0.2f} & {10:0.3f} & {11:0.2f} \\ \n'.format(Label,
-			histo1.GetBinContent(ibin),math.sqrt(histo1.GetBinContent(ibin)),histo1.GetBinContent(ibin)/histo1.GetBinContent(1),
-			histo2.GetBinContent(ibin)/10,math.sqrt(histo2.GetBinContent(ibin))/10,histo2.GetBinContent(ibin)/histo2.GetBinContent(1),
-			histo3.GetBinContent(ibin)/30,math.sqrt(histo3.GetBinContent(ibin))/30,histo3.GetBinContent(ibin)/histo3.GetBinContent(1),
-			histo5.GetBinContent(ibin),histo5.GetBinContent(ibin)/histo5.GetBinContent(1)))
+			histo1.GetBinContent(ibin),math.sqrt(histo1.GetBinContent(ibin)),histo1.GetBinContent(ibin)/(histo1.GetBinContent(1)+1e-10),
+			histo2.GetBinContent(ibin)/10,math.sqrt(histo2.GetBinContent(ibin))/10,histo2.GetBinContent(ibin)/(histo2.GetBinContent(1)+1e-10),
+			histo3.GetBinContent(ibin)/30,math.sqrt(histo3.GetBinContent(ibin))/30,histo3.GetBinContent(ibin)/(histo3.GetBinContent(1)+1e-10),
+			histo5.GetBinContent(ibin),histo5.GetBinContent(ibin)/(histo5.GetBinContent(1)+1e-10)))
 
 textFile.close()
 outfileroot.Close()
