@@ -183,17 +183,23 @@ cuts = ""
 eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(targZ)
 posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(targZ)
 
-x0_cut1_pos_x0 = -0.2289
-x1_cut1_pos_x0 = -1.09
+#x0_cut1_pos_x0 = -0.2289
+#x1_cut1_pos_x0 = -1.09
 
-x0_cut1_neg_x0 = -0.0009241
-x1_cut1_neg_x0 = -1.612
+#x0_cut1_neg_x0 = -0.0009241
+#x1_cut1_neg_x0 = -1.612
 
-x0_cut1_pos_x1 = 0.009205
-x1_cut1_pos_x1 = 0.2069
+#x0_cut1_pos_x1 = 0.009205
+#x1_cut1_pos_x1 = 0.2069
 
-x0_cut1_neg_x1 = 0.0091
-x1_cut1_neg_x1 = 0.2341
+#x0_cut1_neg_x1 = 0.0091
+#x1_cut1_neg_x1 = 0.2341
+
+m0 = -0.201776054859
+a0 = 0.0518988558564
+a1 = -0.00230111045957
+b0 = 0.0471576968062
+b1 = -0.00108639651791
 
 dz = "0."
 if(useData):
@@ -205,17 +211,23 @@ if(useData):
 	trackTDiff = 56
 
 if(L1L2):
-	x0_cut1_pos_x0 = -0.3187
-	x1_cut1_pos_x0 = -0.9498
+	#x0_cut1_pos_x0 = -0.3187
+	#x1_cut1_pos_x0 = -0.9498
 
-	x0_cut1_neg_x0 = -0.09418
-	x1_cut1_neg_x0 = -0.7761
+	#x0_cut1_neg_x0 = -0.09418
+	#x1_cut1_neg_x0 = -0.7761
 
-	x0_cut1_pos_x1 = 0.02095
-	x1_cut1_pos_x1 = 0.05914
+	#x0_cut1_pos_x1 = 0.02095
+	#x1_cut1_pos_x1 = 0.05914
 
-	x0_cut1_neg_x1 = 0.02016
-	x1_cut1_neg_x1 = 0.05854
+	#x0_cut1_neg_x1 = 0.02016
+	#x1_cut1_neg_x1 = 0.05854
+
+	m0 = -0.167438502208
+	a0 = 0.016762652862
+	a1 = 0.00033162637213
+	b0 = 0.0207347770085
+	b1 = 0.000331699098944
 
 	eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))".format(targZ)
 	posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))".format(targZ)
@@ -226,13 +238,16 @@ if(L1L2):
 	uncVXSig = 1.25 * uncVXSig
 	uncVYSig = 1.5 * uncVYSig
 
-x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
-x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
-cut1_pos = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_pos,x1_cut1_pos,dz)
+#x0_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x0,x1_cut1_pos_x0)
+#x1_cut1_pos = "({0}+{1}*uncM)".format(x0_cut1_pos_x1,x1_cut1_pos_x1)
+#cut1_pos = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_pos,x1_cut1_pos,dz)
 
-x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
-x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
-cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
+#x0_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x0,x1_cut1_neg_x0)
+#x1_cut1_neg = "({0}+{1}*uncM)".format(x0_cut1_neg_x1,x1_cut1_neg_x1)
+#cut1_neg = "({0}+{1}*(uncVZ+{2}))".format(x0_cut1_neg,x1_cut1_neg,dz)
+
+cut1_pos = "({0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+cut1_neg = "({0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
 
 rootfile = TFile(outfile+".root","recreate")
 

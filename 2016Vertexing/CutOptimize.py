@@ -214,6 +214,7 @@ plotlabel = "Reconstructed z [mm]"
 
 angleMC = 0.111025680707
 angleData = 0.0386557750132
+
 if(useData):
 	angle = angleData
 else:
@@ -304,28 +305,28 @@ else:
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
 
-eleZ0_up1 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
-posZ0_up1 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
-eleZ0_down1 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
-posZ0_down1 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+eleZ0_up1 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz)
+posZ0_up1 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz)
+eleZ0_down1 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz)
+posZ0_down1 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz)
 z0cut1 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up1,posZ0_down1,posZ0_up1,eleZ0_down1)
 
-eleZ0_up2 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
-posZ0_up2 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
-eleZ0_down2 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
-posZ0_down2 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+eleZ0_up2 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz)
+posZ0_up2 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz)
+eleZ0_down2 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz)
+posZ0_down2 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz)
 z0cut2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up2,posZ0_down2,posZ0_up2,eleZ0_down2)
 
-eleZ0_up3 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
-posZ0_up3 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
-eleZ0_down3 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
-posZ0_down3 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+eleZ0_up3 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz)
+posZ0_up3 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz)
+eleZ0_down3 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz)
+posZ0_down3 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz)
 z0cut3 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up3,posZ0_down3,posZ0_up3,eleZ0_down3)
 
-eleZ0_up4 = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,a0_4,a1_4)
-posZ0_up4 = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,a0_4,a1_4)
-eleZ0_down4 = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,b0_4,b1_4)
-posZ0_down4 = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_4,b0_4,b1_4)
+eleZ0_up4 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz)
+posZ0_up4 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz)
+eleZ0_down4 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz)
+posZ0_down4 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz)
 z0cut4 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up4,posZ0_down4,posZ0_up4,eleZ0_down4)
 
 #cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
