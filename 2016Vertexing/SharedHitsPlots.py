@@ -33,11 +33,12 @@ def closePDF(outfile,canvas):
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
 
-file = TFile(remainder[1])
-events = file.Get("ntuple")
+events = TChain("ntuple")
+for i in range(2,len(remainder)):
+    events.Add(remainder[i])
 
 label = ""
-label = str(remainder[2])
+label = str(remainder[1])
 
 cut="eleNHitsShared>0.5||posNHitsShared>0.5"
 events.Draw("uncVZ>>histo(100,-30,30)")
