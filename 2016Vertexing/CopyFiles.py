@@ -87,6 +87,9 @@ def main() :
     copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L1_final'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L1_final_vz_mass')) #Mass Final L1L1 Vz vs Mass
     copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L1_final_zcut'),'{0}{1}.pdf'.format(outdirSelection,'mc_L1L1_final_vz_mass_zcut')) #Mass Final L1L1 Vz vs Mass Zcut
 
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L1_sharedhits'),'{0}{1}.pdf'.format(outdirSelection,'L1L1_sharedhits_data')) #Shared Hits L1L1 data
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L1_sharedhits'),'{0}{1}.pdf'.format(outdirSelection,'L1L1_sharedhits_mc')) #Shared Hits L1L1 MC
+
     copyfile('{0}_compare1.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'tightcutflowL1L1')) #Tight Cutflow L1L1
     copyfile('{0}_compare2.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0pos_excl')) #Positron IP Exclusion
     copyfile('{0}_compare3.pdf'.format(tightL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'z0ele_excl')) #Electron IP Exclusion
@@ -239,6 +242,9 @@ def main() :
     copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_vz')) #MC Tight Cutflow L1L2 Vz
     copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_mass')) #MC Tight Cutflow L1L2 Mass
     copyfile('{0}26.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/L1L2/L1L2_cutflow_tritrig-wab-beam'),'{0}{1}.pdf'.format(outdirSelection,'mctightcutflowL1L2_p')) #MC Tight Cutflow L1L2 P
+
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/10per_L1L2_sharedhits'),'{0}{1}.pdf'.format(outdirSelection,'L1L2_sharedhits_data')) #Shared Hits L1L2 data
+    copyfile('{0}.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/tritrig-wab-beam/Tight/tritrig-wab-beam_L1L2_sharedhits'),'{0}{1}.pdf'.format(outdirSelection,'L1L2_sharedhits_mc')) #Shared Hits L1L2 MC
 
     copyfile('{0}4.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'tightcuts_compare_L1L2')) #Data/MC Compare Tight Cuts L1L2
     copyfile('{0}5.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare_L1L2')) #Data/MC Compare Final Selection L1L2
