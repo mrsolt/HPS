@@ -123,7 +123,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 
 	outfileroot.cd()
 	if(inHisto == "uncVZ"):
-		events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo_2D",nBins,0.,0.2,minX,maxX),cut_tot)
+		events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo_2D",nBins,0.,0.2,-30,30),cut_tot)
 		histo_2D = ROOT.gROOT.FindObject("histo_2D")
 		canvas.SetLogz(1)
 		canvas.SetLogy(0)
