@@ -184,7 +184,10 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	histo5data.SetTitle(label)
 	histo5data.GetXaxis().SetTitle(XaxisTitle)
 	histo5data.GetYaxis().SetTitle(YaxisTitle)
-	histo5data.GetYaxis().SetRangeUser(minimum/2,maximum*10)
+	if(logY == 0):
+		histo5data.GetYaxis().SetRangeUser(0,maximum*1.3)
+	else:
+		histo5data.GetYaxis().SetRangeUser(minimum/2,maximum*10)
 	histo5data.SetStats(stats)
 	histo5mc.SetLineColor(2)
 	histo5mc.Draw("same")

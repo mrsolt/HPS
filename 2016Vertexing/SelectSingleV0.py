@@ -456,6 +456,7 @@ if onlyOnly:
 
 print("Number of events with a duplicate V0 = {0}".format(duplicates))
 print("Total Number of V0s = {0}".format(n))
+print("Total Number of V0s Remaining = {0}".format(output.size))
 root_numpy.array2root(output,remainder[0]+".root",mode="recreate",treename="ntuple")
 
 if(makePlots):

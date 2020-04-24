@@ -118,7 +118,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
 		histos3.append(ROOT.gROOT.FindObject("histo3{0}_{1}".format(i,inHisto)))
 		if(inHisto == "uncVZ"):
-			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,minX,maxX),cuts_1)
+			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,-30,30),cuts_1)
 			histos4.append(ROOT.gROOT.FindObject("histo4{0}_{1}".format(i,inHisto)))
 
 	outfileroot.cd()
@@ -445,7 +445,7 @@ label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
 #var.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2) 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,zTarg))
-var.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
+var.append("sqrt((({4}-{0})/({1}))^2+(({5}-{2})/({3}))^2) 0 2".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot))
 var.append("uncChisq 0 10")
 var.append("uncP 0 2.4")
 var.append("eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega))) -3 7".format(zTarg))
