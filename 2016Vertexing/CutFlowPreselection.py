@@ -195,12 +195,18 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	histo5ap1.Draw("same")
 	histo5ap2.SetLineColor(8)
 	histo5ap2.Draw("same")
-	line1 = TLine(lineval1,0,lineval1,maximum*10)
+	if(logY == 0):
+		line1 = TLine(lineval1,0,lineval1,maximum*1.3)
+	else:
+		line1 = TLine(lineval1,0,lineval1,maximum*10)
 	line1.SetLineColor(2)
 	line1.SetLineWidth(3)
 	line1.Draw("")
 	if(lineval2 != ""):
-		line2 = TLine(lineval2,0,lineval2,maximum*10)
+		if(logY == 0):
+			line2 = TLine(lineval2,0,lineval2,maximum*1.3)
+		else:
+			line2 = TLine(lineval2,0,lineval2,maximum*10)
 		line2.SetLineColor(2)
 		line2.SetLineWidth(3)
 		line2.Draw("")
