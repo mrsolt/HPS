@@ -118,7 +118,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
 		histos3.append(ROOT.gROOT.FindObject("histo3{0}_{1}".format(i,inHisto)))
 		if(inHisto == "uncVZ"):
-			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,-40,40),cuts_1)
+			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,-30,30),cuts_1)
 			histos4.append(ROOT.gROOT.FindObject("histo4{0}_{1}".format(i,inHisto)))
 
 	outfileroot.cd()
