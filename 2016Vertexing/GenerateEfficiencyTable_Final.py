@@ -4,6 +4,7 @@ import sys
 import array, math
 import numpy as np
 import random
+import root_numpy, numpy
 import ROOT
 from ROOT import gROOT, gStyle, TFile, TTree, TChain, TMVA, TCut, TCanvas, gDirectory, TH1, TGraph, gPad, TF1, TH1F, TLegend, TLatex, TGraphErrors
 import getopt
@@ -17,6 +18,8 @@ def print_usage():
     print '\t-z: total range in z covered <default 100 mm>'
     print '\t-T: plot Test plots'
     print '\t-s: tuple name <default is "ntuple">'
+    print '\t-c: cut tracks with shared hits <default is false>'
+    print '\t-u: use zcut <default is false">'
     print '\t-h: this help message'
     print
 
@@ -27,6 +30,8 @@ killInTrackSlope = True
 targZ = -4.3
 nBins = 50
 zRange = 100
+removeSharedHits = False
+zcut = False
 tupleName = "ntuple"
 
 #Function to plot efficiency tests of known masses
@@ -378,7 +383,7 @@ def getEffTH1(hfile, hname):
         effHist.SetBinContent(histBin,y)   
     return effHist
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Ts:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Tcus:h')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -392,6 +397,10 @@ for opt, arg in options:
         zRange=float(arg)
     if opt=='-T':
         makeTestPlots = True
+    if opt=='-c':
+        removeSharedHits = True
+    if opt=='-u':
+        zcut = True
     if opt=='-s':
         tupleName = str(arg)
     if opt=='-h':
@@ -549,6 +558,57 @@ def GetCategories(events,mass,outfile):
 
     return newevents1, newevents2, newevents3
 
+def SelectSingleV0s(filename,tuplename,mass):
+
+    branchlist=["event","run","triEndZ","triStartP","uncVZ","bscChisq","uncM","uncP","eleTrkZ0","posTrkZ0","eleP","posP","elePY","posPY","uncVX","uncVY","uncPX","uncPY","uncPZ","eleMinPositiveIso","posMinPositiveIso","eleMinPositiveIsoL2","posMinPositiveIsoL2","eleTrkLambda","posTrkLambda","eleTrkOmega","posTrkOmega","eleTrkZ0Err","posTrkZ0Err","eleTrkLambdaErr","posTrkLambdaErr","eleTrkOmegaErr","posTrkOmegaErr","eleNHitsShared","posNHitsShared","eleHasL1","posHasL1"]
+    events_SingleV0 = root_numpy.root2array(filename,branches=branchlist,treename=tuplename)
+    n = events_SingleV0.size
+
+    names = ["event","run","triEndZ","triStartP","uncVZ","bscChisq","uncM","uncP","eleTrkZ0","posTrkZ0","eleP","posP","elePY","posPY","uncVX","uncVY","uncPX","uncPY","uncPZ","eleMinPositiveIso","posMinPositiveIso","eleMinPositiveIsoL2","posMinPositiveIsoL2","eleTrkLambda","posTrkLambda","eleTrkOmega","posTrkOmega","eleTrkZ0Err","posTrkZ0Err","eleTrkLambdaErr","posTrkLambdaErr","eleTrkOmegaErr","posTrkOmegaErr","eleNHitsShared","posNHitsShared","eleHasL1","posHasL1"]
+    cut = events_SingleV0["uncP"]>0.0
+    stuff = [[events_SingleV0[i],(i,events_SingleV0.dtype[i])] for i in names]
+    stuff.append([cut,("cut",numpy.int8)])
+    stuff.append([numpy.zeros(n),("nPass",numpy.int8)])
+    stuff.append([numpy.zeros(n),("rank",numpy.int8)])
+
+    dataarray = [i[0] for i in stuff]
+    typearray = [i[1] for i in stuff]
+    output = numpy.core.records.fromarrays(dataarray,dtype=typearray)
+    currentevent = -99999
+    candidates = []
+
+    duplicates = 0
+    for i in xrange(0,n):
+        if events_SingleV0[i]["event"]!=currentevent:
+            candidates.sort(key=lambda x:events_SingleV0[x]["bscChisq"],reverse=False)
+            rank=1
+            for j in candidates:
+                output[j]["nPass"]=len(candidates)
+                output[j]["rank"]=rank
+                rank+=1
+                if(rank>2):
+                    duplicates = duplicates + 1
+            del candidates[:]
+            currentevent = events_SingleV0[i]["event"]
+        if output[i]["cut"]!=0:
+            candidates.append(i)
+
+    output = output[output["nPass"]==1]
+
+    print("Number of events with a duplicate V0 = {0}".format(duplicates))
+    print("Total Number of V0s = {0}".format(n))
+    print("Total Number of V0s Remaining = {0}".format(output.size))
+    root_numpy.array2root(output,"dum_singleV0_{0}_{1:0.0f}.root".format(tuplename,mass*1000),mode="recreate",treename=tuplename)
+    filefinal = TFile("dum_singleV0_{0}_{1:0.0f}.root".format(tuplename,mass*1000))
+
+    #del events_SingleV0
+    del stuff
+    del dataarray
+    del typearray
+    del output
+
+    return filefinal
+
 def openPDF(outfile,canvas):
     canvas.Print(outfile+".pdf[")
 
@@ -601,39 +661,71 @@ for i in range(nBins):
 #Function to fit for normalization
 exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
 
-uncTargProjX = -0.0917593000854 
-uncTargProjXSig = 0.215671748567
-uncTargProjY = -0.0772518524373
-uncTargProjYSig = 0.0862582336468
+#uncTargProjX = -0.0917593000854 
+#uncTargProjXSig = 0.215671748567
+#uncTargProjY = -0.0772518524373
+#uncTargProjYSig = 0.0862582336468
+
+angleMC = 0.111025680707
+angleData = 0.0386557750132
+angle = angleMC
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(targZ)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(targZ)
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+
+uncTargProjX = -0.0995461972579 
+uncTargProjXSig = 0.217919555935 
+uncTargProjY = -0.0668941015569 
+uncTargProjYSig = 0.0831670646584
+nSig = 2
 
 eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(targZ)
 posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(targZ)
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
 
-a0 = -0.177913468428
-a1 = -0.932330924205
-a2 = 0.00961915803124
-a3 = 0.228303547556
-b0 = 0.0115212779435
-b1 = -0.651929048499
-b2 = 0.0125216209858
-b3 = 0.217752673675
+m0 = -0.201776054859
+a0 = 0.0518988558564
+a1 = -0.00230111045957
+b0 = 0.0471576968062
+b1 = -0.00108639651791
 dz = 0.
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
-posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
+posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
-posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#a0 = -0.177913468428
+#a1 = -0.932330924205
+#a2 = 0.00961915803124
+#a3 = 0.228303547556
+#b0 = 0.0115212779435
+#b1 = -0.651929048499
+#b2 = 0.0125216209858
+#b3 = 0.217752673675
+#dz = 0.
+
+#eleZ0_up = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+#posZ0_up = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+
+#eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 
 z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
 cutsL1L1 = []
-cutsL1L1.append("eleHasL1&&posHasL1")
-cutsL1L1.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,targZ))
+#cutsL1L1.append("eleHasL1&&posHasL1")
+#cutsL1L1.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,targZ))
+cutsL1L1.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cutsL1L1.append(isocut)
 cutsL1L1.append(z0cut)
+if(removeSharedHits):
+    cutsL1L1.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
+if(zcut):
+    zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-2.308,1227,-29030,285300,-1296000,2229000) #10% Data L1L1
+    cutsL1L1.append("uncVZ>{0}".format(zcutL1L1))
 
 cutL1L1 = cutsL1L1[0]
 for i in range(1,len(cutsL1L1)):
@@ -653,38 +745,61 @@ isocut_L1L2 = "({0}&&{1})".format(eleiso_L1L2,posiso_L1L2)
 uncTargProjXSigL1L2 = 1.25 * uncTargProjXSig
 uncTargProjYSigL1L2 = 1.5 * uncTargProjYSig
 
-a0 = -0.204298550172
-a1 = -0.819203072994
-a2 = 0.0215541584276
-a3 = 0.0769066743212
-b0 = -0.0131964462788
-b1 = -0.356152922206
-b2 = 0.0199952852357
-b3 = 0.0682704240163
+m0 = -0.167438502208
+a0 = 0.016762652862
+a1 = 0.00033162637213
+b0 = 0.0207347770085
+b1 = 0.000331699098944
 
-eleZ0_up_L1L2 = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
-posZ0_up_L1L2 = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+eleZ0_up_L1L2 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+posZ0_up_L1L2 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+eleZ0_down_L1L2 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
+posZ0_down_L1L2 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
 
-eleZ0_down_L1L2 = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
-posZ0_down_L1L2 = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#a0 = -0.204298550172
+#a1 = -0.819203072994
+#a2 = 0.0215541584276
+#a3 = 0.0769066743212
+#b0 = -0.0131964462788
+#b1 = -0.356152922206
+#b2 = 0.0199952852357
+#b3 = 0.0682704240163
+
+#eleZ0_up_L1L2 = "(eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+#posZ0_up_L1L2 = "(posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(a0,a1,a2,a3,dz)
+
+#eleZ0_down_L1L2 = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
+#posZ0_down_L1L2 = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 
 z0cut_L1L2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up_L1L2,posZ0_down_L1L2,posZ0_up_L1L2,eleZ0_down_L1L2)
 
 cutsL1L2 = []
-cutsL1L2.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))")
-cutsL1L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+#cutsL1L2.append("((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))")
+#cutsL1L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+cutsL1L2.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cutsL1L2.append(isocut_L1L2)
 cutsL1L2.append(z0cut_L1L2)
+if(removeSharedHits):
+    cutsL1L2.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
+if(zcut):
+    zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
+    cutsL1L2.append("uncVZ>{0}".format(zcutL1L2))
 
 cutL1L2 = cutsL1L2[0]
 for i in range(1,len(cutsL1L2)):
     cutL1L2 = cutL1L2 + "&&" + cutsL1L2[i]
 
 cutsL2L2 = []
-cutsL2L2.append("(!eleHasL1&&!posHasL1)")
-cutsL2L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+#cutsL2L2.append("(!eleHasL1&&!posHasL1)")
+#cutsL2L2.append("sqrt((abs((uncVX-(uncVZ-{4})*uncPX/uncPZ)-{0})/(2*{1}))^2+(abs((uncVY-(uncVZ-{4})*uncPY/uncPZ)-{2})/(2*{3}))^2)<1".format(uncTargProjX,uncTargProjXSigL1L2,uncTargProjY,uncTargProjYSigL1L2,targZ))
+cutsL2L2.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cutsL2L2.append("({0}&&{1})".format(eleisoL2,posisoL2))
 cutsL2L2.append(z0cut_L1L2)
+if(removeSharedHits):
+    cutsL2L2.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
+if(zcut):
+    zcutL2L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
+    cutsL2L2.append("uncVZ>{0}".format(zcutL2L2))
 
 cutL2L2 = cutsL2L2[0]
 for i in range(1,len(cutsL2L2)):
@@ -756,14 +871,36 @@ for i in range(nMass):
     histosL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_{0:0.0f}".format(mass[i]*1000)))
     L2L2events.Draw("triEndZ>>histoReconL2L2_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     histosL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_{0:0.0f}".format(mass[i]*1000)))
-    eventstruth.Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),"triStartP>0.8*{0}".format(eBeam))
+    #eventstruth.Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),"triStartP>0.8*{0}".format(eBeam))
+    eventstruth.Draw("triEndZ>>histoTruth_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     histosTruth.append(ROOT.gROOT.FindObject("histoTruth_{0:0.0f}".format(mass[i]*1000)))
 
-    L1L1events.Draw("triEndZ>>histoReconL1L1_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L1)
+    file1 = TFile("dum_laycut_L1L1_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"recreate")
+    eventsL1L1_singleV0 = L1L1events.CopyTree(cutL1L1)
+    eventsL1L1_singleV0.SetName("ntuple_L1L1")
+    eventsL1L1_singleV0.Write()
+    fileL1L1 = SelectSingleV0s("dum_laycut_L1L1_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"ntuple_L1L1",mass[i])
+    L1L1events_singleV0 = fileL1L1.Get("ntuple_L1L1")
+
+    file2 = TFile("dum_laycut_L1L2_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"recreate")
+    eventsL1L2_singleV0 = L1L2events.CopyTree(cutL1L2)
+    eventsL1L2_singleV0.SetName("ntuple_L1L2")
+    eventsL1L2_singleV0.Write()
+    fileL1L2 = SelectSingleV0s("dum_laycut_L1L2_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"ntuple_L1L2",mass[i])
+    L1L2events_singleV0 = fileL1L2.Get("ntuple_L1L2")
+
+    file3 = TFile("dum_laycut_L2L2_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"recreate")
+    eventsL2L2_singleV0 = L2L2events.CopyTree(cutL2L2)
+    eventsL2L2_singleV0.SetName("ntuple_L2L2")
+    eventsL2L2_singleV0.Write()
+    fileL2L2 = SelectSingleV0s("dum_laycut_L2L2_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"ntuple_L2L2",mass[i])
+    L2L2events_singleV0 = fileL2L2.Get("ntuple_L2L2")
+
+    L1L1events_singleV0.Draw("triEndZ>>histoReconL1L1_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L1)
     histoscutL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_cut_{0:0.0f}".format(mass[i]*1000)))
-    L1L2events.Draw("triEndZ>>histoReconL1L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L2)
+    L1L2events_singleV0.Draw("triEndZ>>histoReconL1L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L2)
     histoscutL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_cut_{0:0.0f}".format(mass[i]*1000)))
-    L2L2events.Draw("triEndZ>>histoReconL2L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL2L2)
+    L2L2events_singleV0.Draw("triEndZ>>histoReconL2L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL2L2)
     histoscutL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_cut_{0:0.0f}".format(mass[i]*1000)))
 
     histosL1L1[i].Sumw2()
@@ -813,7 +950,7 @@ for i in range(nMass):
     textfileL1L2Norm.write("\n")
     textfileL2L2.write("\n")
     textfileL2L2Norm.write("\n")
-    L1L1events.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam),cutL1L1)
+    L1L1events_singleV0.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam))
     histosgamma.append(ROOT.gROOT.FindObject("gammahisto_{0:0.0f}".format(mass[i]*1000)))
     gammamean.append(histosgamma[i].GetMean())
     print(histosgamma[i].GetMean())
