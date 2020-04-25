@@ -238,6 +238,7 @@ if useFullTruth:
     branchlist.append("posL2bIsGoodTruthHit")
     branchlist.append("posL3bIsGoodTruthHit")
     branchlist.append("posL4bIsGoodTruthHit")
+
 events = root_numpy.root2array(remainder[1],branches=branchlist,treename="ntuple")
 
 n = events.size
@@ -432,6 +433,8 @@ candidates = []
 mccandidates = []
 
 duplicates = 0
+sharedhits = 0
+sharedhits_duplicates = 0
 for i in xrange(0,n):
     if events[i]["event"]!=currentevent:
         candidates.sort(key=lambda x:events[x]["bscChisq"],reverse=False)
@@ -440,12 +443,16 @@ for i in xrange(0,n):
             output[j]["nPass"]=len(candidates)
             output[j]["rank"]=rank
             rank+=1
-            if(rank>2):
+            if(len(candidates)>1):
                 duplicates = duplicates + 1
+                if(events[i]["eleNHitsShared"]>0.5 or events[i]["posNHitsShared"]>0.5):
+                    sharedhits_duplicates = sharedhits_duplicates + 1
         del candidates[:]
         currentevent = events[i]["event"]
     if output[i]["cut"]!=0:
         candidates.append(i)
+    else:
+        sharedhits = sharedhits + 1
 
 if cutOutput:
     output = output[output["cut"]!=0]
@@ -454,9 +461,12 @@ if onlyBest:
 if onlyOnly:
     output = output[output["nPass"]==1]
 
-print("Number of events with a duplicate V0 = {0}".format(duplicates))
+print("Total Number of of Shared Hits = {0}".format(sharedhits))
+print("Total Number of Duplicate V0s = {0}".format(duplicates))
+print("Total Number of Duplicate V0s with Shared Hits = {0}".format(sharedhits_duplicates))
 print("Total Number of V0s = {0}".format(n))
 print("Total Number of V0s Remaining = {0}".format(output.size))
+
 root_numpy.array2root(output,remainder[0]+".root",mode="recreate",treename="ntuple")
 
 if(makePlots):
