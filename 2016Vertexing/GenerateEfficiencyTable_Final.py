@@ -221,7 +221,6 @@ def plotEff(histos,histosTruth,normArr,output,outPDF,outfileroot,canvas,mass,use
         if(histos[i].GetMaximum() > maximum):
             maximum = histos_copy[i].GetMaximum()
         legend.AddEntry(histos_copy[i],str("%.3g" % (mass[i] * 1000))+" MeV","LP")
-        #histos[i].Sumw2()
         if(i == 0):
             histos_copy[i].Draw()
             histos_copy[i].SetStats(0)
@@ -527,7 +526,7 @@ def NewEventsL1L2(events,mass,outfile):
 def GetCategories(events,mass,outfile):
 
     L1L1cut = "eleHasL1&&posHasL1"
-    L1L2cut = "(!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1)"
+    L1L2cut = "((!eleHasL1&&posHasL1)||(eleHasL1&&!posHasL1))"
     L2L2cut = "!eleHasL1&&!posHasL1"
     file = TFile("dum_laycut_{0:0.0f}_{1}.root".format(mass*1000,outfile),"recreate")
     eventsL1L1 = events.CopyTree(L1L1cut)
@@ -671,8 +670,8 @@ angleData = 0.0386557750132
 angle = angleMC
 xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(targZ)
 yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(targZ)
-xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
-yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+xProj_rot = "({0}*cos({2})-{1}*sin({2}))".format(xProj,yProj,-angle)
+yProj_rot = "({0}*sin({2})+{1}*cos({2}))".format(xProj,yProj,-angle)
 
 uncTargProjX = -0.0995461972579 
 uncTargProjXSig = 0.217919555935 
@@ -896,11 +895,13 @@ for i in range(nMass):
     fileL2L2 = SelectSingleV0s("dum_laycut_L2L2_{0:0.0f}_{1}.root".format(mass[i]*1000,outfile),"ntuple_L2L2",mass[i])
     L2L2events_singleV0 = fileL2L2.Get("ntuple_L2L2")
 
-    L1L1events_singleV0.Draw("triEndZ>>histoReconL1L1_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L1)
+    outfileroot.cd()
+
+    L1L1events_singleV0.Draw("triEndZ>>histoReconL1L1_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     histoscutL1L1.append(ROOT.gROOT.FindObject("histoReconL1L1_cut_{0:0.0f}".format(mass[i]*1000)))
-    L1L2events_singleV0.Draw("triEndZ>>histoReconL1L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL1L2)
+    L1L2events_singleV0.Draw("triEndZ>>histoReconL1L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     histoscutL1L2.append(ROOT.gROOT.FindObject("histoReconL1L2_cut_{0:0.0f}".format(mass[i]*1000)))
-    L2L2events_singleV0.Draw("triEndZ>>histoReconL2L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000),cutL2L2)
+    L2L2events_singleV0.Draw("triEndZ>>histoReconL2L2_cut_{3:0.0f}({0},{1},{2})".format(nBins,targZ,maxZ,mass[i]*1000))
     histoscutL2L2.append(ROOT.gROOT.FindObject("histoReconL2L2_cut_{0:0.0f}".format(mass[i]*1000)))
 
     histosL1L1[i].Sumw2()
