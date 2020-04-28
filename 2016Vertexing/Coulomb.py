@@ -145,14 +145,6 @@ gStyle.SetPalette(1)
 c = TCanvas("c","c",800,600)
 c.SetLogz(1)
 
-cut = ""
-if(useZcut):
-	cut = "uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(22.23,48.63,-5150,49760,-169900,141700)
-	if(L1L2):
-		cut = "uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(25.23,47.14,-2987,12370,0,0)
-
-#cut = cut + "&&" + "uncM>0.06&&uncM<0.15"
-
 masscut_nsigma = 2.80
 if(not L1L2):
 	mres = TF1("mres","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
@@ -176,16 +168,18 @@ angleMC = 0.111025680707
 angleData = 0.0386557750132
 angle = angleMC
 zTarg = -4.3
+uncTargProjX = -0.0995461972579
+uncTargProjXSig = 0.217919555935
 uncTargProjY = -0.0668941015569
 uncTargProjYSig = 0.0831670646584
 uncY =  -0.0772321507928
 uncYSig = 0.0878428842895
 
-m0 = -0.201776054859
-a0 = 0.0518988558564
-a1 = -0.00230111045957
-b0 = 0.0471576968062
-b1 = -0.00108639651791
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
+xProj_rot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
+yProj_rot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
+nSig = 2
 
 if(L1L2):
 	m0 = -0.167438502208
@@ -193,8 +187,60 @@ if(L1L2):
 	a1 = 0.00033162637213
 	b0 = 0.0207347770085
 	b1 = 0.000331699098944
-	uncTargProjYSig = uncTargProjYSig * 1.5
-	uncYSig = uncYSig * 1.5
+
+	eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+	eleisoL2 = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	posisoL2 = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+	eleiso = "((eleHasL1&&{0})||(!eleHasL1&&{1}))".format(eleisoL1,eleisoL2)
+	posiso = "((posHasL1&&{0})||(!posHasL1&&{1}))".format(posisoL1,posisoL2)
+
+	uncTargProjXSig = 1.25 * uncTargProjXSig
+	uncTargProjYSig = 1.5 * uncTargProjYSig
+
+else:
+	m0 = -0.201776054859
+	a0 = 0.0518988558564
+	a1 = -0.00230111045957
+	b0 = 0.0471576968062
+	b1 = -0.00108639651791
+
+	eleiso = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	posiso = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+isocut = "({0}&&{1})".format(eleiso,posiso)
+
+dz = 0
+eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
+posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
+
+z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
+
+cuts = []
+if(useZcut):
+	if(L1L2):
+		cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(25.23,47.14,-2987,12370,0,0))
+	else:
+		cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(22.23,48.63,-5150,49760,-169900,141700))
+
+cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
+cuts.append("uncChisq<4")
+cuts.append("uncP>2.0")
+cuts.append(isocut)
+cuts.append(z0cut)
+cuts.append("eleHasL2&&posHasL2")
+#cuts.append(uncM>0.06&&uncM<0.15")
+
+cut = ""
+for i in range(len(cuts)):
+	if(i == 0):
+		cut = cuts[i]
+	else:
+		cut = cut + "&&" + cuts[i]
 
 plots2D = []
 plots2D.append("uncM uncVZ 0 0.2 {0} {1}".format(minVZ,maxVZ))
