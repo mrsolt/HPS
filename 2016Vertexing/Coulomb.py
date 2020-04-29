@@ -455,8 +455,8 @@ cutevents.Branch("posPY",posPY,"posPY")
 if(useData):
 	for entry in xrange(neventscut):
 		dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
-		if(dzcut < 0):
-			continue
+		#if(dzcut < 0):
+		#	continue
 		cutevents.GetEntry(entry)
 
 		xProj = (cutevents.uncVX-(cutevents.uncVZ-zTarg)*cutevents.uncPX/cutevents.uncPZ)
@@ -530,8 +530,8 @@ cutevents.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
 
 for entry in xrange(neventscut):
 	dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
-	if(dzcut < 0):
-		continue
+	#if(dzcut < 0):
+	#	continue
 	cutevents.GetEntry(entry)
 	eleL1t = getScatter(cutevents.eleL1tthetaY,cutevents.eleL1tInthetaY)
 	eleL2t = getScatter(cutevents.eleL2tthetaY,cutevents.eleL2tInthetaY)
