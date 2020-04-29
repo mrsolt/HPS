@@ -452,10 +452,10 @@ cutevents.Branch("posPY",posPY,"posPY")
 if(useData):
 	textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & Run & Event & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 	for entry in xrange(neventscut):
-		dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
 		#if(dzcut < 0):
 		#	continue
 		cutevents.GetEntry(entry)
+		dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
 
 		xProj = (cutevents.uncVX-(cutevents.uncVZ-zTarg)*cutevents.uncPX/cutevents.uncPZ)
 		yProj = (cutevents.uncVY-(cutevents.uncVZ-zTarg)*cutevents.uncPY/cutevents.uncPZ)
