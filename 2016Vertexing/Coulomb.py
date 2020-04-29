@@ -15,6 +15,8 @@ def print_usage():
     print '\t-l: is L1L2 (default false)'
     print '\t-z: use zcut (default false)'
     print '\t-p: save PDF (default true)'
+    print '\t-d: use Data (default false)'
+    print '\t-y: plot labels'
     print '\t-m: minimum uncVZ'
     print '\t-n: maximum uncVZ'
     print '\t-h: this help message'
@@ -76,20 +78,7 @@ def openPDF(outfile,canvas):
 def closePDF(outfile,canvas):
 	c.Print(outfile+".pdf]")
 
-def saveTuplePlot(events,inHisto,nBinsX,minX,maxX,outfile,canvas,XaxisTitle="",plotTitle="",cut="",stats=0,logY=0,savePDF=False):
-	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBinsX,minX,maxX),cut)
-	histo = ROOT.gROOT.FindObject("histo")
-	histo.SetTitle(plotTitle)
-	histo.GetXaxis().SetTitle(XaxisTitle)
-	histo.SetStats(stats)
-	histo.Draw()
-	canvas.SetLogy(logY)
-	if(savePDF):
-	    canvas.Print(outfile+".pdf")
-	histo.Write(plotTitle)
-	del histo
-
-def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",cut="",stats=0,logY=0,savePDF=False):
+def saveTuplePlot2D(events,inHisto1,inHisto2,nBinsX,minX,maxX,nBinsY,minY,maxY,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",cut="",stats=1,logY=0,savePDF=False):
 	events.Draw("{0}:{1}>>histo({2},{3},{4},{5},{6},{7})".format(inHisto2,inHisto1,nBinsX,minX,maxX,nBinsY,minY,maxY),cut)
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.SetTitle(plotTitle)
@@ -121,8 +110,10 @@ minVZ = -30
 maxVZ = 30
 savePDF = True
 useZcut = False
+useData = False
+label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lzm:n:ph')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lzm:n:py:dh')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -134,8 +125,12 @@ for opt, arg in options:
 			minVZ = float(arg)
 		if opt=='-n':
 			maxVZ = float(arg)
+		if opt=='-y':
+			label = str(arg)
 		if opt=='-p':
 			savePDF = False
+		if opt=='-d':
+			useData = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -166,14 +161,24 @@ minTheta = -maxTheta
 
 angleMC = 0.111025680707
 angleData = 0.0386557750132
-angle = angleMC
+if(useData):
+	angle = angleData
+	uncTargProjX = -0.139824865412
+	uncTargProjXSig = 0.337082294325
+	uncTargProjY = -0.0600724148472
+	uncTargProjYSig = 0.0971755263948
+	uncY =  -0.0743550601346
+	uncYSig = 0.102015199636
+else:
+	angle = angleMC
+	uncTargProjX = -0.0995461972579
+	uncTargProjXSig = 0.217919555935
+	uncTargProjY = -0.0668941015569
+	uncTargProjYSig = 0.0831670646584
+	uncY =  -0.0772321507928
+	uncYSig = 0.0878428842895
+
 zTarg = -4.3
-uncTargProjX = -0.0995461972579
-uncTargProjXSig = 0.217919555935
-uncTargProjY = -0.0668941015569
-uncTargProjYSig = 0.0831670646584
-uncY =  -0.0772321507928
-uncYSig = 0.0878428842895
 
 xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
 yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
@@ -212,7 +217,19 @@ else:
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
 
-dz = 0
+c0 = 0.0
+c1 = 0.0
+c2 = 0.0
+c3 = 0.0
+
+if(useData):
+	c0 = -0.377
+	c1 = 13.79
+	c2 = -55.84
+	c3 = 84.0
+
+dz = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3".format(c0,c1,c2,c3)
+
 eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
 posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
 eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
@@ -223,9 +240,19 @@ z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_dow
 cuts = []
 if(useZcut):
 	if(L1L2):
-		cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(25.23,47.14,-2987,12370,0,0))
+		if(useData):
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-133,8211,-162000,1480000,-6406000,10560000),0.05,0.175) #L1L2 10%
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-133,8211,-162000,1480000,-6406000,10560000))
+		else:
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(25.23,47.14,-2987,12370,0,0),0.05,0.175)
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(25.23,47.14,-2987,12370,0,0))
 	else:
-		cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(22.23,48.63,-5150,49760,-169900,141700))
+		if(useData):
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-2.308,1227,-29030,285300,-1296000,2229000),0.05,0.175) #L1L1 10%
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-2.308,1227,-29030,285300,-1296000,2229000))
+		else:
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(22.23,48.63,-5150,49760,-169900,141700),0.05,0.175)
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(22.23,48.63,-5150,49760,-169900,141700))
 
 cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 cuts.append("uncChisq<4")
@@ -233,7 +260,7 @@ cuts.append("uncP>2.0")
 cuts.append(isocut)
 cuts.append(z0cut)
 cuts.append("eleHasL2&&posHasL2")
-#cuts.append(uncM>0.06&&uncM<0.15")
+cuts.append("uncM>0.06&&uncM<0.15")
 
 cut = ""
 for i in range(len(cuts)):
@@ -263,7 +290,7 @@ for j in range(0,len(plots2D)):
 	maxX = getMaxX2D(plots2D[j])
 	minY = getMinY(plots2D[j])
 	maxY = getMaxY(plots2D[j])
-	saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,x,y,y+" vs "+x+" "+cut,cut,1,savePDF=savePDF)
+	saveTuplePlot2D(events,x,y,nBins,minX,maxX,nBins,minY,maxY,outfile,c,"Mass (GeV)","Reconstructed z (mm)","Past zcut".format(label),cut=cut,stats=1,savePDF=savePDF)
 
 for i in range(nBins):
 	mass = minMass + i * (maxMass - minMass)/nBins
@@ -274,12 +301,12 @@ for i in range(nBins):
 	events.Draw("{0}>>histo({1},{2},{3})".format("uncVZ",nBins,-30,30),masscut)
 	histo = ROOT.gROOT.FindObject("histo")
 	nbk = histo.GetEntries()
-	nBack.SetBinContent(i+1,nbk/3)
-	nBack.SetBinError(i+1,math.sqrt(nbk)/3)
+	nBack.SetBinContent(i+1,nbk)
+	nBack.SetBinError(i+1,math.sqrt(nbk))
 	del histo
 
 nBack.Draw()
-nBack.SetTitle("Number of Background Events")
+nBack.SetTitle("Number of Background Events Overlapping Bins {0}".format(label))
 nBack.GetXaxis().SetTitle("Mass (GeV)")
 nBack.SetStats(0)
 nBack.Fit('pol2')
@@ -302,21 +329,14 @@ nBackunbiased = TH1F("nBackunbiased","nBackunbiased",nBins,minMass,maxMass)
 
 for i in range(nBins):
 	mass = minMass + i * (maxMass - minMass)/nBins
-	if(cut == ""):
-		masscut = "abs({0}-{1})<{2}/2*{3}".format("uncM",mass,masscut_nsigma,mres.Eval(mass))
-	else:
-		masscut = cut + "&&abs({0}-{1})<{2}/2*{3}".format("uncM",mass,masscut_nsigma,mres.Eval(mass))
-	events.Draw("{0}>>histo({1},{2},{3})".format("uncVZ",nBins,-30,30),masscut)
-	histo = ROOT.gROOT.FindObject("histo")
 	nbknew = getUnbiased(mass,mres.Eval(mass)/2*masscut_nsigma,nBack)
-	nbk = nBack.GetBinContent(i+1)
+	#nbk = nBack.GetBinContent(i+1)
 	nBackunbiased.SetBinContent(i+1,nbknew)
 	#nBackunbiased.SetBinError(i+1,math.sqrt(nbk))
-	del histo
 
 nBack.SetLineColor(1)
 nBack.Draw()
-nBack.SetTitle("Number of Background Events")
+nBack.SetTitle("Number of Background Events Overlapping Bins {0}".format(label))
 nBack.GetXaxis().SetTitle("Mass (GeV)")
 nBack.SetStats(0)
 nBackunbiased.SetLineColor(4)
@@ -334,10 +354,66 @@ legend.AddEntry(nBackunbiased,"Unbiased","LP")
 legend.Draw("same")
 c.Print(outfile+".pdf")
 
-scatter = TH2F("scatter","scatter",100,0,maxTheta/2,100,0,maxTheta/2)
-scatterL1 = TH2F("scatterL1","scatterL1",100,0,maxTheta/2,100,0,maxTheta/2)
-scatterL2 = TH2F("scatterL2","scatterL2",100,0,maxTheta/2,100,0,maxTheta/2)
-scattermax = TH2F("scattermax","scattermax",100,0,maxTheta/2,100,0,maxTheta/2)
+massArr = []
+mass = minMass
+for i in range(nBins):
+	massArr.append(mass)
+	mass = mass + mres.Eval(mass)/2 * masscut_nsigma
+	if(mass > maxMass):
+		break
+
+nBackNon = TH1F("nBackNon","nBackNon",len(massArr),massArr[0],massArr[len(massArr)-1])
+for i in range(len(massArr)):
+	mass = massArr[i]
+	if(cut == ""):
+		masscut = "abs({0}-{1})<{2}/2*{3}".format("uncM",mass,masscut_nsigma,mres.Eval(mass))
+	else:
+		masscut = cut + "&&abs({0}-{1})<{2}/2*{3}".format("uncM",mass,masscut_nsigma,mres.Eval(mass))
+	events.Draw("{0}>>histo({1},{2},{3})".format("uncVZ",nBins,-30,30),masscut)
+	histo = ROOT.gROOT.FindObject("histo")
+	nbk = histo.GetEntries()
+	nBackNon.SetBinContent(i+1,nbk)
+	nBackNon.SetBinError(i+1,math.sqrt(nbk))
+	del histo
+
+nBackNon.Draw()
+nBackNon.SetTitle("Number of Background Events {0}".format(label))
+nBackNon.GetXaxis().SetTitle("Mass (GeV)")
+nBackNon.SetStats(0)
+nBackNon.Fit('pol2')
+nBackNon.Write("Background")
+c.Print(outfile+".pdf")
+
+def getUnbiasedNon(mass,nbin,histoback):
+    histoclone = histoback.Clone()
+    histoclone.SetBinError(nbin,0)
+    fit = TF1("fit","pol2")
+    histoclone.Fit('fit')
+    backnew = fit.Eval(mass)
+    return backnew
+
+nBackunbiasedNon = TH1F("nBackunbiasedNon","nBackunbiasedNon",len(massArr),massArr[0],massArr[len(massArr)-1])
+
+for i in range(len(massArr)):
+	nbknew = getUnbiasedNon(massArr[i],i+1,nBackNon)
+	#nbk = nBack.GetBinContent(i+1)
+	nBackunbiasedNon.SetBinContent(i+1,nbknew)
+	#nBackunbiased.SetBinError(i+1,math.sqrt(nbk))
+
+nBackNon.SetLineColor(1)
+nBackNon.Draw()
+nBackNon.SetTitle("Number of Background Events Overlapping Bins {0}".format(label))
+nBackNon.GetXaxis().SetTitle("Mass (GeV)")
+nBackNon.SetStats(0)
+nBackunbiasedNon.SetLineColor(4)
+nBackunbiasedNon.Draw("same")
+nBackunbiasedNon.SetStats(0)
+nBackunbiasedNon.Write("Background Unbiased")
+legend.Draw("same")
+c.Print(outfile+".pdf")
+
+
+textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & $theta_{1}$ (mrad) & $theta_{2}$ (mrad) & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 
 cutevents = events.CopyTree(cut)
 neventscut = cutevents.GetEntries()
@@ -359,6 +435,59 @@ posTrkZ0 = array('d',[0])
 elePY = array('d',[0])
 posPY = array('d',[0])
 
+cutevents.Branch("uncVX",uncVX,"uncVX")
+cutevents.Branch("uncVY",uncVY,"uncVY")
+cutevents.Branch("uncVZ",uncVZ,"uncVZ")
+
+cutevents.Branch("uncPX",uncPX,"uncPX")
+cutevents.Branch("uncPY",uncPY,"uncPY")
+cutevents.Branch("uncPZ",uncPZ,"uncPZ")
+cutevents.Branch("uncP",uncP,"uncP")
+
+cutevents.Branch("uncM",uncM,"uncM")
+cutevents.Branch("uncChisq",uncChisq,"uncChisq")
+
+cutevents.Branch("eleTrkZ0",eleTrkZ0,"eleTrkZ0")
+cutevents.Branch("posTrkZ0",posTrkZ0,"posTrkZ0")
+cutevents.Branch("elePY",elePY,"elePY")
+cutevents.Branch("posPY",posPY,"posPY")
+
+if(useData):
+	for entry in xrange(neventscut):
+		dzcut = events.uncVZ - zcut.Eval(mass)
+		if(dzcut < 0):
+			continue
+		cutevents.GetEntry(entry)
+
+		xProj = (cutevents.uncVX-(cutevents.uncVZ-zTarg)*cutevents.uncPX/cutevents.uncPZ)
+		yProj = (cutevents.uncVY-(cutevents.uncVZ-zTarg)*cutevents.uncPY/cutevents.uncPZ)
+		yProj_rot = xProj*math.sin(angle)+yProj*math.cos(angle)
+
+		projY = abs(yProj_rot - uncTargProjY) / uncTargProjYSig
+		VY = abs(cutevents.uncVY - uncY) / uncYSig
+
+		if(cutevents.elePY > 0):
+			eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
+			posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2} & {3} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,"--","--",cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+		else:
+			eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
+			posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2} & {3} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,"--","--",cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+
+	textFile.close()
+	if(savePDF):
+		closePDF(outfile,c)
+	rootfile.Close()
+	sys.exit(0)
+
+scatter = TH2F("scatter","scatter",100,0,maxTheta/2,100,0,maxTheta/2)
+scatterL1 = TH2F("scatterL1","scatterL1",100,0,maxTheta/2,100,0,maxTheta/2)
+scatterL2 = TH2F("scatterL2","scatterL2",100,0,maxTheta/2,100,0,maxTheta/2)
+scattermax = TH2F("scattermax","scattermax",100,0,maxTheta/2,100,0,maxTheta/2)
+
 eleL1tthetaY = array('d',[0])
 eleL2tthetaY = array('d',[0])
 eleL1bthetaY = array('d',[0])
@@ -378,23 +507,6 @@ posL1tInthetaY = array('d',[0])
 posL2tInthetaY = array('d',[0])
 posL1bInthetaY = array('d',[0])
 posL2bInthetaY = array('d',[0])
-
-cutevents.Branch("uncVX",uncVX,"uncVX")
-cutevents.Branch("uncVY",uncVY,"uncVY")
-cutevents.Branch("uncVZ",uncVZ,"uncVZ")
-
-cutevents.Branch("uncPX",uncPX,"uncPX")
-cutevents.Branch("uncPY",uncPY,"uncPY")
-cutevents.Branch("uncPZ",uncPZ,"uncPZ")
-cutevents.Branch("uncP",uncP,"uncP")
-
-cutevents.Branch("uncM",uncM,"uncM")
-cutevents.Branch("uncChisq",uncChisq,"uncChisq")
-
-cutevents.Branch("eleTrkZ0",eleTrkZ0,"eleTrkZ0")
-cutevents.Branch("posTrkZ0",posTrkZ0,"posTrkZ0")
-cutevents.Branch("elePY",elePY,"elePY")
-cutevents.Branch("posPY",posPY,"posPY")
 
 cutevents.Branch("eleL1tthetaY",eleL1tthetaY,"eleL1tthetaY/D")
 cutevents.Branch("eleL2tthetaY",eleL2tthetaY,"eleL2tthetaY/D")
@@ -416,8 +528,10 @@ cutevents.Branch("posL2tInthetaY",posL2tInthetaY,"posL2tInthetaY/D")
 cutevents.Branch("posL1bInthetaY",posL1bInthetaY,"posL1bInthetaY/D")
 cutevents.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
 
-textFile.write('VZ (mm) & Mass (MeV) & $theta_{1}$ (mrad) & $theta_{2}$ (mrad) & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 for entry in xrange(neventscut):
+	dzcut = events.uncVZ - zcut.Eval(mass)
+	if(dzcut < 0):
+		continue
 	cutevents.GetEntry(entry)
 	eleL1t = getScatter(cutevents.eleL1tthetaY,cutevents.eleL1tInthetaY)
 	eleL2t = getScatter(cutevents.eleL2tthetaY,cutevents.eleL2tInthetaY)
@@ -445,20 +559,20 @@ for entry in xrange(neventscut):
 	VY = abs(cutevents.uncVY - uncY) / uncYSig
 
 	if(cutevents.elePY > 0):
-		eleZ0 = cutevents.eleTrkZ0-m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ
-		posZ0 = -cutevents.posTrkZ0-m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ
-		textFile.write('{0:0.2f} & {1:0.2f}$ & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f}\n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(max(-eleL1t,-9998),max(-eleL2t,-9998))*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0))
+		eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
+		posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
+		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+			cutevents.uncM*1000,max(max(-eleL1t,-9998),max(-eleL2t,-9998))*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
 	else:
-		eleZ0 = -cutevents.eleTrkZ0-m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ
-		posZ0 = cutevents.posTrkZ0-m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ
-		textFile.write('{0:0.2f} & {1:0.2f}$ & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f}\n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(max(-posL1t,-9998),max(-posL2t,-9998))*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0))
+		eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
+		posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
+		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+			cutevents.uncM*1000,max(max(-posL1t,-9998),max(-posL2t,-9998))*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
 
-savehisto2D(scatter,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter L1 + L2",0,savePDF=savePDF)
-savehisto2D(scatterL1,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter L1",0,savePDF=savePDF)
-savehisto2D(scatterL2,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter L2",0,savePDF=savePDF)
-savehisto2D(scattermax,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Max L1 L2",0,savePDF=savePDF)
+savehisto2D(scatter,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 + Sensor2 {0}".format(label),0,savePDF=savePDF)
+savehisto2D(scatterL1,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 {0}".format(label),0,savePDF=savePDF)
+savehisto2D(scatterL2,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor2 {0}".format(label),0,savePDF=savePDF)
+savehisto2D(scattermax,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Max(Sensor1,Sensor2) {0}".format(label),0,savePDF=savePDF)
 
 textFile.close()
 if(savePDF):
