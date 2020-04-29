@@ -454,7 +454,7 @@ cutevents.Branch("posPY",posPY,"posPY")
 
 if(useData):
 	for entry in xrange(neventscut):
-		dzcut = events.uncVZ - zcut.Eval(mass)
+		dzcut = events.uncVZ - zcut.Eval(event.uncM)
 		if(dzcut < 0):
 			continue
 		cutevents.GetEntry(entry)
@@ -529,7 +529,7 @@ cutevents.Branch("posL1bInthetaY",posL1bInthetaY,"posL1bInthetaY/D")
 cutevents.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
 
 for entry in xrange(neventscut):
-	dzcut = events.uncVZ - zcut.Eval(mass)
+	dzcut = events.uncVZ - zcut.Eval(event.uncM)
 	if(dzcut < 0):
 		continue
 	cutevents.GetEntry(entry)
