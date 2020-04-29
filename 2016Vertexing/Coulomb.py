@@ -586,12 +586,12 @@ for entry in xrange(neventscut):
 		eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 		posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(-eleL1t,-eleL2t)*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			cutevents.uncM*1000,max(-eleL1t,-eleL2t)*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 	else:
 		eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 		posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(-posL1t,-posL2t)*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			cutevents.uncM*1000,max(-posL1t,-posL2t)*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 
 savehisto2D(scatter,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 + Sensor2 {0}".format(label),0,savePDF=savePDF)
 savehisto2D(scatterL1,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 {0}".format(label),0,savePDF=savePDF)
