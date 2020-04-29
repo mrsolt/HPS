@@ -412,9 +412,6 @@ nBackunbiasedNon.Write("Background Unbiased")
 legend.Draw("same")
 c.Print(outfile+".pdf")
 
-
-textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & $theta_{1}$ (mrad) & $theta_{2}$ (mrad) & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
-
 cutevents = events.CopyTree(cut)
 neventscut = cutevents.GetEntries()
 
@@ -453,6 +450,7 @@ cutevents.Branch("elePY",elePY,"elePY")
 cutevents.Branch("posPY",posPY,"posPY")
 
 if(useData):
+	textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & Run & Event & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 	for entry in xrange(neventscut):
 		dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
 		#if(dzcut < 0):
@@ -469,19 +467,21 @@ if(useData):
 		if(cutevents.elePY > 0):
 			eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 			posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
-			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2} & {3} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-				cutevents.uncM*1000,"--","--",cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 		else:
 			eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 			posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
-			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2} & {3} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-				cutevents.uncM*1000,"--","--",cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 
 	textFile.close()
 	if(savePDF):
 		closePDF(outfile,c)
 	rootfile.Close()
 	sys.exit(0)
+
+textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & $theta_{1}$ (mrad) & $theta_{2}$ (mrad) & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 
 scatter = TH2F("scatter","scatter",100,0,maxTheta/2,100,0,maxTheta/2)
 scatterL1 = TH2F("scatterL1","scatterL1",100,0,maxTheta/2,100,0,maxTheta/2)
@@ -529,10 +529,10 @@ cutevents.Branch("posL1bInthetaY",posL1bInthetaY,"posL1bInthetaY/D")
 cutevents.Branch("posL2bInthetaY",posL2bInthetaY,"posL2bInthetaY/D")
 
 for entry in xrange(neventscut):
-	dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
 	#if(dzcut < 0):
 	#	continue
 	cutevents.GetEntry(entry)
+	dzcut = cutevents.uncVZ - zcut.Eval(cutevents.uncM)
 	eleL1t = getScatter(cutevents.eleL1tthetaY,cutevents.eleL1tInthetaY)
 	eleL2t = getScatter(cutevents.eleL2tthetaY,cutevents.eleL2tInthetaY)
 	posL1t = getScatter(cutevents.posL1tthetaY,cutevents.posL1tInthetaY)
@@ -553,21 +553,45 @@ for entry in xrange(neventscut):
 
 	xProj = (cutevents.uncVX-(cutevents.uncVZ-zTarg)*cutevents.uncPX/cutevents.uncPZ)
 	yProj = (cutevents.uncVY-(cutevents.uncVZ-zTarg)*cutevents.uncPY/cutevents.uncPZ)
-	yProj_rot = xProj*math.sin(angle)+yProj*math.cos(angle)
+	yProj_rot = xProj*math.sin(-angle)+yProj*math.cos(-angle)
 
 	projY = abs(yProj_rot - uncTargProjY) / uncTargProjYSig
 	VY = abs(cutevents.uncVY - uncY) / uncYSig
+
+	if(eleL1t == -9999):
+		eleL1t = 0
+
+	if(eleL2t == -9999):
+		eleL2t = 0
+
+	if(eleL1b == -9999):
+		eleL1b = 0
+
+	if(eleL2b == -9999):
+		eleL2b = 0
+
+	if(posL1t == -9999):
+		posL1t = 0
+
+	if(posL2t == -9999):
+		posL2t = 0
+
+	if(posL1b == -9999):
+		posL1b = 0
+
+	if(posL2b == -9999):
+		posL2b = 0
 
 	if(cutevents.elePY > 0):
 		eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 		posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(max(-eleL1t,-9998),max(-eleL2t,-9998))*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			cutevents.uncM*1000,max(-eleL1t,-eleL2t)*1000,max(posL1b,posL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
 	else:
 		eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 		posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 		textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.2f} & {3:0.2f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-			cutevents.uncM*1000,max(max(-posL1t,-9998),max(-posL2t,-9998))*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
+			cutevents.uncM*1000,max(-posL1t,-posL2t)*1000,max(eleL1b,eleL2b)*1000,cutevents.uncChisq,projY,VY,eleZ0,posZ0,dzcut))
 
 savehisto2D(scatter,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 + Sensor2 {0}".format(label),0,savePDF=savePDF)
 savehisto2D(scatterL1,outfile,c,"#theta_{bot}","#theta_{top}","Top Scatter vs Bottom Scatter Sensor1 {0}".format(label),0,savePDF=savePDF)
