@@ -74,6 +74,13 @@ def main() :
     copyfile('{0}2.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_uncP')) #Preselection V0 Momentum
     copyfile('{0}1.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow')) #Preselection Cutflow
 
+    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptances'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm')) #80 MeV A' Efficiency Normalized
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptances'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm')) #100 MeV A' Efficiency Normalized
+    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm_zcut')) #80 MeV A' Efficiency Normalized Zcut
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm_zcut')) #100 MeV A' Efficiency Normalized Zcut
+    copyfile('{0}16.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_fit')) #80 MeV A' Efficiency Fitfunc
+    copyfile('{0}12.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_fit')) #100 MeV A' Efficiency Fitfunc
+
     copyfile('{0}70.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L1_tight_vz_mass')) #Data Tight L1L1 Vz vs Mass
     copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_vz')) #Data Tight Cutflow L1L1 Vz
     copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_mass')) #Data Tight Cutflow L1L1 Mass
@@ -169,7 +176,7 @@ def main() :
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdirSelection,'ap_100MeV_ip_n_1_z')) #100 MeV A' IP n-1 Vz
     copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdirSelection,'ap_100MeV_singleV0')) #100 MeV A' Single V0 Vz
 
-    copyfile('{0}1.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1')) #Mass Resolution L1L1
+    copyfile('{0}1.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/Prompt/L1L1/massRes_L1L1'),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1')) #Mass Resolution L1L1
     copyfile('{0}60.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV_m_z')) #100 MeV A' Mass vs Z L1L1
     copyfile('{0}61.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV_smeared')) #100 MeV Mass Resolution L1L1
     copyfile('{0}62.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV')) #100 MeV Mass Resolution L1L1
