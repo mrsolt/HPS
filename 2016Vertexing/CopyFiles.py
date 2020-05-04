@@ -169,7 +169,7 @@ def main() :
     copyfile('{0}{1}MeV_{2}48.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdirSelection,'ap_100MeV_ip_n_1_z')) #100 MeV A' IP n-1 Vz
     copyfile('{0}{1}MeV_{2}_singleV02.pdf'.format(applotsL1L1dir,'100','L1L1'),'{0}{1}.pdf'.format(outdirSelection,'ap_100MeV_singleV0')) #100 MeV A' Single V0 Vz
 
-    copyfile('{0}1.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1')) #Mass Resolution L1L1
+    copyfile('{0}1.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/MassRes/Prompt/L1L1/massRes_L1L1'),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1')) #Mass Resolution L1L1
     copyfile('{0}60.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV_m_z')) #100 MeV A' Mass vs Z L1L1
     copyfile('{0}61.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV_smeared')) #100 MeV Mass Resolution L1L1
     copyfile('{0}62.pdf'.format(massResL1L1dir),'{0}{1}.pdf'.format(outdirMassRes,'massResL1L1_ap100MeV')) #100 MeV Mass Resolution L1L1
