@@ -74,12 +74,12 @@ def main() :
     copyfile('{0}2.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_uncP')) #Preselection V0 Momentum
     copyfile('{0}1.pdf'.format(preselectiondir),'{0}{1}.pdf'.format(outdirSelection,'pre_cutflow')) #Preselection Cutflow
 
-    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptances'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm')) #80 MeV A' Efficiency Normalized
-    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptances'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm')) #100 MeV A' Efficiency Normalized
-    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm_zcut')) #80 MeV A' Efficiency Normalized Zcut
-    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm_zcut')) #100 MeV A' Efficiency Normalized Zcut
-    copyfile('{0}16.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_fit')) #80 MeV A' Efficiency Fitfunc
-    copyfile('{0}12.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptances_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_fit')) #100 MeV A' Efficiency Fitfunc
+    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptance'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm')) #80 MeV A' Efficiency Normalized
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/final/plots/acceptance'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm')) #100 MeV A' Efficiency Normalized
+    copyfile('{0}52.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptance_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_norm_zcut')) #80 MeV A' Efficiency Normalized Zcut
+    copyfile('{0}44.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptance_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_norm_zcut')) #100 MeV A' Efficiency Normalized Zcut
+    copyfile('{0}16.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptance_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_80MeV_eff_fit')) #80 MeV A' Efficiency Fitfunc
+    copyfile('{0}12.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/MC/ap-beam/Tight/acceptance/zcut/plots/acceptance_zcut'),'{0}{1}.pdf'.format(outdir+'aprime/','ap_100MeV_eff_fit')) #100 MeV A' Efficiency Fitfunc
 
     copyfile('{0}70.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'data_L1L1_tight_vz_mass')) #Data Tight L1L1 Vz vs Mass
     copyfile('{0}62.pdf'.format('/nfs/slac/g/hps2/mrsolt/hps/Data2016/pass4c/Tight/L1L1/L1L1_cutflow'),'{0}{1}.pdf'.format(outdirSelection,'datatightcutflowL1L1_vz')) #Data Tight Cutflow L1L1 Vz
