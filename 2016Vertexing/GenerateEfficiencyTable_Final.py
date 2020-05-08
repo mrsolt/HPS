@@ -19,7 +19,8 @@ def print_usage():
     print '\t-T: plot Test plots'
     print '\t-s: tuple name <default is "ntuple">'
     print '\t-c: cut tracks with shared hits <default is false>'
-    print '\t-u: use zcut <default is false">'
+    print '\t-u: use zcut <default is false>'
+    print '\t-v: use unblinded data <default is true>'
     print '\t-h: this help message'
     print
 
@@ -32,6 +33,7 @@ nBins = 50
 zRange = 100
 removeSharedHits = False
 zcut = False
+unblind = True
 tupleName = "ntuple"
 
 #Function to plot efficiency tests of known masses
@@ -400,6 +402,8 @@ for opt, arg in options:
         removeSharedHits = True
     if opt=='-u':
         zcut = True
+    if opt=='-v':
+        unblind = True
     if opt=='-s':
         tupleName = str(arg)
     if opt=='-h':
@@ -723,7 +727,11 @@ cutsL1L1.append(z0cut)
 if(removeSharedHits):
     cutsL1L1.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
 if(zcut):
-    zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-2.308,1227,-29030,285300,-1296000,2229000) #10% Data L1L1
+    #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-2.308,1227,-29030,285300,-1296000,2229000) #10% Data L1L1
+    if(unblind):
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-8.555,1625,-38800,396200,-1892000,3458000) #10% Data L1L1
+    else:
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-4.912,1730,-42640,441300,-2117000,3865000) #100% scaled Data L1L1
     cutsL1L1.append("uncVZ>{0}".format(zcutL1L1))
 
 cutL1L1 = cutsL1L1[0]
@@ -781,7 +789,10 @@ cutsL1L2.append(z0cut_L1L2)
 if(removeSharedHits):
     cutsL1L2.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
 if(zcut):
-    zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
+    if(unblind):
+        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
+    else:
+        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-170.1,10510,-209100,1934000,-8502000,14280000) #100% scaled Data L1L2
     cutsL1L2.append("uncVZ>{0}".format(zcutL1L2))
 
 cutL1L2 = cutsL1L2[0]
