@@ -384,7 +384,7 @@ def getEffTH1(hfile, hname):
         effHist.SetBinContent(histBin,y)   
     return effHist
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Tcus:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Tcuvs:h')
 
 # Parse the command line arguments
 for opt, arg in options:
