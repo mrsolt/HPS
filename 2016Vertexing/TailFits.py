@@ -20,7 +20,8 @@ def print_usage():
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrz:s:y:g:h')
 
 massVar = "uncM"
-masscut_nsigma = 2.80
+#masscut_nsigma = 2.80
+masscut_nsigma = 1.90
 scale = 1.
 zcut_val = 0.5
 shift_mean = False
@@ -90,7 +91,8 @@ fitfunc3.SetParName(2,"Sigma")
 fitfunc3.SetParName(3,"Tail Z")
 
 if(not isL1L2): 
-    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
+    #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
+    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(-0.6066,0.1123,-0.001452,1.155e-5,-3.076e-8),0.04,0.2)
     label = label + " L1L1"
 else:
     mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
