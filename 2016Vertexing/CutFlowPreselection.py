@@ -196,7 +196,7 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	histo5ap2.SetLineColor(8)
 	histo5ap2.Draw("same")
 	if(logY == 0):
-		line1 = TLine(lineval1,0,lineval1,maximum*1.3)
+		line1 = TLine(lineval1,0,lineval1,maximum)
 	else:
 		line1 = TLine(lineval1,0,lineval1,maximum*10)
 	line1.SetLineColor(2)
@@ -204,7 +204,7 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	line1.Draw("")
 	if(lineval2 != ""):
 		if(logY == 0):
-			line2 = TLine(lineval2,0,lineval2,maximum*1.3)
+			line2 = TLine(lineval2,0,lineval2,maximum)
 		else:
 			line2 = TLine(lineval2,0,lineval2,maximum*10)
 		line2.SetLineColor(2)
@@ -343,10 +343,10 @@ label.append("Pair1 Trigger")
 label.append("Track/Cluster Match N#sigma < 10")
 label.append("Cluster Time Diff < 1.45 ns")
 label.append("Cluster-Track Time Diff < 4 ns")
-label.append("e- Momentum < 1.75 GeV")
+label.append("0.4 GeV < e- Momentum < 1.75 GeV")
 label.append("Track #chi^{2} / dof < 6")
 label.append("Unconstrained Vertex #chi^{2} < 10")
-label.append("e- and e+ Momentum > 0.4 GeV")
+label.append("e+ Momentum > 0.4 GeV")
 label.append("V0 Momentum < 2.4 GeV")
 
 var.append("isPair1 -1 2")

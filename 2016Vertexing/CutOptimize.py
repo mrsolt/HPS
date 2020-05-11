@@ -358,7 +358,7 @@ if(doUncChisq):
 
 if(doV0Proj):
 	cuts.append(z0cut2)
-	cuts.append("uncChisq<4")
+	#cuts.append("uncChisq<4")
 	label.append("No V0 Proj Cut")
 	label.append("V0 Proj 3#sigma")
 	label.append("V0 Proj 2.5#sigma")
@@ -370,7 +370,7 @@ if(doV0Proj):
 	floatcuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,1.5))
 
 if(doIP):
-	cuts.append("uncChisq<4")
+	#cuts.append("uncChisq<4")
 	cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,2.0))
 	label.append("No IP Cut")
 	label.append("IP Cut #alpha = 10%")
