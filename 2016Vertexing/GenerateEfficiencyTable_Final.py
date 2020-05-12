@@ -729,10 +729,10 @@ if(removeSharedHits):
 if(zcut):
     if(unblind):
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-8.555,1625,-38800,396200,-1892000,3458000) #10% Data L1L1
-        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-5.098,1452,-3.467e4,3.485e5,-1.63e6,2.915e6) #10% Data L1L1
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-3.413,1360,-3.276e4,3.292e5,-1.535e6,2.733e6) #10% Data L1L1
     else:
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-4.912,1730,-42640,441300,-2117000,3865000) #100% scaled Data L1L1
-        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-0.4908,1500,-3.716e4,3783e5,-1.774e6,3.161e6) #100% scaled Data L1L1
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(1.809,1373,-3.444e4,3.503e5,-1.633e6,2.886e6) #100% scaled Data L1L1
     cutsL1L1.append("uncVZ>{0}".format(zcutL1L1))
 
 cutL1L1 = cutsL1L1[0]
