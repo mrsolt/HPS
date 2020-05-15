@@ -1,9 +1,11 @@
 import sys, array
 tmpargv = sys.argv
 sys.argv = []
+import random
+import numpy as np
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TH1F, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:p:', ['help',])
@@ -38,14 +40,152 @@ for opt, arg in options:
 			print_usage()
 			sys.exit(0)
 
-def tupleToMassHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
-	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX),cuts)
-	histo = ROOT.gROOT.FindObject(histo)
+def getEffTH1(hfile, hname):
+    print 'Getting Efficiency Graph...converting to TH1'
+    effGraph=hfile.Get(hname)
+    effGraph.Print("v")
+    xmin=effGraph.GetXaxis().GetXmin()
+    xmax=effGraph.GetXaxis().GetXmax()
+    xsize=effGraph.GetErrorXhigh(0)*2
+    nbins=effGraph.GetN()
+    nbinsHist=(int)((xmax-xmin)/xsize)
+    x=ROOT.Double(0.0)
+    y=ROOT.Double(0.0)
+    effHist=ROOT.TH1D(effGraph.GetName(),effGraph.GetTitle(),nbinsHist,xmin,xmax)
+    for i in range(0,nbins) :
+        effGraph.GetPoint(i,x,y)
+        histBin=effHist.FindBin(x)
+        #print str(x)+' ' +str(y) + ' '+str(i)+ '  '+str(histBin)
+        effHist.SetBinContent(histBin,y)   
+    return effHist
+
+effSlopeFileName = 'EmGamma-L1HitEfficiencyResults-2016.root'
+effRatioName = 'p2slopehps_007963.1GamEm_L1HitInefficiency'
+effSlopeFile = ROOT.TFile(effSlopeFileName)      
+effSlopeData = getEffTH1(effSlopeFile,effRatioName)
+effSlopeData.Print("v")
+
+def RemoveHit(slp):
+    rndm = random.random()         
+    ibin = effSlopeData.FindBin(slp)
+    eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
+    if rndm > eff:
+        return True
+    else:
+        return False
+
+def SmearHisto(events,nBins,minX,maxX):
+	smear_Top5hits = 0.0589307 
+	smear_Top6hits = 0.0433669 
+	smear_Bot5hits = 0.0551252 
+	smear_Bot6hits = 0.045657 
+	histoMass = TH1F("histoMass","histoMass",nBins,minX,maxX)
+	eleP = array.array('d',[0])
+	posP = array.array('d',[0])
+	uncM = array.array('d',[0])
+	eleNTrackHits = array.array('d',[0])
+	posNTrackHits = array.array('d',[0])
+	eleTrkLambda = array.array('d',[0])
+	posTrkLambda = array.array('d',[0])
+	eleHasL1 = array.array('d',[0])
+	posHasL1 = array.array('d',[0])
+
+	events.Branch("eleP",eleP,"eleP/D")
+	events.Branch("posP",posP,"posP/D")
+	events.Branch("uncM",uncM,"uncM/D")
+	events.Branch("eleNTrackHits",eleNTrackHits,"eleNTrackHits/I")
+	events.Branch("posNTrackHits",posNTrackHits,"posNTrackHits/I")
+	events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda/D")
+	events.Branch("posTrkLambda",posTrkLambda,"posTrkLambda/D")
+	events.Branch("eleHasL1",eleHasL1,"eleHasL1/I")
+	events.Branch("posHasL1",posHasL1,"posHasL1/I")
+
+	nevents = events.GetEntries()
+
+	for entry in xrange(nevents):
+		events.GetEntry(entry)
+		killevent = False
+		if(events.eleHasL1 and events.eleNTrackHits == 5):
+			killevent = RemoveHit(events.eleTrkLambda)
+		if(events.posHasL1 and events.posNTrackHits == 5):
+			killevent = RemoveHit(events.posTrkLambda)
+		if(killevent):
+			continue
+		if(events.eleTrkLambda > 0):
+			if(events.eleNTrackHits == 5):
+				ele_smear = smear_Top5hits
+			else:
+				ele_smear = smear_Top6hits
+			if(events.posNTrackHits == 5):
+				pos_smear = smear_Bot5hits
+			else:
+				pos_smear = smear_Bot6hits
+		else:
+			if(events.eleNTrackHits == 5):
+				ele_smear = smear_Bot5hits
+			else:
+				ele_smear = smear_Bot6hits
+			if(events.posNTrackHits == 5):
+				pos_smear = smear_Top5hits
+			else:
+				pos_smear = smear_Top6hits
+
+		P_positron_Smear = random.gauss(events.posP, events.posP*pos_smear)
+		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
+
+		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
+		histoMass.Fill(MSmear)
+
+	return histoMass
+
+def tupleToMassHisto(events,histoname,nBins,minX,maxX,factor,cuts=""):
+	#events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX),cuts)
+	#histo = ROOT.gROOT.FindObject(histo)
+	histo = SmearHisto(events,nBins,minX,maxX)
+	histo.SetName(histoname)
 	histo.Sumw2()
 	histo.Scale(factor)
 	return histo
 
-def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
+def tupleToMassHistoData(events,histoname,nBins,minX,maxX,factor,cuts=""):
+	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histoname,nBins,minX,maxX),cuts)
+	histo = ROOT.gROOT.FindObject(histoname)
+	histo.Sumw2()
+	histo.Scale(factor)
+	return histo
+
+def tupleToTruthMassHisto(events,histoname,nBins,minX,maxX,factor,output,cuts=""):
+	eleP = array.array('d',[0])
+	posP = array.array('d',[0])
+	uncM = array.array('d',[0])
+	eleNTrackHits = array.array('d',[0])
+	posNTrackHits = array.array('d',[0])
+	eleTrkLambda = array.array('d',[0])
+	posTrkLambda = array.array('d',[0])
+	eleHasL1 = array.array('d',[0])
+	posHasL1 = array.array('d',[0])
+
+	killevents = events.CloneTree(0)
+
+	events.Branch("eleNTrackHits",eleNTrackHits,"eleNTrackHits/I")
+	events.Branch("posNTrackHits",posNTrackHits,"posNTrackHits/I")
+	events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda/D")
+	events.Branch("posTrkLambda",posTrkLambda,"posTrkLambda/D")
+	events.Branch("eleHasL1",eleHasL1,"eleHasL1/I")
+	events.Branch("posHasL1",posHasL1,"posHasL1/I")
+
+	nevents = events.GetEntries()
+	for entry in xrange(nevents):
+		events.GetEntry(entry)
+		killevent = False
+		if(events.eleHasL1 and events.eleNTrackHits == 5):
+			killevent = RemoveHit(events.eleTrkLambda)
+		if(events.posHasL1 and events.posNTrackHits == 5):
+			killevent = RemoveHit(events.posTrkLambda)
+		if(killevent):
+			continue
+		killevents.Fill()
+
 	eleMass = 0.00051099895
 	#truthMass = "sqrt(eleP^2+posP^2+2*{0}^2+2*sqrt((eleP^2+{0}^2)*(posP^2+{0}^2))-((elePX+posPX)^2+(elePY+posPY)^2+(elePZ+posPZ)^2))".format(eleMass)
 	e1 = "sqrt({0}^2+{1}^2+{2}^2+{3}^2)".format('eleStartPX','eleStartPY','eleStartPZ',eleMass)
@@ -53,11 +193,11 @@ def tupleToTruthMassHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
 	esum = "({0}+{1})".format(e1,e2)
 	psum = "sqrt(({0}+{1})^2+({2}+{3})^2+({4}+{5})^2)".format('eleStartPX','posStartPX','eleStartPY','posStartPY','eleStartPZ','posStartPZ')
 	truthMass = "sqrt({0}^2-{1}^2)".format(esum,psum)
-	events.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histo,nBins,minX,maxX),cuts)
-	histo = ROOT.gROOT.FindObject(histo)
-	histo.Sumw2()
-	histo.Scale(factor)
-	return histo
+	killevents.Draw("{0}>>{1}({2},{3},{4})".format(truthMass,histoname,nBins,minX,maxX),cuts)
+	histoRad = ROOT.gROOT.FindObject(histoname)
+	histoRad.Sumw2()
+	histoRad.Scale(factor)
+	return histoRad
 
 def tupleToPHisto(events,histo,nBins,minX,maxX,factor,cuts=""):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM",histo,nBins,minX,maxX),cuts)
@@ -78,6 +218,7 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Fit("pol5","pol5","",0.04,0.2)
 	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
+	outfileroot.cd()
 	radfracHisto.Write("Radiative Fraction")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
@@ -245,9 +386,9 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 parentID = 622
-truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
-cuts = "eleHasL2&&posHasL2&&uncChisq<4&&uncP>{0}".format(pcut)
-#truthcut = ""
+#truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
+cuts = "eleHasL2&&posHasL2&&uncP>{0}".format(pcut)
+truthcut = ""
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
@@ -264,7 +405,7 @@ dataEvents = dataFile.Get("ntuple")
 massBin = 0.001
 minMass = 0.0
 maxMass = 0.2
-nBins = maxMass/massBin
+nBins = int(maxMass/massBin)
 minP = 0.0
 maxP = 2.5
 #width = 0.1
@@ -293,10 +434,10 @@ radEventsTruth.Write()
 #wabEvents.SetWeight(weight/wabLum)
 #dataEvents.SetWeight(weight/dataLum)
 
-radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum,cuts)
+radMassHisto = tupleToTruthMassHisto(radEventsTruth,"radMassHisto",nBins,minMass,maxMass,weight/radLum,outfile,cuts)
 triMassHisto = tupleToMassHisto(triEvents,"triMassHisto",nBins,minMass,maxMass,weight/triLum,cuts)
 wabMassHisto = tupleToMassHisto(wabEvents,"wabMassHisto",nBins,minMass,maxMass,weight/wabLum,cuts)
-dataMassHisto = tupleToMassHisto(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum,cuts)
+dataMassHisto = tupleToMassHistoData(dataEvents,"dataMassHisto",nBins,minMass,maxMass,weight/dataLum,cuts)
 
 radPHisto = tupleToPHisto(radEventsTruth,"radPHisto",nBins/2,minP,maxP,weight/radLum,cuts)
 triPHisto = tupleToPHisto(triEvents,"triPHisto",nBins/2,minP,maxP,weight/triLum,cuts)
