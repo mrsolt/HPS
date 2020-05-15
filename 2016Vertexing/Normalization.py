@@ -387,7 +387,7 @@ c = TCanvas("c","c",800,600)
 
 parentID = 622
 #truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
-cuts = "eleHasL2&&posHasL2&&uncP>{0}".format(pcut)
+cuts = "eleHasL2&&posHasL2&&uncChisq<4&&uncP>{0}".format(pcut)
 truthcut = ""
 
 outfile = remainder[0]
