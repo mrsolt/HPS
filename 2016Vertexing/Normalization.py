@@ -134,7 +134,7 @@ def SmearHisto(events,nBins,minX,maxX):
 		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
-		#histoMass.Fill(MSmear)
+		histoMass.Fill(MSmear)
 		histoMass.Fill(events.uncM)
 
 	return histoMass
