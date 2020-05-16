@@ -109,8 +109,8 @@ def SmearHisto(events,nBins,minX,maxX):
 			killevent = RemoveHit(events.eleTrkLambda)
 		if(events.posHasL1 and events.posNTrackHits == 5):
 			killevent = RemoveHit(events.posTrkLambda)
-		if(killevent):
-			continue
+		#if(killevent):
+		#	continue
 		if(events.eleTrkLambda > 0):
 			if(events.eleNTrackHits == 5):
 				ele_smear = smear_Top5hits
@@ -182,8 +182,8 @@ def tupleToTruthMassHisto(events,histoname,nBins,minX,maxX,factor,output,cuts=""
 			killevent = RemoveHit(events.eleTrkLambda)
 		if(events.posHasL1 and events.posNTrackHits == 5):
 			killevent = RemoveHit(events.posTrkLambda)
-		if(killevent):
-			continue
+		#if(killevent):
+		#	continue
 		killevents.Fill()
 
 	eleMass = 0.00051099895
