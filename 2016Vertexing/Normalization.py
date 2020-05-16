@@ -109,8 +109,8 @@ def SmearHisto(events,nBins,minX,maxX):
 			killevent = RemoveHit(events.eleTrkLambda)
 		if(events.posHasL1 and events.posNTrackHits == 5):
 			killevent = RemoveHit(events.posTrkLambda)
-		#if(killevent):
-		#	continue
+		if(killevent):
+			continue
 		if(events.eleTrkLambda > 0):
 			if(events.eleNTrackHits == 5):
 				ele_smear = smear_Top5hits
@@ -134,7 +134,8 @@ def SmearHisto(events,nBins,minX,maxX):
 		P_electron_Smear = random.gauss(events.eleP, events.eleP*ele_smear)
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
-		histoMass.Fill(MSmear)
+		#histoMass.Fill(MSmear)
+		histoMass.Fill(events.uncM)
 
 	return histoMass
 
@@ -182,8 +183,8 @@ def tupleToTruthMassHisto(events,histoname,nBins,minX,maxX,factor,output,cuts=""
 			killevent = RemoveHit(events.eleTrkLambda)
 		if(events.posHasL1 and events.posNTrackHits == 5):
 			killevent = RemoveHit(events.posTrkLambda)
-		#if(killevent):
-		#	continue
+		if(killevent):
+			continue
 		killevents.Fill()
 
 	eleMass = 0.00051099895
