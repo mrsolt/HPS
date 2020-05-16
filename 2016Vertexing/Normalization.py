@@ -135,7 +135,7 @@ def SmearHisto(events,nBins,minX,maxX):
 
 		MSmear = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
 		histoMass.Fill(MSmear)
-		histoMass.Fill(events.uncM)
+		#histoMass.Fill(events.uncM)
 
 	return histoMass
 
@@ -387,9 +387,9 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 parentID = 622
-#truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
-cuts = "eleHasL2&&posHasL2&&uncChisq<4&&uncP>{0}".format(pcut)
-truthcut = ""
+truthcut = "elepdgid==11&&pospdgid==-11&&eleparentID=={0}&&posparentID=={0}".format(parentID)
+cuts = "eleHasL2&&posHasL2&&uncP>{0}".format(pcut)
+#truthcut = ""
 
 outfile = remainder[0]
 outfileroot = TFile(remainder[0]+".root","RECREATE")
