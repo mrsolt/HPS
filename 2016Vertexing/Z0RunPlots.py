@@ -137,8 +137,8 @@ outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 openPDF(outfile,c)
 
-events.Draw("{0}>>{1}({2},{3},{4})".format("eleTrkZ0-{0}*elePY/eleP-{1}".format(zTarg,uncTargProjY),"histo0",nBins,minZ0,maxZ0),cut_all)
-events.Draw("{0}>>{1}({2},{3},{4})".format("posTrkZ0-{0}*posPY/posP-{1}".format(zTarg,uncTargProjY),"histo1",nBins,minZ0,maxZ0),cut_all)
+events.Draw("{0}>>{1}({2},{3},{4})".format("eleTrkZ0+{0}*elePY/eleP-{1}".format(zTarg,uncTargProjY),"histo0",nBins,minZ0,maxZ0),cut_all)
+events.Draw("{0}>>{1}({2},{3},{4})".format("posTrkZ0+{0}*posPY/posP-{1}".format(zTarg,uncTargProjY),"histo1",nBins,minZ0,maxZ0),cut_all)
 histo0 = ROOT.gROOT.FindObject("histo0")
 histo1 = ROOT.gROOT.FindObject("histo1")
 
