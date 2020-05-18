@@ -2,8 +2,9 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import getopt
+import array
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1, TGraph
 sys.argv = tmpargv
 
 #List arguments
@@ -26,6 +27,7 @@ def print_usage():
     print '\t-a: uncTargProjY mean (default 0)'
     print '\t-b: uncTargProjY sigma (default 9999)'
     print '\t-f: use preprocessing cuts and labels (default false)'
+    print '\t-T: fittails (default false)'
     print '\t-r: is L1L2 category (default false)'
     print '\t-y: plot label'
     print '\t-d: use data file (default False)'
@@ -44,6 +46,7 @@ useMC = False
 useAp = False
 preproc = False
 L1L2 = False
+FitTails = False
 clusterT = 56
 uncVX = 0.
 uncVXSig = 9999.
@@ -55,7 +58,7 @@ uncTargProjY = 0.
 uncTargProjYSig = 9999.
 Label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:y:frdcl')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:y:fTrdcl')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -91,6 +94,8 @@ for opt, arg in options:
 			Label=str(arg)
 		if opt=='-f':
 			preproc = True
+		if opt=='-T':
+			FitTails = True
 		if opt=='-r':
 			L1L2 = True
 		if opt=='-d':
@@ -105,6 +110,55 @@ for opt, arg in options:
 
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
+
+n_massbins = 50
+minmass = 0.04
+maxmass = 0.175
+masscut_nsigma = 1.9
+
+def getZCut(fitfunc,zcut_val=0.5,scale=1.0,zBin=0.01,minZ=-60,maxZ=60):
+    iMax = int((maxZ-minZ)/zBin)
+    for i in range(iMax):
+        z = maxZ - zBin*i
+        integral = fitfunc.Integral(z,maxZ)
+        if(integral > zcut_val/scale):
+            return z
+    print("ZCut not found!")
+    return -9999.
+
+def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma):
+	fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
+	fitfunc.SetParName(0,"Amplitude")
+	fitfunc.SetParName(1,"Mean")
+	fitfunc.SetParName(2,"Sigma")
+	fitfunc.SetParName(3,"Tail Z")
+
+	massarray = array.array('d')
+	zcutarray = array.array('d')
+
+	zcut_val = 0.5
+	mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
+	for i in range(0,n_massbins):
+		mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
+		massarray.append(mass)
+
+		mres = mresf.Eval(mass)
+		events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cut),"")
+
+		h1d = gDirectory.Get("hnew1d")
+		fit=h1d.Fit("gaus","QS")
+		peak=fit.Get().Parameter(0)
+		mean=fit.Get().Parameter(1)
+		sigma=fit.Get().Parameter(2)
+		fit=h1d.Fit("gaus","QS","",mean-3*sigma,mean+3*sigma)
+		mean=fit.Get().Parameter(1)
+		sigma=fit.Get().Parameter(2)
+		print("mean {0}  sigma {1}".format(mean,sigma))
+		fitfunc.SetParameters(peak,mean,sigma,3)
+		fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
+		zcut = getZCut(fitfunc,zcut_val=zcut_val)
+		zcutarray.append(zcut)
+	return massarray, zcutarray
 
 def saveCutFlow(events,inHisto,i,cuts_1,cut1,cut2,cut3,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=1):
 	events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histos{0}".format(i),nBins,minX,maxX),cuts_1)
@@ -489,6 +543,58 @@ for i in range(len(cuts)):
 
 openPDF(outfile,c)
 
+if(FitTails):
+	for i in range(len(cuts)-2):
+		if(i != 0 and i != 2):
+			continue
+		cuts_1 = cuts_1_arr[i+1]
+		cut1 = cuts[i+2]
+		cut2 = floatcuts[2*i]
+		cut3 = floatcuts[2*i+1]
+		massarray,zcutarray1 = fitTails(events,cuts_1,n_massbins,minmass,maxmass,masscut_nsigma)
+		_,zcutarray2 = fitTails(events,cuts_1+"&&"+cut1,n_massbins,minmass,maxmass,masscut_nsigma)
+		_,zcutarray3 = fitTails(events,cuts_1+"&&"+cut2,n_massbins,minmass,maxmass,masscut_nsigma)
+		_,zcutarray4 = fitTails(events,cuts_1+"&&"+cut3,n_massbins,minmass,maxmass,masscut_nsigma)
+		graph1=TGraph(len(massarray),massarray,zcutarray1)
+		graph2=TGraph(len(massarray),massarray,zcutarray2)
+		graph3=TGraph(len(massarray),massarray,zcutarray3)
+		graph4=TGraph(len(massarray),massarray,zcutarray4)
+		graph1.SetMarkerColor(1)
+		graph1.SetLineColor(1)
+		graph2.SetMarkerColor(2)
+		graph2.SetLineColor(2)
+		graph3.SetMarkerColor(4)
+		graph3.SetLineColor(4)
+		graph4.SetMarkerColor(6)
+		graph4.SetLineColor(6)
+		graph1.GetYaxis().SetRangeUser(-4.3,30)
+		graph1.Draw("A*")
+		graph1.SetTitle("Zcut for Varying {0} Cut".format(label[3*i+2]))
+		graph1.GetXaxis().SetTitle("mass [GeV]")
+		graph1.GetYaxis().SetTitle("zcut [mm]")
+		graph2.Draw("*Psame")
+		graph3.Draw("*Psame")
+		graph4.Draw("*Psame")
+		legend = TLegend(.53,.66,.77,.87)
+		legend.SetBorderSize(0)
+		legend.SetFillColor(0)
+		legend.SetFillStyle(0)
+		legend.SetTextFont(42)
+		legend.SetTextSize(0.035)
+		legend.AddEntry(graph1,"W/O {0}".format(label[3*i+2]),"P")
+		legend.AddEntry(graph2,label[3*i+2],"P")
+		legend.AddEntry(graph3,label[3*i+3],"P")
+		legend.AddEntry(graph4,label[3*i+4],"P")
+		legend.Draw("")
+		c.Print(remainder[0]+".pdf","Title:zcut")
+		c.Write()
+		del zcutarray1
+		del zcutarray2
+		del zcutarray3
+		del zcutarray4
+		del massarray
+		del legend
+
 for i in range(len(cuts)-2):
 	cuts_1 = cuts_1_arr[i+1]
 	cut1 = cuts[i+2]
@@ -498,5 +604,3 @@ for i in range(len(cuts)-2):
 
 closePDF(outfile,c)
 outfileroot.Close()
-
-print(z0cut)
