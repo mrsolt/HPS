@@ -162,3 +162,69 @@ L1 Bot Axial sensor residuals (fixture - uchannel)
 Z: 0.031179851528402303  Y: 0.00948003858643176
 L1 Bot Stereo sensor residuals (fixture - uchannel)
 Z: -0.028475033147201678  Y: 0.1524956286360437
+
+L0 Top Axial sensor in JLab frame
+Origin: [ 1.67903102  7.84837264 38.79269184]  Normal: [ 1.67903102  7.84837264 38.79269184]
+L0 Top Stereo sensor in JLab frame
+Origin: [ 2.25616517  7.83642931 46.81075123]  Normal: [ 2.25616517  7.83642931 46.81075123]
+L1 Top Axial sensor in JLab frame
+Origin: [ 2.46228254  8.42832044 88.8340805 ]  Normal: [ 2.46228254  8.42832044 88.8340805 ]
+L1 Top Stereo sensor in JLab frame
+Origin: [ 3.34518784  8.27719222 96.79307439]  Normal: [ 3.34518784  8.27719222 96.79307439]
+L2 Top Axial sensor in JLab frame
+Z: 95.83884  Y: 1.2409800000000004
+L2 Top Stereo sensor in JLab frame
+Z: 104.55273  Y: 1.0972600000000003
+L3 Top Axial sensor in JLab frame
+Z: 195.91052  Y: 2.7339700000000002
+L3 Top Stereo sensor in JLab frame
+Z: 204.36921  Y: 2.76201
+L0 Bot Axial sensor in JLab frame
+Origin: [ 1.06341217 -7.9720032  62.83735086]  Normal: [ 1.06341217 -7.9720032  62.83735086]
+L0 Bot Stereo sensor in JLab frame
+Origin: [ 2.14239387 -7.82176606 54.77954857]  Normal: [ 2.14239387 -7.82176606 54.77954857]
+L1 Bot Axial sensor in JLab frame
+Origin: [  2.89850183  -8.34781992 112.89396344]  Normal: [  2.89850183  -8.34781992 112.89396344]
+L1 Bot Stereo sensor in JLab frame
+Origin: [  3.7357762   -8.25474712 104.84603035]  Normal: [  3.7357762   -8.25474712 104.84603035]
+L2 Bot Axial sensor in JLab frame
+Z: 103.97422  Y: -1.3083400000000003
+L2 Bot Stereo sensor in JLab frame
+Z: 95.62154  Y: -1.73069
+L3 Bot Axial sensor in JLab frame
+Z: 204.1419  Y: -2.76042
+L3 Bot Stereo sensor in JLab frame
+Z: 195.61621  Y: -2.42671
+
+L0 Top Axial sensor residual in JLab frame
+Origin: x -0.5224310211543319  y -0.08587263595837769  z -0.4306918374136828
+L0 Top Stereo sensor residual in JLab frame
+Origin: x -0.09396516616799166  y -0.11272931287497734  z -0.8817512328892931
+L1 Top Axial sensor residual in JLab frame
+Origin: x -0.0341825449330142  y -0.3658204399426932  z -0.4880805041225216
+L1 Top Stereo sensor residual in JLab frame
+Origin: x 0.08861215506070019  y -0.25349222197100296  z -0.8790743860558763
+L2 Top Axial sensor residual in JLab frame
+Z: 95.83884  Y: -0.055019999999999625
+L2 Top Stereo sensor residual in JLab frame
+Z: 104.55273  Y: 1.0972600000000003
+L3 Top Axial sensor residual in JLab frame
+Z: 195.91052  Y: -0.062029999999999585
+L3 Top Stereo sensor residual in JLab frame
+Z: 204.36921  Y: 2.76201
+L0 Bot Axial sensor residual in JLab frame
+Origin: x 0.7961878304289132  y 0.20950319805140083  z -1.248350861802109
+L0 Bot Stereo sensor residual in JLab frame
+Origin: x 0.2599061339790629  y 0.09806606338900536  z -0.8045485741008562
+L1 Bot Axial sensor residual in JLab frame
+Origin: x 0.23799816802287843  y 0.2853199169518934  z -1.3239634401484608
+L1 Bot Stereo sensor residual in JLab frame
+Origin: x -0.05657619736764907  y 0.23104712036477615  z -0.886030346614703
+L2 Bot Axial sensor residual in JLab frame
+Z: 103.97422  Y: -0.01234000000000024
+L2 Bot Stereo sensor residual in JLab frame
+Z: 95.62154  Y: -1.73069
+L3 Bot Axial sensor residual in JLab frame
+Z: 204.1419  Y: 0.035579999999999945
+L3 Bot Stereo sensor residual in JLab frame
+Z: 195.61621  Y: -2.42671

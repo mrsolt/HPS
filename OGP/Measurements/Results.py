@@ -181,6 +181,85 @@ L0_stereo_bot_physical_edge_vector_ubasis = Al_utils.transform_vec(bot_L0_pinbas
 L1_axial_bot_physical_edge_vector_ubasis = Al_utils.transform_vec(bot_L1_pinbasis_ubasis,bot_ubasis,L1_axial_bot_physical_edge_vector_pinbasis)
 L1_stereo_bot_physical_edge_vector_ubasis = Al_utils.transform_vec(bot_L1_pinbasis_ubasis,bot_ubasis,L1_stereo_bot_physical_edge_vector_pinbasis)
 
+Al_utils.transform_pt(pinbasis_fixbasis_top,fixbasis,L0_axial_top[0])
+L0_axial_top_normal_pinbasis = Al_utils.transform_vec(pinbasis_fixbasis_top,fixbasis,L0_axial_top[1][2])
+
+L0_axial_top_origin_JLab = Al_utils.ubasisTop_to_JLab(L0_axial_top_origin_ubasis,True)
+L0_axial_top_normal_JLab = Al_utils.UChannelToJlabVec(L0_axial_top_normal_ubasis)
+L0_stereo_top_origin_JLab = Al_utils.ubasisTop_to_JLab(L0_stereo_top_origin_ubasis,True)
+L0_stereo_top_normal_JLab = Al_utils.UChannelToJlabVec(L0_stereo_top_normal_ubasis)
+
+L1_axial_top_origin_JLab = Al_utils.ubasisTop_to_JLab(L1_axial_top_origin_ubasis,False)
+L1_axial_top_normal_JLab = Al_utils.UChannelToJlabVec(L1_axial_top_normal_ubasis)
+L1_stereo_top_origin_JLab = Al_utils.ubasisTop_to_JLab(L1_stereo_top_origin_ubasis,False)
+L1_stereo_top_normal_JLab = Al_utils.UChannelToJlabVec(L1_stereo_top_normal_ubasis)
+
+L0_axial_bot_origin_JLab = Al_utils.ubasisBot_to_JLab(L0_axial_bot_origin_ubasis,True)
+L0_axial_bot_normal_JLab = Al_utils.UChannelToJlabVec(L0_axial_bot_normal_ubasis)
+L0_stereo_bot_origin_JLab = Al_utils.ubasisBot_to_JLab(L0_stereo_bot_origin_ubasis,True)
+L0_stereo_bot_normal_JLab = Al_utils.UChannelToJlabVec(L0_stereo_bot_normal_ubasis)
+
+L1_axial_bot_origin_JLab = Al_utils.ubasisBot_to_JLab(L1_axial_bot_origin_ubasis,False)
+L1_axial_bot_normal_JLab = Al_utils.UChannelToJlabVec(L1_axial_bot_normal_ubasis)
+L1_stereo_bot_origin_JLab = Al_utils.ubasisBot_to_JLab(L1_stereo_bot_origin_ubasis,False)
+L1_stereo_bot_normal_JLab = Al_utils.UChannelToJlabVec(L1_stereo_bot_normal_ubasis)
+
+L2_axial_top_z = Al_utils.UChannelToJlabZ(Top_uchannel_measurements.get_L2_axial_frontedge()[0])
+L2_axial_top_y = Al_utils.UChannelToJlabYTop(Top_uchannel_measurements.get_L2_axial_frontedge()[2])
+L2_stereo_top_z = Al_utils.UChannelToJlabZ(Top_uchannel_measurements.get_L2_stereo_backedge()[0])
+L2_stereo_top_y = Al_utils.UChannelToJlabYTop(Top_uchannel_measurements.get_L2_stereo_backedge()[2])
+
+L3_axial_top_z = Al_utils.UChannelToJlabZ(Top_uchannel_measurements.get_L3_axial_frontedge()[0])
+L3_axial_top_y = Al_utils.UChannelToJlabYTop(Top_uchannel_measurements.get_L3_axial_frontedge()[2])
+L3_stereo_top_z = Al_utils.UChannelToJlabZ(Top_uchannel_measurements.get_L3_stereo_backedge()[0])
+L3_stereo_top_y = Al_utils.UChannelToJlabYTop(Top_uchannel_measurements.get_L3_stereo_backedge()[2])
+
+L2_axial_bot_z = Al_utils.UChannelToJlabZ(Bottom_uchannel_measurements.get_L2_axial_backedge()[0])
+L2_axial_bot_y = Al_utils.UChannelToJlabYBot(Bottom_uchannel_measurements.get_L2_axial_backedge()[2])
+L2_stereo_bot_z = Al_utils.UChannelToJlabZ(Bottom_uchannel_measurements.get_L2_stereo_frontedge()[0])
+L2_stereo_bot_y = Al_utils.UChannelToJlabYBot(Bottom_uchannel_measurements.get_L2_stereo_frontedge()[2])
+
+L3_axial_bot_z = Al_utils.UChannelToJlabZ(Bottom_uchannel_measurements.get_L3_axial_backedge()[0])
+L3_axial_bot_y = Al_utils.UChannelToJlabYBot(Bottom_uchannel_measurements.get_L3_axial_backedge()[2])
+L3_stereo_bot_z = Al_utils.UChannelToJlabZ(Bottom_uchannel_measurements.get_L3_stereo_frontedge()[0])
+L3_stereo_bot_y = Al_utils.UChannelToJlabYBot(Bottom_uchannel_measurements.get_L3_stereo_frontedge()[2])
+
+L0_axial_top_origin_JLab_residual = np.empty([3])
+L0_axial_top_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L0t_axial()[0] - L0_axial_top_origin_JLab[0]
+L0_axial_top_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L0t_axial()[1] - L0_axial_top_origin_JLab[1]
+L0_axial_top_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L0t_axial()[2] - L0_axial_top_origin_JLab[2]
+L0_stereo_top_origin_JLab_residual = np.empty([3])
+L0_stereo_top_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L0t_stereo()[0] - L0_stereo_top_origin_JLab[0]
+L0_stereo_top_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L0t_stereo()[1] - L0_stereo_top_origin_JLab[1]
+L0_stereo_top_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L0t_stereo()[2] - L0_stereo_top_origin_JLab[2]
+
+L1_axial_top_origin_JLab_residual = np.empty([3])
+L1_axial_top_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L1t_axial()[0] - L1_axial_top_origin_JLab[0]
+L1_axial_top_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L1t_axial()[1] - L1_axial_top_origin_JLab[1]
+L1_axial_top_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L1t_axial()[2] - L1_axial_top_origin_JLab[2]
+L1_stereo_top_origin_JLab_residual = np.empty([3])
+L1_stereo_top_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L1t_stereo()[0] - L1_stereo_top_origin_JLab[0]
+L1_stereo_top_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L1t_stereo()[1] - L1_stereo_top_origin_JLab[1]
+L1_stereo_top_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L1t_stereo()[2] - L1_stereo_top_origin_JLab[2]
+
+L0_axial_bot_origin_JLab_residual = np.empty([3])
+L0_axial_bot_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L0b_axial()[0] - L0_axial_bot_origin_JLab[0]
+L0_axial_bot_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L0b_axial()[1] - L0_axial_bot_origin_JLab[1]
+L0_axial_bot_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L0b_axial()[2] - L0_axial_bot_origin_JLab[2]
+L0_stereo_bot_origin_JLab_residual = np.empty([3])
+L0_stereo_bot_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L0b_stereo()[0] - L0_stereo_bot_origin_JLab[0]
+L0_stereo_bot_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L0b_stereo()[1] - L0_stereo_bot_origin_JLab[1]
+L0_stereo_bot_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L0b_stereo()[2] - L0_stereo_bot_origin_JLab[2]
+
+L1_axial_bot_origin_JLab_residual = np.empty([3])
+L1_axial_bot_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L1b_axial()[0] - L1_axial_bot_origin_JLab[0]
+L1_axial_bot_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L1b_axial()[1] - L1_axial_bot_origin_JLab[1]
+L1_axial_bot_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L1b_axial()[2] - L1_axial_bot_origin_JLab[2]
+L1_stereo_bot_origin_JLab_residual = np.empty([3])
+L1_stereo_bot_origin_JLab_residual[0] = Nominal_Position_Data.get_global_L1b_stereo()[0] - L1_stereo_bot_origin_JLab[0]
+L1_stereo_bot_origin_JLab_residual[1] = Nominal_Position_Data.get_global_L1b_stereo()[1] - L1_stereo_bot_origin_JLab[1]
+L1_stereo_bot_origin_JLab_residual[2] = Nominal_Position_Data.get_global_L1b_stereo()[2] - L1_stereo_bot_origin_JLab[2]
+
 outfile = open(output,"w")
 
 outfile.write("L0 Top pinbasis in uchannel frame\n")
@@ -430,6 +509,90 @@ outfile.write("Z: "+str(L1_stereo_bot_physical_edge_ubasis[0]-Bottom_uchannel_me
 #outfile.write("Z: "+str(L3_axial_bot_physical_edge_ubasis[0]-Bottom_uchannel_measurements.get_L3_axial_backedge()[0])+"  Y: "+str(L3_axial_bot_physical_edge_ubasis[2]-Bottom_uchannel_measurements.get_L3_axial_backedge()[2])+"\n")
 #outfile.write("L3 Bot Stereo sensor residuals (fixture - uchannel)\n")
 #outfile.write("Z: "+str(L3_stereo_bot_physical_edge_ubasis[0]-Bottom_uchannel_measurements.get_L3_stereo_frontedge()[0])+"  Y: "+str(L3_stereo_bot_physical_edge_ubasis[2]-Bottom_uchannel_measurements.get_L3_stereo_frontedge()[2])+"\n")
+
+outfile.write("\n")
+
+outfile.write("L0 Top Axial sensor in JLab frame\n")
+outfile.write("Origin: "+str(L0_axial_top_origin_JLab)+"  Normal: "+str(L0_axial_top_origin_JLab)+"\n")
+outfile.write("L0 Top Stereo sensor in JLab frame\n")
+outfile.write("Origin: "+str(L0_stereo_top_origin_JLab)+"  Normal: "+str(L0_stereo_top_origin_JLab)+"\n")
+
+outfile.write("L1 Top Axial sensor in JLab frame\n")
+outfile.write("Origin: "+str(L1_axial_top_origin_JLab)+"  Normal: "+str(L1_axial_top_origin_JLab)+"\n")
+outfile.write("L1 Top Stereo sensor in JLab frame\n")
+outfile.write("Origin: "+str(L1_stereo_top_origin_JLab)+"  Normal: "+str(L1_stereo_top_origin_JLab)+"\n")
+
+outfile.write("L2 Top Axial sensor in JLab frame\n")
+outfile.write("Z: "+str(L2_axial_top_z)+"  Y: "+str(L2_axial_top_y)+"\n")
+outfile.write("L2 Top Stereo sensor in JLab frame\n")
+outfile.write("Z: "+str(L2_stereo_top_z)+"  Y: "+str(L2_stereo_top_y)+"\n")
+
+outfile.write("L3 Top Axial sensor in JLab frame\n")
+outfile.write("Z: "+str(L3_axial_top_z)+"  Y: "+str(L3_axial_top_y)+"\n")
+outfile.write("L3 Top Stereo sensor in JLab frame\n")
+outfile.write("Z: "+str(L3_stereo_top_z)+"  Y: "+str(L3_stereo_top_y)+"\n")
+
+outfile.write("L0 Bot Axial sensor in JLab frame\n")
+outfile.write("Origin: "+str(L0_axial_bot_origin_JLab)+"  Normal: "+str(L0_axial_bot_origin_JLab)+"\n")
+outfile.write("L0 Bot Stereo sensor in JLab frame\n")
+outfile.write("Origin: "+str(L0_stereo_bot_origin_JLab)+"  Normal: "+str(L0_stereo_bot_origin_JLab)+"\n")
+
+outfile.write("L1 Bot Axial sensor in JLab frame\n")
+outfile.write("Origin: "+str(L1_axial_bot_origin_JLab)+"  Normal: "+str(L1_axial_bot_origin_JLab)+"\n")
+outfile.write("L1 Bot Stereo sensor in JLab frame\n")
+outfile.write("Origin: "+str(L1_stereo_bot_origin_JLab)+"  Normal: "+str(L1_stereo_bot_origin_JLab)+"\n")
+
+outfile.write("L2 Bot Axial sensor in JLab frame\n")
+outfile.write("Z: "+str(L2_axial_bot_z)+"  Y: "+str(L2_axial_bot_y)+"\n")
+outfile.write("L2 Bot Stereo sensor in JLab frame\n")
+outfile.write("Z: "+str(L2_stereo_bot_z)+"  Y: "+str(L2_stereo_bot_y)+"\n")
+
+outfile.write("L3 Bot Axial sensor in JLab frame\n")
+outfile.write("Z: "+str(L3_axial_bot_z)+"  Y: "+str(L3_axial_bot_y)+"\n")
+outfile.write("L3 Bot Stereo sensor in JLab frame\n")
+outfile.write("Z: "+str(L3_stereo_bot_z)+"  Y: "+str(L3_stereo_bot_y)+"\n")
+
+outfile.write("\n")
+
+outfile.write("L0 Top Axial sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L0_axial_top_origin_JLab_residual[0])+"  y "+str(L0_axial_top_origin_JLab_residual[1])+"  z "+str(L0_axial_top_origin_JLab_residual[2])+"\n")
+outfile.write("L0 Top Stereo sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L0_stereo_top_origin_JLab_residual[0])+"  y "+str(L0_stereo_top_origin_JLab_residual[1])+"  z "+str(L0_stereo_top_origin_JLab_residual[2])+"\n")
+
+outfile.write("L1 Top Axial sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L1_axial_top_origin_JLab_residual[0])+"  y "+str(L1_axial_top_origin_JLab_residual[1])+"  z "+str(L1_axial_top_origin_JLab_residual[2])+"\n")
+outfile.write("L1 Top Stereo sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L1_stereo_top_origin_JLab_residual[0])+"  y "+str(L1_stereo_top_origin_JLab_residual[1])+"  z "+str(L1_stereo_top_origin_JLab_residual[2])+"\n")
+
+outfile.write("L2 Top Axial sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L2_axial_top_z)+"  Y: "+str(L2_axial_top_y - Nominal_Position_Data.get_L2t_physical())+"\n")
+outfile.write("L2 Top Stereo sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L2_stereo_top_z)+"  Y: "+str(L2_stereo_top_y)+"\n")
+
+outfile.write("L3 Top Axial sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L3_axial_top_z)+"  Y: "+str(L3_axial_top_y - Nominal_Position_Data.get_L3t_physical())+"\n")
+outfile.write("L3 Top Stereo sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L3_stereo_top_z)+"  Y: "+str(L3_stereo_top_y)+"\n")
+
+outfile.write("L0 Bot Axial sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L0_axial_bot_origin_JLab_residual[0])+"  y "+str(L0_axial_bot_origin_JLab_residual[1])+"  z "+str(L0_axial_bot_origin_JLab_residual[2])+"\n")
+outfile.write("L0 Bot Stereo sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L0_stereo_bot_origin_JLab_residual[0])+"  y "+str(L0_stereo_bot_origin_JLab_residual[1])+"  z "+str(L0_stereo_bot_origin_JLab_residual[2])+"\n")
+
+outfile.write("L1 Bot Axial sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L1_axial_bot_origin_JLab_residual[0])+"  y "+str(L1_axial_bot_origin_JLab_residual[1])+"  z "+str(L1_axial_bot_origin_JLab_residual[2])+"\n")
+outfile.write("L1 Bot Stereo sensor residual in JLab frame\n")
+outfile.write("Origin: x "+str(L1_stereo_bot_origin_JLab_residual[0])+"  y "+str(L1_stereo_bot_origin_JLab_residual[1])+"  z "+str(L1_stereo_bot_origin_JLab_residual[2])+"\n")
+
+outfile.write("L2 Bot Axial sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L2_axial_bot_z)+"  Y: "+str(L2_axial_bot_y - Nominal_Position_Data.get_L2b_physical())+"\n")
+outfile.write("L2 Bot Stereo sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L2_stereo_bot_z)+"  Y: "+str(L2_stereo_bot_y)+"\n")
+
+outfile.write("L3 Bot Axial sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L3_axial_bot_z)+"  Y: "+str(L3_axial_bot_y - Nominal_Position_Data.get_L3b_physical())+"\n")
+outfile.write("L3 Bot Stereo sensor residual in JLab frame\n")
+outfile.write("Z: "+str(L3_stereo_bot_z)+"  Y: "+str(L3_stereo_bot_y)+"\n")
 
 outfile.close()
 

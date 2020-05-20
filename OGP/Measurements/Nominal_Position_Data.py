@@ -161,3 +161,71 @@ def get_L1_top_hole_pin():
 	L1_top_hole_pin[1] = 0.013
 	L1_top_hole_pin[2] = -43.447
 	return change_to_uchannel_basis(L1_top_hole_pin)
+
+def get_global_L0t_axial():
+	L0t_axial = np.empty([3])
+	L0t_axial[0] = 1.1566
+	L0t_axial[1] = 7.7625
+	L0t_axial[2] = 38.362
+	return L0t_axial
+
+def get_global_L0t_stereo():
+	L0t_stereo = np.empty([3])
+	L0t_stereo[0] = 2.1622
+	L0t_stereo[1] = 7.7237
+	L0t_stereo[2] = 45.929
+	return L0t_stereo
+
+def get_global_L0b_axial():
+	L0b_axial = np.empty([3])
+	L0b_axial[0] = 1.8596
+	L0b_axial[1] = -7.7625
+	L0b_axial[2] = 61.589
+	return L0b_axial
+
+def get_global_L0b_stereo():
+	L0b_stereo = np.empty([3])
+	L0b_stereo[0] = 2.4023
+	L0b_stereo[1] = -7.7237
+	L0b_stereo[2] = 53.975
+	return L0b_stereo
+
+def get_global_L1t_axial():
+	L1t_axial = np.empty([3])
+	L1t_axial[0] = 2.4281
+	L1t_axial[1] = 8.0625
+	L1t_axial[2] = 88.346
+	return L1t_axial
+
+def get_global_L1t_stereo():
+	L1t_stereo = np.empty([3])
+	L1t_stereo[0] = 3.4338
+	L1t_stereo[1] = 8.0237
+	L1t_stereo[2] = 95.914
+	return L1t_stereo
+
+def get_global_L1b_axial():
+	L1b_axial = np.empty([3])
+	L1b_axial[0] = 3.1365
+	L1b_axial[1] = -8.0625
+	L1b_axial[2] = 111.57
+	return L1b_axial
+
+def get_global_L1b_stereo():
+	L1b_stereo = np.empty([3])
+	L1b_stereo[0] = 3.6792
+	L1b_stereo[1] = -8.0237
+	L1b_stereo[2] = 103.96
+	return L1b_stereo
+
+def get_L2t_physical():
+	return 1.296
+
+def get_L2b_physical():
+	return -1.296
+
+def get_L3t_physical():
+	return 2.796
+
+def get_L3b_physical():
+	return -2.796
