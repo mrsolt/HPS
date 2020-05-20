@@ -244,3 +244,44 @@ def getAvg(arr):
 	for i in range(len(arr)):
 		sum = sum + arr[i]
 	return sum/len(arr)
+
+def ubasisTop_to_JLab(point,isL0):
+	newpoint = np.empty([3])
+	theta = 0.0305
+	x = -point[1] - 25.594
+	y = -(point[2] - 8.423)
+	z = point[0] + 92.884
+	if(isL0):
+	    x = (x*np.cos(theta)-z*np.sin(theta))
+	newpoint[0] = x
+	newpoint[1] = y
+	newpoint[2] = z
+	return newpoint
+
+def ubasisBot_to_JLab(point,isL0):
+	newpoint = np.empty([3])
+	theta = 0.0305
+	x = point[1] - 25.110
+	y = point[2] - 8.423
+	z = point[0] + 108.75
+	if(isL0):
+	    x = (x*np.cos(theta)-z*np.sin(theta))
+	newpoint[0] = x
+	newpoint[1] = y
+	newpoint[2] = z
+	return newpoint
+
+def UChannelToJlabPoint(point):
+	return point
+
+def UChannelToJlabVec(vec):
+	return vec
+
+def UChannelToJlabZ(z):
+	return z
+
+def UChannelToJlabYTop(y):
+	return -(y - 8.423)
+
+def UChannelToJlabYBot(y):
+	return y - 8.423
