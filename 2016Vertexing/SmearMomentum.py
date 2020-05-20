@@ -104,8 +104,9 @@ outfile = remainder[0]+"_smear"
 outfile2 = remainder[0]+"_cuts"
 #outfileroot = TFile(remainder[0]+".root","RECREATE")
 
-file = TFile(remainder[1])
-events = file.Get("ntuple")
+events = TChain("ntuple")
+for i in range(1,len(remainder)):
+    events.Add(remainder[i])
 
 histo0, histo1, histo2 = SmearHisto(events,nBins,minX,maxX)
 

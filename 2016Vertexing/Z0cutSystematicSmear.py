@@ -84,7 +84,7 @@ def SmearZ0(eventscut,nBins,minX,maxX):
 	a1 = -0.00230111045957
 	b0 = 0.0471576968062
 	b1 = -0.00108639651791
-	histo2 = TH1F("histo2","histo2",nBins,minX,maxX)
+	histo3 = TH1F("histo3","histo3",nBins,minX,maxX)
 
 	uncM = array.array('d',[0])
 	uncVZ = array.array('d',[0])
@@ -111,9 +111,9 @@ def SmearZ0(eventscut,nBins,minX,maxX):
 		posZ0cut2 = -posZ0 > m0 + b0 * eventscut.uncVZ + b1 *1/eventscut.uncM * eventscut.uncVZ
 
 		if((eleZ0cut1 and posZ0cut2) or (eleZ0cut2 and posZ0cut1)):
-			histo2.Fill(eventscut.uncVZ)
+			histo3.Fill(eventscut.uncVZ)
 
-	return histo2
+	return histo3
 
 def makePlots(events,z0_cut,cut_tot,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats=0,logY=0):
 	RatioMin = 0.9
@@ -121,20 +121,16 @@ def makePlots(events,z0_cut,cut_tot,nBins,minX,maxX,label,outfile,canvas,XaxisTi
 
 	cut = "{0}&&{1}".format(cut_tot,z0_cut)
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncVZ","histo",nBins,minX,maxX),cut)
-	histo = ROOT.gROOT.FindObject("histo".format(i))
+	histo = ROOT.gROOT.FindObject("histo")
 	histo.Sumw2()
 
 	eventscut = events.CopyTree(cut_tot)
 
 	histo2 = SmearZ0(eventscut,nBins,minX,maxX)
 	histo2.Sumw2()
-	histo2.SetLineColor(2)
 
+	canvas.Clear()
 	canvas.SetLogy(logY)
-	histo.SetTitle(label)
-	histo.GetXaxis().SetTitle(XaxisTitle)
-	histo.GetYaxis().SetTitle(YaxisTitle)
-	histo.SetStats(stats)
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(logY)
@@ -149,7 +145,13 @@ def makePlots(events,z0_cut,cut_tot,nBins,minX,maxX,label,outfile,canvas,XaxisTi
 	bot.SetBottomMargin(0.4)
 	top.cd()
 
+	histo.SetTitle(label)
+	histo.GetXaxis().SetTitle(XaxisTitle)
+	histo.GetYaxis().SetTitle(YaxisTitle)
+	histo.SetStats(stats)
+
 	histo.Draw()
+	histo2.SetLineColor(2)
 	histo2.Draw("same")
 
 	legend = TLegend(.60,.66,.82,.90)
@@ -177,6 +179,7 @@ def makePlots(events,z0_cut,cut_tot,nBins,minX,maxX,label,outfile,canvas,XaxisTi
 	ratio = histo2.Clone("Ratio"+histo2.GetName())
 	ratio.Divide(reference)
 	ratio.DrawCopy("pe same")
+	ratio.SetStats(1)
 	ratio.Fit("pol0")
 
 	canvas.Print(outfile+".pdf")
