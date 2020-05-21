@@ -126,7 +126,7 @@ def getZCut(fitfunc,zcut_val=0.5,scale=1.0,zBin=0.01,minZ=-60,maxZ=60):
     print("ZCut not found!")
     return -9999.
 
-def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma):
+def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma,cutnorm):
 	fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
 	fitfunc.SetParName(0,"Amplitude")
 	fitfunc.SetParName(1,"Mean")
@@ -135,6 +135,7 @@ def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma):
 
 	massarray = array.array('d')
 	zcutarray = array.array('d')
+	zcutarrayscaled = array.array('d')
 
 	zcut_val = 0.5
 	mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
@@ -143,6 +144,10 @@ def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma):
 		massarray.append(mass)
 
 		mres = mresf.Eval(mass)
+
+		events.Draw("uncVZ>>ref(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cutnorm),"")
+		ref = gDirectory.Get("ref")
+
 		events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cut),"")
 
 		h1d = gDirectory.Get("hnew1d")
@@ -158,7 +163,11 @@ def fitTails(events,cut,n_massbins,minmass,maxmass,masscut_nsigma):
 		fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
 		zcut = getZCut(fitfunc,zcut_val=zcut_val)
 		zcutarray.append(zcut)
-	return massarray, zcutarray
+		scale_factor = ref.Integral()/h1d.Integral()
+		zcut_val_scaled = zcut_val/scale_factor
+		zcut_scaled = getZCut(fitfunc,zcut_val=zcut_val_scaled)
+		zcutarrayscaled.append(zcut_scaled)
+	return massarray, zcutarray, zcutarrayscaled
 
 def saveCutFlow(events,inHisto,i,cuts_1,cut1,cut2,cut3,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=1):
 	events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histos{0}".format(i),nBins,minX,maxX),cuts_1)
@@ -551,10 +560,10 @@ if(FitTails):
 		cut1 = cuts[i+2]
 		cut2 = floatcuts[2*i]
 		cut3 = floatcuts[2*i+1]
-		massarray,zcutarray1 = fitTails(events,cuts_1,n_massbins,minmass,maxmass,masscut_nsigma)
-		_,zcutarray2 = fitTails(events,cuts_1+"&&"+cut1,n_massbins,minmass,maxmass,masscut_nsigma)
-		_,zcutarray3 = fitTails(events,cuts_1+"&&"+cut2,n_massbins,minmass,maxmass,masscut_nsigma)
-		_,zcutarray4 = fitTails(events,cuts_1+"&&"+cut3,n_massbins,minmass,maxmass,masscut_nsigma)
+		massarray,zcutarray1,zcutarrayscaled1 = fitTails(events,cuts_1,n_massbins,minmass,maxmass,masscut_nsigma,cuts_1+"&&"+cut1)
+		_,zcutarray2,zcutarrayscaled2 = fitTails(events,cuts_1+"&&"+cut1,n_massbins,minmass,maxmass,masscut_nsigma,cuts_1+"&&"+cut1)
+		_,zcutarray3,zcutarrayscaled3 = fitTails(events,cuts_1+"&&"+cut2,n_massbins,minmass,maxmass,masscut_nsigma,cuts_1+"&&"+cut1)
+		_,zcutarray4,zcutarrayscaled4 = fitTails(events,cuts_1+"&&"+cut3,n_massbins,minmass,maxmass,masscut_nsigma,cuts_1+"&&"+cut1)
 		graph1=TGraph(len(massarray),massarray,zcutarray1)
 		graph2=TGraph(len(massarray),massarray,zcutarray2)
 		graph3=TGraph(len(massarray),massarray,zcutarray3)
@@ -588,10 +597,39 @@ if(FitTails):
 		legend.Draw("")
 		c.Print(remainder[0]+".pdf","Title:zcut")
 		c.Write()
+
+		graphscaled1=TGraph(len(massarray),massarray,zcutarrayscaled1)
+		graphscaled2=TGraph(len(massarray),massarray,zcutarrayscaled2)
+		graphscaled3=TGraph(len(massarray),massarray,zcutarrayscaled3)
+		graphscaled4=TGraph(len(massarray),massarray,zcutarrayscaled4)
+		graphscaled1.SetMarkerColor(1)
+		graphscaled1.SetLineColor(1)
+		graphscaled2.SetMarkerColor(2)
+		graphscaled2.SetLineColor(2)
+		graphscaled3.SetMarkerColor(4)
+		graphscaled3.SetLineColor(4)
+		graphscaled4.SetMarkerColor(6)
+		graphscaled4.SetLineColor(6)
+		graphscaled1.GetYaxis().SetRangeUser(-4.3,30)
+		graphscaled1.Draw("A*")
+		graphscaled1.SetTitle("Zcut for Varying {0} Cut Normalized".format(label[3*i+2]))
+		graphscaled1.GetXaxis().SetTitle("mass [GeV]")
+		graphscaled1.GetYaxis().SetTitle("zcut [mm]")
+		graphscaled2.Draw("*Psame")
+		graphscaled3.Draw("*Psame")
+		graphscaled4.Draw("*Psame")
+		legend.Draw("")
+		c.Print(remainder[0]+".pdf","Title:zcut")
+		c.Write()
+
 		del zcutarray1
 		del zcutarray2
 		del zcutarray3
 		del zcutarray4
+		del zcutarrayscaled1
+		del zcutarrayscaled2
+		del zcutarrayscaled3
+		del zcutarrayscaled4
 		del massarray
 		del legend
 
