@@ -103,7 +103,7 @@ def RemoveHit(slp):
         return False
 
 def makePlots(events,var,cut,nBins,minX,maxX,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats=0,logY=0):
-	RatioMin = 0.75
+	RatioMin = 0.5
 	RatioMax = 1.0
 
 	events.Draw("{0}>>{1}({2},{3},{4})".format(var,"histo",nBins,minX,maxX),cut)
