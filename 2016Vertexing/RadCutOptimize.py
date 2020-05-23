@@ -123,7 +123,11 @@ def fitTails(events,cut,mass):
 	fitfunc.SetParameters(peak,mean,sigma,3)
 	fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
 	zcut = getZCut(fitfunc,zcut_val=zcut_val)
-	return zcut
+
+	eventsData.Draw("uncM>>numZ(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4}&&uncVZ>{5})".format("uncM",mass,masscut_nsigma,mres,cut,zcut),"")
+	numZ = gDirectory.Get("numZ")
+	numz = numZ.Integral()
+	return zcut, numz
 
 def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	outfileroot.cd()
@@ -151,11 +155,12 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		parr.append(p)
 		cutstot = "{0}&&{1}".format(cuts,'uncP>{0}'.format(p))
 		cutstotdata = "{0}&&{1}".format(cutsdata,'uncP>{0}'.format(p))
-		zcut = fitTails(eventsData,cutstotdata,mass)
+		zcut, numz = fitTails(eventsData,cutstotdata,mass)
 
 		eventsData.Draw("uncVZ>>num(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,1,deltaM,cutstotdata),"")
 		num = gDirectory.Get("num")
 		num_rad = num.Integral()
+
 		eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histo{0}".format(i),nBins,minX,maxX),"{0}&&{1}".format(cutstot,"uncVZ>{0}".format(zcut)))
 		histo = ROOT.gROOT.FindObject("histo{0}".format(i))
 
@@ -170,8 +175,9 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		sigyield = histo.Integral() * ap_yield
 		if(i == 0):
 			norm = sigyield
-		print("Signal Yield: {0}".format(sigyield/norm))
-		sigarr.append(sigyield/norm)
+		back = max(0.5,numz)
+		print("Signal Yield: {0}   Background: {1}".format(sigyield/norm,back))
+		sigarr.append(sigyield/(norm*back))
 		del histo
 		del histo2
 
