@@ -104,27 +104,41 @@ def fitTails(events,cut,mass):
 	fitfunc.SetParName(2,"Sigma")
 	fitfunc.SetParName(3,"Tail Z")
 
+	n_massbins=25
+	minmass=0.04
+	maxmass=0.175
+
 	masscut_nsigma = 1.9
 
 	zcut_val = 0.5
 	mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
-	mres = mresf.Eval(mass)
+	massarray=array.array('d')
+	zcutarray=array.array('d')
+	for i in range(0,n_massbins):
+		mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
+		massarray.append(mass)
+		mres = mresf.Eval(mass)
 
-	events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cut),"")
+		events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cut),"")
 
-	h1d = gDirectory.Get("hnew1d")
-	fit=h1d.Fit("gaus","QS")
-	peak=fit.Get().Parameter(0)
-	mean=fit.Get().Parameter(1)
-	sigma=fit.Get().Parameter(2)
-	fit=h1d.Fit("gaus","QS","",mean-3*sigma,mean+3*sigma)
-	mean=fit.Get().Parameter(1)
-	sigma=fit.Get().Parameter(2)
-	fitfunc.SetParameters(peak,mean,sigma,3)
-	fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
-	zcut = getZCut(fitfunc,zcut_val=zcut_val)
+		h1d = gDirectory.Get("hnew1d")
+		fit=h1d.Fit("gaus","QS")
+		peak=fit.Get().Parameter(0)
+		mean=fit.Get().Parameter(1)
+		sigma=fit.Get().Parameter(2)
+		fit=h1d.Fit("gaus","QS","",mean-3*sigma,mean+3*sigma)
+		mean=fit.Get().Parameter(1)
+		sigma=fit.Get().Parameter(2)
+		fitfunc.SetParameters(peak,mean,sigma,3)
+		fit=h1d.Fit(fitfunc,"LSQIM","",mean-2*sigma,mean+10*sigma)
+		zcut = getZCut(fitfunc,zcut_val=zcut_val)
+		zcutarray.append(zcut)
 
-	eventsData.Draw("uncM>>numZ(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4}&&uncVZ>{5})".format("uncM",mass,masscut_nsigma,mres,cut,zcut),"")
+	graph=TGraph(len(massarray),massarray,zcutarray)
+	fit = graph.Fit("pol5","QS","",0.05,0.15)
+	zcutfunc = "({0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),fit.Get().Parameter(3),fit.Get().Parameter(4),fit.Get().Parameter(5))
+
+	eventsData.Draw("uncM>>numZ(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>0.060&&uncM<0.150".format(cut,zcutfunc),"")
 	numZ = gDirectory.Get("numZ")
 	numz = numZ.Integral()
 	return zcut, numz
@@ -152,16 +166,16 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 	norm = 1
 	for i in range(nP):
 		p = minP + i * (maxP - minP) / (nP - 1)
-		parr.append(p)
+		parr.append(p/ebeam)
 		cutstot = "{0}&&{1}".format(cuts,'uncP>{0}'.format(p))
 		cutstotdata = "{0}&&{1}".format(cutsdata,'uncP>{0}'.format(p))
-		zcut, numz = fitTails(eventsData,cutstotdata,mass)
+		zcutfunc, numz = fitTails(eventsData,cutstotdata,mass)
 
 		eventsData.Draw("uncVZ>>num(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,1,deltaM,cutstotdata),"")
 		num = gDirectory.Get("num")
 		num_rad = num.Integral()
 
-		eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histo{0}".format(i),nBins,minX,maxX),"{0}&&{1}".format(cutstot,"uncVZ>{0}".format(zcut)))
+		eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histo{0}".format(i),nBins,minX,maxX),"{0}&&{1}".format(cutstot,"(uncVZ>{0})".format(zcutfunc)))
 		histo = ROOT.gROOT.FindObject("histo{0}".format(i))
 
 		ap_yield= 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
@@ -176,13 +190,13 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		back = max(0.5,numz)
 		if(i == 0):
 			norm = sigyield/back
-		print("Signal Yield: {0}   Background: {1}   Zcut: {2}".format(sigyield/norm,back,zcut))
+		print("Signal Yield: {0}   Background: {1}   Sig/Back: {2}   x: {3}".format(sigyield/norm,back,sigyield/(norm*back),p/ebeam))
 		sigarr.append(sigyield/(norm*back))
 		del histo
 		del histo2
 
 	graph = TGraph(nP,parr,sigarr)
-	graph.SetTitle(plotTitle + " {0:0.1f} MeV A'".format(mass*1000))
+	graph.SetTitle(plotTitle + " {0:0.1f} MeV A', ".format(mass*1000) + "#epsilon^{2} = " + "{0:0.2e}".format(eps))
 	graph.GetXaxis().SetTitle(XaxisTitle)
 	graph.GetYaxis().SetTitle(YaxisTitle)
 	graph.Draw("AP*")
@@ -289,13 +303,13 @@ for i in range(len(cuts)):
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 		nomcutdata = "{0}&&{1}".format(nomcutdata,cutsdata[i])
 
-minP = 0.5
+minP = 1.5
 maxP = 2.3
 nP = int((maxP - minP) / 0.1 + 1)
 
 openPDF(outfile,c)
 
-saveCutFlow(eventsData,eventsAp,eventstruth,nomcut,nomcutdata,nP,minP,maxP,nBins,minVZ,maxVZ,outfile,c,XaxisTitle="V0 momentum cut (GeV)",YaxisTitle="Relative Signal",plotTitle="Relative Signal {0}".format(Label))
+saveCutFlow(eventsData,eventsAp,eventstruth,nomcut,nomcutdata,nP,minP,maxP,nBins,minVZ,maxVZ,outfile,c,XaxisTitle="x cut (E_{sum}/E_{beam})",YaxisTitle="Relative Signal / Background",plotTitle="Relative Signal / Background {0}".format(Label))
 
 closePDF(outfile,c)
 outfileroot.Close()
