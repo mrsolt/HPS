@@ -173,10 +173,10 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 			sig_bin = histo.GetBinContent(j+1) * exppol1.Eval(histo.GetBinCenter(j+1))
 			histo2.SetBinContent(j+1,sig_bin)
 		sigyield = histo.Integral() * ap_yield
-		if(i == 0):
-			norm = sigyield
 		back = max(0.5,numz)
-		print("Signal Yield: {0}   Background: {1}".format(sigyield/norm,back))
+		if(i == 0):
+			norm = sigyield/back
+		print("Signal Yield: {0}   Background: {1}   Zcut: {2}".format(sigyield/norm,back,zcut))
 		sigarr.append(sigyield/(norm*back))
 		del histo
 		del histo2
