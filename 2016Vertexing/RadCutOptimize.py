@@ -135,10 +135,10 @@ def fitTails(events,cut,mass):
 		zcutarray.append(zcut)
 
 	graph=TGraph(len(massarray),massarray,zcutarray)
-	fit = graph.Fit("pol5","QS","",0.05,0.15)
+	fit = graph.Fit("pol5","QS","",0.05,0.16)
 	zcutfunc = "({0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),fit.Get().Parameter(3),fit.Get().Parameter(4),fit.Get().Parameter(5))
 
-	eventsData.Draw("uncM>>numZ(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>0.060&&uncM<0.150".format(cut,zcutfunc),"")
+	eventsData.Draw("uncM>>numZ(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>0.050&&uncM<0.160".format(cut,zcutfunc),"")
 	numZ = gDirectory.Get("numZ")
 	numz = numZ.Integral()
 	return zcut, numz
@@ -303,7 +303,7 @@ for i in range(len(cuts)):
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 		nomcutdata = "{0}&&{1}".format(nomcutdata,cutsdata[i])
 
-minP = 1.5
+minP = 1.3
 maxP = 2.3
 nP = int((maxP - minP) / 0.1 + 1)
 
