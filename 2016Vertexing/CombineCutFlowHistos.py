@@ -63,6 +63,8 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		color = color + 1
 		if(i == 0):
 			histos[i].Draw("")
+		elif(i == 3):
+			continue
 		else:
 			histos[i].Draw("same")
 		histos[i].Write(labels[i]+" "+inHisto)
@@ -75,6 +77,8 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.035)
 	for i in range(len(labels)):
+		if(i == 3):
+			continue
 		legend.AddEntry(histos[i],labels[i],"LP")
 	legend.Draw("")
 	canvas.SetLogy(logY)

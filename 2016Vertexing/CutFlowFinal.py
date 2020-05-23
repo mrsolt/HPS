@@ -111,11 +111,15 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 						cuts_1 = cuts_1 + "&&" + cuts[j]
 					else:
 						cuts_1 = cuts[j]
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histos{0}_{1}".format(i,inHisto),nBins,minX,maxX),cut_tot)
+		if(inHisto == "uncVZ"):
+			plotHisto = "{0}+{1}".format(inHisto,dz)
+		else:
+			plotHisto = inHisto
+		events.Draw("{0}>>{1}({2},{3},{4})".format(plotHisto,"histos{0}_{1}".format(i,inHisto),nBins,minX,maxX),cut_tot)
 		histos.append(ROOT.gROOT.FindObject("histos{0}_{1}".format(i,inHisto)))
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo2{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1)
+		events.Draw("{0}>>{1}({2},{3},{4})".format(plotHisto,"histo2{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1)
 		histos2.append(ROOT.gROOT.FindObject("histo2{0}_{1}".format(i,inHisto)))
-		events.Draw("{0}>>{1}({2},{3},{4})".format(inHisto,"histo3{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
+		events.Draw("{0}>>{1}({2},{3},{4})".format(plotHisto,"histo3{0}_{1}".format(i,inHisto),nBins,minX,maxX),cuts_1+"&&"+cuts[i])
 		histos3.append(ROOT.gROOT.FindObject("histo3{0}_{1}".format(i,inHisto)))
 		if(inHisto == "uncVZ"):
 			events.Draw("uncVZ:uncM>>{0}({1},{2},{3},{1},{4},{5})".format("histo4{0}_{1}".format(i,inHisto),nBins,0.,0.2,-30,30),cuts_1)
@@ -357,6 +361,7 @@ if(useData):
 	c2 = -55.84
 	c3 = 84.0
 
+dy = uncTargProjY - (-0.0668941015569)
 dz = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3".format(c0,c1,c2,c3)
 
 if(L1L2):
@@ -424,10 +429,10 @@ isocut = "({0}&&{1})".format(eleiso,posiso)
 #eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 #posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
-posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz)
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
-posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz)
+eleZ0_up = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
+posZ0_up = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
+eleZ0_down = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
+posZ0_down = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
 
 z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
