@@ -186,7 +186,7 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		for j in range(histo.GetNbinsX()):
 			sig_bin = histo.GetBinContent(j+1) * exppol1.Eval(histo.GetBinCenter(j+1))
 			histo2.SetBinContent(j+1,sig_bin)
-		sigyield = histo.Integral() * ap_yield
+		sigyield = histo.Integral() #* ap_yield
 		back = max(0.5,numz)
 		if(i == 0):
 			norm = sigyield/back
