@@ -303,9 +303,9 @@ for i in range(len(cuts)):
 		nomcut = "{0}&&{1}".format(nomcut,cuts[i])
 		nomcutdata = "{0}&&{1}".format(nomcutdata,cutsdata[i])
 
-minP = 1.3
+minP = 1.5
 maxP = 2.3
-nP = int((maxP - minP) / 0.1 + 1)
+nP = int((maxP - minP) / 0.05 + 1)
 
 openPDF(outfile,c)
 
