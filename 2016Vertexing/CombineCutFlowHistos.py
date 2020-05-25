@@ -224,7 +224,7 @@ label.append("Preselection")
 label.append("e+e- Layer Requirement")
 label.append("V0 Projection 2#sigma")
 label.append("Unconstrained Vertex #chi^{2} < 4")
-label.append("V0 momentum > 2.0 GeV")
+label.append("V0 momentum > 1.85 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
