@@ -440,13 +440,13 @@ z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_dow
 cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
 #cuts.append("uncChisq<4")
 cuts.append("uncP<9999")
-cuts.append("uncP>2.0")
+cuts.append("uncP>1.85")
 cuts.append(isocut)
 cuts.append(z0cut)
 
 label.append("V0 Projection 2#sigma")
 label.append("Unconstrained Vertex #chi^{2} < 4")
-label.append("V0 momentum > 2.0 GeV")
+label.append("V0 momentum > 1.85 GeV")
 label.append("Isolation Cut")
 label.append("Impact Parameter Cuts")
 
