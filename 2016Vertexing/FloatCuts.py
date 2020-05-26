@@ -411,22 +411,22 @@ else:
 		b0_3 = 0.0266646866578
 		b1_3 = -1.95809258016e-05
 
-		eleZ0_up1 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
-		posZ0_up1 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,a0_1,a1_1)
-		eleZ0_down1 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
-		posZ0_down1 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_1,b0_1,b1_1)
+		eleZ0_up1 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz,dy)
+		posZ0_up1 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz,dy)
+		eleZ0_down1 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz,dy)
+		posZ0_down1 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz,dy)
 		z0cut1 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up1,posZ0_down1,posZ0_up1,eleZ0_down1)
 
-		eleZ0_up2 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
-		posZ0_up2 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,a0_2,a1_2)
-		eleZ0_down2 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
-		posZ0_down2 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_2,b0_2,b1_2)
+		eleZ0_up2 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz,dy)
+		posZ0_up2 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz,dy)
+		eleZ0_down2 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz,dy)
+		posZ0_down2 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz,dy)
 		z0cut2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up2,posZ0_down2,posZ0_up2,eleZ0_down2)
 
-		eleZ0_up3 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
-		posZ0_up3 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,a0_3,a1_3)
-		eleZ0_down3 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
-		posZ0_down3 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0_3,b0_3,b1_3)
+		eleZ0_up3 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz,dy)
+		posZ0_up3 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz,dy)
+		eleZ0_down3 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz,dy)
+		posZ0_down3 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz,dy)
 		z0cut3 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up3,posZ0_down3,posZ0_up3,eleZ0_down3)
 
 	else:
