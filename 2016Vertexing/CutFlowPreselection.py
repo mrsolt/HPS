@@ -196,7 +196,7 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	histo5ap2.SetLineColor(8)
 	histo5ap2.Draw("same")
 	if(logY == 0):
-		line1 = TLine(lineval1,0,lineval1,maximum)
+		line1 = TLine(lineval1,0,lineval1,maximum*1.3)
 	else:
 		line1 = TLine(lineval1,0,lineval1,maximum*10)
 	line1.SetLineColor(2)
