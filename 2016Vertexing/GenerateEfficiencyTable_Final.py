@@ -729,10 +729,12 @@ if(removeSharedHits):
 if(zcut):
     if(unblind):
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-8.555,1625,-38800,396200,-1892000,3458000) #10% Data L1L1
-        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-3.413,1360,-3.276e4,3.292e5,-1.535e6,2.733e6) #10% Data L1L1
+        #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-3.413,1360,-3.276e4,3.292e5,-1.535e6,2.733e6) #10% Data L1L1
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(19,53.04,-2566,-4258,2.345e5,-8.994e5) #10% Data L1L1
     else:
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-4.912,1730,-42640,441300,-2117000,3865000) #100% scaled Data L1L1
-        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(1.809,1373,-3.444e4,3.503e5,-1.633e6,2.886e6) #100% scaled Data L1L1
+        #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(1.809,1373,-3.444e4,3.503e5,-1.633e6,2.886e6) #100% scaled Data L1L1
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6) #100% scaled Data L1L1
     cutsL1L1.append("uncVZ>{0}".format(zcutL1L1))
 
 cutL1L1 = cutsL1L1[0]
@@ -792,10 +794,12 @@ if(removeSharedHits):
 if(zcut):
     if(unblind):
         #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
-        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-162,9927,-2.028e5,1.952e6,-9.05e6,1.627e7) #10% Data L1L2
+        #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-162,9927,-2.028e5,1.952e6,-9.05e6,1.627e7) #10% Data L1L2
+        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7) #10% Data L1L2
     else:
         #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-170.1,10510,-209100,1934000,-8502000,14280000) #100% scaled Data L1L2
-        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-199.6,1.224e4,-2.501e5,2.411e6,-1.117e7,2.001e7) #100% scaled Data L1L2
+        #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-199.6,1.224e4,-2.501e5,2.411e6,-1.117e7,2.001e7) #100% scaled Data L1L2
+        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-205.6,1.258e4,-2.595e5,2.538e6,-1.197e7,2.19e7) #100% scaled Data L1L2
     cutsL1L2.append("uncVZ>{0}".format(zcutL1L2))
 
 cutL1L2 = cutsL1L2[0]
