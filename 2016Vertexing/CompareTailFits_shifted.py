@@ -294,7 +294,7 @@ graph1.GetListOfFunctions().Remove(graph1.GetFunction("pol5"))
 graph2 = infile1.Get("zcutscaled")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 graph3 = infile1.Get("maxZ")
-savegraph3(graph1,graph2,graph3,"Data 10%","Data Scaled","Maximum Z",outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
+savegraph3(graph1,graph2,graph3,"Data 10%","Maximum Z","Data Scaled",outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),graph1.GetTitle())
 del graph1
 del graph2
 del graph3
@@ -306,7 +306,7 @@ graph2 = infile1.Get("zcut2")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 graph3 = infile1.Get("zcut3")
 graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol5"))
-savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% +{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Data 10% +/-{0}#sigma".format(nsig))
+savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% -{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Data 10% +/-{0}#sigma".format(nsig))
 del graph1
 del graph2
 del graph3
@@ -318,7 +318,7 @@ graph2 = infile2.Get("zcut2")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 graph3 = infile2.Get("zcut3")
 graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol5"))
-savegraph3(graph1,graph2,graph3,"MC 10% Nominal","MC 10% +{0}#sigma".format(nsig),"MC 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut MC +/-{0}#sigma".format(nsig))
+savegraph3(graph1,graph2,graph3,"MC 10% Nominal","MC 10% -{0}#sigma".format(nsig),"MC 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut MC +/-{0}#sigma".format(nsig))
 del graph1
 del graph2
 del graph3
@@ -330,7 +330,7 @@ graph2 = infile1.Get("zcutscaled2")
 graph2.GetListOfFunctions().Remove(graph2.GetFunction("pol5"))
 graph3 = infile1.Get("zcutscaled3")
 graph3.GetListOfFunctions().Remove(graph3.GetFunction("pol5"))
-savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% +{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Scaled Data 10% +/-{0}#sigma".format(nsig))
+savegraph3(graph1,graph2,graph3,"Data 10% Nominal","Data 10% -{0}#sigma".format(nsig),"Data 10% +{0}#sigma".format(nsig),outfile,c,0,0.15,-4.3,40,graph1.GetXaxis().GetTitle(),graph1.GetYaxis().GetTitle(),"Zcut Scaled Data 10% +/-{0}#sigma".format(nsig))
 del graph1
 del graph2
 del graph3
