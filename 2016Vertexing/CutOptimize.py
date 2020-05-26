@@ -228,7 +228,7 @@ nSig = 2
 dz = "0."
 if(useData):
 	dz = "((-3.517-13.41*uncM+88.16*uncM^2-173.1*uncM^3)-(-3.14-27.2*uncM+144*uncM^2-257.1*uncM^3))"
-
+dy = uncTargProjY - (-0.0668941015569)
 
 label = []
 floatcuts = []
@@ -305,32 +305,32 @@ else:
 
 isocut = "({0}&&{1})".format(eleiso,posiso)
 
-eleZ0_up1 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz)
-posZ0_up1 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz)
-eleZ0_down1 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz)
-posZ0_down1 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz)
+eleZ0_up1 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz,dy)
+posZ0_up1 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,a0_1,a1_1,dz,dy)
+eleZ0_down1 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz,dy)
+posZ0_down1 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_1,b0_1,b1_1,dz,dy)
 z0cut1 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up1,posZ0_down1,posZ0_up1,eleZ0_down1)
 
-eleZ0_up2 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz)
-posZ0_up2 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz)
-eleZ0_down2 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz)
-posZ0_down2 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz)
+eleZ0_up2 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz,dy)
+posZ0_up2 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,a0_2,a1_2,dz,dy)
+eleZ0_down2 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz,dy)
+posZ0_down2 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_2,b0_2,b1_2,dz,dy)
 z0cut2 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up2,posZ0_down2,posZ0_up2,eleZ0_down2)
 
-eleZ0_up3 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz)
-posZ0_up3 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz)
-eleZ0_down3 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz)
-posZ0_down3 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz)
+eleZ0_up3 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz,dy)
+posZ0_up3 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,a0_3,a1_3,dz,dy)
+eleZ0_down3 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz,dy)
+posZ0_down3 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_3,b0_3,b1_3,dz,dy)
 z0cut3 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up3,posZ0_down3,posZ0_up3,eleZ0_down3)
 
-eleZ0_up4 = "(eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz)
-posZ0_up4 = "(posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz)
-eleZ0_down4 = "(-eleTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz)
-posZ0_down4 = "(-posTrkZ0>{0}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz)
+eleZ0_up4 = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz,dy)
+posZ0_up4 = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,a0_4,a1_4,dz,dy)
+eleZ0_down4 = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz,dy)
+posZ0_down4 = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0_4,b0_4,b1_4,dz,dy)
 z0cut4 = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up4,posZ0_down4,posZ0_up4,eleZ0_down4)
 
 #cuts.append("sqrt((({4}-{0})/({6}*{1}))^2+(({5}-{2})/({6}*{3}))^2)<1".format(uncTargProjX,uncTargProjXSig,uncTargProjY,uncTargProjYSig,xProj_rot,yProj_rot,nSig))
-cuts.append("uncP>2.0")
+cuts.append("uncP>1.85")
 cuts.append(isocut)
 
 label2 = ""
