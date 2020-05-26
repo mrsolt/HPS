@@ -5,7 +5,7 @@ import getopt
 import array
 import math
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1, TGraph
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1, TGraph, TGraphErrors
 sys.argv = tmpargv
 
 #List arguments
@@ -163,10 +163,13 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 
 	parr = array.array('d')
 	sigarr = array.array('d')
+	zeroArr = array.array('d')
+	sigErr = array.array('d')
 	norm = 1
 	for i in range(nP):
 		p = minP + i * (maxP - minP) / (nP - 1)
 		parr.append(p/ebeam)
+		zeroArr.append(0)
 		cutstot = "{0}&&{1}".format(cuts,'uncP>{0}'.format(p))
 		cutstotdata = "{0}&&{1}".format(cutsdata,'uncP>{0}'.format(p))
 		zcutfunc, numz = fitTails(eventsData,cutstotdata,mass)
@@ -177,6 +180,7 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 
 		eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histo{0}".format(i),nBins,minX,maxX),"{0}&&{1}".format(cutstot,"(uncVZ>{0})".format(zcutfunc)))
 		histo = ROOT.gROOT.FindObject("histo{0}".format(i))
+		sig = histo.Integral()
 
 		ap_yield= 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
 		exppol1.SetParameters(zTarg/gammact-math.log(gammact),-1.0/gammact)
@@ -192,13 +196,17 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 			norm = sigyield/back
 		print("Signal Yield: {0}   Background: {1}   Sig/Back: {2}   x: {3}".format(sigyield/norm,back,sigyield/(norm*back),p/ebeam))
 		sigarr.append(sigyield/(norm*back))
+		#error = Math.sqrt(1/back**2 * 1/sig + (sig/back**2)**2 * 1/back) * sigyield / (norm*back)
+		error = 1/math.sqrt(back) * sigyield / back * 1 / norm
+		sigErr.append(error)
 		del histo
 		del histo2
 
-	graph = TGraph(nP,parr,sigarr)
+	graph = TGraphErrors(nP,parr,sigarr,zeroArr,sigErr)
 	graph.SetTitle(plotTitle + " {0:0.1f} MeV A', ".format(mass*1000) + "#epsilon^{2} = " + "{0:0.2e}".format(eps))
 	graph.GetXaxis().SetTitle(XaxisTitle)
 	graph.GetYaxis().SetTitle(YaxisTitle)
+	graph.Fit("pol2")
 	graph.Draw("AP*")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
