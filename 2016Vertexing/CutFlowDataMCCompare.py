@@ -242,10 +242,10 @@ for i in range(len(plots)):
 	plotlabel = plotlabels[i]
 	infiledata.cd()
 	histo_pre_data = infiledata.Get("Preselection {0}".format(plot))
-	histo_tight_data = infiledata.Get("With V0 momentum > 2.0 GeV {0}".format(plot))
+	histo_tight_data = infiledata.Get("With V0 momentum > 1.85 GeV {0}".format(plot))
 	infilemc.cd()
 	histo_pre_mc = infilemc.Get("Preselection {0}".format(plot))
-	histo_tight_mc = infilemc.Get("With V0 momentum > 2.0 GeV {0}".format(plot))
+	histo_tight_mc = infilemc.Get("With V0 momentum > 1.85 GeV {0}".format(plot))
 	outfileroot.cd()
 	histo_pre_data.Write("Preselection {0} Data".format(plot))
 	histo_tight_data.Write("Tight {0} Data".format(plot))
