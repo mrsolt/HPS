@@ -133,11 +133,11 @@ def main() :
     copyfile('{0}5.pdf'.format(singleL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare')) #Data/MC Compare Final Selection
     copyfile('{0}6.pdf'.format(singleL1L1dir),'{0}{1}.pdf'.format(outdirSelection,'final_selection_cutflow')) #Compare Tight to Final Selection
 
-    copyfile('{0}9.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice')) #Compare Vertex Mean
-    copyfile('{0}8.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice')) #Compare Vertex Resolution
-    copyfile('{0}78.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice')) #Mass Slice Compare
+    copyfile('{0}10.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice')) #Compare Vertex Mean
+    copyfile('{0}9.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice')) #Compare Vertex Resolution
+    copyfile('{0}79.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice')) #Mass Slice Compare
     copyfile('{0}4.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'zcut')) #Zcut L1L1
-    copyfile('{0}7.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'tailz')) #TailZ L1L1
+    copyfile('{0}8.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirResults,'tailz')) #TailZ L1L1
 
     copyfile('{0}3.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_1sig')) #Data 1 sigma Zcut L1L1
     copyfile('{0}2.pdf'.format(tailfitsL1L1dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_1sig')) #MC 1 sigma Zcut L1L1
@@ -257,11 +257,11 @@ def main() :
     copyfile('{0}5.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_compare_L1L2')) #Data/MC Compare Final Selection L1L2
     copyfile('{0}6.pdf'.format(singleL1L2dir),'{0}{1}.pdf'.format(outdirSelection,'final_selection_cutflow_L1L2')) #Compare Tight to Final Selection L1L2
 
-    copyfile('{0}9.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
-    copyfile('{0}8.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
-    copyfile('{0}78.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice_L1L2')) #Mass Slice Compare L1L2
+    copyfile('{0}10.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mean_slice_L1L2')) #Compare Vertex Mean L1L2
+    copyfile('{0}9.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'sigma_slice_L1L2')) #Compare Vertex Resolution L1L2
+    copyfile('{0}79.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'mass_slice_L1L2')) #Mass Slice Compare L1L2
     copyfile('{0}4.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'zcut_L1L2')) #Zcut L1L1
-    copyfile('{0}7.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'tailz_L1L2')) #TailZ L1L1
+    copyfile('{0}8.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirResults,'tailz_L1L2')) #TailZ L1L1
 
     copyfile('{0}3.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'data_zcut_1sigL1L2')) #Data 1 sigma Zcut L1L2
     copyfile('{0}2.pdf'.format(tailfitsL1L2dir),'{0}{1}.pdf'.format(outdirSystematics,'mc_zcut_1sig_L1L2')) #MC 1 sigma Zcut L1L2
