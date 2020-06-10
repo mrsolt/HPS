@@ -5,7 +5,7 @@ import getopt
 import array
 import math
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1, TGraph, TGraphErrors
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TLatex, TF1, TGraph, TGraphErrors, TMath
 sys.argv = tmpargv
 
 #List arguments
@@ -87,6 +87,22 @@ for opt, arg in options:
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
+n_massbins = 25
+minmass = 0.05
+maxmass = 0.16
+
+masscut_nsigma = 1.9
+
+mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
+
+massRes_avg = 0
+dm = (maxmass - minmass) / 10000
+for i in range(10000):
+	m = minmass+i*(maxmass-minmass)/(10000-1)
+	massRes_avg = massRes_avg + mresf.Eval(m) * dm
+massRes_avg = massRes_avg / (maxmass - minmass)
+local_to_global = (maxmass - minmass) / massRes_avg
+
 def getZCut(fitfunc,zcut_val=0.5,scale=1.0,zBin=0.01,minZ=-60,maxZ=60):
     iMax = int((maxZ-minZ)/zBin)
     for i in range(iMax):
@@ -104,22 +120,22 @@ def fitTails(events,cut,mass):
 	fitfunc.SetParName(2,"Sigma")
 	fitfunc.SetParName(3,"Tail Z")
 
-	n_massbins=25
-	minmass=0.04
-	maxmass=0.175
+	#n_massbins=25
+	#minmass=0.09 #0.04
+	#maxmass=0.11 #0.175
 
-	masscut_nsigma = 1.9
+	#masscut_nsigma = 1.9
 
 	zcut_val = 0.5
-	mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
+	#mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
 	massarray=array.array('d')
 	zcutarray=array.array('d')
 	for i in range(0,n_massbins):
-		mass = minmass+i*(maxmass-minmass)/(n_massbins-1)
-		massarray.append(mass)
-		mres = mresf.Eval(mass)
+		m = minmass+i*(maxmass-minmass)/(n_massbins-1)
+		massarray.append(m)
+		mres = mresf.Eval(m)
 
-		events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,masscut_nsigma,mres,cut),"")
+		events.Draw("uncVZ>>hnew1d(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",m,masscut_nsigma,mres,cut),"")
 
 		h1d = gDirectory.Get("hnew1d")
 		fit=h1d.Fit("gaus","QS")
@@ -138,10 +154,19 @@ def fitTails(events,cut,mass):
 	fit = graph.Fit("pol5","QS","",0.05,0.16)
 	zcutfunc = "({0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),fit.Get().Parameter(3),fit.Get().Parameter(4),fit.Get().Parameter(5))
 
-	eventsData.Draw("uncM>>numZ(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>0.050&&uncM<0.160".format(cut,zcutfunc),"")
-	numZ = gDirectory.Get("numZ")
-	numz = numZ.Integral()
-	return zcut, numz
+	#eventsData.Draw("uncM>>numZ(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>0.050&&uncM<0.160".format(cut,zcutfunc),"")
+	#numZ = gDirectory.Get("numZ")
+	#numz = numZ.Integral()
+	mlow = mass-mresf.Eval(mass)*masscut_nsigma/2
+	mhigh = mass+mresf.Eval(mass)*masscut_nsigma/2
+	eventsData.Draw("uncM>>non(200,-50,50)","({0})&&(uncVZ>{1})&&uncM>{2}&&uncM<{3}".format(cut,zcutfunc,mlow,mhigh),"")
+	non = gDirectory.Get("non")
+	n_on = non.Integral()
+	eventsData.Draw("uncM>>noff(200,-50,50)","({0})&&(uncVZ>{1})&&((uncM>0.050&&uncM<{2})||(uncM>{3}&&uncM<0.160))".format(cut,zcutfunc,mlow,mhigh),"")
+	noff = gDirectory.Get("noff")
+	n_off = noff.Integral()
+
+	return zcut, n_on, n_off
 
 def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins,minX,maxX,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	outfileroot.cd()
@@ -165,6 +190,7 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 	sigarr = array.array('d')
 	zeroArr = array.array('d')
 	sigErr = array.array('d')
+	ZBi = array.array('d')
 	norm = 1
 	for i in range(nP):
 		p = minP + i * (maxP - minP) / (nP - 1)
@@ -172,7 +198,8 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		zeroArr.append(0)
 		cutstot = "{0}&&{1}".format(cuts,'uncP>{0}'.format(p))
 		cutstotdata = "{0}&&{1}".format(cutsdata,'uncP>{0}'.format(p))
-		zcutfunc, numz = fitTails(eventsData,cutstotdata,mass)
+		zcutfunc, n_on, n_off = fitTails(eventsData,cutstotdata,mass)
+		numz = n_on + n_off
 
 		eventsData.Draw("uncVZ>>num(200,-50,50)","abs({0}-{1})<{2}/2*{3}&&({4})".format("uncM",mass,1,deltaM,cutstotdata),"")
 		num = gDirectory.Get("num")
@@ -199,6 +226,12 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 		#error = Math.sqrt(1/back**2 * 1/sig + (sig/back**2)**2 * 1/back) * sigyield / (norm*back)
 		error = 1/math.sqrt(back) * sigyield / back * 1 / norm
 		sigErr.append(error)
+		#tau = n_off / n_on
+		tau = (local_to_global-masscut_nsigma)/(masscut_nsigma)
+		P_Bi = TMath.BetaIncomplete(1./(1.+tau),n_on,n_off+1)
+		Z_Bi = math.sqrt(2)*TMath.ErfInverse(1 - 2*P_Bi)
+		ZBi.append(Z_Bi)
+		print("N on: {0}   N off: {1}   tau: {2}   ZBi: {3}   x: {4}".format(n_on,n_off,tau,Z_Bi,p/ebeam))
 		del histo
 		del histo2
 
@@ -208,6 +241,15 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,nP,minP,maxP,nBins
 	graph.GetYaxis().SetTitle(YaxisTitle)
 	graph.Fit("pol2")
 	graph.Draw("AP*")
+	canvas.Print(outfile+".pdf")
+	canvas.Write()
+
+	graph2 = TGraphErrors(nP,parr,ZBi,zeroArr,zeroArr)
+	graph2.SetTitle("ZBi {0:0.1f} MeV A', ".format(mass*1000) + "#epsilon^{2} = " + "{0:0.2e}".format(eps))
+	graph2.GetXaxis().SetTitle(XaxisTitle)
+	graph2.GetYaxis().SetTitle("Zbi")
+	graph2.Fit("pol2")
+	graph2.Draw("AP*")
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
 
