@@ -88,8 +88,8 @@ gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
 n_massbins = 25
-minmass = 0.09#0.05
-maxmass = 0.11#0.16
+minmass = 0.05
+maxmass = 0.16
 
 masscut_nsigma = 1.9
 
