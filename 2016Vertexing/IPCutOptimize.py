@@ -143,7 +143,7 @@ def fitTails(events,cut,mass,label,canvas,outfile):
 	h1d.SetTitle(label)
 	h1d.GetXaxis().SetTitle("reconstructed z (mm)")
 	h1d.Draw()
-
+	canvas.SetLogy(1)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
 
@@ -197,26 +197,36 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,varcutdata,varcutM
 	histoIP = ROOT.gROOT.FindObject("histoIP")
 	sigIP = histoIP.Integral()
 
+	eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histoIP2",nBins,minX,maxX),"{0}&&{1}".format(cutstotIP,"(uncVZ>{0})".format(zcut)))
+	histoIP2 = ROOT.gROOT.FindObject("histoIP")
+	sigIP2 = histoIP2.Integral()
+
 	ap_yield = 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
 	exppol1.SetParameters(zTarg/gammact-math.log(gammact),-1.0/gammact)
 
 	histo.Divide(histostruth)
 	histoIP.Divide(histostruth)
+	histoIP2.Divide(histostruth)
 
 	histo2 = TH1F("histo2","histo2",nBins,minX,maxX)
 	histo2IP = TH1F("histo2IP","histo2IP",nBins,minX,maxX)
+	histo2IP2 = TH1F("histo2IP2","histo2IP2",nBins,minX,maxX)
 	for j in range(histo.GetNbinsX()):
 		sig_bin = histo.GetBinContent(j+1) * exppol1.Eval(histo.GetBinCenter(j+1))
 		histo2.SetBinContent(j+1,sig_bin)
 		sig_binIP = histoIP.GetBinContent(j+1) * exppol1.Eval(histoIP.GetBinCenter(j+1))
 		histo2IP.SetBinContent(j+1,sig_binIP)
+		sig_binIP2 = histoIP2.GetBinContent(j+1) * exppol1.Eval(histoIP2.GetBinCenter(j+1))
+		histo2IP2.SetBinContent(j+1,sig_binIP2)
 	sigyield = histo.Integral() #* ap_yield
 	sigyieldIP = histoIP.Integral() #* ap_yield
+	sigyieldIP2 = histoIP2.Integral() #* ap_yield
 	norm = sigyield
 	back = max(0.5,numz)
 	backIP = max(0.5,numzIP)
 	print("No IP Cut  Signal Yield: {0}   Background: {1}   Sig/Back: {2}   Zcut: {3}".format(sigyield/norm,numz,sigyield/(norm*back),zcut))
 	print("With IP Cut  Signal Yield: {0}   Background: {1}   Sig/Back: {2}   Zcut: {3}".format(sigyieldIP/norm,numzIP,sigyieldIP/(norm*backIP),zcutIP))
+	print("With IP Cut2  Signal Yield: {0}   Background: {1}   Sig/Back: {2}   Zcut: {3}".format(sigyieldIP2/norm,numzIP,sigyieldIP2/(norm*backIP),zcut))
 
 def openPDF(outfile,canvas):
 	c.Print(outfile+".pdf[")
