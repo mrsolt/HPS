@@ -114,7 +114,7 @@ def getZCut(fitfunc,zcut_val=0.5,scale=1.0,zBin=0.01,minZ=-60,maxZ=60):
     return -9999.
 
 def fitTails(events,cut,mass,label,canvas,outfile):
-	fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-50,50)
+	fitfunc = TF1("fitfunc","[0]*exp( (((x-[1])/[2])<[3])*(-0.5*(x-[1])^2/[2]^2) + (((x-[1])/[2])>=[3])*(0.5*[3]^2-[3]*(x-[1])/[2]))",-30,30)
 	fitfunc.SetParName(0,"Amplitude")
 	fitfunc.SetParName(1,"Mean")
 	fitfunc.SetParName(2,"Sigma")
@@ -198,7 +198,7 @@ def saveCutFlow(eventsData,eventsAp,eventstruth,cuts,cutsdata,varcutdata,varcutM
 	sigIP = histoIP.Integral()
 
 	eventsAp.Draw("{0}>>{1}({2},{3},{4})".format("triEndZ","histoIP2",nBins,minX,maxX),"{0}&&{1}".format(cutstotIP,"(uncVZ>{0})".format(zcut)))
-	histoIP2 = ROOT.gROOT.FindObject("histoIP")
+	histoIP2 = ROOT.gROOT.FindObject("histoIP2")
 	sigIP2 = histoIP2.Integral()
 
 	ap_yield = 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
