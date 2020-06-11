@@ -129,7 +129,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 
 		bot.cd()
 		#reference = histos[0].Clone("reference")
-		reference = histos2[0].Clone("reference")
+		reference = histos2[i].Clone("reference")
 		reference.GetYaxis().SetTitle("Ratio")
 		reference.GetYaxis().SetTitleSize(0.06)
 		reference.GetYaxis().SetLabelSize(0.1)
@@ -141,7 +141,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		reference.GetYaxis().SetDecimals(True)
 		reference.Draw("axis")
 		#ratio = histos[0].Clone("Ratio"+histos[0].GetName())
-		ratio = histos3[0].Clone("Ratio"+histos3[0].GetName())
+		ratio = histos3[i].Clone("Ratio"+histos3[i].GetName())
 		ratio.Divide(reference)
 		ratio.SetLineColor(1)
 		ratio.DrawCopy("pe same")
