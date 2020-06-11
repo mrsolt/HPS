@@ -232,7 +232,7 @@ def saveDataMassHisto(events,nBins,canvas):
 	events.Draw("{0}>>{1}({2},{3},{4})".format("uncM","histo",massbins,0,maxMass))
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
-	histo.GetXaxis().SetTitle("dN/dm [1/MeV]")
+	histo.GetYaxis().SetTitle("dN/dm [1/MeV]")
 	histo.SetTitle("Radiative Selection Invariant Mass Distribution")
 	histo.GetXaxis().SetRangeUser(0,0.2)
 	histo.Sumw2()
@@ -355,6 +355,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	bot.cd()
 	reference = sumHisto.Clone("reference")
 	reference.GetYaxis().SetTitle("Radiative Fraction")
+	reference.SetTitle("Radiative Fraction")
 	reference.GetYaxis().SetTitleSize(0.06)
 	reference.GetYaxis().SetLabelSize(0.1)
 	reference.GetXaxis().SetTitleSize(0.1)
@@ -371,6 +372,7 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	ratio.GetXaxis().SetRangeUser(0,0.2)
 	ratio.GetYaxis().SetRangeUser(0,0.2)
 	ratio.GetYaxis().SetTitle("Radiative Fraction")
+	ratio.SetTitle("Radiative Fraction")
 	ratio.SetStats(0)
 	ratio.DrawCopy("pe same")
 	canvas.Print(outfile+".pdf")
@@ -411,7 +413,8 @@ minP = 0.0
 maxP = 2.5
 #width = 0.1
 #scaling = nbins/width#500
-radXS = 81.61 #microbarn
+#radXS = 81.61 #microbarn
+radXS = 66.36 #microbarn
 triXS = 1.416*1000. #millibarn*1000
 wabXS = 0.1985*1e6 #barn*1e6
 radNGen = 10000*10000
