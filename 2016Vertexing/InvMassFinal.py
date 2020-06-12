@@ -5,7 +5,7 @@ import random
 import numpy as np
 import getopt
 import ROOT
-from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TH1F, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex
+from ROOT import gROOT, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TH1F, TCutG, TH2D, gDirectory, TLegend, TPad, TLatex, TChain
 sys.argv = tmpargv
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hp:', ['help',])
