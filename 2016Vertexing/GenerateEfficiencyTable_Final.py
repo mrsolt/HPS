@@ -734,7 +734,8 @@ if(zcut):
     else:
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-4.912,1730,-42640,441300,-2117000,3865000) #100% scaled Data L1L1
         #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(1.809,1373,-3.444e4,3.503e5,-1.633e6,2.886e6) #100% scaled Data L1L1
-        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6) #100% scaled Data L1L1
+        #zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6) #100% scaled Data L1L1
+        zcutL1L1 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-0.4738,1551,-3.835e4,3.930e5,-1.865e6,3.373e6) #100% Data L1L1
     cutsL1L1.append("uncVZ>{0}".format(zcutL1L1))
 
 cutL1L1 = cutsL1L1[0]
