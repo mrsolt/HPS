@@ -78,7 +78,8 @@ if(plotZcut):
 		#fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-3.413,1360,-3.276e4,3.292e5,-1.535e6,2.733e6),0.05,0.150) #L1L1 10%
 		#fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.809,1373,-3.444e4,3.503e5,-1.633e6,2.886e6),0.05,0.150) #L1L1 scaled 100%
 		#fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(19.42,245.1,-9846,1.011e5,-4.354e5,6.71e5),0.05,0.150) #L1L1 MC
-		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(19,53.04,-2566,-4258,2.345e5,-8.994e5),0.05,0.150) #L1L1 10%
+		#fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(19,53.04,-2566,-4258,2.345e5,-8.994e5),0.05,0.150) #L1L1 10%
+		fz_10per= TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-0.4738,1551,-3.835e4,3.930e5,-1.865e6,3.373e6),0.05,0.150) #L1L1 100%
 		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6),0.05,0.150) #L1L1 scaled 100%
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(23.55,152.9,-9489,1.091e5,-5.19e5,9.013e5),0.05,0.150) #L1L1 MC
 	else:
@@ -109,7 +110,7 @@ if(plotZcut):
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.035)
-	legend.AddEntry(fz_10per,"10% Data","LP")
+	legend.AddEntry(fz_10per,"100% Data","LP")
 	legend.AddEntry(fz_scaled,"Scaled Data","LP")
 	legend.AddEntry(fz_mc,"MC","LP")
 	legend.Draw("same")
