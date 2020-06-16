@@ -34,13 +34,13 @@ for opt, arg in options:
 gStyle.SetOptStat(0)
 c = TCanvas("c","c",800,600)
 
-def saveTuplePlot(events,inHisto,nBins,minx,maxx,massRes,masscut_nsigma,massCut,zcut,outfile,canvas):
+def saveTuplePlot(events,inHisto,nBins,minx,maxx,mass,massRes,masscut_nsigma,massCut,zcut,outfile,canvas):
 	cut = "{0}&&uncVZ>{1}".format(massCut,zcut)
 	events.Draw("{0}>>histo({1},{2},{3})".format(inHisto,nBins,minx,maxx),cut)
 	histo = ROOT.gROOT.FindObject("histo")
 	minMass = mass-massRes*masscut_nsigma/2
 	maxMass = mass+massRes*masscut_nsigma/2
-	histo.SetTitle("{0} {1:.3f} < Mass < {2:.3f}; Zcut = {3:0.2f}".format(inHisto,minMass,maxMass,zcut))
+	histo.SetTitle("Mass = {0:.3f} #pm {1:.4f} MeV Zcut = {2:0.2f} mm".format(mass,massRes*masscut_nsigma/2,zcut))
 	histo.GetXaxis().SetTitle(inHisto)
 	histo.Draw("")
 	canvas.SetLogy(0)
@@ -96,12 +96,12 @@ openPDF(outfile,c)
 for i in range(len(massArr)):
 	mass = massArr[i]
 	massRes = mres.Eval(mass)
-	massCut = "uncM>{0}&&uncM>{1}".format(mass-massRes*masscut_nsigma/2,mass+massRes*masscut_nsigma/2)
+	massCut = "uncM>{0}&&uncM<{1}".format(mass-massRes*masscut_nsigma/2,mass+massRes*masscut_nsigma/2)
 	Zcut = zcut.Eval(mass)
 	for j in range(len(plots)):
 		plot = getPlot(plots[j])
 		minx = getMin(plots[j])
 		maxx = getMax(plots[j])
-		saveTuplePlot(events,plot,nBins,minx,maxx,massRes,masscut_nsigma,massCut,Zcut,outfile,c)
+		saveTuplePlot(events,plot,nBins,minx,maxx,mass,massRes,masscut_nsigma,massCut,Zcut,outfile,c)
 
 closePDF(outfile,c)
