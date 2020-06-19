@@ -162,7 +162,7 @@ def makePlots(e,cut,nBins,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats
 			continue
 		else:
 			eventskill.Fill()
-
+	outfileroot.cd()
 	eventskill.Draw("{0}:uncM>>{1}({2},{3},{4},{5},{6},{7})".format("uncVZ","histo",nBins,0,0.2,nBins,-30,30),cut)
 	histo = ROOT.gROOT.FindObject("histo")
 
@@ -173,6 +173,7 @@ def makePlots(e,cut,nBins,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats
 
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo.Write("tritrig-wab-beam L1L1 Hit Killing {0}".format(label))
 
 	eventskill.Draw("{0}:uncM>>{1}({2},{3},{4},{5},{6},{7})".format("uncVZ","histo2",nBins,0,0.2,nBins,-30,30),cut)
 	histo2 = ROOT.gROOT.FindObject("histo2")
@@ -184,6 +185,7 @@ def makePlots(e,cut,nBins,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats
 
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
+	histo2.Write("tritrig-wab-beam L1L1 {0}".format(label))
 
 	eventskill.Draw("{0}>>{1}({2},{3},{4})".format("uncVZ","histo3",nBins,-30,30),cut)
 	histo3 = ROOT.gROOT.FindObject("histo3")
@@ -191,6 +193,8 @@ def makePlots(e,cut,nBins,label,outfile,canvas,XaxisTitle="",YaxisTitle="",stats
 	histo4 = ROOT.gROOT.FindObject("histo4")
 	histo3.Sumw2()
 	histo4.Sumw2()
+	histo3.Write("tritrig-wab-beam L1L1 Hit Killing 1D {0}".format(label))
+	histo4.Write("tritrig-wab-beam L1L1 Hit Killing 1D {0}".format(label))
 
 	canvas.Clear()
 	canvas.SetLogy(1)
@@ -319,12 +323,14 @@ cuts.append(z0cut)
 cuts.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
 
 outfile = remainder[0]
+outfileroot2 = TFile(remainder[0]+"_tuple.root","RECREATE")
 outfileroot = TFile(remainder[0]+".root","RECREATE")
 
 cuttot = "{0}&&{1}&&{2}&&{3}&&{4}".format(cuts[0],cuts[1],cuts[2],cuts[3],cuts[4])
 
 openPDF(outfile,c)
 
+outfileroot2.cd()
 makePlots(e,cuttot,nBins,label,outfile,c)
 
 closePDF(outfile,c)
