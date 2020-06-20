@@ -97,7 +97,7 @@ effSlopeData.Print("v")
 def RemoveHit(slp):
     rndm = random.random()         
     ibin = effSlopeData.FindBin(slp)
-    eff = 1 - 2*effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
+    eff = 1 - 3*effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
     if rndm > eff:
         return True
     else:
