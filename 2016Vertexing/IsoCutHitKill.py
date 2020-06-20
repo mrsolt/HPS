@@ -274,6 +274,10 @@ e = TChain("ntuple")
 for i in remainder[1:]:
 	e.Add(i,0)
 
+uncTargProjX = -0.0995461972579 
+uncTargProjXSig = 0.217919555935 
+uncTargProjY = -0.0668941015569 
+uncTargProjYSig = 0.0831670646584
 angleMC = 0.111025680707
 angleData = 0.0386557750132
 if(useData):
