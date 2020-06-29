@@ -76,6 +76,11 @@ def getMax(string):
 	if(len(arr) < 3): return ""
 	else: return float(arr[2])
 
+def getCut(string):
+	arr = string.split(" ")
+	if(len(arr) < 4): return ""
+	else: return arr[3]
+
 outfile = remainder[0]
 
 file = TFile(remainder[1])
@@ -91,24 +96,26 @@ maxExtrpAxial = -10
 minExtrpStereo = 10
 maxExtrpStereo = 25
 plots = []
-plots.append("eleTrkExtrpYSensorAxialTopL1 {0} {1}".format(minExtrpAxial,maxExtrpAxial))
-plots.append("posTrkExtrpYSensorAxialTopL1 {0} {1}".format(minExtrpAxial,maxExtrpAxial))
-plots.append("eleTrkExtrpYSensorStereoTopL1 {0} {1}".format(minExtrpStereo,maxExtrpStereo))
-plots.append("posTrkExtrpYSensorStereoTopL1 {0} {1}".format(minExtrpStereo,maxExtrpStereo))
-plots.append("eleTrkExtrpYSensorAxialBotL1 {0} {1}".format(minExtrpAxial,maxExtrpAxial))
-plots.append("posTrkExtrpYSensorAxialBotL1 {0} {1}".format(minExtrpAxial,maxExtrpAxial))
-plots.append("eleTrkExtrpYSensorStereoBotL1 {0} {1}".format(minExtrpStereo,maxExtrpStereo))
-plots.append("posTrkExtrpYSensorStereoBotL1 {0} {1}".format(minExtrpStereo,maxExtrpStereo))
+plots.append("eleTrkExtrpYSensorAxialTopL1 {0} {1} {2}".format(minExtrpAxial,maxExtrpAxial,"!eleHasL1"))
+plots.append("posTrkExtrpYSensorAxialTopL1 {0} {1} {2}".format(minExtrpAxial,maxExtrpAxial,"!posHasL1"))
+plots.append("eleTrkExtrpYSensorStereoTopL1 {0} {1} {2}".format(minExtrpStereo,maxExtrpStereo,"!eleHasL1"))
+plots.append("posTrkExtrpYSensorStereoTopL1 {0} {1} {2}".format(minExtrpStereo,maxExtrpStereo,"!posHasL1"))
+plots.append("eleTrkExtrpYSensorAxialBotL1 {0} {1} {2}".format(minExtrpAxial,maxExtrpAxial,"!eleHasL1"))
+plots.append("posTrkExtrpYSensorAxialBotL1 {0} {1} {2}".format(minExtrpAxial,maxExtrpAxial,"!posHasL1"))
+plots.append("eleTrkExtrpYSensorStereoBotL1 {0} {1} {2}".format(minExtrpStereo,maxExtrpStereo,"!eleHasL1"))
+plots.append("posTrkExtrpYSensorStereoBotL1 {0} {1} {2}".format(minExtrpStereo,maxExtrpStereo,"!posHasL1"))
 
 edge = 19.2
 res = 0.080
 
 cuts = []
 cuts.append("uncP<9999")
-cuts.append("(eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0}&&posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||(posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0}&&eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})".format(edge-3.0*res))
-cuts.append("(eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0}&&posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||(posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0}&&eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})".format(edge-2.0*res))
-cuts.append("(eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0}&&posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||(posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0}&&eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})".format(edge-1.0*res))
-cuts.append("(eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0}&&posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||(posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0}&&eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})".format(edge-0.0*res))
+cuts.append("((eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0})||(eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})||eleHasL1)&&((posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0})||(posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||posHasL1)".format(edge-3.0*res))
+cuts.append("((eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0})||(eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})||eleHasL1)&&((posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0})||(posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||posHasL1)".format(edge-2.0*res))
+cuts.append("((eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0})||(eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})||eleHasL1)&&((posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0})||(posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||posHasL1)".format(edge-1.0*res))
+cuts.append("((eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0})||(eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})||eleHasL1)&&((posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0})||(posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||posHasL1)".format(edge-0.0*res))
+
+#cuts.append("(eleTrkExtrpYSensorAxialTopL1>-{0}&&eleTrkExtrpYSensorStereoTopL1>{0}&&posTrkExtrpYSensorAxialBotL1>-{0}&&posTrkExtrpYSensorStereoBotL1>{0})||(posTrkExtrpYSensorAxialTopL1>-{0}&&posTrkExtrpYSensorStereoTopL1>{0}&&eleTrkExtrpYSensorAxialBotL1>-{0}&&eleTrkExtrpYSensorStereoBotL1>{0})".format(edge-0.0*res))
 
 openPDF(outfile,c)
 
@@ -116,8 +123,9 @@ for i in range(len(plots)):
 	plot = getPlot(plots[i])
 	minimum = getMin(plots[i])
 	maximum = getMax(plots[i])
-	saveTuplePlot(events,plot,nBins,minimum,maximum,minVZ,maxVZ,outfile,c)
-	saveTuplePlot(eventsap,plot,nBins,minimum,maximum,minVZap,maxVZap,outfile,c)
+	cut = getCut(plots[i])
+	saveTuplePlot(events,plot,nBins,minimum,maximum,minVZ,maxVZ,outfile,c,cut)
+	saveTuplePlot(eventsap,plot,nBins,minimum,maximum,minVZap,maxVZap,outfile,c,cut)
 
 histos = []
 for i in range(len(cuts)):
