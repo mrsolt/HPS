@@ -131,20 +131,31 @@ histos = []
 for i in range(len(cuts)):
 	saveTuplePlot(events,"uncM",nBins,0.0,0.2,minVZ,maxVZ,outfile,c,cuts[i])
 	eventsap.Draw("uncVZ>>histo{3}({0},{1},{2})".format(nBins,minVZap,maxVZap,i),cuts[i])
-	histos.append(ROOT.gROOT.FindObject("histo{0}".format(0)))
+	histos.append(ROOT.gROOT.FindObject("histo{0}".format(i)))
 
 color = 1
 c.SetLogy(0)
+legend = TLegend(.65,.66,.97,.87)
+legend.SetBorderSize(0)
+legend.SetFillColor(0)
+legend.SetFillStyle(0)
+legend.SetTextFont(42)
+legend.SetTextSize(0.035)
 for i in range(len(histos)):
 	histos[i].SetLineColor(color)
+	color = color + 1
+	if(color == 5): color = color + 1
 	histos[i].SetStats(0)
 	histos[i].Sumw2()
 	if(i == 0):
 		histos[i].Draw()
 		histos[i].SetTitle("Reconstructed Ap")
 		histos[i].GetXaxis().SetTitle("Reconstructed z [mm]")
+		legend.AddEntry(histos[i],"No Extrap Cut","LP")
 	else:
 		histos[i].Draw("same")
+		legend.AddEntry(histos[i],"Extrap Cut {0}".format(i),"LP")
+legend.Draw("")
 c.Print(outfile+".pdf")
 
 closePDF(outfile,c)
