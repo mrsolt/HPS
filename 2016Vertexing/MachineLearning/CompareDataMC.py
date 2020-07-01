@@ -158,8 +158,8 @@ angle = angleMC
 dz = 0
 dy = 0
 
-xProj = "uncVX-(uncVZ-{0})*uncPX/uncPZ".format(zTarg)
-yProj = "uncVY-(uncVZ-{0})*uncPY/uncPZ".format(zTarg)
+xProj = "(uncVX-(uncVZ-{0})*uncPX/uncPZ)".format(zTarg)
+yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(zTarg)
 uncTargProjXrot = "{0}*cos({2})-{1}*sin({2})".format(xProj,yProj,-angle)
 uncTargProjYrot = "{0}*sin({2})+{1}*cos({2})".format(xProj,yProj,-angle)
 
@@ -177,8 +177,8 @@ plots.append("eleP {0} {1}".format(0,2.4))
 plots.append("posP {0} {1}".format(0,2.4))
 plots.append("eleTrkLambda {0} {1}".format(-0.1,0.1))
 plots.append("posTrkLambda {0} {1}".format(-0.1,0.1))
-plots.append("eleTrkZ0-{2} {0} {1}".format(-0.5,0.5,dy))
-plots.append("posTrkZ0-{2} {0} {1}".format(-0.5,0.5,dy))
+plots.append("eleTrkZ0-{2}-(-4.3)*eleTrkLambda {0} {1}".format(-0.5,0.5,dy))
+plots.append("posTrkZ0-{2}-(-4.3)*posTrkLambda {0} {1}".format(-0.5,0.5,dy))
 plots.append("{2}-{3} {0} {1}".format(-1,1,uncTargProjXrot,uncTargProjX))
 plots.append("{2}-{3} {0} {1}".format(-0.5,0.5,uncTargProjYrot,uncTargProjY))
 plots.append("({2}-{3})/{4} {0} {1}".format(-4,4,uncTargProjXrot,uncTargProjX,uncTargProjXSig))
@@ -216,12 +216,15 @@ plotsdata.append("eleP {0} {1}".format(0,2.4))
 plotsdata.append("posP {0} {1}".format(0,2.4))
 plotsdata.append("eleTrkLambda {0} {1}".format(-0.1,0.1))
 plotsdata.append("posTrkLambda {0} {1}".format(-0.1,0.1))
-plotsdata.append("eleTrkZ0-{2} {0} {1}".format(-0.5,0.5,dy))
-plotsdata.append("posTrkZ0-{2} {0} {1}".format(-0.5,0.5,dy))
+plotsdata.append("eleTrkZ0-{2}-(-4.3)*eleTrkLambda {0} {1}".format(-0.5,0.5,dy))
+plotsdata.append("posTrkZ0-{2}-(-4.3)*posTrkLambda {0} {1}".format(-0.5,0.5,dy))
 plotsdata.append("{2}-{3} {0} {1}".format(-1,1,uncTargProjXrot,uncTargProjX))
 plotsdata.append("{2}-{3} {0} {1}".format(-0.5,0.5,uncTargProjYrot,uncTargProjY))
 plotsdata.append("({2}-{3})/{4} {0} {1}".format(-4,4,uncTargProjXrot,uncTargProjX,uncTargProjXSig))
 plotsdata.append("({2}-{3})/{4} {0} {1}".format(-4,4,uncTargProjYrot,uncTargProjY,uncTargProjYSig))
+
+eleZ0 = events.eleTrkZ0 - zTargShift * events.eleTrkLambda - dy
+            posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda - dy
 
 openPDF(outfile,c)
 
