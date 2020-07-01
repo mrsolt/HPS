@@ -271,8 +271,8 @@ with open(outfile+'.csv', mode='w') as output_file:
             uncM = events.uncM
             #shift Z0
             dy = events.uncTargProjY - (-0.0668941015569)
-            eleZ0 = events.eleTrkZ0 - zTargShift * events.eleTrkLambda
-            posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda
+            eleZ0 = events.eleTrkZ0 - zTargShift * events.eleTrkLambda - dy
+            posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda - dy
 
         file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), 
             str(uncM), str(projX), str(projY), str(projXPull), str(projYPull),
