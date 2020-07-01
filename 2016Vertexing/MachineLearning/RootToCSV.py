@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 from array import array
 import ROOT
-from ROOT import TFile, TChain
+from ROOT import TFile, TChain, TF1
 sys.argv = tmpargv
 import csv
 import numpy as np
@@ -176,6 +176,13 @@ smear_Top6hits = 0.0433669
 smear_Bot5hits = 0.0551252 
 smear_Bot6hits = 0.045657 
 
+minZ = 5
+masscut_nsigma = 1.90
+mass = 0.080
+mres = TF1("mres","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
+minM = mass - masscut_nsigma/2 * mres.Eval(mass)
+maxM = mass + masscut_nsigma/2 * mres.Eval(mass)
+
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     file_writer.writerow(["truthZ","vx","vy","vz","vxPull","vyPull",
@@ -184,11 +191,12 @@ with open(outfile+'.csv', mode='w') as output_file:
         "posZ0","signal"])
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
-        minZ = 5
 
         if((events.eleHasL1 < 0.5) or (events.eleHasL2 < 0.5) or (events.posHasL1 < 0.5) or (events.posHasL2 < 0.5)): continue
 
         if(events.uncVZ < minZ): continue
+
+        if(events.uncM < minM or events.uncM > maxM): continue
 
         eleiso = events.eleMinPositiveIso+0.5*((events.eleTrkZ0+zTarg*events.elePY/events.eleP)*np.sign(events.elePY)-3*(events.eleTrkZ0Err+abs(zTarg*events.eleTrkLambdaErr)+abs(2*zTarg*events.eleTrkLambda*events.eleTrkOmegaErr/events.eleTrkOmega)))
         posiso = events.posMinPositiveIso+0.5*((events.posTrkZ0+zTarg*events.posPY/events.posP)*np.sign(events.posPY)-3*(events.posTrkZ0Err+abs(zTarg*events.posTrkLambdaErr)+abs(2*zTarg*events.posTrkLambda*events.posTrkOmegaErr/events.posTrkOmega)))
