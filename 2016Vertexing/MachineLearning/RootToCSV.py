@@ -188,7 +188,7 @@ maxM = mass + masscut_nsigma/2 * mres.Eval(mass)
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     file_writer.writerow(["truthZ","vx","vy","vz","vxPull","vyPull",
-        "vzPull","vzErr","uncP","uncM","projX","projY","projXPull",
+        "vzPull","vzErr","uncM","projX","projY","projXPull",
         "projYPull","eleP","eleTrkTanLambda","eleZ0","posP","posTrkTanLambda",
         "posZ0","signal"])
     for entry in xrange(events.GetEntries()):
@@ -275,6 +275,6 @@ with open(outfile+'.csv', mode='w') as output_file:
             posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda - dy
 
         file_writer.writerow([str(truthZ), str(vx),str(vy),str(vz), str(vxPull), str(vyPull), str(vzPull), 
-            str(uncM), str(projX), str(projY), str(projXPull), str(projYPull),
+            str(vzErr), str(uncM), str(projX), str(projY), str(projXPull), str(projYPull),
             str(eleP), str(events.eleTrkLambda), str(eleZ0), 
             str(posP), str(events.posTrkLambda), str(posZ0), signal])
