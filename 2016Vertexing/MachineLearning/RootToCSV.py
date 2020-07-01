@@ -120,7 +120,7 @@ uncM = array('d',[0])
 eleP = array('d',[0])
 eleHasL1 = array('d',[0])
 eleHasL2 = array('d',[0])
-eleTrkHits = array('d',[0])
+eleNTrackHits = array('d',[0])
 eleTrkLambda = array('d',[0])
 eleTrkZ0 = array('d',[0])
 eleTrkOmega = array('d',[0])
@@ -130,7 +130,7 @@ eleTrkZ0Err = array('d',[0])
 posP = array('d',[0])
 posHasL1 = array('d',[0])
 posHasL2 = array('d',[0])
-posTrkHits = array('d',[0])
+posNTrackHits = array('d',[0])
 posTrkLambda = array('d',[0])
 posTrkZ0 = array('d',[0])
 posTrkOmega = array('d',[0])
@@ -151,7 +151,7 @@ events.Branch("uncM",uncM,"uncM")
 events.Branch("eleP",eleP,"eleP")
 events.Branch("eleHasL1",eleHasL1,"eleHasL1")
 events.Branch("eleHasL2",eleHasL2,"eleHasL2")
-events.Branch("eleTrkHits",eleTrkHits,"eleTrkHits")
+events.Branch("eleNTrackHits",eleNTrackHits,"eleNTrackHits")
 events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda")
 events.Branch("eleTrkZ0",eleTrkZ0,"eleTrkZ0")
 events.Branch("eleTrkOmega",eleTrkOmega,"eleTrkOmega")
@@ -161,7 +161,7 @@ events.Branch("eleTrkZ0Err",eleTrkZ0Err,"eleTrkZ0Err")
 events.Branch("posP",posP,"posP")
 events.Branch("posHasL1",posHasL1,"posHasL1")
 events.Branch("posHasL2",posHasL2,"posHasL2")
-events.Branch("posTrkHits",posTrkHits,"posTrkHits")
+events.Branch("posNTrackHits",posNTrackHits,"posNTrackHits")
 events.Branch("posTrkLambda",posTrkLambda,"posTrkLambda")
 events.Branch("posTrkZ0",posTrkZ0,"posTrkZ0")
 events.Branch("posTrkOmega",posTrkOmega,"posTrkOmega")
@@ -236,20 +236,20 @@ with open(outfile+'.csv', mode='w') as output_file:
         if(not useData):
             #Smear momentum
             if(events.eleTrkLambda > 0):
-                if(events.eleTrkHits == 5):
+                if(events.eleNTrackHits == 5):
                     ele_smear = smear_Top5hits
                 else:
                     ele_smear = smear_Top6hits
-                if(events.posTrkHits == 5):
+                if(events.posNTrackHits == 5):
                     pos_smear = smear_Bot5hits
                 else:
                     pos_smear = smear_Bot6hits
             else:
-                if(events.eleTrkHits == 5):
+                if(events.eleNTrackHits == 5):
                     ele_smear = smear_Bot5hits
                 else:
                     ele_smear = smear_Bot6hits
-                if(events.posTrkHits == 5):
+                if(events.posNTrackHits == 5):
                     pos_smear = smear_Top5hits
                 else:
                     pos_smear = smear_Top6hits
