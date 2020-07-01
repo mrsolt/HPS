@@ -223,9 +223,6 @@ plotsdata.append("{2}-{3} {0} {1}".format(-0.5,0.5,uncTargProjYrot,uncTargProjY)
 plotsdata.append("({2}-{3})/{4} {0} {1}".format(-4,4,uncTargProjXrot,uncTargProjX,uncTargProjXSig))
 plotsdata.append("({2}-{3})/{4} {0} {1}".format(-4,4,uncTargProjYrot,uncTargProjY,uncTargProjYSig))
 
-eleZ0 = events.eleTrkZ0 - zTargShift * events.eleTrkLambda - dy
-            posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda - dy
-
 openPDF(outfile,c)
 
 for i in range(len(plots)):
