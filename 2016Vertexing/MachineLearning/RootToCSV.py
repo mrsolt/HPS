@@ -65,10 +65,12 @@ if(useData):
     uncTargProjY = -0.0600724148472
     uncTargProjYSig = 0.0971755263948
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:j:k:m:n:o:p:a:b:d')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hsz:g:i:e:q:t:j:k:m:n:o:p:a:b:d')
 
 # Parse the command line arguments
 for opt, arg in options:
+        if opt=='-z':
+            isSignal = True
         if opt=='-z':
             zTarg = float(arg)
         if opt=='-g':
