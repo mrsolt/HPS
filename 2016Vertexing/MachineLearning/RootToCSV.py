@@ -15,6 +15,7 @@ def print_usage():
     print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
     print "Arguments: "
     print '\t-s: is signal MC'
+    print '\t-M: mass in GeV (default 0.080)'
     print '\t-z: target position (default -4.3 mm)'
     print '\t-g: minimum uncVZ (default -60 mm)'
     print '\t-i: maximum uncVZ (default 80 mm)'
@@ -49,6 +50,7 @@ uncTargProjX = -0.0995461972579
 uncTargProjXSig = 0.217919555935
 uncTargProjY = -0.0668941015569
 uncTargProjYSig = 0.0831670646584
+mass = 0.080
 
 angleMC = 0.111025680707
 angleData = 0.0386557750132
@@ -65,12 +67,14 @@ if(useData):
     uncTargProjY = -0.0600724148472
     uncTargProjYSig = 0.0971755263948
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hsz:g:i:e:q:t:j:k:m:n:o:p:a:b:d')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hsz:g:i:e:q:t:j:k:m:M:n:o:p:a:b:d')
 
 # Parse the command line arguments
 for opt, arg in options:
-        if opt=='-z':
+        if opt=='-s':
             isSignal = True
+        if opt=='-M':
+            mass = float(arg)
         if opt=='-z':
             zTarg = float(arg)
         if opt=='-g':
@@ -180,10 +184,38 @@ smear_Bot6hits = 0.045657
 
 minZ = 5
 masscut_nsigma = 1.90
-mass = 0.080
 mres = TF1("mres","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
 minM = mass - masscut_nsigma/2 * mres.Eval(mass)
 maxM = mass + masscut_nsigma/2 * mres.Eval(mass)
+
+mass_index = int((mass*1000-57.5)/5)
+
+massshift = []
+massshift.append(0.08)
+massshift.append(0.12)
+massshift.append(0.15)
+massshift.append(0.16)
+massshift.append(0.20)
+massshift.append(0.23)
+massshift.append(0.27)
+massshift.append(0.32)
+massshift.append(0.35)
+massshift.append(0.35)
+massshift.append(0.45)
+massshift.append(0.46)
+massshift.append(0.48)
+massshift.append(0.47)
+massshift.append(0.46)
+massshift.append(0.44)
+massshift.append(0.55)
+massshift.append(0.44)
+massshift.append(0.32)
+
+mass_shift = massshift[mass_index]/1000
+
+zcut_shift = 10
+fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(23.55-zcut_shift,152.9,-9489,1.091e5,-5.19e5,9.013e5),0.05,0.150) #L1L1 MC
+zcut_loose = fz_mc.Eval(mass)
 
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -196,7 +228,7 @@ with open(outfile+'.csv', mode='w') as output_file:
 
         if((events.eleHasL1 < 0.5) or (events.eleHasL2 < 0.5) or (events.posHasL1 < 0.5) or (events.posHasL2 < 0.5)): continue
 
-        if(events.uncVZ < minZ): continue
+        if(events.uncVZ < zcut_loose): continue
 
         if(events.uncM < minM or events.uncM > maxM): continue
 
@@ -262,7 +294,7 @@ with open(outfile+'.csv', mode='w') as output_file:
             eleP = P_positron_Smear
             posP = P_electron_Smear
             #Shift Mass Mean
-            uncM = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM
+            uncM = np.sqrt((P_positron_Smear/events.posP)*(P_electron_Smear/events.eleP))*events.uncM + mass_shift
             eleZ0 = events.eleTrkZ0 - zTargShift * events.eleTrkLambda
             posZ0 = events.posTrkZ0 - zTargShift * events.posTrkLambda
         else:
