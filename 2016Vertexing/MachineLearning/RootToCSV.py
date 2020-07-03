@@ -39,6 +39,7 @@ zTarg = -4.3
 ebeam = 2.3
 minVZ = -60
 maxVZ = 80
+minP = 1.85
 nBins = 140
 useData = False
 clusterT = 56
@@ -231,6 +232,8 @@ with open(outfile+'.csv', mode='w') as output_file:
         if(events.uncVZ < zcut_loose): continue
 
         if(events.uncM < minM or events.uncM > maxM): continue
+
+        if(events.uncP < minP): continue
 
         eleiso = events.eleMinPositiveIso+0.5*((events.eleTrkZ0+zTarg*events.elePY/events.eleP)*np.sign(events.elePY)-3*(events.eleTrkZ0Err+abs(zTarg*events.eleTrkLambdaErr)+abs(2*zTarg*events.eleTrkLambda*events.eleTrkOmegaErr/events.eleTrkOmega)))
         posiso = events.posMinPositiveIso+0.5*((events.posTrkZ0+zTarg*events.posPY/events.posP)*np.sign(events.posPY)-3*(events.posTrkZ0Err+abs(zTarg*events.posTrkLambdaErr)+abs(2*zTarg*events.posTrkLambda*events.posTrkOmegaErr/events.posTrkOmega)))
