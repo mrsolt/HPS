@@ -136,7 +136,7 @@ eleTrkLambdaErr = array('d',[0])
 eleTrkZ0Err = array('d',[0])
 posP = array('d',[0])
 posHasL1 = array('b',[0])
-posHasL2 = array('i',[0])
+posHasL2 = array('O',[0])
 posNTrackHits = array('d',[0])
 posTrkLambda = array('d',[0])
 posTrkZ0 = array('d',[0])
@@ -229,6 +229,8 @@ with open(outfile+'.csv', mode='w') as output_file:
         print events.eleHasL1
         print events.eleHasL2
         print events.posHasL1
+        print events.posHasL2
+        print events.uncM
 
         if((events.eleHasL1 != 1) or (events.eleHasL2 != 1) or (events.posHasL1 != 1) or (events.posHasL2 != 1)): continue
 
