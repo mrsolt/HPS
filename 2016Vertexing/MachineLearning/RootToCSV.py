@@ -126,7 +126,7 @@ uncPZ = array('d',[0])
 uncM = array('d',[0])
 eleP = array('d',[0])
 eleHasL1 = array('i',[0])
-eleHasL2 = array('i',[0])
+eleHasL2 = array('d',[0])
 eleNTrackHits = array('d',[0])
 eleTrkLambda = array('d',[0])
 eleTrkZ0 = array('d',[0])
@@ -226,6 +226,8 @@ with open(outfile+'.csv', mode='w') as output_file:
         "posZ0","signal"])
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
+        print events.eleHasL1
+        print events.eleHasL2
 
         if((events.eleHasL1 != 1) or (events.eleHasL2 != 1) or (events.posHasL1 != 1) or (events.posHasL2 != 1)): continue
 
