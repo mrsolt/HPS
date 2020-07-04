@@ -232,7 +232,7 @@ with open(outfile+'.csv', mode='w') as output_file:
         print type(events.posHasL2)
         print events.uncM
 
-        if((events.eleHasL1 != 1) or (events.eleHasL2 != 1) or (events.posHasL1 != 1) or (events.posHasL2 != 1)): continue
+        if((not events.eleHasL1) or (not events.eleHasL2) or (not events.posHasL1) or (not events.posHasL2)): continue
 
         if(events.uncVZ < zcut_loose): continue
 
