@@ -125,7 +125,7 @@ uncPY = array('d',[0])
 uncPZ = array('d',[0])
 uncM = array('d',[0])
 eleP = array('d',[0])
-eleHasL1 = array('B',[0])
+eleHasL1 = array('d',[0])
 eleHasL2 = array('d',[0])
 eleNTrackHits = array('d',[0])
 eleTrkLambda = array('d',[0])
@@ -156,8 +156,8 @@ events.Branch("uncPY",uncPY,"uncPY")
 events.Branch("uncPZ",uncPZ,"uncPZ")
 events.Branch("uncM",uncM,"uncM")
 events.Branch("eleP",eleP,"eleP")
-events.Branch("eleHasL1",eleHasL1,"eleHasL1/B")
-events.Branch("eleHasL2",eleHasL2,"eleHasL2")
+events.Branch("eleHasL1",eleHasL1,"eleHasL1/I")
+events.Branch("eleHasL2",eleHasL2,"eleHasL2/I")
 events.Branch("eleNTrackHits",eleNTrackHits,"eleNTrackHits")
 events.Branch("eleTrkLambda",eleTrkLambda,"eleTrkLambda")
 events.Branch("eleTrkZ0",eleTrkZ0,"eleTrkZ0")
@@ -166,8 +166,8 @@ events.Branch("eleTrkOmegaErr",eleTrkOmegaErr,"eleTrkOmegaErr")
 events.Branch("eleTrkLambdaErr",eleTrkLambdaErr,"eleTrkLambdaErr")
 events.Branch("eleTrkZ0Err",eleTrkZ0Err,"eleTrkZ0Err")
 events.Branch("posP",posP,"posP")
-events.Branch("posHasL1",posHasL1,"posHasL1")
-events.Branch("posHasL2",posHasL2,"posHasL2")
+events.Branch("posHasL1",posHasL1,"posHasL1/I")
+events.Branch("posHasL2",posHasL2,"posHasL2/I")
 events.Branch("posNTrackHits",posNTrackHits,"posNTrackHits")
 events.Branch("posTrkLambda",posTrkLambda,"posTrkLambda")
 events.Branch("posTrkZ0",posTrkZ0,"posTrkZ0")
@@ -226,13 +226,10 @@ with open(outfile+'.csv', mode='w') as output_file:
         "posZ0","signal"])
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
-        print type(events.eleHasL1)
-        print type(events.eleHasL2)
-        print type(events.posHasL1)
-        print type(events.posHasL2)
-        print events.uncM
 
-        if((not events.eleHasL1) or (not events.eleHasL2) or (not events.posHasL1) or (not events.posHasL2)): continue
+        if((not events.eleHasL1) or (not events.eleHasL2) or (not events.posHasL1) or (not events.posHasL2)): 
+            print("Event is missing L1!")
+            continue
 
         if(events.uncVZ < zcut_loose): continue
 
