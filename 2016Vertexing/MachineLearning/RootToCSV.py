@@ -226,10 +226,10 @@ with open(outfile+'.csv', mode='w') as output_file:
         "posZ0","signal"])
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
-        print int(events.eleHasL1)
-        print int(events.eleHasL2)
-        print int(events.posHasL1)
-        print int(events.posHasL2)
+        print float(events.eleHasL1)
+        print float(events.eleHasL2)
+        print float(events.posHasL1)
+        print float(events.posHasL2)
         print events.uncM
 
         if((events.eleHasL1 != 1) or (events.eleHasL2 != 1) or (events.posHasL1 != 1) or (events.posHasL2 != 1)): continue
