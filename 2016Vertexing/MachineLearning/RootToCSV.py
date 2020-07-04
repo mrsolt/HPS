@@ -227,7 +227,7 @@ with open(outfile+'.csv', mode='w') as output_file:
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
 
-        if((events.eleHasL1 < 0.5) or (events.eleHasL2 < 0.5) or (events.posHasL1 < 0.5) or (events.posHasL2 < 0.5)): continue
+        if((events.eleHasL1 != 1) or (events.eleHasL2 != 1) or (events.posHasL1 != 1) or (events.posHasL2 != 1)): continue
 
         if(events.uncVZ < zcut_loose): continue
 
