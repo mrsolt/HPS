@@ -111,10 +111,51 @@ for opt, arg in options:
             sys.exit(0)
 
 outfile = remainder[0]
-events = TChain("ntuple")
-#events = TChain("tree")
+events0 = TChain("ntuple")
 for i in range(1,len(remainder)):
-    events.Add(remainder[i])
+    events0.Add(remainder[i])
+
+zcut_shift = 10
+fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(23.55-zcut_shift,152.9,-9489,1.091e5,-5.19e5,9.013e5),0.05,0.150) #L1L1 MC
+zcut_loose = fz_mc.Eval(mass)
+
+minZ = 5
+masscut_nsigma = 1.90
+mres = TF1("mres","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
+minM = mass - masscut_nsigma/2 * mres.Eval(mass)
+maxM = mass + masscut_nsigma/2 * mres.Eval(mass)
+
+mass_index = int((mass*1000-57.5)/5)
+
+massshift = []
+massshift.append(0.08)
+massshift.append(0.12)
+massshift.append(0.15)
+massshift.append(0.16)
+massshift.append(0.20)
+massshift.append(0.23)
+massshift.append(0.27)
+massshift.append(0.32)
+massshift.append(0.35)
+massshift.append(0.35)
+massshift.append(0.45)
+massshift.append(0.46)
+massshift.append(0.48)
+massshift.append(0.47)
+massshift.append(0.46)
+massshift.append(0.44)
+massshift.append(0.55)
+massshift.append(0.44)
+massshift.append(0.32)
+
+mass_shift = massshift[mass_index]/1000
+
+cut = "eleHasL1&&posHasL1&&eleHasL1&&posHasL1"
+cut = "{0}&&uncVZ>{1}".format(cut,zcut_loose)
+cut = "{0}&&uncM>{1}&&uncM<{2}".format(cut,minM,maxM)
+cut = "{0}&&uncP>{1}".format(cut,minP)
+file = TFile("/nfs/slac/g/hps_data2/tuple/2pt3/ML/Dum/dum_{0:0.0f}MeV_{1}.root".format(mass*1000,outfile),"recreate")
+events = events0.CopyTree(cut)
 
 uncVX = array('d',[0])
 uncVY = array('d',[0])
@@ -183,41 +224,6 @@ smear_Top6hits = 0.0433669
 smear_Bot5hits = 0.0551252 
 smear_Bot6hits = 0.045657 
 
-minZ = 5
-masscut_nsigma = 1.90
-mres = TF1("mres","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
-minM = mass - masscut_nsigma/2 * mres.Eval(mass)
-maxM = mass + masscut_nsigma/2 * mres.Eval(mass)
-
-mass_index = int((mass*1000-57.5)/5)
-
-massshift = []
-massshift.append(0.08)
-massshift.append(0.12)
-massshift.append(0.15)
-massshift.append(0.16)
-massshift.append(0.20)
-massshift.append(0.23)
-massshift.append(0.27)
-massshift.append(0.32)
-massshift.append(0.35)
-massshift.append(0.35)
-massshift.append(0.45)
-massshift.append(0.46)
-massshift.append(0.48)
-massshift.append(0.47)
-massshift.append(0.46)
-massshift.append(0.44)
-massshift.append(0.55)
-massshift.append(0.44)
-massshift.append(0.32)
-
-mass_shift = massshift[mass_index]/1000
-
-zcut_shift = 10
-fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(23.55-zcut_shift,152.9,-9489,1.091e5,-5.19e5,9.013e5),0.05,0.150) #L1L1 MC
-zcut_loose = fz_mc.Eval(mass)
-
 with open(outfile+'.csv', mode='w') as output_file:
     file_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     file_writer.writerow(["truthZ","vx","vy","vz","vxPull","vyPull",
@@ -227,18 +233,13 @@ with open(outfile+'.csv', mode='w') as output_file:
     for entry in xrange(events.GetEntries()):
         events.GetEntry(entry)
 
-        print(events.eleNTrackHits)
-        print(events.eleHasL1)
+        #if((not events.eleHasL1) or (not events.eleHasL2) or (not events.posHasL1) or (not events.posHasL2)): continue
 
-        if((not events.eleHasL1) or (not events.eleHasL2) or (not events.posHasL1) or (not events.posHasL2)): 
-            print("Event is missing L1!")
-            continue
+        #if(events.uncVZ < zcut_loose): continue
 
-        if(events.uncVZ < zcut_loose): continue
+        #if(events.uncM < minM or events.uncM > maxM): continue
 
-        if(events.uncM < minM or events.uncM > maxM): continue
-
-        if(events.uncP < minP): continue
+        #if(events.uncP < minP): continue
 
         eleiso = events.eleMinPositiveIso+0.5*((events.eleTrkZ0+zTarg*events.elePY/events.eleP)*np.sign(events.elePY)-3*(events.eleTrkZ0Err+abs(zTarg*events.eleTrkLambdaErr)+abs(2*zTarg*events.eleTrkLambda*events.eleTrkOmegaErr/events.eleTrkOmega)))
         posiso = events.posMinPositiveIso+0.5*((events.posTrkZ0+zTarg*events.posPY/events.posP)*np.sign(events.posPY)-3*(events.posTrkZ0Err+abs(zTarg*events.posTrkLambdaErr)+abs(2*zTarg*events.posTrkLambda*events.posTrkOmegaErr/events.posTrkOmega)))
