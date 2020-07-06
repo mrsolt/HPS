@@ -14,10 +14,11 @@ def print_usage():
     print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-g: number of sigma to plot fit error (default is 1)'
     print '\t-y: add label to plots'
+    print '\t-p: plot max z (default true)'
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrz:s:y:g:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrz:s:y:g:ph')
 
 massVar = "uncM"
 #masscut_nsigma = 2.80
@@ -28,6 +29,7 @@ shift_mean = False
 nsig = 1.
 label = ""
 isL1L2 = False
+plotmaxZ = True
 
 for opt, arg in options:
     if opt=='-n':
@@ -44,6 +46,8 @@ for opt, arg in options:
         label = str(arg)
     if opt=='-g':
         nsig = float(arg)
+    if opt=='-p':
+        plotmaxZ = False
     if opt=='-h':
         print_usage()
         sys.exit(0)
@@ -178,9 +182,11 @@ for i in range(0,n_massbins):
     #zcutscaledErr.append(0)
     c.Print(remainder[0]+".pdf","Title:mass_{0}".format(mass))
 
-    cutevents = events.CopyTree("abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres))
-    maxZarr.append(cutevents.GetMaximum("uncVZ"))
-
+    if(plotmaxZ):
+        cutevents = events.CopyTree("abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres))
+        maxZarr.append(cutevents.GetMaximum("uncVZ"))
+    else:
+        maxZarr.append(0)
     c.Clear()
     c.SetLogy(1)
     fitfunc2.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),fit.Get().Parameter(3)+nsig*fit.Get().ParError(3))
