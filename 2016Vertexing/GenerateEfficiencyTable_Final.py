@@ -409,7 +409,7 @@ for opt, arg in options:
     if opt=='-s':
         tupleName = str(arg)
     if opt=='-S':
-        shift = float(arg)
+        zshift = float(arg)
     if opt=='-h':
         print_usage()
         sys.exit(0)
@@ -804,7 +804,7 @@ if(zcut):
     else:
         #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-170.1,10510,-209100,1934000,-8502000,14280000) #100% scaled Data L1L2
         #zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-199.6,1.224e4,-2.501e5,2.411e6,-1.117e7,2.001e7) #100% scaled Data L1L2
-        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-205.8+zshift,1.259e4,-2.597e5,2.541e6,-1.198e7,2.192e7) #100% scaled Data L1L2
+        zcutL1L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-205.8,1.259e4,-2.597e5,2.541e6,-1.198e7,2.192e7) #100% scaled Data L1L2
     cutsL1L2.append("uncVZ>{0}".format(zcutL1L2))
 
 cutL1L2 = cutsL1L2[0]
