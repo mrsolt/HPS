@@ -244,8 +244,8 @@ if(useZcut):
 		if(useData):
 			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-133,8211,-162000,1480000,-6406000,10560000),0.05,0.175) #L1L2 10%
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-133,8211,-162000,1480000,-6406000,10560000))
-			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9-5,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.05,0.175) #L1L2 10%
-			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-164.9-5,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7)) #100% Data L1L1
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.05,0.175) #L1L2 10%
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7)) #100% Data L1L1
 		else:
 			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(25.23,47.14,-2987,12370,0,0),0.05,0.175)
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(25.23,47.14,-2987,12370,0,0))
@@ -257,8 +257,8 @@ if(useZcut):
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-2.308,1227,-29030,285300,-1296000,2229000))
 			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(9,53.04,-2566,-4258,2.345e5,-8.994e5),0.05,0.175) #L1L1 10%
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(9,53.04,-2566,-4258,2.345e5,-8.994e5))
-			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-0.4738-5,1551,-3.835e4,3.930e5,-1.865e6,3.373e6),0.05,0.175) #100% Data L1L1
-			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-0.4738-5,1551,-3.835e4,3.930e5,-1.865e6,3.373e6))
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-0.4738,1551,-3.835e4,3.930e5,-1.865e6,3.373e6),0.05,0.175) #100% Data L1L1
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-0.4738,1551,-3.835e4,3.930e5,-1.865e6,3.373e6))
 		else:
 			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(22.23,48.63,-5150,49760,-169900,141700),0.05,0.175)
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(22.23,48.63,-5150,49760,-169900,141700))
@@ -289,7 +289,6 @@ textFile = open(textFileName,"w")
 
 minMass = 0.06
 maxMass = 0.15
-minMass = 0.04
 nBack = TH1F("nBack","nBack",nBins,minMass,maxMass)
 
 if(savePDF):
@@ -462,7 +461,7 @@ cutevents.Branch("elePY",elePY,"elePY")
 cutevents.Branch("posPY",posPY,"posPY")
 
 if(useData):
-	#textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & Run & Event & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
+	textFile.write('$\Delta z_{cut}$ & VZ (mm) & Mass (MeV) & Run & Event & $chi^2_{unc}$ & V0 Proj Y ($n_{\sigma}$) & VY ($n_{\sigma}$) & $\Delta \ e^- \ z0$ (mm) & $\Delta \ e^+ \ z0$ (mm)\n')
 	for entry in xrange(neventscut):
 		#if(dzcut < 0):
 		#	continue
@@ -476,18 +475,18 @@ if(useData):
 		projY = abs(yProj_rot - uncTargProjY) / uncTargProjYSig
 		VY = abs(cutevents.uncVY - uncY) / uncYSig
 
-		textFile.write('{0} {1} \n'.format(cutevents.run,cutevents.event))
+		#textFile.write('{0} {1} \n'.format(cutevents.run,cutevents.event))
 
 		if(cutevents.elePY > 0):
 			eleZ0 = cutevents.eleTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
 			posZ0 = -cutevents.posTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
-			#textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-				#cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 		else:
 			eleZ0 = -cutevents.eleTrkZ0-(m0+b0*cutevents.uncVZ+b1*1/cutevents.uncM*cutevents.uncVZ)
 			posZ0 = cutevents.posTrkZ0-(m0+a0*cutevents.uncVZ+a1*1/cutevents.uncM*cutevents.uncVZ)
-			#textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
-				#cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
+			textFile.write('{9:0.2f} & {0:0.2f} & {1:0.2f} & {2:0.0f} & {3:0.0f} & {4:0.2f} & {5:0.2f} & {6:0.2f} & {7:0.2f} & {8:0.2f} \\ \n'.format(cutevents.uncVZ,
+				cutevents.uncM*1000,cutevents.run,cutevents.event,cutevents.uncChisq,projY,VY,-eleZ0,-posZ0,dzcut))
 
 	textFile.close()
 	if(savePDF):
