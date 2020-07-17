@@ -4,7 +4,7 @@ sys.argv = []
 import numpy as np
 import getopt
 import ROOT
-from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1, TLatex
+from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1, TLatex, TGraph
 sys.argv = tmpargv
 
 #List arguments
@@ -12,13 +12,15 @@ def print_usage():
     print "\nUsage: {0} <output file base name> <input file> <label>".format(sys.argv[0])
     print '\t-z: plot zcut (default false)'
     print '\t-r: is L1L2 (default false)'
+    print '\t-s: plot shaded region (default false)'
     print '\t-h: this help message'
     print
 
 plotZcut = False
 isL1L2 = False
+Shaded = False
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'zrh')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'zrsh')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -26,6 +28,8 @@ for opt, arg in options:
 			plotZcut = True
 		if opt=='-r':
 			isL1L2 = True
+		if opt=='-s':
+			Shaded = True
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
@@ -119,5 +123,65 @@ if(plotZcut):
 	c.Write()
 
 	closePDF(outfilezcut,c)
+
+	if(Shaded):
+		c.Clear()
+		c.SetLogz(1)
+		outfileshade = outfile + "_shade"
+		openPDF(outfileshade,c)
+		f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6),0.06,0.150)
+		f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150)
+		f2.SetFillColor(5)
+		f2.SetFillStyle(3001)
+		f2.SetLineColor(3)
+		f1.SetLineColor(1)
+
+		gr = TGraph()
+		gr.SetFillColor(f2.GetFillColor())
+		gr.SetFillStyle(f2.GetFillStyle())
+
+		c.Update()
+
+		xmin = 0.06 #c.GetUxmin()
+		xmax = 0.15 #c.GetUxmax()
+		ymin = 0 #c.GetUymin()
+		ymax = 70 #c.GetUymax()
+
+		npx = f2.GetNpx()
+		npoints = 0
+		dx = (xmax-xmin)/npx
+		x = xmin+0.5*dx
+		while (x <= xmax):
+			y = f2.Eval(x)
+			if (y < ymin): y = ymin
+			if (y > ymax): y = ymax
+			gr.SetPoint(npoints,x,y)
+			npoints = npoints + 1
+			x = x + dx
+
+		x = xmax-0.5*dx
+		while (x >= xmin):
+			y = f1.Eval(x)
+			#print y
+			if (y < ymin): y = ymin
+			if (y > ymax): y = ymax
+			gr.SetPoint(npoints,x,y)
+			npoints = npoints + 1
+			x = x - dx
+
+		cut = "event!=138205858&&event!=26862757&&event!=134296298&&event!=105453502&&event!=25752733&&event!=4393084&&event!=81085838&&event!=9714720"
+		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,100,-30,70)",cut)
+		histo2 = gDirectory.FindObject("histo2")
+		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
+		histo2.GetYaxis().SetTitle("Reconstructed z (mm)")
+		histo2.SetTitle("Reconctructed Z vs Mass {0}".format(label))
+		histo2.Draw("COLZ")
+		f1.Draw("same")
+		#f2.Draw("same")
+		gr.Draw("f same") #draw graph with fill area option
+		c.Print(outfileshade+".pdf")
+		c.Write()
+
+		closePDF(outfileshade,c)
 
 outfileroot.Close()
