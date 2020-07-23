@@ -6,7 +6,7 @@ import numpy
 import EffFuncs
 from EffFuncs import Interpolate, getMassArray, getZArray, getEfficiency
 import ROOT
-from ROOT import gROOT, TTree, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TH1F, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooFit, RooAbsReal, RooArgList, gPad, TFeldmanCousins, RooDataHist, RooHistPdf, TMath, TLatex, TPaveText, TLegend
+from ROOT import gROOT, TTree, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TGraphErrors, TH1D, TH1F, TCutG, TH2D, gDirectory, RooDataSet, RooRealVar, RooArgSet, RooFormulaVar, RooWorkspace, RooAbsData, RooFit, RooAbsReal, RooArgList, gPad, TFeldmanCousins, RooDataHist, RooHistPdf, TMath, TLatex, TPaveText, TLegend, TLine
 from ROOT.RooStats import ModelConfig, ProfileLikelihoodCalculator, LikelihoodIntervalPlot
 
 def print_usage():
@@ -15,6 +15,7 @@ def print_usage():
     print '\t-n: ignore candidates past zcut (default false)'
     print '\t-t: do not use target position as function of mass (default true)'
     print '\t-u: use unbiased zcut (default false)'
+    print '\t-d: use reco zcut (default false)'
     print '\t-z: target z (default -4.3 mm)'
     print '\t-s: scale factor (default 1)'
     print '\t-b: number of mass and epsilon bins (default 50)'
@@ -30,7 +31,7 @@ label = ""
 
 #Model and Fit Ranges
 n_massbins=50
-minmass=0.051
+minmass=0.060
 maxmass=0.150
 n_epsbins=50
 mineps=-10.0
@@ -41,10 +42,11 @@ targetz = -4.3
 maxz = 90 #max Z out to where we have acceptance
 maxzL2L2 = 140 #max Z out to where we have acceptance for L2L2
 zcut_count = 0.5
+useRecoZcut = False
 
 #Mass Resolution Parameters
-masscut_nsigma = 2.80
-masscut_eff = 0.93
+masscut_nsigma = 1.90
+masscut_eff = 0.94256
 #mres_p0_L1L1 = 1.364/1000.
 #mres_p1_L1L1 = 0.02608
 
@@ -55,10 +57,10 @@ masscut_eff = 0.93
 #mres_p1_L2L2 = 0.02608
 
 CL = 0.90
-gamma = 0.95
+gamma = 0.965
 
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'ntuz:s:y:b:h')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'ntuz:s:y:b:dh')
 for opt, arg in options:
     if opt=='-n':
         no_candidates = True
@@ -72,6 +74,8 @@ for opt, arg in options:
         scale_factor = float(arg)
     if opt=='-y':
         label = str(arg)
+    if opt=='-d':
+        useRecoZcut = True
     if opt=='-b':
         n_massbins = int(arg)
         n_epsbins = int(arg)
@@ -130,10 +134,19 @@ if(useUnbiasedZcut):
 
 gStyle.SetOptStat(1111)
 
-fzL1L1 = TF1("fzL1L1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(21.61,-339.8,6319,-84860,556600,-1362000),0.05,0.175) #L1L1
+#fzL1L1 = TF1("fzL1L1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(21.61,-339.8,6319,-84860,556600,-1362000),0.05,0.175) #L1L1
 #fzL1L1 = TF1("fz1","{0}+{1}*x+{2}*x^2+{3}*x^3".format(41.65,-466,2238,-3757),0.05,0.15) #L1L1
-fzL1L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-32.95,2706,-49020,366700,-1079000,592400),0.05,0.175) #L1L2
-fzL2L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-32.95,2706,-49020,366700,-1079000,592400),0.05,0.175) #L1L2 but L2L2 for now
+#fzL1L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-32.95,2706,-49020,366700,-1079000,592400),0.05,0.175) #L1L2
+#fzL2L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-32.95,2706,-49020,366700,-1079000,592400),0.05,0.175) #L1L2 but L2L2 for now
+
+#fzL1L1 = TF1("fzL1L1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-3.413,1360,-3.276e4,3.292e5,-1.535e6,2.733e6),0.05,0.175) #L1L1 10%
+fzL1L1 = TF1("fzL1L1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(19,53.04,-2566,-4258,2.345e5,-8.994e5),0.05,0.175) #10% Data L1L1
+#fzL1L1 = TF1("fzL1L1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.628,1301,-31950,318900,-1456000,2497000),0.05,0.175) #L1L1 scaled 100%
+#fzL1L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-162,9927,-2.028e5,1.952e6,-9.05e6,1.627e7),0.05,0.175) #L1L2 10%
+fzL1L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.05,0.175) #10% Data L1L2
+#fzL1L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-156.8,9720,-191100,1736000,-7433000,12040000),0.05,0.175) #L1L2 scaled 100%
+#fzL2L2 = TF1("fzL2L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-162,9927,-2.028e5,1.952e6,-9.05e6,1.627e7),0.05,0.175) #L1L2 but L2L2 for now
+fzL2L2 = TF1("fzL2L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.05,0.175) #L1L2 but L2L2 for now
 
 #fz1 = TF1("fz1","41.65-466*x+2238*x^2-3757*x^3",0.05,0.15) #L1L1
 #fz1 = TF1("fz1","33.8-361*x+1509*x^2-2041*x^3",0.05,0.15) #L1L1 10%
@@ -144,16 +157,36 @@ fzL2L2 = TF1("fzL1L2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-32.95,
 #fz1 = TF1("fz1","93.51-1447*x+10630*x^2-31440*x^3",0.05,0.15) #L2L2
 #fz1 = TF1("fz1","70.76-945.6*x+5337*x^2-12440*x^3",0.05,0.15) #L2L2 10%
 
-radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.2018,-2.342,12.86,25.88,-405.8,898.6),0.04,0.2)
-num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(4.903,208.3,-1880,-1868,68700,-198000),0.04,0.2)
+#radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.1926,-2.142,11.7,26.95,-385.9,823.2),0.04,0.2)
+#num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(4.903,208.3,-1880,-1868,68700,-198000),0.04,0.2)
+#radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.1926,-2.142,11.7,26.95,-385.9,823.2),0.04,0.2)
+#num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(5.42,200.1,-1813,-1761,65620,-189800),0.04,0.2)
+#radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.1167,-0.6629,1.891,11.12,0.7256,-249.4),0.04,0.2)
+radfracf = TF1("radfracf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.1168,-1.375,10.19,9.422,-367.5,1023),0.04,0.2)
+#num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(6.565,178,-1644,-1745,58930,-164800),0.04,0.2) #10%
+num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".format(6.309,328.4,-5099,3.675e4,-1.492e5,2.724e5),0.04,0.2) #100%
 #mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.364/1000.,0.02608,0,0,0,0),0.04,0.2)
 #mresL1L2f = TF1("mresL1L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.364/1000.,0.02608,0,0,0,0),0.04,0.2)
 #mresL2L2f = TF1("mresL2L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.364/1000.,0.02608,0,0,0,0),0.04,0.2)
-mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
+#mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
+#mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(-0.6066/1000,0.1123,-1.452,11.55,-30.76),0.04,0.2)
+#mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
+mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
 mresL1L2f = TF1("mresL1L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
 mresL2L2f = TF1("mresL2L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
 
-targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-8.073,216.1,-4372,39880,-172500,288700),0.05,0.175)
+#targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-8.073,216.1,-4372,39880,-172500,288700),0.05,0.175)
+#targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-7.084,172.7,-3641,33910,-148800,252200),0.05,0.175)
+targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-7.591,198,-4126,38540,-170500,291600),0.05,0.175)
+
+#massRes_avg = (0.5 * (mresL1L1f.Eval(maxmass)**2-mresL1L1f.Eval(minmass)**2) + ) / (maxmass - minmass)
+massRes_avg = 0
+dm = (maxmass - minmass) / 10000
+for i in range(10000):
+    mass = minmass+i*(maxmass-minmass)/(10000-1)
+    massRes_avg = massRes_avg + mresL1L1f.Eval(mass) * dm
+massRes_avg = massRes_avg / (maxmass - minmass)
+local_to_global = (maxmass - minmass) / massRes_avg
 
 zArrL1L1 = getZArray(effFileL1L1)
 mArrL1L1 = getMassArray(effFileL1L1)
@@ -177,6 +210,7 @@ for j in range(0,n_epsbins+1):
 outfile.cd()
 massArr = array.array('d')
 massArrMeV = array.array('d')
+massArrNew = array.array('d')
 minMassArrL1L1 = array.array('d')
 massWindowArrL1L1 = array.array('d')
 minMassArrL1L2 = array.array('d')
@@ -298,7 +332,7 @@ for i in range(0,n_massbins):
     minMassArrL2L2.append(mass - 0.5*masscut_nsigma*mresL2L2)
     c.Clear()
     
-    #deltaM = 0.001
+    deltaM = 0.001
     #eventsL1L1.Draw("{0}>>mass(100,{1}-{2},{1}+{2})".format(massVar,mass,0.5*deltaM),"abs({0}-{1})<{2}".format(massVar,mass,0.5*deltaM),"")
     #num_pairs = gDirectory.Get("mass").GetEntries()*scale_factor
     num_pairs = num_pairsf.Eval(mass)*scale_factor
@@ -373,24 +407,34 @@ for i in range(0,n_massbins):
         nBins = 1000
         effHistoL1L1 = TH1F("effHistoL1L1","effHistoL1L1",nBins,targetz,maxz)
         effHistoL1L2 = TH1F("effHistoL1L2","effHistoL1L2",nBins,targetz,maxz)
-        effHistoL2L2 = TH1F("effHistoL2L2","effHistoL2L2",nBins,targetz,maxzL2L2)
+        #effHistoL2L2 = TH1F("effHistoL2L2","effHistoL2L2",nBins,targetz,maxzL2L2)
+        effHistoL2L2 = TH1F("effHistoL2L2","effHistoL2L2",nBins,targetz,maxz)
         exppol1.SetParameters(targetz_truth/gammact-math.log(gammact),-1.0/gammact)
-        for i in range(nBins):
-            vz = (maxz-targetz)/nBins * i + targetz
-            effHistoL1L1.SetBinContent(i+1,Interpolate(mass,vz,mArrL1L1,zArrL1L1,effMatL1L1)*exppol1.Eval(vz))
-            effHistoL1L2.SetBinContent(i+1,Interpolate(mass,vz,mArrL1L2,zArrL1L2,effMatL1L2)*exppol1.Eval(vz))
+        for k in range(nBins):
+            vz = (maxz-targetz)/nBins * k + targetz
+            effHistoL1L1.SetBinContent(k+1,Interpolate(mass,vz,mArrL1L1,zArrL1L1,effMatL1L1)*exppol1.Eval(vz))
+            effHistoL1L2.SetBinContent(k+1,Interpolate(mass,vz,mArrL1L2,zArrL1L2,effMatL1L2)*exppol1.Eval(vz))
 
-        for i in range(nBins):
-            vz = (maxzL2L2-targetz)/nBins * i + targetz
-            effHistoL2L2.SetBinContent(i+1,Interpolate(mass,vz,mArrL2L2,zArrL2L2,effMatL2L2)*exppol1.Eval(vz))
+        for k in range(nBins):
+            #vz = (maxzL2L2-targetz)/nBins * k + targetz
+            vz = (maxz-targetz)/nBins * k + targetz
+            effHistoL2L2.SetBinContent(k+1,Interpolate(mass,vz,mArrL2L2,zArrL2L2,effMatL2L2)*exppol1.Eval(vz))
 
         sig_integralL1L1 = effHistoL1L1.Integral(effHistoL1L1.GetXaxis().FindBin(targetz),effHistoL1L1.GetXaxis().FindBin(maxz),"width")
         sig_integralL1L2 = effHistoL1L2.Integral(effHistoL1L2.GetXaxis().FindBin(targetz),effHistoL1L2.GetXaxis().FindBin(maxz),"width")
-        sig_integralL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(targetz),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width")
+        #sig_integralL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(targetz),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width")
+        sig_integralL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(targetz),effHistoL2L2.GetXaxis().FindBin(maxz),"width")
 
-        cdfAtZcutL1L1 = effHistoL1L1.Integral(effHistoL1L1.GetXaxis().FindBin(zcutL1L1),effHistoL1L1.GetXaxis().FindBin(maxz),"width")
-        cdfAtZcutL1L2 = effHistoL1L2.Integral(effHistoL1L2.GetXaxis().FindBin(zcutL1L2),effHistoL1L2.GetXaxis().FindBin(maxz),"width")
-        cdfAtZcutL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(zcutL2L2),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width")
+        if(not useRecoZcut):
+            cdfAtZcutL1L1 = effHistoL1L1.Integral(effHistoL1L1.GetXaxis().FindBin(zcutL1L1),effHistoL1L1.GetXaxis().FindBin(maxz),"width")
+            cdfAtZcutL1L2 = effHistoL1L2.Integral(effHistoL1L2.GetXaxis().FindBin(zcutL1L2),effHistoL1L2.GetXaxis().FindBin(maxz),"width")
+            #cdfAtZcutL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(zcutL2L2),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width")
+            cdfAtZcutL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(zcutL2L2),effHistoL2L2.GetXaxis().FindBin(maxz),"width")
+        else:
+            cdfAtZcutL1L1 = effHistoL1L1.Integral(effHistoL1L1.GetXaxis().FindBin(targetz),effHistoL1L1.GetXaxis().FindBin(maxz),"width")
+            cdfAtZcutL1L2 = effHistoL1L2.Integral(effHistoL1L2.GetXaxis().FindBin(targetz),effHistoL1L2.GetXaxis().FindBin(maxz),"width")
+            #cdfAtZcutL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(zcutL2L2),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width")
+            cdfAtZcutL2L2 = effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(targetz),effHistoL2L2.GetXaxis().FindBin(maxz),"width")
 
         if (cdfAtZcutL1L1 == 0):
             cdfAtZcutL1L1 = 10**-20
@@ -398,6 +442,8 @@ for i in range(0,n_massbins):
             cdfAtZcutL1L2 = 10**-20
         if (cdfAtZcutL2L2 == 0):
             cdfAtZcutL2L2 = 10**-20
+        if (sig_integralL2L2 == 0):
+            sig_integralL2L2 = 10**-20
 
         if (no_candidates):
             dataArrayL1L1=numpy.zeros(2)
@@ -426,7 +472,8 @@ for i in range(0,n_massbins):
             for k in xrange(0,dataPastCutL2L2.numEntries()):
                 thisX = dataPastCutL2L2.get(k).getRealValue("uncVZ")
                 wL2L2.var("uncVZ").setVal(thisX)
-                dataArrayL2L2[k+1]=(cdfAtZcutL2L2-effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(thisX),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width"))
+                #dataArrayL2L2[k+1]=(cdfAtZcutL2L2-effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(thisX),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width"))
+                dataArrayL2L2[k+1]=(cdfAtZcutL2L2-effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(thisX),effHistoL2L2.GetXaxis().FindBin(maxz),"width"))
             dataArrayL2L2[dataPastCutL2L2.numEntries()+1] = cdfAtZcutL2L2
 
         dataArrayL1L1/= (cdfAtZcutL1L1)
@@ -493,7 +540,20 @@ poiPvalArrL1L1 = array.array('d')
 poiSigArrL1L1 = array.array('d')
 poiBkgArrL1L1 = array.array('d')
 
+#n_massbins_plus = 3
+#for i in range(n_massbins + 2*n_massbins_plus):
+#    mass = minmass+(i - n_massbins_plus)*(maxmass-minmass)/(n_massbins-1)
+#    massArrNew.append(mass)
+#    mresL1L1 = mresL1L1f.Eval(mass)
+#    mresL1L2 = mresL1L2f.Eval(mass)
+#    mresL2L2 = mresL2L2f.Eval(mass)
+#    massWindowArrL1L1.append(0.5*masscut_nsigma*mresL1L1)
+#    massWindowArrL1L2.append(0.5*masscut_nsigma*mresL1L2)
+#    massWindowArrL2L2.append(0.5*masscut_nsigma*mresL2L2)
+
 c.SetLogy(0)
+pvalmin = 1.0
+pvalminm = 0.0
 for i in xrange(0,len(massArr)):
     mass = massArr[i]
     sigMassArr = array.array('d')
@@ -501,26 +561,31 @@ for i in xrange(0,len(massArr)):
     hasLowSide = False
     hasHighSide = False
     for j in xrange(0,len(massArr)):
-        if abs(mass-massArr[j])>massWindowArrL1L1[i]+massWindowArrL1L1[j]:
-            if j<i:
-                hasLowSide = True
-            if i<j:
-                hasHighSide = True
-            sigMassArr.append(massArrMeV[j])
-            sigCandArr.append(candArrL1L1[j])
-    if (hasLowSide and hasHighSide):
-
+        #if abs(mass-massArr[j])>massWindowArrL1L1[i]+massWindowArrL1L1[j]:
+        #    if j<i:
+        #        hasLowSide = True
+        #    if i<j:
+        #        hasHighSide = True
+            #sigMassArr.append(massArrMeV[j])
+            #sigCandArr.append(candArrL1L1[j])
+        sigMassArr.append(massArrMeV[j])
+        sigCandArr.append(candArrL1L1[j])
+    #if (hasLowSide and hasHighSide):
+    if (True):
         graph=TGraph(len(sigMassArr),sigMassArr,sigCandArr)
         graph.SetTitle("background L1L1")
         graph.Draw("A*")
-        graph.Fit("pol2")
+        graph.Fit("pol1")
         graph.GetXaxis().SetMoreLogLabels()
         c.Print(remainder[0]+".pdf","Title:test")
-        nbkg = graph.GetFunction("pol2").Eval(mass)
+        nbkg = graph.GetFunction("pol1").Eval(mass)
         if nbkg<0.5:
             nbkg = 0.5
         poiBkgArrL1L1.append(nbkg)
         pval = 1.0-TMath.Prob(2*nbkg,2*int(candArrL1L1[i]))
+        if(pval < pvalmin):
+            pvalmin = pval
+            pvalminm = mass
         zscore = TMath.NormQuantile(1.0-pval)
         poiMassArrL1L1.append(mass*1000)
         poiPvalArrL1L1.append(pval)
@@ -821,10 +886,10 @@ zcutunbiasedTcutL2L2.Draw("L")
 c.Print(remainder[0]+"_output.pdf","Title:test")
 eventsL2L2.Draw("{0}>>hnew(100,0,0.2)".format(massVar),"highzcutunbiased","colz")
 c.Print(remainder[0]+"_output.pdf","Title:test")
-c.SetLogx(1)
+#c.SetLogx(1)
 
-graph = drawGraph(massArrMeV,candArrL1L1,"Candidate Events L1L1","A*")
-graph.GetYaxis().SetTitle("counts")
+graphCand = drawGraph(massArrMeV,candArrL1L1,"Candidate Events L1L1","A*")
+graphCand.GetYaxis().SetTitle("counts")
 c.Print(remainder[0]+"_output.pdf","Title:test")
 c.Write()
 
@@ -846,14 +911,52 @@ c.Write()
 
 graph = drawGraph(poiMassArrL1L1,poiBkgArrL1L1,"cut-and-count estimated background L1L1","A*")
 graph.GetYaxis().SetTitle("counts")
+maximum = graph.GetMaximum()
+if(graphCand.GetMaximum() > maximum):
+    maximum = graphCand.GetMaximum()
+#graph.GetYaxis().SetRangeUser(0,maximum*1.3)
 graph.Write("poiSigL1L1")
+graphCand.SetLineColor(2)
+graphCand.SetMarkerColor(2)
+graph.GetYaxis().SetRangeUser(0,30)
+graphCand.Draw("* same")
+legend2 = TLegend(.60,.80,.85,.90)
+legend2.SetBorderSize(0)
+legend2.SetFillColor(0)
+legend2.SetFillStyle(0)
+legend2.SetTextFont(42)
+legend2.SetTextSize(0.035)
+legend2.AddEntry(graph,"Estimated Background","LP")
+legend2.AddEntry(graphCand,"Candidate Events","LP")
+legend2.Draw("same")
 c.Print(remainder[0]+"_output.pdf","Title:test")
 c.Write()
 
+print("Local to Global = {0}".format(local_to_global))
+sig1_local = 0.158655
+sig2_local = 0.02275
+sig3_local = 0.00135
+line1 = TLine(minmass*1000,sig1_local/local_to_global,maxmass*1000,sig1_local/local_to_global)
+line1.SetLineColor(2)
+line1.SetLineWidth(3)
+line2 = TLine(minmass*1000,sig2_local/local_to_global,maxmass*1000,sig2_local/local_to_global)
+line2.SetLineColor(2)
+line2.SetLineWidth(3)
+#line3 = TLine(minmass*1000,sig3_local/local_to_global,maxmass*1000,sig3_local/local_to_global)
+#line3.SetLineColor(2)
+#line3.SetLineWidth(3)
 c.SetLogy(1)
 graph = drawGraph(poiMassArrL1L1,poiPvalArrL1L1,"cut-and-count p-value L1L1","A*")
+pt = TPaveText(0.55,0.1,0.9,0.2,"NDC")
+pt.AddText("Minimum Local P-Value of {0:0.2e} at {1:0.1f} MeV".format(pvalmin,pvalminm*1000))
+pt.AddText("Local Significance = {0:0.1f}#sigma; Global Significance = {1:0.1f}#sigma".format(TMath.NormQuantile(1.0-pvalmin),TMath.NormQuantile(1.0-pvalmin*local_to_global)))
 graph.GetYaxis().SetMoreLogLabels()
+graph.GetYaxis().SetRangeUser(sig3_local/local_to_global,1)
 graph.Write("poiPvalL1L1")
+line1.Draw("same")
+line2.Draw("same")
+#line3.Draw("same")
+pt.Draw()
 c.Print(remainder[0]+"_output.pdf","Title:test")
 c.Write()
 
@@ -965,11 +1068,11 @@ def drawMaxContour(hist,nlevels):
 def drawHist(hist,nlevels,minz,maxz):
     hist.SetContour(nlevels)
     hist.SetStats(0)
-    minimum, mass, eps = GetMinimum(hist)
-    pt = TPaveText(.05,.1,.95,.8,"NDC")
-    pt.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
-    pt.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0}".format(eps))
-    pt.Draw()
+    #minimum, mass, eps = GetMinimum(hist)
+    #pt = TPaveText(.05,.1,.95,.8,"NDC")
+    #pt.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
+    #pt.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0}".format(eps))
+    #pt.Draw()
     hist.Draw("cont4z")
     hist.GetXaxis().SetMoreLogLabels()
     hist.GetXaxis().SetTitle("mass [MeV]")
@@ -977,14 +1080,10 @@ def drawHist(hist,nlevels,minz,maxz):
     hist.GetZaxis().SetRangeUser(minz,maxz)
 
 def drawHistDetectable(hist,nlevels,minz,maxz):
+    c.Clear()
     hist.SetContour(nlevels)
     hist.SetStats(0)
-    maximum, mass, eps = GetMaximum(hist)
-    pt = TPaveText(0.8,0.8,1,1,"brNDC")
-    pt.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
-    pt.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0}".format(eps))
     hist.Draw("cont0z")
-    pt.Draw()
     hist.GetXaxis().SetMoreLogLabels()
     hist.GetXaxis().SetTitle("mass [MeV]")
     hist.GetYaxis().SetTitle("#epsilon^{2}")
@@ -1013,53 +1112,193 @@ drawContour(fcUpperHistL2L2,3)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
+c.SetLogx(0)
+
 drawContour(limitHistL1L1,3)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-drawHist(limitHistL1L1,20,1,1e4)
-c.Print(remainder[0]+"_output.pdf","Title:tada")
-c.Write()
+#drawHist(limitHistL1L1,20,1,1e4)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
 drawContour(limitHistL1L2,3)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-drawHist(limitHistL1L2,20,1,1e4)
-c.Print(remainder[0]+"_output.pdf","Title:tada")
-c.Write()
+#drawHist(limitHistL1L2,20,1,1e4)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
 drawContour(limitHistL2L2,3)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-drawHist(limitHistL2L2,20,1,1e4)
-c.Print(remainder[0]+"_output.pdf","Title:tada")
-c.Write()
-limitHistcombined = limitHistL1L1.Clone()
-limitHistcombined.Multiply(limitHistL1L2)
-limitHistcombined.SetTitle("OIM Scaled Limit L1L1 L1L2 Combined")
-drawHist(limitHistcombined,20,1,1e4)
+#drawHist(limitHistL2L2,20,1,1e4)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
+#limitHistcombined = limitHistL1L1.Clone()
+#limitHistcombined.Multiply(limitHistL1L2)
+#limitHistcombined.SetTitle("OIM Scaled Limit L1L1 L1L2 Combined")
+#drawHist(limitHistcombined,20,1,1e4)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
+
+limitHistL1L1copy = limitHistL1L1.Clone()
+limitHistL1L1.SetContour(20)
+limitHistL1L1.SetStats(0)
+minimum, mass, eps = GetMinimum(limitHistL1L1)
+pt = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
+pt.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+limitLevel = array.array('d')
+limitLevel.append(10)
+#limitHistL1L1copy.SetContourLevel(0,10)
+limitHistL1L1.Draw("cont4z")
+limitHistL1L1copy.SetContour(1,limitLevel)
+limitHistL1L1copy.Draw("same cont2")
+pt.Draw()
+limitHistL1L1.GetXaxis().SetMoreLogLabels()
+limitHistL1L1.GetXaxis().SetTitle("mass [MeV]")
+limitHistL1L1.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL1L1.GetZaxis().SetRangeUser(1,1e4)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
+limitHistL1L2.SetContour(20)
+limitHistL1L2.SetStats(0)
+minimum, mass, eps = GetMinimum(limitHistL1L2)
+pt1 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt1.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
+pt1.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+limitHistL1L2.Draw("cont4z")
+pt1.Draw()
+limitHistL1L2.GetXaxis().SetMoreLogLabels()
+limitHistL1L2.GetXaxis().SetTitle("mass [MeV]")
+limitHistL1L2.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL1L2.GetZaxis().SetRangeUser(1,1e4)
+c.Print(remainder[0]+"_output.pdf","Title:tada")
+c.Write()
+
+limitHistL2L2.SetContour(20)
+limitHistL2L2.SetStats(0)
+minimum, mass, eps = GetMinimum(limitHistL2L2)
+pt2 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt2.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
+pt2.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+limitHistL2L2.Draw("cont4z")
+pt2.Draw()
+limitHistL2L2.GetXaxis().SetMoreLogLabels()
+limitHistL2L2.GetXaxis().SetTitle("mass [MeV]")
+limitHistL2L2.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL2L2.GetZaxis().SetRangeUser(1,1e4)
+c.Print(remainder[0]+"_output.pdf","Title:tada")
+c.Write()
+
+limitHistcombined = limitHistL1L1.Clone()
+limitHistcombined.Multiply(limitHistL1L2)
+limitHistcombined.SetTitle("OIM Scaled Limit L1L1 L1L2 Combined")
+limitHistcombined.SetContour(20)
+limitHistcombined.SetStats(0)
+minimum, mass, eps = GetMinimum(limitHistcombined)
+pt3 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt3.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
+pt3.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+limitHistcombined.Draw("cont4z")
+pt3.Draw()
+limitHistcombined.GetXaxis().SetMoreLogLabels()
+limitHistcombined.GetXaxis().SetTitle("mass [MeV]")
+limitHistcombined.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistcombined.GetZaxis().SetRangeUser(1,1e4)
+c.Print(remainder[0]+"_output.pdf","Title:tada")
+c.Write()
+
+c.Clear()
 c.SetLogz(0)
-drawHistDetectable(detectableHistL1L1,20,0,0.5*scale_factor/9.77)
+detectableHistL1L1.SetContour(20)
+detectableHistL1L1.SetStats(0)
+maximum, mass, eps = GetMaximum(detectableHistL1L1)
+pt4 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt4.SetTextSize(0.03)
+pt4.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
+pt4.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+detectableHistL1L1.Draw("cont4z")
+pt4.Draw("")
+detectableHistL1L1.GetXaxis().SetTitle("mass [MeV]")
+detectableHistL1L1.GetYaxis().SetTitle("#epsilon^{2}")
+#detectableHistL1L1.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
+detectableHistL1L1.GetZaxis().SetRangeUser(0,0.5*scale_factor)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-#drawContour(detectableHistL1L1,20)
-#c.Print(remainder[0]+"_output.pdf","Title:tada")
-drawHistDetectable(detectableHistL1L2,20,0,0.5*scale_factor/9.77)
+
+c.Clear()
+detectableHistL1L2.SetContour(20)
+detectableHistL1L2.SetStats(0)
+maximum, mass, eps = GetMaximum(detectableHistL1L2)
+pt5 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt5.SetTextSize(0.03)
+pt5.AddText("Maximum Detectable is {0:0.3f} events".format(maximum))
+pt5.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+detectableHistL1L2.Draw("cont4z")
+pt5.Draw("")
+detectableHistL1L2.GetXaxis().SetTitle("mass [MeV]")
+detectableHistL1L2.GetYaxis().SetTitle("#epsilon^{2}")
+#detectableHistL1L2.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
+detectableHistL1L2.GetZaxis().SetRangeUser(0,0.03)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-#drawContour(detectableHistL1L2,20)
-#c.Print(remainder[0]+"_output.pdf","Title:tada")
-drawHistDetectable(detectableHistL2L2,20,0,0.5*scale_factor/9.77)
+
+c.Clear()
+detectableHistL2L2.SetContour(20)
+detectableHistL2L2.SetStats(0)
+maximum, mass, eps = GetMaximum(detectableHistL2L2)
+pt6 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt6.SetTextSize(0.03)
+pt6.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
+pt6.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+detectableHistL2L2.Draw("cont4z")
+pt6.Draw("")
+detectableHistL2L2.GetXaxis().SetTitle("mass [MeV]")
+detectableHistL2L2.GetYaxis().SetTitle("#epsilon^{2}")
+detectableHistL2L2.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
-#drawContour(detectableHistL2L2,20)
-#c.Print(remainder[0]+"_output.pdf","Title:tada")
+
+c.Clear()
 detectableHistcombined = detectableHistL1L1.Clone()
 detectableHistcombined.Add(detectableHistL1L2)
 detectableHistcombined.SetTitle("Expected A' Rate L1L1 + L1L2")
-drawHistDetectable(detectableHistcombined,20,0,1.*scale_factor/9.77)
+detectableHistcombined.SetContour(20)
+detectableHistcombined.SetStats(0)
+maximum, mass, eps = GetMaximum(detectableHistcombined)
+pt7 = TPaveText(0.55,0.8,0.9,0.9,"NDC")
+pt7.SetTextSize(0.03)
+pt7.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
+pt7.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
+#detectableHistcombined.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
+detectableHistcombined.GetZaxis().SetRangeUser(0,0.5*scale_factor)
+detectableHistcombined.Draw("cont4z")
+pt7.Draw("")
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
+
+#c.SetLogz(0)
+#drawHistDetectable(detectableHistL1L1,20,0,0.7*scale_factor/9.77)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
+#drawContour(detectableHistL1L1,20)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#drawHistDetectable(detectableHistL1L2,20,0,0.7*scale_factor/9.77)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
+#drawContour(detectableHistL1L2,20)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#drawHistDetectable(detectableHistL2L2,20,0,0.7*scale_factor/9.77)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
+#drawContour(detectableHistL2L2,20)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#detectableHistcombined = detectableHistL1L1.Clone()
+#detectableHistcombined.Add(detectableHistL1L2)
+#detectableHistcombined.SetTitle("Expected A' Rate L1L1 + L1L2")
+#drawHistDetectable(detectableHistcombined,20,0,0.7*scale_factor/9.77)
+#c.Print(remainder[0]+"_output.pdf","Title:tada")
+#c.Write()
 
 c.SetLogz(1)
 drawHist(allzHistL1L1,20,1e-2,1e2)
