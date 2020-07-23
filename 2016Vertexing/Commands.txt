@@ -10,6 +10,10 @@ python /nfs/slac/g/hps2/mrsolt/hps/HPS/Bsub/RunBatchJob.py -a ".root" -n 1 -c " 
 
 python /nfs/slac/g/hps2/mrsolt/hps/HPS/Bsub/RunBatchJob.py -a ".root" -n 1 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/tuple/makeTree.py " -W 4:00 -l log0<>/tritrig_tuple_ -i tritrig_text0<>_files.txt -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig/0<>/tritrig_
 
+python /nfs/slac/g/hps2/mrsolt/hps/HPS/Bsub/RunBatchJob.py -a ".root" -n 1 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/tuple/makeTree.py " -W 1:00 -l log/tritrig-wab-beam_tuple_00_ -i tritrig-wab-beam_tuple_text_00.txt -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/L1L2HitKill/00/tritrig_L1L2HitKill_
+
+python /nfs/slac/g/hps2/mrsolt/hps/HPS/Bsub/RunBatchJob.py -n 10 -W 1:00 -c " python /nfs/slac/g/hps2/mrsolt/hps/HPS-CODE/ANALYSIS/vertexing/vertexCuts2016.py -c 37 -l " -i tritrig-wab-beam_tuple_file_00.txt -l log/tritrig-wab-beam_preselection_00_ -o /nfs/slac/g/hps_data2/tuple/2pt3/tritrig-wab-beam/L1L2HitKill/Preselection/tritrig-wab-beam_L1L2HitKill_preselection_00_ -a ".root"
+
 
 Create tuple files data
 
