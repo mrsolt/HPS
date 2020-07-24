@@ -19,8 +19,10 @@ def print_usage():
     print '\t-h: this help message'
     print
 
-minVZ = 7
-maxVZ = 32
+#minVZ = 7
+#maxVZ = 32
+minVZ = 60
+maxVZ = 120
 nZ = 25
 zBin = 2
 saveFits = False
@@ -444,7 +446,8 @@ openPDF(outfile+"_2D",c)
 
 for i in range(len(masses)):
 	mass = masses[i]
-	draw2DHisto(apevents[i],nBins,0,60,minX,maxX,outfile+"_2D",c,fitfuncpos,fitfuncneg,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
+	#draw2DHisto(apevents[i],nBins,0,60,minX,maxX,outfile+"_2D",c,fitfuncpos,fitfuncneg,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
+	draw2DHisto(apevents[i],nBins,30,120,minX,maxX,outfile+"_2D",c,fitfuncpos,fitfuncneg,cut,plotTitle="Z0 vs VZ {0:0.0f} MeV A' ".format(mass*1000))
 
 closePDF(outfile+"_2D",c)
 print(cut)
