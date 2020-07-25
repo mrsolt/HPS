@@ -260,8 +260,8 @@ for j in range(len(masses)):
 	outfileroot.cd()
 	#x0Cut1pos, x1Cut1pos, _, _ = saveHisto(histoCut1pos,-1,1,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
 	#x0Cut1neg, x1Cut1neg, _, _ = saveHisto(histoCut1neg,-1,1,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
-	x0Cut1pos, x1Cut1pos, _, _ = saveHisto(histoCut1pos,-3,3,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
-	x0Cut1neg, x1Cut1neg, _, _ = saveHisto(histoCut1neg,-3,3,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
+	x0Cut1pos, x1Cut1pos, _, _ = saveHisto(histoCut1pos,-5,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
+	x0Cut1neg, x1Cut1neg, _, _ = saveHisto(histoCut1neg,-5,5,outfile,c,"z [mm]","Fitted Cut","Fitted Cuts {0} A' mass {1:.3f} GeV Cut 1".format(plot,mass))
 	histoMassCut1x0pos.SetBinContent(j+1,x0Cut1pos)
 	histoMassCut1x1pos.SetBinContent(j+1,x1Cut1pos)
 	histoMassCut1x0neg.SetBinContent(j+1,x0Cut1neg)
@@ -275,14 +275,18 @@ for j in range(len(masses)):
 
 histoMassCut1x0pos.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0pos.SetTitle("Cut 1 x0 Positive")
-histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.5,0)
+#histoMassCut1x0pos.GetYaxis().SetRangeUser(-0.5,0)
+histoMassCut1x0pos.GetYaxis().SetRangeUser(-1.5,0)
 histoMassCut1x0pos.Fit("pol1")
-fitx0pos = histoMassCut1x0pos.GetFunction("pol1")
+#fitx0pos = histoMassCut1x0pos.GetFunction("pol1")
+fitx0pos = histoMassCut1x0pos.GetFunction("pol0")
 histoMassCut1x0neg.GetXaxis().SetTitle("Mass (GeV)")
 histoMassCut1x0neg.SetTitle("Cut 1 x0 Negative")
-histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.5,0)
+#histoMassCut1x0neg.GetYaxis().SetRangeUser(-0.5,0)
+histoMassCut1x0neg.GetYaxis().SetRangeUser(-1.5,0)
 histoMassCut1x0neg.Fit("pol1")
-fitx0neg = histoMassCut1x0neg.GetFunction("pol1")
+#fitx0neg = histoMassCut1x0neg.GetFunction("pol1")
+fitx0neg = histoMassCut1x0neg.GetFunction("pol0")
 
 x0_cut1_pos_x0 = fitx0pos.GetParameter(0)
 #x1_cut1_pos_x0 = fitx0pos.GetParameter(1)
@@ -392,26 +396,39 @@ c.Print(outfile+".pdf")
 
 #cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
+mpos = fitx0pos.GetParameter(0)
+mneg = fitx0neg.GetParameter(0)
 m0 = fitintercept.GetParameter(0)
 a0 = x0_cut1_pos_x1
 a1 = x1_cut1_pos_x1
 b0 = x0_cut1_neg_x1
 b1 = x1_cut1_neg_x1
 
+print("mpos = {0}".format(mpos))
+print("mneg = {0}".format(mneg))
 print("m0 = {0}".format(m0))
 print("a0 = {0}".format(a0))
 print("a1 = {0}".format(a1))
 print("b0 = {0}".format(b0))
 print("b1 = {0}".format(b1))
 
-fitfuncpos = TF1("fitfuncpos","{0}+({1}+{2}/[0]^1)*x".format(m0,a0,a1),6,100)
-fitfuncneg = TF1("fitfuncneg","-({0}+({1}+{2}/[0]^1)*x)".format(m0,b0,b1),6,100)
+#fitfuncpos = TF1("fitfuncpos","{0}+({1}+{2}/[0]^1)*x".format(m0,a0,a1),6,100)
+#fitfuncneg = TF1("fitfuncneg","-({0}+({1}+{2}/[0]^1)*x)".format(m0,b0,b1),6,100)
 
-eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
-posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
+#eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
+#posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,a0,a1)
 
-eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
-posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
+#eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
+#posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(m0,b0,b1)
+
+fitfuncpos = TF1("fitfuncpos","{0}+({1}+{2}/[0]^1)*x".format(mpos,a0,a1),6,100)
+fitfuncneg = TF1("fitfuncneg","-({0}+({1}+{2}/[0]^1)*x)".format(mneg,b0,b1),6,100)
+
+eleZ0_up = "(eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(mpos,a0,a1)
+posZ0_up = "(posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(mpos,a0,a1)
+
+eleZ0_down = "(-eleTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(mneg,b0,b1)
+posZ0_down = "(-posTrkZ0>{0}+{1}*(uncVZ)+{2}*1/uncM^1*(uncVZ))".format(mneg,b0,b1)
 
 cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_down)
 
