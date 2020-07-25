@@ -394,7 +394,7 @@ if(L2L2):
 	uncTargProjXSig = 1.9 * uncTargProjXSig
 	uncTargProjYSig = 2.5 * uncTargProjYSig
 
-if(L1L2):
+elif(L1L2):
 	#a0 = -0.204298550172
 	#a1 = -0.819203072994
 	#a2 = 0.0215541584276
