@@ -21,6 +21,7 @@ def print_usage():
     print '\t-a: uncTargProjY mean (default 0)'
     print '\t-b: uncTargProjY sigma (default 9999)'
     print '\t-r: is L1L2 category (default false)'
+    print '\t-s: is L2L2 category (default false)'
     print '\t-y: plot label'
     print '\t-d: use data file (default False)'
     print '\t-w: make cutflow plots (default False)'
@@ -35,6 +36,7 @@ maxVZ = 80
 nBins = 140
 useData = False
 L1L2 = False
+L2L2 = False
 makeCutflow = False
 makeNewTree = False
 clusterT = 56
@@ -44,7 +46,7 @@ uncTargProjY = 0.
 uncTargProjYSig = 9999.
 Label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:o:p:a:b:y:rdwx')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hz:g:i:e:q:t:o:p:a:b:y:rsdwx')
 
 # Parse the command line arguments
 for opt, arg in options:
@@ -72,6 +74,8 @@ for opt, arg in options:
 			Label=str(arg)
 		if opt=='-r':
 			L1L2 = True
+		if opt=='-s':
+			L2L2 = True
 		if opt=='-d':
 			useData = True
 		if opt=='-w':
@@ -364,6 +368,32 @@ if(useData):
 dy = uncTargProjY - (-0.0668941015569)
 dz = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3".format(c0,c1,c2,c3)
 
+if(L2L2):
+	mpos = -0.576619997051
+	mneg = -0.0126688170132
+	m0 = -0.126973432435
+	a0 = 0.0628788048688
+	a1 = -0.00317833175061
+	b0 = 0.0614724292851
+	b1 = -0.00358273636968
+
+
+	#eleisoL1 = "eleMinPositiveIso+0.5*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	#posisoL1 = "posMinPositiveIso+0.5*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+	eleisoL2 = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	posisoL2 = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+	eleiso = "({0})".format(eleisoL2)
+	posiso = "({0})".format(posisoL2)
+
+	cuts.append("(!eleHasL1&&!posHasL1&&eleHasL2&&posHasL2)")
+	var.append("((!eleHasL1*posHasL1)+(eleHasL1*!posHasL1))*eleHasL2*posHasL2 -1 2")
+	label.append("Layer Requirement")
+
+	uncTargProjXSig = 1.9 * uncTargProjXSig
+	uncTargProjYSig = 2.5 * uncTargProjYSig
+
 if(L1L2):
 	#a0 = -0.204298550172
 	#a1 = -0.819203072994
@@ -429,8 +459,15 @@ isocut = "({0}&&{1})".format(eleiso,posiso)
 #eleZ0_down = "(-eleTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 #posZ0_down = "(-posTrkZ0>{0}+{1}*uncM+{2}*(uncVZ+{4})+{3}*uncM*(uncVZ+{4}))".format(b0,b1,b2,b3,dz)
 
+if(L2L2):
+	m0 = mpos
+
 eleZ0_up = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
 posZ0_up = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
+
+if(L2L2):
+	m0 = mneg
+
 eleZ0_down = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
 posZ0_down = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
 
