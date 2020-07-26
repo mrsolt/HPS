@@ -25,7 +25,6 @@ maxZ = 100
 L1L2 = False
 L2L2 = False
 label = ""
-L1L2frac = 0.8
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'rsy:h')
 
