@@ -13,19 +13,40 @@ sys.argv = tmpargv
 def print_usage():
     print "\nUsage: {0} <output file base name> <input A' text file>".format(sys.argv[0])
     print "Arguments: "
+    print '\t-r: is L1L2 (default false)'
+    print '\t-s: is L2L2 (default false)'
+    print '\t-y: label'
     print '\t-h: this help message'
     print
 
 zbin = 5.
 zTarg = -4.3
 maxZ = 100
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'h')
+L1L2 = False
+L2L2 = False
+label = ""
+L1L2frac = 0.8
+
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'rsy:h')
 
 # Parse the command line arguments
 for opt, arg in options:
+		if opt=='-r':
+			L1L2 = True
+		if opt=='-s':
+			L2L2 = True
+		if opt=='-y':
+			label = float(arg)
 		if opt=='-h':
 			print_usage()
 			sys.exit(0)
+
+if(L1L2):
+	label = "L1L2"
+elif(L2L2):
+	label = "L2L2"
+else:
+	label = "L1L1"
 
 gStyle.SetOptStat(0)
 gStyle.SetOptFit(1011)
@@ -60,27 +81,44 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 
 	for entry in xrange(nevents):
 		events.GetEntry(entry)
+		eleTrkhits = events.eleNTrackHits
+		posTrkhits = events.posNTrackHits
+		if(L2L2):
+			eleTrkhits = 5
+			posTrkhits = 5
+		if(L1L2):
+			L1L2frac = (events.uncM-0.06) (0.85-0.5)/(0.15-0.06) + 0.5
+			rndmele = random.random()
+			rndmpos = random.random()         
+			if(rndmele < L1L2frac):
+				eleTrkhits = 5
+			else:
+				eleTrkhits = 6
+			if(rndmpos < L1L2frac):
+				posTrkhits = 5
+			else:
+				posTrkhits = 6
 		if(events.eleTrkLambda > 0):
-			if(events.eleNTrackHits == 5):
+			if(eleTrkhits == 5):
 				ele_smear = smear_Top5hits
 				ntop5 = ntop5 + 1
 			else:
 				ele_smear = smear_Top6hits
 				ntop6 = ntop6 + 1
-			if(events.posNTrackHits == 5):
+			if(posTrkhits == 5):
 				pos_smear = smear_Bot5hits
 				nbot5 = nbot5 + 1
 			else:
 				pos_smear = smear_Bot6hits
 				nbot6 = nbot6 + 1
 		else:
-			if(events.eleNTrackHits == 5):
+			if(eleTrkhits == 5):
 				ele_smear = smear_Bot5hits
 				nbot5 = nbot5 + 1
 			else:
 				ele_smear = smear_Bot6hits
 				nbot6 = nbot6 + 1
-			if(events.posNTrackHits == 5):
+			if(posTrkhits == 5):
 				pos_smear = smear_Top5hits
 				ntop5 = ntop5 + 1
 			else:
@@ -342,7 +380,7 @@ c.Clear()
 mg = TMultiGraph()
 #gr_sigma.Draw("AP")
 #gr_sigma.Fit("pol1")
-mg.SetTitle("Fitted Mass Resolution")
+mg.SetTitle("Fitted Mass Resolution {0}".format(label))
 #mg.GetXaxis().SetTitle("Truth Mass (MeV)")
 #mg.GetYaxis().SetTitle("Sigma (MeV)")
 #gr_sigma.SetTitle("Fitted Mass Resolution")
