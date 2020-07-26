@@ -86,7 +86,7 @@ def SmearHisto(events,nBins,minX,maxX,mass):
 			eleTrkhits = 5
 			posTrkhits = 5
 		if(L1L2):
-			L1L2frac = (events.uncM-0.06) (0.85-0.5)/(0.15-0.06) + 0.5
+			L1L2frac = (events.uncM-0.06) * (0.85-0.5)/(0.15-0.06) + 0.5
 			rndmele = random.random()
 			rndmpos = random.random()         
 			if(rndmele < L1L2frac):
