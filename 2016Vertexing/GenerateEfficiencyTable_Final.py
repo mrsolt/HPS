@@ -335,7 +335,8 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     sumhisto.Add(histo_copy_L1L2)
     sumhisto.Add(histo_copy_L2L2)
     sumhisto.SetLineColor(28)
-    sumhisto.Fit("exppol4","QR")
+    #fit = sumhisto.Fit("exppol4","QR")
+    fit = sumhisto.Fit(exppol4,"LSQIM")
     maximum = sumhisto.GetMaximum()
     legend = TLegend(.68,.70,.92,.90)
     legend.SetBorderSize(0)
@@ -360,12 +361,20 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     canvas.Print(outPDF+".pdf")
     canvas.Write()
 
+    norm = exppol4.Eval(targZ)
+    exppol4_m.SetParameters(fit.Get().Parameter(0)-fit.Get().ParError(0),fit.Get().Parameter(1)-fit.Get().ParError(1),fit.Get().Parameter(2)-fit.Get().ParError(2),
+        fit.Get().Parameter(3)-fit.Get().ParError(3),fit.Get().Parameter(4)-fit.Get().ParError(4))
+    norm_sig = exppol4_m.Eval(targZ)
+    exppol4_p.SetParameters(fit.Get().Parameter(0)+fit.Get().ParError(0),fit.Get().Parameter(1)+fit.Get().ParError(1),fit.Get().Parameter(2)+fit.Get().ParError(2),
+        fit.Get().Parameter(3)+fit.Get().ParError(3),fit.Get().Parameter(4)+fit.Get().ParError(4))
+    norm_psig = exppol4_p.Eval(targZ)
+
     del sumhisto
     del legend
     del histo_copy_L1L1
     del histo_copy_L1L2
     del histo_copy_L2L2
-    return exppol4.Eval(targZ)
+    return norm, norm_sig, norm_psig
 
 def getEffTH1(hfile, hname):
     print 'Getting Efficiency Graph...converting to TH1'
@@ -667,6 +676,8 @@ for i in range(nBins):
 
 #Function to fit for normalization
 exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
+exppol4_m=TF1("exppol4_m","exp(pol4(0))",-5,100)
+exppol4_p=TF1("exppol4_p","exp(pol4(0))",-5,100)
 
 #uncTargProjX = -0.0917593000854 
 #uncTargProjXSig = 0.215671748567
@@ -874,6 +885,8 @@ histoscutL1L1 = []
 histoscutL1L2 = []
 histoscutL2L2 = []
 normArr = array.array('d')
+normArr_n = array.array('d')
+normArr_p = array.array('d')
 
 gammamean = array.array('d')
 gammameanerror = array.array('d')
@@ -944,9 +957,11 @@ for i in range(nMass):
     histosTruth[i].Write("Truth {0:0.0f} MeV".format(mass[i]*1000))
 
     #Find the normalization based on a certain number of bins
-    norm = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="")
+    norm, norm_sig, norm_psig = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="")
     print norm
     normArr.append(norm)
+    normArr_n.append(norm_sig)
+    normArr_p.append(norm_psig)
     #Write the efficiency for a given mass (row) as function of z
     for j in range(nBins):
         if (histosTruth[i].GetBinContent(j+1) == 0):
@@ -1109,13 +1124,43 @@ graph = TGraph(len(mass),mass,normArr)
 graph.SetTitle("Prompt A' Acceptance * Efficiency")
 graph.GetXaxis().SetTitle("Truth Mass (GeV)")
 graph.GetYaxis().SetTitle("Efficiency")
-graph.GetXaxis().SetRangeUser(0,.2)
-graph.GetYaxis().SetRangeUser(0,0.4)
+graph.GetXaxis().SetRangeUser(0,.4)
+graph.GetYaxis().SetRangeUser(0,0.2)
 graph.SetLineColor(1)
 graph.SetMarkerColor(1)
 graph.Draw("AP*")
 c7.Print(outfile+"_plots.pdf") 
 graph.Write("Prompt Acceptance")
+
+graph_m = TGraph(len(mass),mass,normArr_n)
+graph_p = TGraph(len(mass),mass,normArr_p)
+
+graph.SetTitle("Normalization Factor Systematic")
+graph.GetYaxis().SetTitle("Norm Factor")
+graph.SetLineColor(1)
+graph.SetMarkerColor(1)
+graph_m.SetLineColor(2)
+graph_m.SetMarkerColor(2)
+graph_p.SetLineColor(4)
+graph_p.SetMarkerColor(4)
+
+graph.Draw("AP*")
+graph_m.Draw("P*same")
+graph_p.Draw("P*same")
+
+legend = TLegend(.68,.66,.92,.87)
+legend.SetBorderSize(0)
+legend.SetFillColor(0)
+legend.SetFillStyle(0)
+legend.SetTextFont(42)
+legend.SetTextSize(0.035)
+legend.AddEntry(graph,"Nominal","LP")
+legend.AddEntry(graph_m,"-1#sigma","LP")
+legend.AddEntry(graph_p,"+1#sigma","LP")
+legend.Draw()
+
+c7.Print(outfile+"_plots.pdf") 
+graph.Write("Prompt Acceptance Systematic")
 
 c7.Print(outfile+"_plots.pdf]") 
 outfileroot.Close()
