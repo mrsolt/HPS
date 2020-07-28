@@ -10,6 +10,7 @@ def print_usage():
     print '\t-n: width of mass bins in nsigma (default is 2.80)'
     print '\t-m: shift mean (default false)'
     print '\t-r: is L1L2 (default false)'
+    print '\t-t: is L2L2 (default false)'
     print '\t-s: scale factor (default is 1)'
     print '\t-z: expected number of events at zcut (default is 0.5)'
     print '\t-g: number of sigma to plot fit error (default is 1)'
@@ -18,7 +19,7 @@ def print_usage():
     print '\t-h: this help message'
     print "\n"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrz:s:y:g:ph')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'nmrtz:s:y:g:ph')
 
 massVar = "uncM"
 #masscut_nsigma = 2.80
@@ -29,6 +30,7 @@ shift_mean = False
 nsig = 1.
 label = ""
 isL1L2 = False
+isL2L2 = False
 plotmaxZ = True
 
 for opt, arg in options:
@@ -38,6 +40,8 @@ for opt, arg in options:
         shift_mean = True
     if opt=='-r':
         isL1L2 = True
+    if opt=='-t':
+        isL2L2 = True
     if opt=='-z':
         zcut_val = float(arg)
     if opt=='-s':
@@ -94,15 +98,18 @@ fitfunc3.SetParName(1,"Mean")
 fitfunc3.SetParName(2,"Sigma")
 fitfunc3.SetParName(3,"Tail Z")
 
-if(not isL1L2): 
+if(isL1L2):
+    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.8427/1000,0.04709,-0.2067,2.087,-5.584),0.04,0.2)
+    label = label + " L1L2"
+elif(isL2L2):
+    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(1.005/1000,0.04436,-0.1,1.117,-2.893),0.04,0.2)
+    label = label + " L2L2"
+else: 
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(-0.6066/1000,0.1123,-1.452,11.55,-30.76),0.04,0.2)
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
     mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
     label = label + " L1L1"
-else:
-    mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
-    label = label + " L1L2"
 
 massarray=array.array('d')
 zeroArr=array.array('d')
