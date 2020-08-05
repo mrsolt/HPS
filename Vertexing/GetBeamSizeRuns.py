@@ -44,7 +44,6 @@ def saveFitPlot(events,plot,outfile,canvas,nBins,minX,maxX,XaxisTitle="",YaxisTi
 	sigmaErr = 0
 	try:
 		mean = fit.GetParameter(1)
-		print mean
 		meanErr = fit.GetParError(1)
 		sigma = fit.GetParameter(2)
 		sigmaErr = fit.GetParError(2)
@@ -114,6 +113,9 @@ fitGaus = []
 fitGaus.append("uncVX -2 2")
 fitGaus.append("uncVY -1 1")
 fitGaus.append("uncVZ -35 25")
+fitGaus.append("bscVX -2 2")
+fitGaus.append("bscVY -1 1")
+fitGaus.append("bscVZ -35 25")
 
 nBins = 100
 beamX = []

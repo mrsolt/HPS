@@ -115,6 +115,30 @@ plots.append("uncM uncVZ 0 0.1 {0} {1} (elePurity<0.99||posPurity<0.99)&&(eleL1t
 plots.append("uncM uncVZ 0 0.1 {0} {1} (elePurity<0.99||posPurity<0.99)&&(min({2},{3})>0)".format(minVZ,maxVZ,isoEle,isoPos))
 plots.append("uncM uncVZ 0 0.1 {0} {1} (elePurity<0.99||posPurity<0.99)&&(min({2},{3})<0)".format(minVZ,maxVZ,isoEle,isoPos))
 
+plots.append("uncM uncVZ 0 0.1 {0} {1} eleTrkLambda>0".format(minVZ,maxVZ))
+plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleTrkLambda>0".format(minVZ,maxVZ))
+plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleTrkLambda>0".format(minVZ,maxVZ))
+plots.append("{2} uncVZ -5 10 {0} {1} eleTrkLambda>0".format(minVZ,maxVZ,isoEle))
+plots.append("uncM uncVZ 0 0.1 {0} {1} eleTrkLambda>0&&{2}>0".format(minVZ,maxVZ,isoEle))
+
+plots.append("uncM uncVZ 0 0.1 {0} {1} eleTrkLambda<0".format(minVZ,maxVZ))
+plots.append("eleIsoAxial uncVZ -6 6 {0} {1} eleTrkLambda<0".format(minVZ,maxVZ))
+plots.append("eleIsoStereo uncVZ -6 6 {0} {1} eleTrkLambda<0".format(minVZ,maxVZ))
+plots.append("{2} uncVZ -5 10 {0} {1} eleTrkLambda<0".format(minVZ,maxVZ,isoEle))
+plots.append("uncM uncVZ 0 0.1 {0} {1} eleTrkLambda<0&&{2}>0".format(minVZ,maxVZ,isoEle))
+
+plots.append("uncM uncVZ 0 0.1 {0} {1} posTrkLambda>0".format(minVZ,maxVZ))
+plots.append("posIsoAxial uncVZ -6 6 {0} {1} posTrkLambda>0".format(minVZ,maxVZ))
+plots.append("posIsoStereo uncVZ -6 6 {0} {1} posTrkLambda>0".format(minVZ,maxVZ))
+plots.append("{2} uncVZ -5 10 {0} {1} posTrkLambda>0".format(minVZ,maxVZ,isoPos))
+plots.append("uncM uncVZ 0 0.1 {0} {1} posTrkLambda>0&&{2}>0".format(minVZ,maxVZ,isoPos))
+
+plots.append("uncM uncVZ 0 0.1 {0} {1} posTrkLambda<0".format(minVZ,maxVZ))
+plots.append("posIsoAxial uncVZ -6 6 {0} {1} posTrkLambda<0".format(minVZ,maxVZ))
+plots.append("posIsoStereo uncVZ -6 6 {0} {1} posTrkLambda<0".format(minVZ,maxVZ))
+plots.append("{2} uncVZ -5 10 {0} {1} posTrkLambda<0".format(minVZ,maxVZ,isoPos))
+plots.append("uncM uncVZ 0 0.1 {0} {1} posTrkLambda<0&&{2}>0".format(minVZ,maxVZ,isoPos))
+
 plots.append("uncM uncVZ 0 0.1 {0} {1} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minVZ,maxVZ))
 plots.append("eleL1tsvthitX eleL1tsvthitY {0} {1} {2} {3} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))
 plots.append("eleL1tInsvthitX eleL1tInsvthitY {0} {1} {2} {3} eleL1tIsGoodTruthHit>-9998&&eleL1tIsGoodTruthHit<1".format(minx,maxx,miny,maxy))

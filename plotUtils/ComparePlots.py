@@ -2,6 +2,7 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import getopt
+import utilities as utils
 import ROOT
 from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend
 sys.argv = tmpargv
@@ -50,6 +51,13 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	legend.AddEntry(histo1,label1,"LP")
 	legend.AddEntry(histo2,label2,"LP")
 	legend.Draw("")
+	histos = []
+	histos.append(histo1)
+	histos.append(histo2)
+	legends = []
+	legends.append(label1)
+	legends.append(label2)
+	utils.MakePlot(histo1.GetName(),outfile,histos,legends,".png",LogY=True,RatioType="Sequential")
 	canvas.SetLogy(logY)
 	canvas.Print(outfile+".pdf")
 
