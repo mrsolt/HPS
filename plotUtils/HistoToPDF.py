@@ -49,6 +49,6 @@ infile.cd()
 for h in infile.GetListOfKeys():
 	h = h.ReadObj()
 	if(h.ClassName() != "TH1F" and h.ClassName() != "TH1D" and h.ClassName() != "TH2F" and h.ClassName() != "TH2D"): continue
-	savehisto2D(h,outfile,c,"","",h.GetName())
+	savehisto2D(h,outfile,c,"","",h.GetTitle(),1)
 
 closePDF(outfile,c)
