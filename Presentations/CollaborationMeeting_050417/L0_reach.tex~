@@ -1,0 +1,599 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[FEE Rate Analysis]{FEE Rate Analysis} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Matt Solt} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+SLAC National Accelerator Laboratory \\ % Your institution for the title page
+\medskip
+\textit{mrsolt@slac.stanford.edu} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+%\section{First Section} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+%\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{Introduction}
+
+\begin{itemize}
+\item Full energy electron (FEE) rates in different spherical ($\phi$ and $\theta$) regions of detector. Comparison of data (tungsten and carbon targets) to MC and calculations.
+\begin{itemize}
+\item Beginning to resolve FEE rate problems seen in the past
+\end{itemize}
+\item Measurement of Mott scattering differential cross sections
+\item Pass3, V3 Detector, Singles1 Trigger
+\item Data - 5772, and 5779 (Carbon); MC - 3.4.1 (beam-tri)
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Selection}
+
+\begin{itemize}
+\item 10 ns timing window
+\item 0.85-1.2 GeV energy cut
+\item Greater than 2 cluster size
+\item Tracks are matched to clusters
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/track_p_match_top.png}
+\includegraphics[width=0.4\linewidth]{figs/track_p_match_bottom.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Coordinate Definitions}
+
+\begin{itemize}
+\item The beam is rotated by $\theta_r=-30.5 \ mrad$ about the y-axis $\mathbf{R_y}$
+\item Use $\theta'$ and $\phi'$ for analysis (spherical coordinates with $\hat{z}$ along beam direction)
+\end{itemize}
+\begin{center}
+$\vec{p}'=\mathbf{R_y} \ \vec{p}$
+\[ \left( \begin{array} {c}
+p'_{x} \\
+p'_{y} \\
+p'_{z} \\ \end{array} \right) =
+\left( \begin{array} {ccc}
+\cos{\theta_r} & 0 & \sin{\theta_r} \\
+0 & 1 & 0 \\
+- \sin{\theta_r} & 0 & \cos{\theta_r} \end{array} \right) 
+\left( \begin{array} {c}
+p_{x} \\
+p_{y} \\
+p_{z} \\ \end{array} \right) \]
+$\theta' = \tan^{-1}{\frac{p'_{T}}{p'_{z}}} = \tan^{-1}{\frac{\sqrt{p_{x}^{'2}+p_{y}^{'2}}}{p'_z}}$
+\[ \phi' = \left\{ \begin{array}{ll}
+\tan^{-1}{\frac{p'_{y}}{p'_{x}}} + \pi & \mbox{if $p'_{y} > 0 \ \& \ p'_{x} < 0$} \\
+\tan^{-1}{\frac{p'_{y}}{p'_{x}}} - \pi & \mbox{if $p'_{y} < 0 \ \& \ p'_{x} < 0$} \\
+\tan^{-1}{\frac{p'_{y}}{p'_{x}}} & \mbox{else} \end{array} \right. \]
+\end{center}
+
+%\begin{figure}
+%\includegraphics[width=0.4\linewidth]{figs/theta_regions.png}
+%\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Region Definitions}
+
+\begin{itemize}
+\item Definition of regions shown in the different colors. Black is not a part of any region
+\item $\phi$ regions (left): $\Delta \phi$ = 0.0666, $\Delta \theta = 0.012$
+\begin{itemize}
+\item $\phi \ \epsilon \pm [1.3,1.7]$, $\theta \ \epsilon \ [0.036,0.048]$
+\end{itemize}
+\item $\theta$ regions (right): $\Delta \phi = 0.2$, $\Delta \theta = 0.02$
+\begin{itemize}
+\item $\phi \ \epsilon \pm [1.7 \mp \Delta \phi,2.7 \mp \Delta \phi]$, $\theta \ \epsilon \ [0.028,0.088]$
+\end{itemize}
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/phi_regions.png}
+\includegraphics[width=0.4\linewidth]{figs/theta_regions.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Region Definitions (Cont.)}
+
+\begin{itemize}
+\item Definition of regions shown from previous slide in x-y coordinates (projected onto Ecal face)
+\item $\phi$ regions (left) and $\theta$ regions (right)
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/phi_regions_ecal.png}
+\includegraphics[width=0.4\linewidth]{figs/theta_regions_ecal.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Data and MC Major Differences}
+
+\begin{itemize}
+\item Rates for Data and MC as function of theta on log scale
+\item Completely different trend in Data and MC, as much as a factor of 10 for large $\theta$
+\item Need to compare to calculations
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.45\linewidth]{figs/FEE_Rate_theta_top_log.png}
+\includegraphics[width=0.45\linewidth]{figs/FEE_Rate_theta_bottom_log.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Calculations}
+
+\begin{itemize}
+\item Mott cross section with form factor
+\end{itemize}
+\begin{center}
+$\frac{d \sigma}{d \Omega} (E,\theta) = \frac{Z^2 e^4}{(4 \pi \epsilon_0)^2 4E^2 \sin^4{\frac{\theta}{2}}} \ (1-\beta^2 \sin^2{\frac{\theta}{2}}) \ |F(Q)|^2$
+\end{center}
+\begin{itemize}
+\item where $F(Q)$ is the electric form factor (shown on later slides), $\theta$ is the recoil angle, $\beta=\frac{v}{c}$, $E=1.05 GeV$, and Q is the positive transferred 4-momentum which is given in the high energy limit
+\end{itemize}
+\begin{center}
+$Q^2=4 E E' \sin^2{\frac{\theta}{2}}$
+\end{center}
+\begin{itemize}
+\item where $E'$ is the scattered electron energy
+\end{itemize}
+\begin{center}
+$E'= \frac{E}{1+\frac{2E}{M} \sin^2{\frac{\theta}{2}}}$
+\end{center}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Calculations (cont)}
+
+\begin{center}
+$L = \frac{I \rho N_{av} l}{eA}$ and $\Delta \sigma = \int\limits_{\phi_{j}}^{\phi_{j}+\Delta \phi} \int\limits_{\theta_{j}}^{\theta_{j}+\Delta \theta}\frac{d \sigma}{d \Omega} \sin{\theta} d \phi d \theta$
+\end{center}
+\begin{itemize}
+\item The rate $\frac{dN}{dt}$ is the product of the luminosity $L$ and the integrated cross section $\Delta \sigma$: $\frac{dN}{dt}=L \Delta \sigma$
+\begin{itemize}
+\item Tungsten: $Z=74$,$A=183.35$, $\rho = 19.3 \frac{g}{cm^3}$, $I=37.9nA$, and $l=4.06 \mu m$
+\item Carbon: $Z=6$, $A=12$, $\rho = 2.26 \frac{g}{cm^3}$, $I=25.7nA$, and $l=196 \mu m$
+\end{itemize}
+\item Calculated rate was computed by iterating the integral over the differential cross section
+\end{itemize}
+\begin{center}
+$\frac{dN}{dt}=L \Delta \phi \sum\limits_{i = 1}^{N}\frac{d \sigma}{ d \Omega}(\theta_i) \sin{\theta_i} \Delta \theta$
+\end{center}
+\begin{itemize}
+\item where $N=10000$ and $\Delta \theta=\frac{\theta_{max} - \theta_{min}}{N}$
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rate of $\theta$ Regions Tungsten}
+
+\begin{itemize}
+\item Calculation does \textbf{NOT include form factor}
+\item General trend of calculations matches MC, but not Data
+\item Carbon seems to match the trend of the calculations much better than tungsten
+\item Note: Calculation are off by an arbitrary factor
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{../SVT_092915/figs/FEE_Rate_theta2_top_log.png}
+\includegraphics[width=0.4\linewidth]{../SVT_092915/figs/FEE_Rate_theta2_bottom_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Ratio of Calculation to Data or MC in $\theta$}
+
+\begin{itemize}
+\item Calculation does \textbf{NOT include form factor}
+\item Comparison of the ratios of Data and MC to Calculation (Mott Scattering): $\frac{\text{MC or Data Rate}}{\text{Calc Rate}}$
+\item MC matches the trend of calculations, Tungsten Data does not. Carbon matches better than tungsten
+\item Note: Calculation are off by an arbitrary factor
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{../SVT_092915/figs/FEE_ratio_theta_top_log.png}
+\includegraphics[width=0.4\linewidth]{../SVT_092915/figs/FEE_ratio_theta_bottom_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Form Factor}
+
+\begin{itemize}
+\item Form Factor makes a large contribution
+\end{itemize}
+\begin{center}
+$F_W(Q)=3\frac{\hbar}{QR}^3 \ (\sin{\frac{QR}{\hbar}}-\frac{QR}{\hbar}\cos{\frac{QR}{\hbar}})$
+$F_C(Q)=(1-\frac{Z-2}{6Z}a^2 Q^2) e^{- \frac{1}{4} b^2 Q^2}$
+\end{center}
+\begin{itemize}
+\item where $R$ is the nuclear radius, and $a$ and $b$ are nuclear parameters
+\begin{itemize}
+\item For carbon, $a=1.64$ and $b=\sqrt{a^2(1-1/A)+a_p^2}$; with $a_p$ being the proton radius
+\end{itemize}
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.28\linewidth]{figs/FF.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rates of Calculation Compared to Data or MC in $\theta$}
+
+\begin{itemize}
+\item Comparison of Calculation (Mott Scattering) Rates to Data and MC log scale
+\item Calcs and data (both tungsten and carbon) have the similar slope, and MC is now a poor match.
+\item Note: Calculation are off by an arbitrary factor
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.42\linewidth]{figs/FEE_Rate_theta2_top_log.png}
+\includegraphics[width=0.42\linewidth]{figs/FEE_Rate_theta2_bottom_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Ratio of Calculation to Data or MC in $\theta$}
+
+\begin{itemize}
+\item Comparison of the ratios of Data and MC to Calculation (Mott Scattering): $\frac{\text{MC or Data Rate}}{\text{Calc Rate}}$
+\item Data matches the trend of calculations, MC does not.
+\item Note: Calculation are off by an arbitrary factor
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/FEE_ratio_theta_top_log.png}
+\includegraphics[width=0.4\linewidth]{figs/FEE_ratio_theta_bottom_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Corrected MC and Normalization}
+
+\begin{itemize}
+\item EGS5 uses Thomas-Fermi form factor. This may only be valid for small angles
+\item Attempt to correct MC: $Rate_{MC} \rightarrow Rate_{MC} |F(Q)|^2$
+\item Data normalized based on time (7258 s), integrated charge (274.779 $\mu C$), blind (0.1), prescale ($2^{11}$), and deadtime
+\item Carbon run normalized based on (1851 s), integrated charge (47.626 $\mu C$), prescale ($2^{7}$), and deadtime
+\item MC normalized based on time (calculated from file size) and current (50 nA)
+\end{itemize}
+
+%\begin{figure}
+%\includegraphics[width=0.4\linewidth]{figs/Rates.png}
+%\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rate of $\phi$ Regions Tungsten}
+
+\begin{itemize}
+\item Comparison of $\phi$ regions, should not have any $\phi$ dependence
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.48\linewidth]{figs/FEE_Rate_phi_W_rs.png}
+\includegraphics[width=0.48\linewidth]{figs/FEE_Rate_phi_C.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rates of Calculation Compared to Data and MC in $\theta$. MC Corrected}
+
+\begin{itemize}
+\item Comparison of Calculation (Mott Scattering) Rates to Data and MC log scale
+\item \textbf{MC is now corrected with form factor}, MC seems to match
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta2_top_log_rs.png}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta2_bottom_log_rs.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rates of Calculation Compared to Data and MC in $\theta$ for Tungsten. MC Corrected}
+
+\begin{itemize}
+\item Comparison of Calculation (Mott Scattering) Rates to Data and MC for Tungsten
+\item First 3-4 data points at smaller $\theta$ may be experiencing Ecal edge effects
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta_top_W.png}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta_bottom_W.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Rates of Calculation Compared to Data and MC in $\theta$ for Carbon}
+
+\begin{itemize}
+\item Comparison of Calculation (Mott Scattering) Rates to Data and MC for Carbon
+\item First 3-4 data points at smaller $\theta$ may be experiencing Ecal edge effects
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta_top_C.png}
+\includegraphics[width=0.4\linewidth]{figs/FEE_Rate_theta_bottom_C.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Ratio of Calculation to Data or MC in $\theta$. MC Corrected}
+
+\begin{itemize}
+\item Comparison of the ratios of Data and MC to Calculation (Mott Scattering): $\frac{\text{MC or Data Rate}}{\text{Calc Rate}}$
+\item Data matches the trend of calculations, \textbf{MC is corrected with form factor}, and has a fairly constant ratio
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.37\linewidth]{figs/FEE_ratio_theta_top_log_rs.png}
+\includegraphics[width=0.37\linewidth]{figs/FEE_ratio_theta_bottom_log_rs.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+%\begin{frame}
+%\frametitle{FEE Ratio of Calculation to Data or MC in $\theta$. MC Corrected}
+
+%\begin{itemize}
+%\item Comparison of the ratios of Data and MC to Calculation (Mott Scattering): $\frac{\text{MC or Data Rate}}{\text{Calc Rate}}$
+%\item Same plots as previous slide, just zoomed in for tungsten. Need to add error bars
+%\end{itemize}
+
+%\begin{figure}
+%\includegraphics[width=0.37\linewidth]{figs/FEE_ratio_theta_top_log_W.png}
+%\includegraphics[width=0.37\linewidth]{figs/FEE_ratio_theta_bottom_log_W.png}
+%\end{figure}
+%\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Differential Cross Sections Tungsten}
+\begin{center}
+$\frac{d \sigma}{d \Omega}=\frac{1}{L \ \Delta \Omega} \frac{dN}{dt}$
+\end{center}
+\begin{itemize}
+\item Differential cross section $\frac{d \sigma}{d \Omega}(\theta)$ for tungsten (averaged in top and bottom) compared to calculations and MC
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/CS_W.png}
+\includegraphics[width=0.4\linewidth]{figs/CS_W_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FEE Differential Cross Sections Carbon}
+\begin{center}
+$\frac{d \sigma}{d \Omega}=\frac{1}{L \ \Delta \Omega} \frac{dN}{dt}$
+\end{center}
+\begin{itemize}
+\item Differential cross section $\frac{d \sigma}{d \Omega}(\theta)$ for carbon (averaged in top and bottom) compared to calculations
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/CS_C.png}
+\includegraphics[width=0.4\linewidth]{figs/CS_C_log.png}
+\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Conclusions}
+
+\begin{itemize}
+\item Significant improvement over the past few weeks by introducing a form factor into calculations
+\item Corrected MC and Data for both tungsten and carbon runs reasonably match calculations
+\begin{itemize}
+\item MC form factor possibly incorrect at the generator level
+\end{itemize}
+\item Mott scattering differential cross section successfully measured for both tungsten and carbon
+\item In the near future: update as new MC comes along and write up a note
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Track Momentum Before and After FEE Cuts \& Matching}
+
+\begin{figure}
+\includegraphics[width=0.3\linewidth]{figs/track_p_top.png}
+\includegraphics[width=0.3\linewidth]{figs/track_p_bottom.png}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.3\linewidth]{figs/track_p_match_top.png}
+\includegraphics[width=0.3\linewidth]{figs/track_p_match_bottom.png}
+\end{figure}
+
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Cluster Energy Before and After FEE Cuts \& Matching}
+
+\begin{figure}
+\includegraphics[width=0.3\linewidth]{figs/energy_top.png}
+\includegraphics[width=0.3\linewidth]{figs/energy_bottom.png}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.3\linewidth]{figs/energy_top_match.png}
+\includegraphics[width=0.3\linewidth]{figs/energy_bottom_match.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{E/P After FEE Cuts \& Matching}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{figs/ep_top_match.png}
+\includegraphics[width=0.4\linewidth]{figs/ep_bottom_match.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\end{document} 
