@@ -25,6 +25,9 @@ def MakePlots(clf, X, Y, param_min, param_max, n_test, param_list=None, uncVZi=0
 	MakeZPlots(X, Y, y_predictions_proba, uncVZi=uncVZi, minVZ=param_min[uncVZi], 
 		maxVZ=param_max[uncVZi], threshold_min=threshold_min, nBins=nBins, 
 		PDFbasename=PDFbasename)
+	MakeClassifierOutputPlots(X, Y, y_predictions_proba, uncVZi=uncVZi, 
+		minVZ=param_min[uncVZi], maxVZ=param_max[uncVZi], clf_cut=clf_cut_test, 
+		threshold_min=threshold_min, nBins=nBins, PDFbasename=PDFbasename+"_clftestcut")
 	#MakePhysicsPlots(X_train, Y_train, y_predictions, y_predictions_proba, param_list, 
 	#	param_min, param_max, uncVZi=uncVZi, clf_cut=clf_cut, threshold_min=threshold_min, 
 	#	nBins=nBins, PDFbasename=PDFbasename+"_train")
@@ -40,8 +43,12 @@ def MakeClassifierOutputPlots(X, Y, y_predictions_proba, uncVZi=0, minVZ=-4.3, m
 	fig, ((ax0, ax1), (ax2, ax3), (ax4, ax5)) = plt.subplots(nrows=3, ncols=2, figsize=(20,24))
 	zcut = 17
 
-	ax0.hist(X[:, uncVZi][Y[:,0] == 0], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Background")
-	ax0.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] < clf_cut, Y[:,0] == 1)], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Signal Identified as Background")
+	#ax0.hist(X[:, uncVZi][Y[:,0] == 0], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Background")
+	#ax0.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] < clf_cut, Y[:,0] == 1)], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Signal Identified as Background")
+	ax0.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] < clf_cut, Y[:,0] == 0)], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Correctly Classified Background")
+	ax0.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] > clf_cut, Y[:,0] == 1)], nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Correctly Classified Signal")
+	ax0.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] > clf_cut, Y[:,0] == 0)], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Incorrectly Classified Background")
+
 	ax1.hist(X[:, uncVZi][Y[:,0] == 1], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Signal")
 	ax1.hist(X[:, uncVZi][np.logical_and(y_predictions_proba[:,1] > clf_cut, Y[:,0] == 0)], bins=nBins, range=(minVZ, maxVZ), alpha=0.8, histtype="stepfilled", label="Background Identified as Signal")
 
@@ -115,21 +122,23 @@ def MakeRocCurves(X, Y, y_predictions_proba, n_test, fpr_max=0.25, threshold_min
 	for i in range(len(fpr)):
 		if(fpr[i] > fpr_at_zcut):
 			clf_cut = threshold[i]
+			tpr_at_threshold = tpr[i]
 			break
+	print("tpr_at_threshold {0}".format(tpr_at_threshold))
 
 	fig, ((ax0, ax1),(ax2, ax3)) = plt.subplots(nrows=2, ncols=2, figsize=(20,16))
 	ax0.set_title('ROC Curve; AUC = ' + str(roc_auc),fontsize=20)
 	ax0.plot(fpr, tpr, label = 'roc')
-	ax0.plot(fpr, f(fpr,*popt), label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+	#ax0.plot(fpr, f(fpr,*popt), label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
 	ax0.set_ylabel('True Positive Rate',fontsize=20)
 	ax0.set_xlabel('False Positive Rate',fontsize=20)
 	ax0.legend(loc=4,fontsize=20)
 
 	ax1.set_title('ROC Curve Zoom',fontsize=20)
 	ax1.plot(fpr, tpr, label = 'roc')
-	ax1.plot(fpr, f(fpr,*popt), label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+	#ax1.plot(fpr, f(fpr,*popt), label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
 	ax1.set_xlim([0.0000001, 1])
-	ax1.set_ylim([0.01, 1])
+	ax1.set_ylim([0.1, 1])
 	ax1.set_ylabel('True Positive Rate',fontsize=20)
 	ax1.set_xlabel('False Positive Rate',fontsize=20)
 	ax1.legend(loc=4,fontsize=20)
@@ -191,7 +200,7 @@ def MakeRocCurves(X, Y, y_predictions_proba, n_test, fpr_max=0.25, threshold_min
 			if(Y[i, 0] == 1):
 				total_sig = total_sig + 1
 		print("Making ROC Curve Comparison.")
-		nz = 100
+		nz = 500
 		zmin = -40.
 		zmax = 40.
 		for j in range(nz):
@@ -207,11 +216,17 @@ def MakeRocCurves(X, Y, y_predictions_proba, n_test, fpr_max=0.25, threshold_min
 					count_tpr = count_tpr + 1
 			fpr2.append(count_fpr/total_bak)
 			tpr2.append(count_tpr/total_sig)
+		tpr_at_threshold2 = 0
+		for i in range(len(fpr2)):
+			if(fpr2[i] > fpr_at_zcut):
+				tpr_at_threshold2 = tpr2[i]
+				break
+		print("tpr_at_threshold2 {0}".format(tpr_at_threshold2))
     
 		fig2, ((ax6, ax7)) = plt.subplots(nrows=1, ncols=2, figsize=(20,8))
 		ax6.set_title('ROC Curve',fontsize=20)
 		ax6.plot(fpr, tpr, label = 'Random Forest (RF)')
-		ax6.plot(fpr, f(fpr,*popt), label='RF fit: a=%5.3f, b=%5.3f' % tuple(popt))
+		#ax6.plot(fpr, f(fpr,*popt), label='RF fit: a=%5.3f, b=%5.3f' % tuple(popt))
 		ax6.plot(fpr2, tpr2, label = '"Traditional" Zcut')
 		ax6.set_ylabel('True Positive Rate',fontsize=20)
 		ax6.set_xlabel('False Positive Rate',fontsize=20)
@@ -239,10 +254,10 @@ def MakeRocCurves(X, Y, y_predictions_proba, n_test, fpr_max=0.25, threshold_min
 
 		ax7.set_title('ROC Curve',fontsize=20)
 		ax7.plot(fpr, tpr, label = 'Random Forest (RF)')
-		ax7.plot(fpr, f(fpr,*popt), label='RF fit: a=%5.3f, b=%5.3f' % tuple(popt))
+		#ax7.plot(fpr, f(fpr,*popt), label='RF fit: a=%5.3f, b=%5.3f' % tuple(popt))
 		ax7.plot(fpr2, tpr2, label = '"Traditional" Zcut')
 		ax7.set_xlim([0.0000001, 1])
-		ax7.set_ylim([0.01, 1])
+		ax7.set_ylim([0.1, 1])
 		ax7.set_ylabel('True Positive Rate',fontsize=20)
 		ax7.set_xlabel('False Positive Rate',fontsize=20)
 		ax7.legend(loc=4,fontsize=20)
@@ -263,8 +278,8 @@ def MakeZPlots(X, Y, y_predictions_proba, uncVZi=0, minVZ=-4.3, maxVZ=80,
 	pp = PdfPages(PDFname)
 
 	fig, ((ax0, ax1),(ax2, ax3),(ax4, ax5)) = plt.subplots(nrows=3, ncols=2, figsize=(20,24))
-	ax0.scatter(y_predictions_proba[:,1], X[:,uncVZi], c=Y[:,0], alpha=0.6)
-	ax1.scatter(y_predictions_proba[:,1], X[:,uncVZi], c=Y[:,0], alpha=0.6)
+	#ax0.scatter(y_predictions_proba[:,1], X[:,uncVZi], c=Y[:,0], alpha=0.6)
+	#ax1.scatter(y_predictions_proba[:,1], X[:,uncVZi], c=Y[:,0], alpha=0.6)
 	ax0.set_xlim(0,1)
 	ax0.set_ylim(minVZ, maxVZ)
 	ax0.set_xlabel("Classifier Output", fontsize=20)

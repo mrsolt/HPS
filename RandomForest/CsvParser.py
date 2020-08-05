@@ -81,7 +81,7 @@ class CsvParser(object):
         Clean RAW_DF based on a hard coded condition 'condition1'
         :return: clean DataFrame
         '''
-        condition1                        = df['vz'] > -9999
+        condition1                        = df['uncM'] > -9999
         # condition2 ....
 
         condition                         = condition1 & 1 # & all conditions
@@ -100,7 +100,8 @@ class CsvParser(object):
         #column_select = ['vz','vzPull','vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'projYPull', 'uncP', 'eleTrkTanLambda','eleTrkTanLambdaErr','eleTrkZ0Err','posTrkTanLambda','posTrkTanLambdaErr','posTrkZ0Err']
         #column_select = ['vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'projYPull', 'uncP', 'eleTrkTanLambda','eleTrkTanLambdaErr','eleTrkZ0Err','posTrkTanLambda','posTrkTanLambdaErr','posTrkZ0Err']
         #column_select = ['vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'eleTrkTanLambda','posTrkTanLambda']
-        column_select = ['vz','vzPull','vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'eleTrkTanLambda','posTrkTanLambda']
+        #column_select = ['vz','vzPull','vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'eleTrkTanLambda','posTrkTanLambda']
+        column_select = ['vy','vyPull', 'uncM', 'eleZ0', 'posZ0', 'projY', 'eleTrkTanLambda','posTrkTanLambda']
 
         self.DATA_HEADER = column_select
         logi('Filtering data removing these columns %s' % column_select)

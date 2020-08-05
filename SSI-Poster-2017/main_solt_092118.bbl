@@ -1,0 +1,39 @@
+\begin{thebibliography}{4}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname bibnamefont\endcsname\relax
+  \def\bibnamefont#1{#1}\fi
+\expandafter\ifx\csname bibfnamefont\endcsname\relax
+  \def\bibfnamefont#1{#1}\fi
+\expandafter\ifx\csname citenamefont\endcsname\relax
+  \def\citenamefont#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\citenamefont{Finkbeiner}(2011)}]{Finkbeiner:2010sm}
+\bibinfo{author}{\bibfnamefont{D.~P. e.~a.} \bibnamefont{Finkbeiner}},
+  \bibinfo{journal}{JCAP} \textbf{\bibinfo{volume}{1105}}, \bibinfo{pages}{002}
+  (\bibinfo{year}{2011}), \eprint{1011.3082}.
+
+\bibitem[{\citenamefont{Vogelsberger}(2012)}]{Vogelsberger:2012ku}
+\bibinfo{author}{\bibfnamefont{M.~e.~a.} \bibnamefont{Vogelsberger}},
+  \bibinfo{journal}{Mon. Not. Roy. Astron. Soc.}
+  \textbf{\bibinfo{volume}{423}}, \bibinfo{pages}{3740} (\bibinfo{year}{2012}),
+  \eprint{1201.5892}.
+
+\bibitem[{\citenamefont{Hansson~Adrian}(2016)}]{Adrian:2015hst}
+\bibinfo{author}{\bibfnamefont{P.}~\bibnamefont{Hansson~Adrian}}
+  (\bibinfo{collaboration}{HPS}), in \emph{\bibinfo{booktitle}{{Proceedings,
+  2015 IEEE Nuclear Science Symposium and Medical Imaging Conference (NSS/MIC
+  2015): San Diego, California, United States}}} (\bibinfo{year}{2016}), p.
+  \bibinfo{pages}{7581862}, \eprint{1511.07844}.
+
+\bibitem[{\citenamefont{Balossino}(2017)}]{Balossino:2016nly}
+\bibinfo{author}{\bibfnamefont{I.~e.~a.} \bibnamefont{Balossino}}
+  (\bibinfo{collaboration}{HPS}), \bibinfo{journal}{Nucl. Instrum. Meth.}
+  \textbf{\bibinfo{volume}{A854}}, \bibinfo{pages}{89} (\bibinfo{year}{2017}),
+  \eprint{1610.04319}.
+
+\end{thebibliography}

@@ -361,19 +361,77 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     canvas.Print(outPDF+".pdf")
     canvas.Write()
 
+    print("{0}  {1}".format(fit.Get().Parameter(0), fit.Get().ParError(0)))
+    print("{0}  {1}".format(fit.Get().Parameter(1), fit.Get().ParError(1)))
+    print("{0}  {1}".format(fit.Get().Parameter(2), fit.Get().ParError(2)))
+    print("{0}  {1}".format(fit.Get().Parameter(3), fit.Get().ParError(3)))
+    print("{0}  {1}".format(fit.Get().Parameter(4), fit.Get().ParError(4)))
+
     norm = exppol4.Eval(targZ)
-    exppol4_m.SetParameters(fit.Get().Parameter(0)-fit.Get().ParError(0),fit.Get().Parameter(1)-fit.Get().ParError(1),fit.Get().Parameter(2)-fit.Get().ParError(2),
-        fit.Get().Parameter(3)-fit.Get().ParError(3),fit.Get().Parameter(4)-fit.Get().ParError(4))
-    norm_sig = exppol4_m.Eval(targZ)
-    exppol4_p.SetParameters(fit.Get().Parameter(0)+fit.Get().ParError(0),fit.Get().Parameter(1)+fit.Get().ParError(1),fit.Get().Parameter(2)+fit.Get().ParError(2),
-        fit.Get().Parameter(3)+fit.Get().ParError(3),fit.Get().Parameter(4)+fit.Get().ParError(4))
-    norm_psig = exppol4_p.Eval(targZ)
+    norm_min = []
+
+    exppol4_m.SetParameters(fit.Get().Parameter(0)-fit.Get().ParError(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_min.append(exppol4_m.Eval(targZ))
+    exppol4_m.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1)-fit.Get().ParError(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_min.append(exppol4_m.Eval(targZ))
+    exppol4_m.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2)-fit.Get().ParError(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_min.append(exppol4_m.Eval(targZ))
+    exppol4_m.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3)-fit.Get().ParError(3),fit.Get().Parameter(4))
+    norm_min.append(exppol4_m.Eval(targZ))
+    exppol4_m.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4)-fit.Get().ParError(4))
+    norm_min.append(exppol4_m.Eval(targZ))
+
+    error_min = 0
+    for i in range(len(norm_min)):
+        error = (norm - norm_min[i])/norm
+        print("{0}  {1}".format(i,error))
+        error_min = math.sqrt(error_min*error_min + error * error)
+    norm_sig = error_min * norm
+
+    norm_plus = []
+
+    exppol4_p.SetParameters(fit.Get().Parameter(0)+fit.Get().ParError(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_plus.append(exppol4_p.Eval(targZ))
+    exppol4_p.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1)+fit.Get().ParError(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_plus.append(exppol4_p.Eval(targZ))
+    exppol4_p.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2)+fit.Get().ParError(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4))
+    norm_plus.append(exppol4_p.Eval(targZ))
+    exppol4_p.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3)+fit.Get().ParError(3),fit.Get().Parameter(4))
+    norm_plus.append(exppol4_p.Eval(targZ))
+    exppol4_p.SetParameters(fit.Get().Parameter(0),fit.Get().Parameter(1),fit.Get().Parameter(2),
+        fit.Get().Parameter(3),fit.Get().Parameter(4)+fit.Get().ParError(4))
+    norm_plus.append(exppol4_p.Eval(targZ))
+
+    error_plus = 0
+    for i in range(len(norm_plus)):
+        error = (norm - norm_plus[i])/norm
+        print("{0}  {1}".format(i,error))
+        error_plus = math.sqrt(error_plus*error_plus + error * error)
+    norm_psig = error_plus * norm
+
+    #exppol4_m.SetParameters(fit.Get().Parameter(0)-fit.Get().ParError(0),fit.Get().Parameter(1)-fit.Get().ParError(1),fit.Get().Parameter(2)-fit.Get().ParError(2),
+    #    fit.Get().Parameter(3)-fit.Get().ParError(3),fit.Get().Parameter(4)-fit.Get().ParError(4))
+    #norm_sig = exppol4_m.Eval(targZ)
+    #exppol4_p.SetParameters(fit.Get().Parameter(0)+fit.Get().ParError(0),fit.Get().Parameter(1)+fit.Get().ParError(1),fit.Get().Parameter(2)+fit.Get().ParError(2),
+    #    fit.Get().Parameter(3)+fit.Get().ParError(3),fit.Get().Parameter(4)+fit.Get().ParError(4))
+    #norm_psig = exppol4_p.Eval(targZ)
 
     del sumhisto
     del legend
     del histo_copy_L1L1
     del histo_copy_L1L2
     del histo_copy_L2L2
+    del norm_min
+    del norm_plus
     return norm, norm_sig, norm_psig
 
 def getEffTH1(hfile, hname):

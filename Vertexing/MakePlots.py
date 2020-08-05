@@ -152,16 +152,13 @@ for i in range(len(apfiles)):
 	del dummy
 
 plots = []
-plots.append("uncTargProjX/uncTargProjXErr -5 5")
-plots.append("uncTargProjY/uncTargProjYErr -5 5")
-plots.append("uncP/uncMomErr -5 5")
-plots.append("uncPX/uncMomXErr -5 5")
-plots.append("uncPY/uncMomYErr -5 5")
-plots.append("uncPZ/uncMomZErr -5 5")
-plots.append("eleTrkZ0/eleTrkZ0Err -5 5")
-plots.append("posTrkZ0/posTrkZ0Err -5 5")
-plots.append("eleTrkD0/eleTrkD0Err -5 5")
-plots.append("posTrkD0/posTrkD0Err -5 5")
+plots.append("uncTargProjX/uncTargProjXErr -8 8")
+plots.append("uncTargProjY/uncTargProjYErr -8 8")
+plots.append("eleTrkZ0/eleTrkZ0Err -8 8")
+plots.append("posTrkZ0/posTrkZ0Err -8 8")
+plots.append("eleTrkD0/eleTrkD0Err -8 8")
+plots.append("posTrkD0/posTrkD0Err -8 8")
+plots.append("posTrkD0/posTrkD0Err -8 8")
 
 openPDF(outfile,c)
 

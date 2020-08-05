@@ -172,8 +172,9 @@ num_pairsf = TF1("num_pairsf","exp({0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5)".f
 #mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(-0.6066/1000,0.1123,-1.452,11.55,-30.76),0.04,0.2)
 #mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
 mresL1L1f = TF1("mresL1L1f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.9348/1000,0.05442,-0.5784,5.852,-17.24),0.04,0.2)
-mresL1L2f = TF1("mresL1L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
-mresL2L2f = TF1("mresL2L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
+mresL1L2f = TF1("mresL1L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.8427/1000,0.04709,-0.2067,2.087,-5.584),0.04,0.2)
+mresL2L2f = TF1("mresL2L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(1.005/1000,0.04436,-0.1,1.117,-2.893),0.04,0.2)
+#mresL1L2f = TF1("mresL1L2f","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.04906/1000.,0.04606,0,0,0,0),0.04,0.2)
 
 #targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-8.073,216.1,-4372,39880,-172500,288700),0.05,0.175)
 #targetzf = TF1("targetzf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-7.084,172.7,-3641,33910,-148800,252200),0.05,0.175)
@@ -561,24 +562,26 @@ for i in xrange(0,len(massArr)):
     hasLowSide = False
     hasHighSide = False
     for j in xrange(0,len(massArr)):
-        #if abs(mass-massArr[j])>massWindowArrL1L1[i]+massWindowArrL1L1[j]:
-        #    if j<i:
-        #        hasLowSide = True
-        #    if i<j:
-        #        hasHighSide = True
-            #sigMassArr.append(massArrMeV[j])
-            #sigCandArr.append(candArrL1L1[j])
-        sigMassArr.append(massArrMeV[j])
-        sigCandArr.append(candArrL1L1[j])
+        if abs(mass-massArr[j])>massWindowArrL1L1[i]+massWindowArrL1L1[j]:
+            if j<i:
+                hasLowSide = True
+            if i<j:
+                hasHighSide = True
+            sigMassArr.append(massArrMeV[j])
+            sigCandArr.append(candArrL1L1[j])
+        #sigMassArr.append(massArrMeV[j])
+        #sigCandArr.append(candArrL1L1[j])
     #if (hasLowSide and hasHighSide):
     if (True):
         graph=TGraph(len(sigMassArr),sigMassArr,sigCandArr)
         graph.SetTitle("background L1L1")
         graph.Draw("A*")
-        graph.Fit("pol1")
+        exp = TF1("exp","[0]*exp((x-[1])/[2])",60,150)
+        exp.SetParameters(7,0.060,-0.030)
+        graph.Fit("exp")
         graph.GetXaxis().SetMoreLogLabels()
         c.Print(remainder[0]+".pdf","Title:test")
-        nbkg = graph.GetFunction("pol1").Eval(mass)
+        nbkg = graph.GetFunction("exp").Eval(mass)
         if nbkg<0.5:
             nbkg = 0.5
         poiBkgArrL1L1.append(nbkg)
@@ -918,7 +921,7 @@ if(graphCand.GetMaximum() > maximum):
 graph.Write("poiSigL1L1")
 graphCand.SetLineColor(2)
 graphCand.SetMarkerColor(2)
-graph.GetYaxis().SetRangeUser(0,30)
+graph.GetYaxis().SetRangeUser(0,12)
 graphCand.Draw("* same")
 legend2 = TLegend(.60,.80,.85,.90)
 legend2.SetBorderSize(0)
