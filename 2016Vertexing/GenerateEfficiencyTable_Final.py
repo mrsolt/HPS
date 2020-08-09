@@ -323,7 +323,7 @@ def plotFit(histoL1L1,histoL1L2,histoL2L2,histoTruth,normArr,outPDF,outfileroot,
     histo_copy_L1L1 = histoL1L1.Clone()
     histo_copy_L1L2 = histoL1L2.Clone()
     histo_copy_L2L2 = histoL2L2.Clone()
-        
+
     canvas.Clear()
     histo_copy_L1L1.SetLineColor(1)
     histo_copy_L1L2.SetLineColor(2)
@@ -450,7 +450,7 @@ def getEffTH1(hfile, hname):
         effGraph.GetPoint(i,x,y)
         histBin=effHist.FindBin(x)
         #print str(x)+' ' +str(y) + ' '+str(i)+ '  '+str(histBin)
-        effHist.SetBinContent(histBin,y)   
+        effHist.SetBinContent(histBin,y)
     return effHist
 
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'e:t:n:z:Tcuvs:S:h')
@@ -472,7 +472,7 @@ for opt, arg in options:
     if opt=='-u':
         zcut = True
     if opt=='-v':
-        unblind = True
+        unblind = False
     if opt=='-s':
         tupleName = str(arg)
     if opt=='-S':
@@ -489,7 +489,7 @@ if killInTrackSlope:
     #effSlopeFileName = '/home/mrsolt/hps/test/EmGamma-L1HitEfficiencyResults-2016.root'
     effSlopeFileName = 'EmGamma-L1HitEfficiencyResults-2016.root'
     effRatioName = 'p2slopehps_007963.1GamEm_L1HitInefficiency'
-    effSlopeFile = ROOT.TFile(effSlopeFileName)      
+    effSlopeFile = ROOT.TFile(effSlopeFileName)
     effSlopeData = getEffTH1(effSlopeFile,effRatioName)
     effSlopeData.Print("v")
 
@@ -497,10 +497,10 @@ total = TH1F("total","total",nBins,-0.08,0.08)
 passed = TH1F("passed","passed",nBins,-0.08,0.08)
 
 def RemoveHit(slp):
-    rndm = random.random()         
+    rndm = random.random()
     ibin = effSlopeData.FindBin(slp)
     eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
-    total.Fill(slp) 
+    total.Fill(slp)
     if rndm > eff:
     #if rndm > 0.8:
         return True
@@ -737,7 +737,7 @@ exppol4=TF1("exppol4","exp(pol4(0))",-5,100)
 exppol4_m=TF1("exppol4_m","exp(pol4(0))",-5,100)
 exppol4_p=TF1("exppol4_p","exp(pol4(0))",-5,100)
 
-#uncTargProjX = -0.0917593000854 
+#uncTargProjX = -0.0917593000854
 #uncTargProjXSig = 0.215671748567
 #uncTargProjY = -0.0772518524373
 #uncTargProjYSig = 0.0862582336468
@@ -750,9 +750,9 @@ yProj = "(uncVY-(uncVZ-{0})*uncPY/uncPZ)".format(targZ)
 xProj_rot = "({0}*cos({2})-{1}*sin({2}))".format(xProj,yProj,-angle)
 yProj_rot = "({0}*sin({2})+{1}*cos({2}))".format(xProj,yProj,-angle)
 
-uncTargProjX = -0.0995461972579 
-uncTargProjXSig = 0.217919555935 
-uncTargProjY = -0.0668941015569 
+uncTargProjX = -0.0995461972579
+uncTargProjXSig = 0.217919555935
+uncTargProjY = -0.0668941015569
 uncTargProjYSig = 0.0831670646584
 nSig = 2
 
@@ -889,7 +889,10 @@ cutsL2L2.append(z0cut_L1L2)
 if(removeSharedHits):
     cutsL2L2.append("eleNHitsShared<0.5&&posNHitsShared<0.5")
 if(zcut):
-    zcutL2L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-133,8211,-162000,1480000,-6406000,10560000) #10% Data L1L2
+    if(unblind):
+        zcutL2L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7) #10% Data L2L2
+    else:
+        zcutL2L2 = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5".format(-238.7,1.572e4,-3.165e5,2.912e6,-1.28e7,2.198e7) #10% Data L2L2 Scaled
     cutsL2L2.append("uncVZ>{0}".format(zcutL2L2))
 
 cutL2L2 = cutsL2L2[0]
@@ -922,12 +925,12 @@ textfileL2L2Norm.write("\n")
 
 #Write values of z in the 2nd row
 for i in range(nBins):
-    textfileL1L1.write(str(z[i]) + " ") 
-    textfileL1L1Norm.write(str(z[i]) + " ")  
-    textfileL1L2.write(str(z[i]) + " ") 
-    textfileL1L2Norm.write(str(z[i]) + " ") 
-    textfileL2L2.write(str(z[i]) + " ") 
-    textfileL2L2Norm.write(str(z[i]) + " ") 
+    textfileL1L1.write(str(z[i]) + " ")
+    textfileL1L1Norm.write(str(z[i]) + " ")
+    textfileL1L2.write(str(z[i]) + " ")
+    textfileL1L2Norm.write(str(z[i]) + " ")
+    textfileL2L2.write(str(z[i]) + " ")
+    textfileL2L2Norm.write(str(z[i]) + " ")
 textfileL1L1.write("\n")
 textfileL1L1Norm.write("\n")
 textfileL1L2.write("\n")
@@ -1067,7 +1070,7 @@ closePDF(outfile+"_fitplots",c)
 if(makeTestPlots):
     #Make Absolute Efficiency Plots
     c1 = TCanvas("c1","c1",1200,900)
-    c1.Print(outfile+"_L1L1.pdf[")   
+    c1.Print(outfile+"_L1L1.pdf[")
 
     for i in range(1,nMass-1):
         plotTest(i,outfile+"_L1L1.eff",outfile+"_L1L1",targZ,maxZ,c1)
@@ -1075,7 +1078,7 @@ if(makeTestPlots):
     c1.Print(outfile+"_L1L1.pdf]")
 
     del c1
-    
+
     #Make Normalized Efficiency Plots
     c2 = TCanvas("c2","c2",1200,900)
     c2.Print(outfile+"_L1L1_norm.pdf[")
@@ -1089,7 +1092,7 @@ if(makeTestPlots):
 
     #Make Absolute Efficiency Plots
     c3 = TCanvas("c3","c3",1200,900)
-    c3.Print(outfile+"_L1L2.pdf[")   
+    c3.Print(outfile+"_L1L2.pdf[")
 
     for i in range(1,nMass-1):
         plotTest(i,outfile+"_L1L2.eff",outfile+"_L1L2",targZ,maxZ,c3)
@@ -1097,7 +1100,7 @@ if(makeTestPlots):
     c3.Print(outfile+"_L1L2.pdf]")
 
     del c3
-    
+
     #Make Normalized Efficiency Plots
     c4 = TCanvas("c4","c4",1200,900)
     c4.Print(outfile+"_L1L2_norm.pdf[")
@@ -1111,7 +1114,7 @@ if(makeTestPlots):
 
     #Make Absolute Efficiency Plots
     c5 = TCanvas("c5","c5",1200,900)
-    c5.Print(outfile+"_L2L2.pdf[")   
+    c5.Print(outfile+"_L2L2.pdf[")
 
     for i in range(1,nMass-1):
         plotTest(i,outfile+"_L2L2.eff",outfile+"_L2L2",targZ,maxZ,c5)
@@ -1119,7 +1122,7 @@ if(makeTestPlots):
     c5.Print(outfile+"_L2L2.pdf]")
 
     del c5
-    
+
     #Make Normalized Efficiency Plots
     c6 = TCanvas("c6","c6",1200,900)
     c6.Print(outfile+"_L2L2_norm.pdf[")
@@ -1133,7 +1136,7 @@ if(makeTestPlots):
 
 c7 = TCanvas("c7","c7",1200,900)
 
-c7.Print(outfile+"_plots.pdf[") 
+c7.Print(outfile+"_plots.pdf[")
 
 plotEff(histoscutL1L1,histosTruth,normArr,outfile+"_L1L1",outfile+"_plots",outfileroot,c7,mass,False,title="L1L1")
 plotEff(histoscutL1L1,histosTruth,normArr,outfile+"_L1L1_norm",outfile+"_plots",outfileroot,c7,mass,True,title="L1L1 Normalized")
@@ -1152,7 +1155,7 @@ passed.GetXaxis().SetTitle("Track Slope")
 passed.GetYaxis().SetTitle("Efficiency")
 passed.SetStats(0)
 passed.Draw()
-c7.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf")
 passed.Write("Efficiency")
 
 graph = TGraphErrors(len(mass),mass,gammamean,zeros,gammameanerror)
@@ -1162,7 +1165,7 @@ graph.GetYaxis().SetTitle("Fraction of E_{beam}")
 graph.GetXaxis().SetRangeUser(0,.2)
 graph.GetYaxis().SetRangeUser(0.9,1.0)
 graph.Draw("AP")
-c7.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf")
 graph.Write("Gamma")
 
 def MakeGammaHistos(histo,mass,canvas,output):
@@ -1172,7 +1175,7 @@ def MakeGammaHistos(histo,mass,canvas,output):
     histo.Sumw2()
     histo.SetStats(0)
     histo.Draw()
-    canvas.Print(output+".pdf") 
+    canvas.Print(output+".pdf")
     histo.Write("{0} MeV A' Energy".format(mass))
 
 for i in range(len(mass)):
@@ -1187,7 +1190,7 @@ graph.GetYaxis().SetRangeUser(0,0.2)
 graph.SetLineColor(1)
 graph.SetMarkerColor(1)
 graph.Draw("AP*")
-c7.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf")
 graph.Write("Prompt Acceptance")
 
 graph_m = TGraph(len(mass),mass,normArr_n)
@@ -1217,8 +1220,8 @@ legend.AddEntry(graph_m,"-1#sigma","LP")
 legend.AddEntry(graph_p,"+1#sigma","LP")
 legend.Draw()
 
-c7.Print(outfile+"_plots.pdf") 
+c7.Print(outfile+"_plots.pdf")
 graph.Write("Prompt Acceptance Systematic")
 
-c7.Print(outfile+"_plots.pdf]") 
+c7.Print(outfile+"_plots.pdf]")
 outfileroot.Close()
