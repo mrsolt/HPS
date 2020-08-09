@@ -160,7 +160,7 @@ for i in range(0,n_massbins):
         zcutarray2.append(zcutarray2[i-1])
         zcutscaledarray2.append(zcutscaledarray2[i-1])
         zcutarray3.append(zcutarray3[i-1])
-        zcutscaledarray3.append(zcut3scaledarray3[i-1])
+        zcutscaledarray3.append(zcutscaledarray3[i-1])
         histozcut.SetBinContent(i+1,zcutarray[i])
         histozcut.SetBinError(i+1,zcutarray2[i]-zcutarray[i])
         histozcutscaled.SetBinContent(i+1,zcutscaledarray[i])
