@@ -148,7 +148,7 @@ for i in range(0,n_massbins):
     #mres = mres_p0 + mres_p1*mass
     mres = mresf.Eval(mass)
 
-    if(mass > 0.110):
+    if(mass > 0.105):
         meanarray.append(meanarray[i-1])
         sigmaarray.append(sigmaarray[i-1])
         breakzarray.append(breakzarray[i-1])
