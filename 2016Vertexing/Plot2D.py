@@ -31,7 +31,7 @@ for opt, arg in options:
 		if opt=='-r':
 			isL1L2 = True
         if opt=='-t':
-			isL2L2 = True
+            isL2L2 = True
 		if opt=='-s':
 			Shaded = True
 		if opt=='-h':
@@ -90,7 +90,7 @@ if(plotZcut):
 		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-205.6,1.258e4,-2.595e5,2.538e6,-1.197e7,2.19e7),0.05,0.150) #L1L2 scaled 100%
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.150) #L1L2 MC
 
-    if(isL2L2):
+    elif(isL2L2):
 		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-261.4,1.608e4,-3.09e5,2.571e6,-8.816e6,7.119e6),0.05,0.150) #L1L2 10%
 		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-285.2,1.681e4,-2.91e5,1.909e6,-2.401e6,-1.328e7),0.05,0.150) #L1L2 scaled 100%
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.150) #L1L2 MC
