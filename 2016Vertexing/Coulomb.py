@@ -13,6 +13,7 @@ def print_usage():
     print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
     print "Arguments: "
     print '\t-l: is L1L2 (default false)'
+    print '\t-t: is L2L2 (default false)'
     print '\t-z: use zcut (default false)'
     print '\t-p: save PDF (default true)'
     print '\t-d: use Data (default false)'
@@ -106,6 +107,7 @@ def savehisto2D(histo,outfile,canvas,XaxisTitle="",YaxisTitle="",plotTitle="",st
 	del histo
 
 L1L2 = False
+L2L2 = False
 minVZ = -30
 maxVZ = 30
 savePDF = True
@@ -113,12 +115,14 @@ useZcut = False
 useData = False
 label = ""
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lzm:n:py:dh')
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lzm:n:py:dth')
 
 # Parse the command line arguments
 for opt, arg in options:
 		if opt=='-l':
 			L1L2 = True
+        if opt=='-t':
+			L2L2 = True
 		if opt=='-z':
 			useZcut = True
 		if opt=='-m':
@@ -205,6 +209,24 @@ if(L1L2):
 	uncTargProjXSig = 1.25 * uncTargProjXSig
 	uncTargProjYSig = 1.5 * uncTargProjYSig
 
+elif(L2L2):
+	mpos = -0.576619997051
+	mneg = -0.0126688170132
+	m0 = -0.126973432435
+	a0 = 0.0628788048688
+	a1 = -0.00317833175061
+	b0 = 0.0614724292851
+	b1 = -0.00358273636968
+
+	eleisoL2 = "eleMinPositiveIsoL2+1/3.*((eleTrkZ0+{0}*elePY/eleP)*sign(elePY)-3*(eleTrkZ0Err+abs({0}*eleTrkLambdaErr)+abs(2*{0}*eleTrkLambda*eleTrkOmegaErr/eleTrkOmega)))>0".format(zTarg)
+	posisoL2 = "posMinPositiveIsoL2+1/3.*((posTrkZ0+{0}*posPY/posP)*sign(posPY)-3*(posTrkZ0Err+abs({0}*posTrkLambdaErr)+abs(2*{0}*posTrkLambda*posTrkOmegaErr/posTrkOmega)))>0".format(zTarg)
+
+	eleiso = eleisoL2
+	posiso = posisoL2
+
+	uncTargProjXSig = 1.9 * uncTargProjXSig
+	uncTargProjYSig = 2.5 * uncTargProjYSig
+
 else:
 	m0 = -0.201776054859
 	a0 = 0.0518988558564
@@ -231,8 +253,15 @@ if(useData):
 dy = uncTargProjY - (-0.0668941015569)
 dz = "{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3".format(c0,c1,c2,c3)
 
+if(L2L2):
+	m0 = mpos
+
 eleZ0_up = "(eleTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
 posZ0_up = "(posTrkZ0>{0}+{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,a0,a1,dz,dy)
+
+if(L2L2):
+	m0 = mneg
+
 eleZ0_down = "(-eleTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
 posZ0_down = "(-posTrkZ0>{0}-{4}+{1}*(uncVZ+{3})+{2}*1/uncM^1*(uncVZ+{3}))".format(m0,b0,b1,dz,dy)
 
@@ -241,6 +270,17 @@ z0cut = "(({0}&&{1})||({2}&&{3}))".format(eleZ0_up,posZ0_down,posZ0_up,eleZ0_dow
 cuts = []
 if(useZcut):
 	if(L1L2):
+		if(useData):
+			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-133,8211,-162000,1480000,-6406000,10560000),0.05,0.175) #L1L2 10%
+			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-133,8211,-162000,1480000,-6406000,10560000))
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.05,0.175) #L1L2 10%
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7)) #100% Data L1L1
+		else:
+			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(25.23,47.14,-2987,12370,0,0),0.05,0.175)
+			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(25.23,47.14,-2987,12370,0,0))
+			zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.175)
+			cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7))
+	if(L2L2):
 		if(useData):
 			#zcut = TF1("zcut","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-133,8211,-162000,1480000,-6406000,10560000),0.05,0.175) #L1L2 10%
 			#cuts.append("(uncVZ>{0}+{1}*uncM+{2}*uncM^2+{3}*uncM^3+{4}*uncM^4+{5}*uncM^5)".format(-133,8211,-162000,1480000,-6406000,10560000))
@@ -328,7 +368,7 @@ def getUnbiased(mass,masswindow,histoback):
     histoclone = histoback.Clone()
     for i in range(histoclone.GetNbinsX()):
         nbin = i + 1
-        m = histoback.GetBinCenter(nbin) 
+        m = histoback.GetBinCenter(nbin)
         if(abs(mass - m) < masswindow):
             histoclone.SetBinError(nbin,0)
     fit = TF1("fit","pol2")
