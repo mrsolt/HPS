@@ -104,7 +104,7 @@ if(isL1L2):
 elif(isL2L2):
     mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(1.005/1000,0.04436,-0.1,1.117,-2.893),0.04,0.2)
     label = label + " L2L2"
-else: 
+else:
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(0.01095/1000.,0.04305,0,0,0,0),0.04,0.2)
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(-0.6066/1000,0.1123,-1.452,11.55,-30.76),0.04,0.2)
     #mresf = TF1("mresf","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4".format(0.386/1000,0.06735,-0.7197,6.417,-17.63),0.04,0.2)
@@ -129,9 +129,13 @@ maxZarr=array.array('d')
 #zcutErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
-n_massbins=50
+#n_massbins=50
+#minmass=0.04
+#maxmass=0.175
+
+n_massbins=30
 minmass=0.04
-maxmass=0.175
+maxmass=0.125
 
 massWidth = (maxmass-minmass)/((n_massbins-1)*2)
 histozcut = TH1F("histozcut","histozcut",n_massbins,minmass-massWidth,maxmass+massWidth)
