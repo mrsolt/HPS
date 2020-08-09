@@ -133,9 +133,9 @@ maxZarr=array.array('d')
 #minmass=0.04
 #maxmass=0.175
 
-n_massbins=30
+n_massbins=28
 minmass=0.04
-maxmass=0.125
+maxmass=0.115
 
 massWidth = (maxmass-minmass)/((n_massbins-1)*2)
 histozcut = TH1F("histozcut","histozcut",n_massbins,minmass-massWidth,maxmass+massWidth)
