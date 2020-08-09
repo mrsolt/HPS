@@ -57,7 +57,7 @@ label = ""
 label = str(remainder[2])
 
 if(isL2L2):
-	events.Draw("uncVZ:uncM>>histo(100,0,0.2,100,-40,40)")
+	events.Draw("uncVZ:uncM>>histo(100,0,0.2,100,-50,50)")
 	histo = gDirectory.FindObject("histo")
 
 else:
