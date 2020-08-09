@@ -56,8 +56,13 @@ events = file.Get("ntuple")
 label = ""
 label = str(remainder[2])
 
-events.Draw("uncVZ:uncM>>histo(100,0,0.2,100,-30,30)")
-histo = gDirectory.FindObject("histo")
+if(isL2L2):
+	events.Draw("uncVZ:uncM>>histo(100,0,0.2,100,-40,40)")
+	histo = gDirectory.FindObject("histo")
+
+else:
+	events.Draw("uncVZ:uncM>>histo(100,0,0.2,100,-30,30)")
+	histo = gDirectory.FindObject("histo")
 
 histo.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 histo.GetYaxis().SetTitle("Reconstructed z (mm)")
@@ -91,8 +96,8 @@ if(plotZcut):
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.150) #L1L2 MC
 
 	elif(isL2L2):
-		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-261.4,1.608e4,-3.09e5,2.571e6,-8.816e6,7.119e6),0.05,0.150) #L1L2 10%
-		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-285.2,1.681e4,-2.91e5,1.909e6,-2.401e6,-1.328e7),0.05,0.150) #L1L2 scaled 100%
+		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.05,0.150) #L1L2 10%
+		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-238.7,1.572e4,-3.165e5,2.912e6,-1.28e7,2.198e7),0.05,0.150) #L1L2 scaled 100%
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.150) #L1L2 MC
 
 	else:
