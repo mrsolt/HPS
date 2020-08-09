@@ -129,13 +129,9 @@ maxZarr=array.array('d')
 #zcutErr=array.array('d')
 #zcutscaledErr=array.array('d')
 
-#n_massbins=50
-#minmass=0.04
-#maxmass=0.175
-
-n_massbins=28
+n_massbins=50
 minmass=0.04
-maxmass=0.115
+maxmass=0.175
 
 massWidth = (maxmass-minmass)/((n_massbins-1)*2)
 histozcut = TH1F("histozcut","histozcut",n_massbins,minmass-massWidth,maxmass+massWidth)
@@ -151,6 +147,31 @@ for i in range(0,n_massbins):
 
     #mres = mres_p0 + mres_p1*mass
     mres = mresf.Eval(mass)
+
+    if(mass > 0.115):
+        meanarray.append(meanarray[i-1])
+        sigmaarray.append(sigmaarray[i-1])
+        breakzarray.append(breakzarray[i-1])
+        meanErr.append(meanErr[i-1])
+        sigmaErr.append(sigmaErr[i-1])
+        breakzErr.append(breakzErr[i-1])
+        zcutarray.append(zcutarray[i-1])
+        zcutscaledarray.append(zcutscaledarray[i-1])
+        zcutarray2.append(zcutarray2[i-1])
+        zcutscaledarray2.append(zcutscaledarray2[i-1])
+        zcutarray3.append(zcutarray3[i-1])
+        zcutscaledarray3.append(zcut3scaledarray3[i-1])
+        histozcut.SetBinContent(i+1,zcutarray[i])
+        histozcut.SetBinError(i+1,zcutarray2[i]-zcutarray[i])
+        histozcutscaled.SetBinContent(i+1,zcutscaledarray[i])
+        histozcutscaled.SetBinError(i+1,zcutarray2[i]-zcutarray[i])
+        if(plotmaxZ):
+            cutevents = events.CopyTree("abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mres))
+            maxZarr.append(cutevents.GetMaximum("uncVZ"))
+        else:
+            maxZarr.append(0)
+        continue
+
 
     c.Clear()
     c.Divide(1,2)
