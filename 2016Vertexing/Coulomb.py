@@ -119,25 +119,25 @@ options, remainder = getopt.gnu_getopt(sys.argv[1:], 'lzm:n:py:dth')
 
 # Parse the command line arguments
 for opt, arg in options:
-		if opt=='-l':
-			L1L2 = True
+        if opt=='-l':
+            L1L2 = True
         if opt=='-t':
-			L2L2 = True
-		if opt=='-z':
-			useZcut = True
-		if opt=='-m':
-			minVZ = float(arg)
-		if opt=='-n':
-			maxVZ = float(arg)
-		if opt=='-y':
-			label = str(arg)
-		if opt=='-p':
-			savePDF = False
-		if opt=='-d':
-			useData = True
-		if opt=='-h':
-			print_usage()
-			sys.exit(0)
+            L2L2 = True
+        if opt=='-z':
+            useZcut = True
+        if opt=='-m':
+            minVZ = float(arg)
+        if opt=='-n':
+            maxVZ = float(arg)
+        if opt=='-y':
+            label = str(arg)
+        if opt=='-p':
+            savePDF = False
+        if opt=='-d':
+            useData = True
+        if opt=='-h':
+            print_usage()
+            sys.exit(0)
 
 gStyle.SetOptStat(110011)
 gStyle.SetPalette(1)
