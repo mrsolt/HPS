@@ -8,26 +8,26 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-z: target position (default -4.3 mm)'
-    print '\t-g: minimum uncVZ (default -60 mm)'
-    print '\t-i: maximum uncVZ (default 80 mm)'
-    print '\t-e: beam energy (default 2.3 GeV)'
-    print '\t-q: number of bins (default 140)'
-    print '\t-t: cluster time offset (default 56 ns)'
-    print '\t-o: uncTargProjX mean (default 0)'
-    print '\t-p: uncTargProjX sigma (default 9999)'
-    print '\t-a: uncTargProjY mean (default 0)'
-    print '\t-b: uncTargProjY sigma (default 9999)'
-    print '\t-r: is L1L2 category (default false)'
-    print '\t-s: is L2L2 category (default false)'
-    print '\t-y: plot label'
-    print '\t-d: use data file (default False)'
-    print '\t-w: make cutflow plots (default False)'
-    print '\t-x: output new root tree (default False)'
-    print '\t-h: this help message'
-    print
+	print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
+	print "Arguments: "
+	print '\t-z: target position (default -4.3 mm)'
+	print '\t-g: minimum uncVZ (default -60 mm)'
+	print '\t-i: maximum uncVZ (default 80 mm)'
+	print '\t-e: beam energy (default 2.3 GeV)'
+	print '\t-q: number of bins (default 140)'
+	print '\t-t: cluster time offset (default 56 ns)'
+	print '\t-o: uncTargProjX mean (default 0)'
+	print '\t-p: uncTargProjX sigma (default 9999)'
+	print '\t-a: uncTargProjY mean (default 0)'
+	print '\t-b: uncTargProjY sigma (default 9999)'
+	print '\t-r: is L1L2 category (default false)'
+	print '\t-s: is L2L2 category (default false)'
+	print '\t-y: plot label'
+	print '\t-d: use data file (default False)'
+	print '\t-w: make cutflow plots (default False)'
+	print '\t-x: output new root tree (default False)'
+	print '\t-h: this help message'
+	print
 
 zTarg = -4.3
 ebeam = 2.3
@@ -140,7 +140,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histo_2D.GetXaxis().SetTitle("Mass [GeV]")
 		histo_2D.GetYaxis().SetTitle("Reconstructed z [mm]")
 		histo_2D.SetStats(stats)
-        histo_2D.GetXaxis().SetLabelSize(0.05)
+		histo_2D.GetXaxis().SetLabelSize(0.05)
 		histo_2D.GetYaxis().SetLabelSize(0.05)
 		histo_2D.GetZaxis().SetLabelSize(0.05)
 		histo_2D.GetXaxis().SetTitleOffset(0.8)
@@ -161,7 +161,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos4[i].SetTitle("Vz vs Mass " + label[i] + " Exclusive")
 		histos4[i].GetXaxis().SetTitle("Mass [GeV]")
 		histos4[i].GetYaxis().SetTitle("Reconstructed z [mm]")
-        histos4[i].GetXaxis().SetLabelSize(0.05)
+		histos4[i].GetXaxis().SetLabelSize(0.05)
 		histos4[i].GetYaxis().SetLabelSize(0.05)
 		histos4[i].GetZaxis().SetLabelSize(0.05)
 		histos4[i].GetXaxis().SetTitleOffset(0.8)
@@ -207,7 +207,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histos[0].SetTitle(plotTitle + " " + label[i] + " Exclusive")
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
-        histos[0].GetXaxis().SetLabelSize(0.05)
+		histos[0].GetXaxis().SetLabelSize(0.05)
 		histos[0].GetYaxis().SetLabelSize(0.05)
 		histos[0].GetZaxis().SetLabelSize(0.05)
 		histos[0].GetXaxis().SetTitleOffset(0.8)
@@ -284,13 +284,13 @@ def saveCuts(events,i,cut_1,nBins,minX,maxX,label,var,outfile,canvas,XaxisTitle=
 	histo5.SetTitle(label + " Exclusive")
 	histo5.GetXaxis().SetTitle(XaxisTitle)
 	histo5.GetYaxis().SetTitle(YaxisTitle)
-    histo5.GetXaxis().SetLabelSize(0.05)
-    histo5.GetYaxis().SetLabelSize(0.05)
-    histo5.GetZaxis().SetLabelSize(0.05)
-    histo5.GetXaxis().SetTitleOffset(0.8)
-    histo5.GetXaxis().SetTitleSize(0.06)
-    histo5.GetYaxis().SetTitleOffset(0.8)
-    histo5.GetYaxis().SetTitleSize(0.06)
+	histo5.GetXaxis().SetLabelSize(0.05)
+	histo5.GetYaxis().SetLabelSize(0.05)
+	histo5.GetZaxis().SetLabelSize(0.05)
+	histo5.GetXaxis().SetTitleOffset(0.8)
+	histo5.GetXaxis().SetTitleSize(0.06)
+	histo5.GetYaxis().SetTitleOffset(0.8)
+	histo5.GetYaxis().SetTitleSize(0.06)
 	histo5.SetStats(stats)
 	canvas.Print(outfile+".pdf")
 	canvas.Write()
