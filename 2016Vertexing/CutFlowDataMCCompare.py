@@ -73,9 +73,9 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,label,outfile,outfilero
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(1)
-    
+
 	bot = TPad("bot","bot",0,0,1,0.38)
-    
+
 	top.Draw()
 	top.SetBottomMargin(0)
 	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
@@ -86,10 +86,18 @@ def saveCutFlow(histo,histo2,histo3,histo4,histo5,histo6,label,outfile,outfilero
 
 	if(label == "Preselection"):
 		histo5.SetTitle("Data/MC Compare {0}".format(label))
+        histo5.GetYaxis().SetTitle("dN/dz (mm^{-1} )")
 	else:
 		histo5.SetTitle("Data/MC Compare Without {0}".format(label))
+        histo5.GetYaxis().SetTitle(YaxisTitle)
 	histo5.GetXaxis().SetTitle(XaxisTitle)
-	histo5.GetYaxis().SetTitle(YaxisTitle)
+    histo5.GetXaxis().SetLabelSize(0.05)
+    histo5.GetYaxis().SetLabelSize(0.05)
+    histo5.GetZaxis().SetLabelSize(0.05)
+    histo5.GetXaxis().SetTitleOffset(0.8)
+    histo5.GetXaxis().SetTitleSize(0.06)
+    histo5.GetYaxis().SetTitleOffset(0.8)
+    histo5.GetYaxis().SetTitleSize(0.06)
 	histo2.Scale(1./histo2.Integral())
 	histo5.Scale(1./histo5.Integral())
 	histo2.SetLineColor(1)
@@ -134,9 +142,9 @@ def saveCuts(histo,histo2,outfile,outfileroot,canvas,XaxisTitle="",plotTitle="",
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(1)
-    
+
 	bot = TPad("bot","bot",0,0,1,0.38)
-    
+
 	top.Draw()
 	top.SetBottomMargin(0)
 	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
@@ -147,6 +155,13 @@ def saveCuts(histo,histo2,outfile,outfileroot,canvas,XaxisTitle="",plotTitle="",
 
 	histo.SetTitle(plotTitle)
 	histo.GetXaxis().SetTitle(XaxisTitle)
+    histo.GetXaxis().SetLabelSize(0.05)
+    histo.GetYaxis().SetLabelSize(0.05)
+    histo.GetZaxis().SetLabelSize(0.05)
+    histo.GetXaxis().SetTitleOffset(0.8)
+    histo.GetXaxis().SetTitleSize(0.06)
+    histo.GetYaxis().SetTitleOffset(0.8)
+    histo.GetYaxis().SetTitleSize(0.06)
 	histo2.Scale(1./histo2.Integral())
 	histo.Scale(1./histo.Integral())
 	histo.SetLineColor(1)

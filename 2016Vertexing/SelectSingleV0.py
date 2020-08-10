@@ -478,7 +478,7 @@ if(makePlots):
     outfile = TFile(remainder[0]+".root")
     events_in = infile.Get("ntuple")
     events_out = outfile.Get("ntuple")
-    nBins = 50
+    nBins = 90
     plots = []
     plots.append("uncVZ")
     plots.append("uncM")

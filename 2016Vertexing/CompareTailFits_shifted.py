@@ -40,9 +40,9 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(logY)
-    
+
 	bot = TPad("bot","bot",0,0,1,0.38)
-    
+
 	top.Draw()
 	top.SetBottomMargin(0)
 	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
@@ -53,7 +53,14 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 
 	histo1.SetTitle(plotTitle)
 	histo1.GetXaxis().SetTitle(XaxisTitle)
-	histo1.GetYaxis().SetTitle(YaxisTitle)
+	histo1.GetYaxis().SetTitle("dN/dz (0.5 mm)^{-1}")
+    histo1.GetXaxis().SetLabelSize(0.05)
+    histo1.GetYaxis().SetLabelSize(0.05)
+    histo1.GetZaxis().SetLabelSize(0.05)
+    histo1.GetXaxis().SetTitleOffset(0.8)
+    histo1.GetXaxis().SetTitleSize(0.06)
+    histo1.GetYaxis().SetTitleOffset(0.8)
+    histo1.GetYaxis().SetTitleSize(0.06)
 	histo1.SetStats(stats)
 	histo2.SetStats(stats)
 	histo1.Sumw2()
@@ -82,10 +89,16 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	bot.cd()
 	reference = histo2.Clone("reference")
 	reference.GetYaxis().SetTitle("Ratio")
-	reference.GetYaxis().SetTitleSize(0.06)
+	#reference.GetYaxis().SetTitleSize(0.06)
 	reference.GetYaxis().SetLabelSize(0.1)
-	reference.GetXaxis().SetTitleSize(0.1)
+	#reference.GetXaxis().SetTitleSize(0.1)
 	reference.GetXaxis().SetLabelSize(0.1)
+
+    reference.GetXaxis().SetTitleOffset(0.8)
+    reference.GetXaxis().SetTitleSize(0.12)
+    reference.GetYaxis().SetTitleOffset(0.4)
+    reference.GetYaxis().SetTitleSize(0.1)
+
 	reference.GetXaxis().SetTitle(XaxisTitle)
 	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
 	reference.GetYaxis().SetNdivisions(508)
@@ -103,10 +116,17 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 
 def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymax,XaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
-	#canvas.SetLogy(logY)	
+	#canvas.SetLogy(logY)
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
+    graph1.GetXaxis().SetLabelSize(0.05)
+    graph1.GetYaxis().SetLabelSize(0.05)
+    graph1.GetZaxis().SetLabelSize(0.05)
+    graph1.GetXaxis().SetTitleOffset(0.8)
+    graph1.GetXaxis().SetTitleSize(0.06)
+    graph1.GetYaxis().SetTitleOffset(0.8)
+    graph1.GetYaxis().SetTitleSize(0.06)
 	graph1.GetXaxis().SetRangeUser(xmin,xmax)
 	graph1.GetYaxis().SetRangeUser(ymin,ymax)
 	graph1.Draw("AP")
@@ -118,7 +138,7 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymax,Xax
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
-	legend.SetTextSize(0.035)
+	legend.SetTextSize(0.05)
 	legend.AddEntry(graph1,label1,"P")
 	legend.AddEntry(graph2,label2,"P")
 	legend.Draw("")
@@ -130,10 +150,17 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymax,Xax
 
 def savegraph3(graph1,graph2,graph3,label1,label2,label3,outfile,canvas,xmin,xmax,ymin,ymax,XaxisTitle="",YaxisTitle="",plotTitle="",logY=0):
 	canvas.Clear()
-	#canvas.SetLogy(logY)	
+	#canvas.SetLogy(logY)
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
+    graph1.GetXaxis().SetLabelSize(0.05)
+    graph1.GetYaxis().SetLabelSize(0.05)
+    graph1.GetZaxis().SetLabelSize(0.05)
+    graph1.GetXaxis().SetTitleOffset(0.8)
+    graph1.GetXaxis().SetTitleSize(0.06)
+    graph1.GetYaxis().SetTitleOffset(0.8)
+    graph1.GetYaxis().SetTitleSize(0.06)
 	graph1.GetXaxis().SetRangeUser(xmin,xmax)
 	graph1.GetYaxis().SetRangeUser(ymin,ymax)
 	graph1.Draw("AP")
@@ -148,7 +175,7 @@ def savegraph3(graph1,graph2,graph3,label1,label2,label3,outfile,canvas,xmin,xma
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
-	legend.SetTextSize(0.035)
+	legend.SetTextSize(0.05)
 	legend.AddEntry(graph1,label1,"P")
 	legend.AddEntry(graph3,label2,"P")
 	legend.AddEntry(graph2,label3,"P")
@@ -176,7 +203,7 @@ for h in infile1.GetListOfKeys():
 		continue
 	plotHisto = True
 	for i in range(len(histos1)):
-		if(histos1[i].GetTitle() == h.GetTitle()): 
+		if(histos1[i].GetTitle() == h.GetTitle()):
 			plotHisto = False
 			continue
 	if(not plotHisto): continue

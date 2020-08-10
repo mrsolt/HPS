@@ -4,7 +4,7 @@ sys.argv = []
 import getopt
 #import utilities as utils
 import ROOT
-from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad
+from ROOT import gROOT, TFile, gDirectory, gStyle, TCanvas, TH1, TLegend, TPad, TLatex
 sys.argv = tmpargv
 
 #List arguments
@@ -66,9 +66,9 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(1)
-    
+
 	bot = TPad("bot","bot",0,0,1,0.38)
-    
+
 	top.Draw()
 	top.SetBottomMargin(0)
 	#top.SetTopMargin(gStyle.GetPadTopMargin()*topScale)
@@ -79,9 +79,13 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 
 	canvas.SetLogy(1)
 	histo4.SetTitle("Data/MC Comparison Final Selection")
-	histo4.GetXaxis().SetTitle(XaxisTitle)
+	#histo4.GetXaxis().SetTitle(XaxisTitle)
+    histo4.GetXaxis().SetTitle("dN/dz (mm^{-1} )")
 	histo4.GetYaxis().SetTitle(YaxisTitle)
-	histo4.GetYaxis().SetLabelSize(0.06)
+	#histo4.GetYaxis().SetLabelSize(0.06)
+    histo4.GetXaxis().SetTitleOffset(0.7)
+    histo4.GetXaxis().SetTitleSize(0.06)
+    histo4.GetYaxis().SetLabelSize(0.08)
 	histo2.SetLineColor(1)
 	histo4.SetLineColor(2)
 	histo2.Scale(1/histo2.Integral())
@@ -100,10 +104,16 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 	bot.cd()
 	reference = histo4.Clone("reference")
 	reference.GetYaxis().SetTitle("Ratio")
-	reference.GetYaxis().SetTitleSize(0.06)
+	#reference.GetYaxis().SetTitleSize(0.06)
 	reference.GetYaxis().SetLabelSize(0.1)
-	reference.GetXaxis().SetTitleSize(0.1)
+	#reference.GetXaxis().SetTitleSize(0.1)
 	reference.GetXaxis().SetLabelSize(0.1)
+
+    reference.GetXaxis().SetTitleOffset(0.8)
+    reference.GetXaxis().SetTitleSize(0.12)
+    reference.GetYaxis().SetTitleOffset(0.4)
+    reference.GetYaxis().SetTitleSize(0.1)
+
 	reference.GetXaxis().SetTitle(XaxisTitle)
 	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
 	reference.GetYaxis().SetNdivisions(508)
@@ -122,7 +132,7 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 
 	top = TPad("top","top",0,0.42,1,1)
 	top.SetLogy(1)
-    
+
 	bot = TPad("bot","bot",0,0,1,0.38)
 
 	top.Draw()

@@ -67,6 +67,13 @@ else:
 histo.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 histo.GetYaxis().SetTitle("Reconstructed z (mm)")
 histo.SetTitle("Final Selection {0}".format(label))
+histo.GetXaxis().SetLabelSize(0.05)
+histo.GetYaxis().SetLabelSize(0.05)
+histo.GetZaxis().SetLabelSize(0.05)
+histo.GetXaxis().SetTitleOffset(0.8)
+histo.GetXaxis().SetTitleSize(0.06)
+histo.GetYaxis().SetTitleOffset(0.8)
+histo.GetYaxis().SetTitleSize(0.06)
 histo.Draw("COLZ")
 c.SetLogz(1)
 
@@ -96,9 +103,9 @@ if(plotZcut):
 		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(74.12,-2922,7.02e4,-8.567e5,4.936e6,-1.075e7),0.05,0.150) #L1L2 MC
 
 	elif(isL2L2):
-		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.05,0.150) #L1L2 10%
-		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-238.7,1.572e4,-3.165e5,2.912e6,-1.28e7,2.198e7),0.05,0.150) #L1L2 scaled 100%
-		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-816,5.006e4,-1.118e6,1.18e7,-5.97e7,1.169e8),0.05,0.150) #L1L2 MC
+		fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.05,0.150) #L2L2 10%
+		fz_scaled = TF1("fz_scaled","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-238.7,1.572e4,-3.165e5,2.912e6,-1.28e7,2.198e7),0.05,0.150) #L2L2 scaled 100%
+		fz_mc = TF1("fz_mc","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-816,5.006e4,-1.118e6,1.18e7,-5.97e7,1.169e8),0.05,0.150) #L2L2 MC
 
 	else:
 		#fz_10per = TF1("fz_10per","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-2.308,1227,-29030,285300,-1296000,2229000),0.05,0.150) #L1L1 10%
@@ -128,7 +135,7 @@ if(plotZcut):
 	legend.SetFillColor(0)
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
-	legend.SetTextSize(0.035)
+	legend.SetTextSize(0.05)
 	legend.AddEntry(fz_10per,"100% Data","LP")
 	legend.AddEntry(fz_scaled,"Scaled Data","LP")
 	legend.AddEntry(fz_mc,"MC","LP")
@@ -190,6 +197,13 @@ if(plotZcut):
 		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 		histo2.GetYaxis().SetTitle("Reconstructed z (mm)")
 		histo2.SetTitle("Reconctructed Z vs Mass {0}".format(label))
+		histo2.GetXaxis().SetLabelSize(0.05)
+		histo2.GetYaxis().SetLabelSize(0.05)
+		histo2.GetZaxis().SetLabelSize(0.05)
+		histo2.GetXaxis().SetTitleOffset(0.8)
+		histo2.GetXaxis().SetTitleSize(0.06)
+		histo2.GetYaxis().SetTitleOffset(0.8)
+		histo2.GetYaxis().SetTitleSize(0.06)
 		histo2.Draw("COLZ")
 		f1.Draw("same")
 		#f2.Draw("same")
