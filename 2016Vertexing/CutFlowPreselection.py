@@ -109,7 +109,7 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histo_2D.Write("histo_2D")
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
-	histos[0].GetYaxis().SetTitle("dN")
+    histos[0].GetYaxis().SetTitle("dN")
     histos[0].GetXaxis().SetLabelSize(0.05)
     histos[0].GetYaxis().SetLabelSize(0.05)
     histos[0].GetZaxis().SetLabelSize(0.05)
