@@ -8,11 +8,11 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-g: number of sigma of fit (default 1)'
-    print '\t-h: this help message'
-    print
+	print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
+	print "Arguments: "
+	print '\t-g: number of sigma of fit (default 1)'
+	print '\t-h: this help message'
+	print
 
 nsig = 1.
 
@@ -54,13 +54,13 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	histo1.SetTitle(plotTitle)
 	histo1.GetXaxis().SetTitle(XaxisTitle)
 	histo1.GetYaxis().SetTitle("dN/dz (0.5 mm)^{-1}")
-    histo1.GetXaxis().SetLabelSize(0.05)
-    histo1.GetYaxis().SetLabelSize(0.05)
-    histo1.GetZaxis().SetLabelSize(0.05)
-    histo1.GetXaxis().SetTitleOffset(0.8)
-    histo1.GetXaxis().SetTitleSize(0.06)
-    histo1.GetYaxis().SetTitleOffset(0.8)
-    histo1.GetYaxis().SetTitleSize(0.06)
+	histo1.GetXaxis().SetLabelSize(0.05)
+	histo1.GetYaxis().SetLabelSize(0.05)
+	histo1.GetZaxis().SetLabelSize(0.05)
+	histo1.GetXaxis().SetTitleOffset(0.8)
+	histo1.GetXaxis().SetTitleSize(0.06)
+	histo1.GetYaxis().SetTitleOffset(0.8)
+	histo1.GetYaxis().SetTitleSize(0.06)
 	histo1.SetStats(stats)
 	histo2.SetStats(stats)
 	histo1.Sumw2()
@@ -94,10 +94,10 @@ def savehisto(histo1,histo2,label1,label2,outfile,canvas,XaxisTitle="",YaxisTitl
 	#reference.GetXaxis().SetTitleSize(0.1)
 	reference.GetXaxis().SetLabelSize(0.1)
 
-    reference.GetXaxis().SetTitleOffset(0.8)
-    reference.GetXaxis().SetTitleSize(0.12)
-    reference.GetYaxis().SetTitleOffset(0.4)
-    reference.GetYaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetTitleOffset(0.8)
+	reference.GetXaxis().SetTitleSize(0.12)
+	reference.GetYaxis().SetTitleOffset(0.4)
+	reference.GetYaxis().SetTitleSize(0.1)
 
 	reference.GetXaxis().SetTitle(XaxisTitle)
 	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
@@ -120,13 +120,13 @@ def savegraph(graph1,graph2,label1,label2,outfile,canvas,xmin,xmax,ymin,ymax,Xax
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
-    graph1.GetXaxis().SetLabelSize(0.05)
-    graph1.GetYaxis().SetLabelSize(0.05)
-    graph1.GetZaxis().SetLabelSize(0.05)
-    graph1.GetXaxis().SetTitleOffset(0.8)
-    graph1.GetXaxis().SetTitleSize(0.06)
-    graph1.GetYaxis().SetTitleOffset(0.8)
-    graph1.GetYaxis().SetTitleSize(0.06)
+	graph1.GetXaxis().SetLabelSize(0.05)
+	graph1.GetYaxis().SetLabelSize(0.05)
+	graph1.GetZaxis().SetLabelSize(0.05)
+	graph1.GetXaxis().SetTitleOffset(0.8)
+	graph1.GetXaxis().SetTitleSize(0.06)
+	graph1.GetYaxis().SetTitleOffset(0.8)
+	graph1.GetYaxis().SetTitleSize(0.06)
 	graph1.GetXaxis().SetRangeUser(xmin,xmax)
 	graph1.GetYaxis().SetRangeUser(ymin,ymax)
 	graph1.Draw("AP")
@@ -154,13 +154,13 @@ def savegraph3(graph1,graph2,graph3,label1,label2,label3,outfile,canvas,xmin,xma
 	graph1.SetTitle(plotTitle)
 	graph1.GetXaxis().SetTitle(XaxisTitle)
 	graph1.GetYaxis().SetTitle(YaxisTitle)
-    graph1.GetXaxis().SetLabelSize(0.05)
-    graph1.GetYaxis().SetLabelSize(0.05)
-    graph1.GetZaxis().SetLabelSize(0.05)
-    graph1.GetXaxis().SetTitleOffset(0.8)
-    graph1.GetXaxis().SetTitleSize(0.06)
-    graph1.GetYaxis().SetTitleOffset(0.8)
-    graph1.GetYaxis().SetTitleSize(0.06)
+	graph1.GetXaxis().SetLabelSize(0.05)
+	graph1.GetYaxis().SetLabelSize(0.05)
+	graph1.GetZaxis().SetLabelSize(0.05)
+	graph1.GetXaxis().SetTitleOffset(0.8)
+	graph1.GetXaxis().SetTitleSize(0.06)
+	graph1.GetYaxis().SetTitleOffset(0.8)
+	graph1.GetYaxis().SetTitleSize(0.06)
 	graph1.GetXaxis().SetRangeUser(xmin,xmax)
 	graph1.GetYaxis().SetRangeUser(ymin,ymax)
 	graph1.Draw("AP")
