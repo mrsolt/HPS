@@ -8,20 +8,20 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-z: target position (default -4.3 mm)'
-    print '\t-g: minimum uncVZ (default -60 mm)'
-    print '\t-i: maximum uncVZ (default 80 mm)'
-    print '\t-e: beam energy (default 2.3 GeV)'
-    print '\t-q: number of bins (default 140)'
-    print '\t-t: cluster time offset (default 56 ns)'
-    print '\t-y: plot label'
-    print '\t-d: use data file (default False)'
-    print '\t-w: make cutflow plots (default False)'
-    print '\t-x: output new root tree (default False)'
-    print '\t-h: this help message'
-    print
+	print "\nUsage: {0} <output file base name> <input root file>".format(sys.argv[0])
+	print "Arguments: "
+	print '\t-z: target position (default -4.3 mm)'
+	print '\t-g: minimum uncVZ (default -60 mm)'
+	print '\t-i: maximum uncVZ (default 80 mm)'
+	print '\t-e: beam energy (default 2.3 GeV)'
+	print '\t-q: number of bins (default 140)'
+	print '\t-t: cluster time offset (default 56 ns)'
+	print '\t-y: plot label'
+	print '\t-d: use data file (default False)'
+	print '\t-w: make cutflow plots (default False)'
+	print '\t-x: output new root tree (default False)'
+	print '\t-h: this help message'
+	print
 
 zTarg = -4.3
 ebeam = 2.3
@@ -109,14 +109,14 @@ def saveCutFlow(events,inHisto,cuts,nBins,minX,maxX,labels,outfile,canvas,XaxisT
 		histo_2D.Write("histo_2D")
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
-    histos[0].GetYaxis().SetTitle("dN")
-    histos[0].GetXaxis().SetLabelSize(0.05)
-    histos[0].GetYaxis().SetLabelSize(0.05)
-    histos[0].GetZaxis().SetLabelSize(0.05)
-    histos[0].GetXaxis().SetTitleOffset(0.8)
-    histos[0].GetXaxis().SetTitleSize(0.06)
-    histos[0].GetYaxis().SetTitleOffset(0.8)
-    histos[0].GetYaxis().SetTitleSize(0.06)
+	histos[0].GetYaxis().SetTitle("dN")
+	histos[0].GetXaxis().SetLabelSize(0.05)
+	histos[0].GetYaxis().SetLabelSize(0.05)
+	histos[0].GetZaxis().SetLabelSize(0.05)
+	histos[0].GetXaxis().SetTitleOffset(0.8)
+	histos[0].GetXaxis().SetTitleSize(0.06)
+	histos[0].GetYaxis().SetTitleOffset(0.8)
+	histos[0].GetYaxis().SetTitleSize(0.06)
 	histos[0].SetStats(stats)
 	color = 1
 	for i in range(len(histos)):
@@ -191,13 +191,13 @@ def saveCuts(dataevents,mcevents,apevents1,apevents2,i,lineval,nBins,minX,maxX,l
 	histo5data.SetTitle(label)
 	histo5data.GetXaxis().SetTitle(XaxisTitle)
 	histo5data.GetYaxis().SetTitle("dN")
-    histo5data.GetXaxis().SetLabelSize(0.05)
-    histo5data.GetYaxis().SetLabelSize(0.05)
-    histo5data.GetZaxis().SetLabelSize(0.05)
-    histo5data.GetXaxis().SetTitleOffset(0.8)
-    histo5data.GetXaxis().SetTitleSize(0.06)
-    histo5data.GetYaxis().SetTitleOffset(0.8)
-    histo5data.GetYaxis().SetTitleSize(0.06)
+	histo5data.GetXaxis().SetLabelSize(0.05)
+	histo5data.GetYaxis().SetLabelSize(0.05)
+	histo5data.GetZaxis().SetLabelSize(0.05)
+	histo5data.GetXaxis().SetTitleOffset(0.8)
+	histo5data.GetXaxis().SetTitleSize(0.06)
+	histo5data.GetYaxis().SetTitleOffset(0.8)
+	histo5data.GetYaxis().SetTitleSize(0.06)
 	if(logY == 0):
 		histo5data.GetYaxis().SetRangeUser(0,maximum*1.3)
 	else:
@@ -282,7 +282,7 @@ for line in (raw.strip().split() for raw in datafile):
 	dataFiles.append(line[0])
 dataevents = TChain("ntuple")
 for i in range(len(dataFiles)):
-    dataevents.Add(dataFiles[i])
+	dataevents.Add(dataFiles[i])
 
 mcfile = open(remainder[2],"r")
 mcFiles = []
@@ -290,7 +290,7 @@ for line in (raw.strip().split() for raw in mcfile):
 	mcFiles.append(line[0])
 mcevents = TChain("ntuple")
 for i in range(len(mcFiles)):
-    mcevents.Add(mcFiles[i])
+	mcevents.Add(mcFiles[i])
 
 apfile1 = open(remainder[3],"r")
 apFiles1 = []
@@ -298,7 +298,7 @@ for line in (raw.strip().split() for raw in apfile1):
 	apFiles1.append(line[0])
 apevents1 = TChain("ntuple")
 for i in range(len(apFiles1)):
-    apevents1.Add(apFiles1[i])
+	apevents1.Add(apFiles1[i])
 
 apfile2 = open(remainder[4],"r")
 apFiles2 = []
@@ -306,7 +306,7 @@ for line in (raw.strip().split() for raw in apfile2):
 	apFiles2.append(line[0])
 apevents2 = TChain("ntuple")
 for i in range(len(apFiles2)):
-    apevents2.Add(apFiles2[i])
+	apevents2.Add(apFiles2[i])
 
 plots = []
 plots.append("uncVZ {0} {1}".format(minVZ,maxVZ))

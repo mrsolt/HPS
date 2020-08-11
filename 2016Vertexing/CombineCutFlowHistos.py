@@ -9,11 +9,11 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-y: plot label'
-    print '\t-h: this help message'
-    print
+	print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
+	print "Arguments: "
+	print '\t-y: plot label'
+	print '\t-h: this help message'
+	print
 
 Label = ""
 
@@ -41,13 +41,13 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
 	histos[0].GetYaxis().SetTitle(YaxisTitle)
-    histos[0].GetXaxis().SetLabelSize(0.05)
-    histos[0].GetYaxis().SetLabelSize(0.05)
-    histos[0].GetZaxis().SetLabelSize(0.05)
-    histos[0].GetXaxis().SetTitleOffset(0.8)
-    histos[0].GetXaxis().SetTitleSize(0.06)
-    histos[0].GetYaxis().SetTitleOffset(0.8)
-    histos[0].GetYaxis().SetTitleSize(0.06)
+	histos[0].GetXaxis().SetLabelSize(0.05)
+	histos[0].GetYaxis().SetLabelSize(0.05)
+	histos[0].GetZaxis().SetLabelSize(0.05)
+	histos[0].GetXaxis().SetTitleOffset(0.8)
+	histos[0].GetXaxis().SetTitleSize(0.06)
+	histos[0].GetYaxis().SetTitleOffset(0.8)
+	histos[0].GetYaxis().SetTitleSize(0.06)
 	histos[0].SetStats(stats)
 	color = 1
 	if(inHisto == "uncVZ"):
@@ -57,13 +57,13 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 			histos4[i].SetTitle("Vz vs Mass " + labels[i] + " Exclusive")
 			histos4[i].GetXaxis().SetTitle("Mass [GeV]")
 			histos4[i].GetYaxis().SetTitle("Reconstructed z [mm]")
-            histos4[i].GetXaxis().SetLabelSize(0.05)
-    		histos4[i].GetYaxis().SetLabelSize(0.05)
-    		histos4[i].GetZaxis().SetLabelSize(0.05)
-    		histos4[i].GetXaxis().SetTitleOffset(0.8)
-    		histos4[i].GetXaxis().SetTitleSize(0.06)
-    		histos4[i].GetYaxis().SetTitleOffset(0.8)
-    		histos4[i].GetYaxis().SetTitleSize(0.06)
+			histos4[i].GetXaxis().SetLabelSize(0.05)
+			histos4[i].GetYaxis().SetLabelSize(0.05)
+			histos4[i].GetZaxis().SetLabelSize(0.05)
+			histos4[i].GetXaxis().SetTitleOffset(0.8)
+			histos4[i].GetXaxis().SetTitleSize(0.06)
+			histos4[i].GetYaxis().SetTitleOffset(0.8)
+			histos4[i].GetYaxis().SetTitleSize(0.06)
 			histos4[i].SetStats(stats)
 			canvas.Print(outfile+".pdf")
 			canvas.Write()
@@ -123,8 +123,8 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		histos[0].SetTitle(plotTitle + " " + labels[i] + " Exclusive")
 		histos[0].GetXaxis().SetTitle(XaxisTitle)
 		histos[0].GetYaxis().SetTitle(YaxisTitle)
-        if(inHisto == "uncVZ"):
-            histos[0].GetYaxis().SetTitle("dN/dz (mm^{-1} )")
+		if(inHisto == "uncVZ"):
+			histos[0].GetYaxis().SetTitle("dN/dz (mm^{-1} )")
 		histos[0].SetStats(stats)
 		histos2[i].SetLineColor(2)
 		histos2[i].Draw("same")
@@ -152,10 +152,10 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		#reference.GetXaxis().SetTitleSize(0.1)
 		reference.GetXaxis().SetLabelSize(0.1)
 
-        reference.GetXaxis().SetTitleOffset(0.8)
-        reference.GetXaxis().SetTitleSize(0.12)
-        reference.GetYaxis().SetTitleOffset(0.4)
-        reference.GetYaxis().SetTitleSize(0.1)
+		reference.GetXaxis().SetTitleOffset(0.8)
+		reference.GetXaxis().SetTitleSize(0.12)
+		reference.GetYaxis().SetTitleOffset(0.4)
+		reference.GetYaxis().SetTitleSize(0.1)
 
 		reference.GetXaxis().SetTitle(XaxisTitle)
 		reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)

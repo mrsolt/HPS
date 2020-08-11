@@ -9,11 +9,11 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-    print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-y: plot label'
-    print '\t-h: this help message'
-    print
+	print "\nUsage: {0} <output file base name> <input file name>".format(sys.argv[0])
+	print "Arguments: "
+	print '\t-y: plot label'
+	print '\t-h: this help message'
+	print
 
 Label = ""
 
@@ -80,12 +80,12 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 	canvas.SetLogy(1)
 	histo4.SetTitle("Data/MC Comparison Final Selection")
 	#histo4.GetXaxis().SetTitle(XaxisTitle)
-    histo4.GetXaxis().SetTitle("dN/dz (mm^{-1} )")
+	histo4.GetXaxis().SetTitle("dN/dz (mm^{-1} )")
 	histo4.GetYaxis().SetTitle(YaxisTitle)
 	#histo4.GetYaxis().SetLabelSize(0.06)
-    histo4.GetXaxis().SetTitleOffset(0.7)
-    histo4.GetXaxis().SetTitleSize(0.06)
-    histo4.GetYaxis().SetLabelSize(0.08)
+	histo4.GetXaxis().SetTitleOffset(0.7)
+	histo4.GetXaxis().SetTitleSize(0.06)
+	histo4.GetYaxis().SetLabelSize(0.08)
 	histo2.SetLineColor(1)
 	histo4.SetLineColor(2)
 	histo2.Scale(1/histo2.Integral())
@@ -109,10 +109,10 @@ def saveCutFlow(histo,histo2,histo3,histo4,outfile,outfileroot,canvas,XaxisTitle
 	#reference.GetXaxis().SetTitleSize(0.1)
 	reference.GetXaxis().SetLabelSize(0.1)
 
-    reference.GetXaxis().SetTitleOffset(0.8)
-    reference.GetXaxis().SetTitleSize(0.12)
-    reference.GetYaxis().SetTitleOffset(0.4)
-    reference.GetYaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetTitleOffset(0.8)
+	reference.GetXaxis().SetTitleSize(0.12)
+	reference.GetYaxis().SetTitleOffset(0.4)
+	reference.GetYaxis().SetTitleSize(0.1)
 
 	reference.GetXaxis().SetTitle(XaxisTitle)
 	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
