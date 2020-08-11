@@ -183,8 +183,8 @@ def getEfficiency(inputFile):
 	for x in lines:
 		result.append(x.split())
 	inputfile.close()
-		nMass = len(result[0])
-		nBins = len(result[1])
+	nMass = len(result[0])
+	nBins = len(result[1])
 	#Convert the strings from input file into floats
 	for i in range(nMass):
 		dummy = []
