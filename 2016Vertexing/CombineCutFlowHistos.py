@@ -35,13 +35,12 @@ def closePDF(outfile,canvas):
 
 def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	RatioMin = 0.
-	RatioMax = 1.
+	RatioMax = 5.
 	outfileroot.cd()
 	canvas.Clear()
 	histos[0].SetTitle(plotTitle + " Inclusive")
 	histos[0].GetXaxis().SetTitle(XaxisTitle)
-	#histos[0].GetYaxis().SetTitle(YaxisTitle)
-	histos[0].GetYaxis().SetTitle("dN/dz (mm^{-1} )")
+	histos[0].GetYaxis().SetTitle(YaxisTitle)
 	histos[0].GetXaxis().SetLabelSize(0.05)
 	histos[0].GetYaxis().SetLabelSize(0.05)
 	histos[0].GetZaxis().SetLabelSize(0.05)
@@ -77,6 +76,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 		histos[i].SetLineColor(color)
 		color = color + 1
 		if(i == 0):
+			histos[i].GetYaxis().SetTitle("dN/dz (mm^{-1} )")
 			histos[i].Draw("")
 		elif(i == 3):
 			continue
