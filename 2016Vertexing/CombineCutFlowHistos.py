@@ -35,7 +35,7 @@ def closePDF(outfile,canvas):
 
 def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,XaxisTitle="",YaxisTitle="",plotTitle="",stats=0,logY=0):
 	RatioMin = 0.
-	RatioMax = 5.
+	RatioMax = 1.
 	outfileroot.cd()
 	canvas.Clear()
 	histos[0].SetTitle(plotTitle + " Inclusive")
