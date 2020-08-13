@@ -2,6 +2,7 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import numpy as np
+import enum
 import getopt
 import ROOT
 from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1, TLatex, TGraph
@@ -150,7 +151,7 @@ if(plotZcut):
 		c.Clear()
 		c.SetLogz(1)
 		outfileshade = outfile + "_shade"
-		gStyle.SetPalette(&kBird)
+		gStyle.SetPalette(enum.kBird)
 		openPDF(outfileshade,c)
 		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6),0.06,0.150) #L1L1
 		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150) #L1L1
