@@ -171,7 +171,7 @@ if(plotZcut):
 		xmin = 0.06 #c.GetUxmin()
 		xmax = 0.15 #c.GetUxmax()
 		ymin = 0 #c.GetUymin()
-		ymax = 70 #c.GetUymax()
+		ymax = 90 #c.GetUymax()
 
 		npx = f2.GetNpx()
 		npoints = 0
