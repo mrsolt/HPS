@@ -171,7 +171,7 @@ if(plotZcut):
 		xmin = 0.06 #c.GetUxmin()
 		xmax = 0.15 #c.GetUxmax()
 		ymin = 0 #c.GetUymin()
-		ymax = 90 #c.GetUymax()
+		ymax = 1000 #c.GetUymax()
 
 		npx = f2.GetNpx()
 		npoints = 0
@@ -197,7 +197,7 @@ if(plotZcut):
 
 		#cut = "event!=138205858&&event!=26862757&&event!=134296298&&event!=105453502&&event!=25752733&&event!=4393084&&event!=81085838&&event!=9714720"
 		cut = ""
-		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,120,-30,90)",cut)
+		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,120,-30,1000)",cut)
 		histo2 = gDirectory.FindObject("histo2")
 		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 		histo2.GetYaxis().SetTitle("Reconstructed z (mm)")
