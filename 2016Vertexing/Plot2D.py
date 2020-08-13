@@ -154,7 +154,7 @@ if(plotZcut):
 		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6),0.06,0.150) #L1L1
 		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150) #L1L1
 		f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.06,0.150) #L1L2
-		f2 = TF1("f2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(166.199,-10.4546,0.269357,-0.00290368,1.44026e-05,-2.71387e-08),0.060,0.150) #L1L2
+		f2 = TF1("f2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(166.199,-10.4546/1e3,0.269357/1e6,-0.00290368/1e9,1.44026e-05/1e12,-2.71387e-08/1e15),0.060,0.150) #L1L2
 		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.06,0.150) #L2L2
 		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150) #L2L2
 		f2.SetFillColor(5)
@@ -171,7 +171,7 @@ if(plotZcut):
 		xmin = 0.06 #c.GetUxmin()
 		xmax = 0.15 #c.GetUxmax()
 		ymin = 0 #c.GetUymin()
-		ymax = 1000 #c.GetUymax()
+		ymax = 90 #c.GetUymax()
 
 		npx = f2.GetNpx()
 		npoints = 0
@@ -197,7 +197,7 @@ if(plotZcut):
 
 		#cut = "event!=138205858&&event!=26862757&&event!=134296298&&event!=105453502&&event!=25752733&&event!=4393084&&event!=81085838&&event!=9714720"
 		cut = ""
-		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,120,-30,1000)",cut)
+		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,120,-30,90)",cut)
 		histo2 = gDirectory.FindObject("histo2")
 		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 		histo2.GetYaxis().SetTitle("Reconstructed z (mm)")
