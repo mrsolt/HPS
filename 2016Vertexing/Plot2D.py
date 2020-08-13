@@ -196,6 +196,7 @@ if(plotZcut):
 			x = x - dx
 
 		#cut = "event!=138205858&&event!=26862757&&event!=134296298&&event!=105453502&&event!=25752733&&event!=4393084&&event!=81085838&&event!=9714720"
+		cut = ""
 		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,100,-30,70)",cut)
 		histo2 = gDirectory.FindObject("histo2")
 		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
