@@ -922,6 +922,8 @@ textfileL1L2Norm = open(outfile + "_L1L2_norm.eff","w")
 
 textfileL2L2 = open(outfile + "_L2L2.eff","w")
 textfileL2L2Norm = open(outfile + "_L2L2_norm.eff","w")
+
+textfilenorm = open(outfile + ".norm","w")
 #Write values of mass in the first row
 for i in range(nMass):
 	textfileL1L1.write(str(mass[i]) + " ")
@@ -1034,6 +1036,7 @@ for i in range(nMass):
 	#Find the normalization based on a certain number of bins
 	norm, norm_sig, norm_psig = plotFit(histosL1L1[i],histosL1L2[i],histosL2L2[i],histosTruth[i],normArr,outfile+"_fitplots",outfileroot,c,mass[i],targZ,title="")
 	print norm
+	textfilenorm.write("norm.append({0})".format(norm))
 	normArr.append(norm)
 	normArr_n.append(norm_sig)
 	normArr_p.append(norm_psig)
@@ -1064,6 +1067,7 @@ for i in range(nMass):
 	textfileL1L2Norm.write("\n")
 	textfileL2L2.write("\n")
 	textfileL2L2Norm.write("\n")
+	textfilenorm.write("\n")
 	L1L1events_singleV0.Draw("triStartP/({4})>>gammahisto_{3:0.0f}({0},{1},{2})".format(nBins,0.8,1.,mass[i]*1000,eBeam))
 	histosgamma.append(ROOT.gROOT.FindObject("gammahisto_{0:0.0f}".format(mass[i]*1000)))
 	gammamean.append(histosgamma[i].GetMean())
@@ -1077,6 +1081,7 @@ textfileL1L2.close()
 textfileL1L2Norm.close()
 textfileL2L2.close()
 textfileL2L2Norm.close()
+textfilenorm.close()
 
 closePDF(outfile+"_fitplots",c)
 
