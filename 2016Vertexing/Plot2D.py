@@ -2,7 +2,6 @@ import sys
 tmpargv = sys.argv
 sys.argv = []
 import numpy as np
-import enum
 import getopt
 import ROOT
 from ROOT import gROOT, TFile, TTree, TChain, gDirectory, TLine, gStyle, TCanvas, TLegend, TH1F, TF1, TLatex, TGraph
@@ -10,12 +9,12 @@ sys.argv = tmpargv
 
 #List arguments
 def print_usage():
-	print "\nUsage: {0} <output file base name> <input file> <label>".format(sys.argv[0])
-	print '\t-z: plot zcut (default false)'
-	print '\t-r: is L1L2 (default false)'
-	print '\t-t: is L2L2 (default false)'
-	print '\t-s: plot shaded region (default false)'
-	print '\t-h: this help message'
+	print ("\nUsage: {0} <output file base name> <input file> <label>".format(sys.argv[0]))
+	print ('\t-z: plot zcut (default false)')
+	print ('\t-r: is L1L2 (default false)')
+	print ('\t-t: is L2L2 (default false)')
+	print ('\t-s: plot shaded region (default false)')
+	print ('\t-h: this help message')
 	print
 
 plotZcut = False
@@ -70,7 +69,7 @@ histo.GetYaxis().SetTitle("Reconstructed z (mm)")
 histo.SetTitle("Final Selection {0}".format(label))
 histo.GetXaxis().SetLabelSize(0.05)
 histo.GetYaxis().SetLabelSize(0.05)
-histo.GetZaxis().SetLabelSize(0.05)
+#histo.GetZaxis().SetLabelSize(0.05)
 histo.GetXaxis().SetTitleOffset(0.8)
 histo.GetXaxis().SetTitleSize(0.06)
 histo.GetYaxis().SetTitleOffset(0.8)
@@ -137,7 +136,10 @@ if(plotZcut):
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.05)
-	legend.AddEntry(fz_10per,"100% Data","LP")
+	if(isL1L2 or isL2L2):
+		legend.AddEntry(fz_10per,"10% Data","LP")
+	else:
+		legend.AddEntry(fz_10per,"100% Data","LP")
 	legend.AddEntry(fz_scaled,"Scaled Data","LP")
 	legend.AddEntry(fz_mc,"MC","LP")
 	legend.Draw("same")
@@ -151,14 +153,13 @@ if(plotZcut):
 		c.Clear()
 		c.SetLogz(1)
 		outfileshade = outfile + "_shade"
-		gStyle.SetPalette(enum.kBird)
 		openPDF(outfileshade,c)
 		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(26.85,-124.3,593.6,-3.954e4,4.451e5,-1.393e6),0.06,0.150) #L1L1
 		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150) #L1L1
-		f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.06,0.150) #L1L2
-		f2 = TF1("f2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(166.199,-10.4546*1e3,0.269357*1e6,-0.00290368*1e9,1.44026e-05*1e12,-2.71387e-08*1e15),0.060,0.150) #L1L2
-		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.06,0.150) #L2L2
-		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2".format(-6.75285,952.9,-3060.59),0.060,0.150) #L2L2
+		#f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-164.9,1.012e4,-2.087e5,2.039e6,-9.614e6,1.761e7),0.06,0.150) #L1L2
+		#f2 = TF1("f2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(166.199,-10.4546*1e3,0.269357*1e6,-0.00290368*1e9,1.44026e-05*1e12,-2.71387e-08*1e15),0.060,0.150) #L1L2
+		f1 = TF1("f1","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-168.1,1.14e4,-2.278e5,2.051e6,-8.728e6,1.438e7),0.06,0.150) #L2L2
+		f2 = TF1("f2","{0}+{1}*x+{2}*x^2+{3}*x^3+{4}*x^4+{5}*x^5".format(-1219.51,55315.5,-917374,7.54833e+06,-3.03114e+07,4.70832e+07),0.060,0.150) #L2L2
 		f2.SetFillColor(5)
 		f2.SetFillStyle(3001)
 		f2.SetLineColor(3)
@@ -173,7 +174,7 @@ if(plotZcut):
 		xmin = 0.06 #c.GetUxmin()
 		xmax = 0.15 #c.GetUxmax()
 		ymin = 0 #c.GetUymin()
-		ymax = 90 #c.GetUymax()
+		ymax = 150 #c.GetUymax()
 
 		npx = f2.GetNpx()
 		npoints = 0
@@ -199,7 +200,7 @@ if(plotZcut):
 
 		#cut = "event!=138205858&&event!=26862757&&event!=134296298&&event!=105453502&&event!=25752733&&event!=4393084&&event!=81085838&&event!=9714720"
 		cut = ""
-		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,120,-30,90)",cut)
+		events.Draw("uncVZ:uncM>>histo2(100,0,0.2,180,-30,150)",cut)
 		histo2 = gDirectory.FindObject("histo2")
 		histo2.GetXaxis().SetTitle("Reconstructed e+e- Mass (GeV)")
 		histo2.GetYaxis().SetTitle("Reconstructed z (mm)")
