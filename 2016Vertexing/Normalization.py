@@ -11,16 +11,16 @@ sys.argv = tmpargv
 options, remainder = getopt.gnu_getopt(sys.argv[1:], 'hw:r:t:d:p:', ['help',])
 
 for opt, arg in options:
-    if opt in ('-h', '--help'):
-        print "\nUsage: "+sys.argv[0]+" <output basename>"
-        print "Arguments: "
-        print '\t-w: wab file path'
-        print '\t-r: rad file path'
-        print '\t-t: tritrig file path'
-        print '\t-d: data file path'
-        print '\t-p: radiative cut (default 0.0)'
-        print "\n"
-        sys.exit(0)
+	if opt in ('-h', '--help'):
+		print "\nUsage: "+sys.argv[0]+" <output basename>"
+		print "Arguments: "
+		print '\t-w: wab file path'
+		print '\t-r: rad file path'
+		print '\t-t: tritrig file path'
+		print '\t-d: data file path'
+		print '\t-p: radiative cut (default 0.0)'
+		print "\n"
+		sys.exit(0)
 
 pcut = 0.0
 
@@ -41,23 +41,23 @@ for opt, arg in options:
 			sys.exit(0)
 
 def getEffTH1(hfile, hname):
-    print 'Getting Efficiency Graph...converting to TH1'
-    effGraph=hfile.Get(hname)
-    effGraph.Print("v")
-    xmin=effGraph.GetXaxis().GetXmin()
-    xmax=effGraph.GetXaxis().GetXmax()
-    xsize=effGraph.GetErrorXhigh(0)*2
-    nbins=effGraph.GetN()
-    nbinsHist=(int)((xmax-xmin)/xsize)
-    x=ROOT.Double(0.0)
-    y=ROOT.Double(0.0)
-    effHist=ROOT.TH1D(effGraph.GetName(),effGraph.GetTitle(),nbinsHist,xmin,xmax)
-    for i in range(0,nbins) :
-        effGraph.GetPoint(i,x,y)
-        histBin=effHist.FindBin(x)
-        #print str(x)+' ' +str(y) + ' '+str(i)+ '  '+str(histBin)
-        effHist.SetBinContent(histBin,y)
-    return effHist
+	print 'Getting Efficiency Graph...converting to TH1'
+	effGraph=hfile.Get(hname)
+	effGraph.Print("v")
+	xmin=effGraph.GetXaxis().GetXmin()
+	xmax=effGraph.GetXaxis().GetXmax()
+	xsize=effGraph.GetErrorXhigh(0)*2
+	nbins=effGraph.GetN()
+	nbinsHist=(int)((xmax-xmin)/xsize)
+	x=ROOT.Double(0.0)
+	y=ROOT.Double(0.0)
+	effHist=ROOT.TH1D(effGraph.GetName(),effGraph.GetTitle(),nbinsHist,xmin,xmax)
+	for i in range(0,nbins) :
+		effGraph.GetPoint(i,x,y)
+		histBin=effHist.FindBin(x)
+		#print str(x)+' ' +str(y) + ' '+str(i)+ '  '+str(histBin)
+		effHist.SetBinContent(histBin,y)
+	return effHist
 
 effSlopeFileName = 'EmGamma-L1HitEfficiencyResults-2016.root'
 effRatioName = 'p2slopehps_007963.1GamEm_L1HitInefficiency'
@@ -66,13 +66,13 @@ effSlopeData = getEffTH1(effSlopeFile,effRatioName)
 effSlopeData.Print("v")
 
 def RemoveHit(slp):
-    rndm = random.random()
-    ibin = effSlopeData.FindBin(slp)
-    eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
-    if rndm > eff:
-        return True
-    else:
-        return False
+	rndm = random.random()
+	ibin = effSlopeData.FindBin(slp)
+	eff = 1 - effSlopeData.GetBinContent(ibin) #the slope "efficiency" is actually an inefficiency
+	if rndm > eff:
+		return True
+	else:
+		return False
 
 def SmearHisto(events,nBins,minX,maxX):
 	smear_Top5hits = 0.0589307
@@ -215,13 +215,13 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Divide(totalHisto)
 	radfracHisto.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	radfracHisto.SetTitle("Radiative Fraction")
-    radfracHisto.GetYaxis().SetRangeUser(0,0.2)
-    radfracHisto.GetXaxis().SetLabelSize(0.05)
-    radfracHisto.GetYaxis().SetLabelSize(0.05)
-    radfracHisto.GetXaxis().SetTitleOffset(0.8)
-    radfracHisto.GetXaxis().SetTitleSize(0.06)
-    radfracHisto.GetYaxis().SetTitleOffset(0.8)
-    radfracHisto.GetYaxis().SetTitleSize(0.06)
+	radfracHisto.GetYaxis().SetRangeUser(0,0.2)
+	radfracHisto.GetXaxis().SetLabelSize(0.05)
+	radfracHisto.GetYaxis().SetLabelSize(0.05)
+	radfracHisto.GetXaxis().SetTitleOffset(0.8)
+	radfracHisto.GetXaxis().SetTitleSize(0.06)
+	radfracHisto.GetYaxis().SetTitleOffset(0.8)
+	radfracHisto.GetYaxis().SetTitleSize(0.06)
 	radfracHisto.Fit("pol5","pol5","",0.04,0.2)
 	radfracHisto.SetStats(1)
 	radfracHisto.Draw()
@@ -239,12 +239,12 @@ def saveDataMassHisto(events,nBins,canvas):
 	histo = ROOT.gROOT.FindObject("histo")
 	histo.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	histo.GetYaxis().SetTitle("dN/dm [1/MeV]")
-    histo.GetXaxis().SetLabelSize(0.05)
-    histo.GetYaxis().SetLabelSize(0.05)
-    histo.GetXaxis().SetTitleOffset(0.8)
-    histo.GetXaxis().SetTitleSize(0.06)
-    histo.GetYaxis().SetTitleOffset(0.8)
-    histo.GetYaxis().SetTitleSize(0.06)
+	histo.GetXaxis().SetLabelSize(0.05)
+	histo.GetYaxis().SetLabelSize(0.05)
+	histo.GetXaxis().SetTitleOffset(0.8)
+	histo.GetXaxis().SetTitleSize(0.06)
+	histo.GetYaxis().SetTitleOffset(0.8)
+	histo.GetYaxis().SetTitleSize(0.06)
 	histo.SetTitle("Radiative Selection Invariant Mass Distribution")
 	histo.GetXaxis().SetRangeUser(0,0.2)
 	histo.Sumw2()
@@ -266,12 +266,12 @@ def saveNHisto(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, XaxisT
 	radHisto.SetLineColor(1)
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
-    radHisto.GetXaxis().SetLabelSize(0.05)
-    radHisto.GetYaxis().SetLabelSize(0.05)
-    radHisto.GetXaxis().SetTitleOffset(0.8)
-    radHisto.GetXaxis().SetTitleSize(0.06)
-    radHisto.GetYaxis().SetTitleOffset(0.8)
-    radHisto.GetYaxis().SetTitleSize(0.06)
+	radHisto.GetXaxis().SetLabelSize(0.05)
+	radHisto.GetYaxis().SetLabelSize(0.05)
+	radHisto.GetXaxis().SetTitleOffset(0.8)
+	radHisto.GetXaxis().SetTitleSize(0.06)
+	radHisto.GetYaxis().SetTitleOffset(0.8)
+	radHisto.GetYaxis().SetTitleSize(0.06)
 	radHisto.SetTitle(PlotTitle)
 	maximum = radHisto.GetMaximum()
 	if(triHisto.GetMaximum() > maximum):
@@ -335,12 +335,12 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	radHisto.SetLineColor(1)
 	radHisto.GetXaxis().SetTitle(XaxisTitle)
 	radHisto.GetYaxis().SetTitle(YaxisTitle)
-    radHisto.GetXaxis().SetLabelSize(0.05)
-    radHisto.GetYaxis().SetLabelSize(0.05)
-    radHisto.GetXaxis().SetTitleOffset(0.8)
-    radHisto.GetXaxis().SetTitleSize(0.06)
-    radHisto.GetYaxis().SetTitleOffset(0.8)
-    radHisto.GetYaxis().SetTitleSize(0.06)
+	radHisto.GetXaxis().SetLabelSize(0.05)
+	radHisto.GetYaxis().SetLabelSize(0.05)
+	radHisto.GetXaxis().SetTitleOffset(0.8)
+	radHisto.GetXaxis().SetTitleSize(0.06)
+	radHisto.GetYaxis().SetTitleOffset(0.8)
+	radHisto.GetYaxis().SetTitleSize(0.06)
 	radHisto.SetTitle("Differential Cross Section")
 	radHisto.SetStats(0)
 	maximum = radHisto.GetMaximum()
@@ -385,10 +385,10 @@ def saveNHistoRatio(radHisto, triHisto, wabHisto, dataHisto, sumHisto, canvas, X
 	#reference.GetXaxis().SetTitleSize(0.1)
 	reference.GetXaxis().SetLabelSize(0.1)
 
-    reference.GetXaxis().SetTitleOffset(0.8)
-    reference.GetXaxis().SetTitleSize(0.12)
-    reference.GetYaxis().SetTitleOffset(0.4)
-    reference.GetYaxis().SetTitleSize(0.1)
+	reference.GetXaxis().SetTitleOffset(0.8)
+	reference.GetXaxis().SetTitleSize(0.12)
+	reference.GetYaxis().SetTitleOffset(0.4)
+	reference.GetYaxis().SetTitleSize(0.1)
 
 	reference.GetXaxis().SetTitle(XaxisTitle)
 	reference.GetYaxis().SetRangeUser(RatioMin,RatioMax)
