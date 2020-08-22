@@ -215,7 +215,7 @@ def saveRadFracHisto(radMassHisto, triMassHisto, wabMassHisto, canvas):
 	radfracHisto.Divide(totalHisto)
 	radfracHisto.GetXaxis().SetTitle("Invariant Mass [MeV]")
 	radfracHisto.SetTitle("Radiative Fraction")
-	radfracHisto.GetYaxis().SetRangeUser(0,0.2)
+    radfracHisto.GetYaxis().SetRangeUser(0,0.2)
     radfracHisto.GetXaxis().SetLabelSize(0.05)
     radfracHisto.GetYaxis().SetLabelSize(0.05)
     radfracHisto.GetXaxis().SetTitleOffset(0.8)
