@@ -136,7 +136,7 @@ def saveCutFlow(histos,histos2,histos3,histos4,outfile,canvas,inHisto,labels,Xax
 			legend3 = TLegend(.58,.66,.92,.87)
 		legend3.SetBorderSize(0)
 		legend3.SetFillColor(0)
-		legend3.SetFillStyle(0),
+		legend3.SetFillStyle(0)
 		legend3.SetTextFont(42)
 		legend3.SetTextSize(0.05)
 		legend3.AddEntry(histos[0],labels[0],"LP")
