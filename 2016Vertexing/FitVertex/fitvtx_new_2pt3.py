@@ -3,6 +3,7 @@ import sys, array, math
 import getopt
 import upperlimit
 import numpy
+import ctypes
 import EffFuncs
 from EffFuncs import Interpolate, getMassArray, getZArray, getEfficiency
 import ROOT
@@ -10,18 +11,18 @@ from ROOT import gROOT, TTree, TCanvas, TF1, TFile, gStyle, TFormula, TGraph, TG
 from ROOT.RooStats import ModelConfig, ProfileLikelihoodCalculator, LikelihoodIntervalPlot
 
 def print_usage():
-    print "\nUsage: {0} <output basename> <input ROOT 2D histo file> <efficiency text file>".format(sys.argv[0])
-    print "Arguments: "
-    print '\t-n: ignore candidates past zcut (default false)'
-    print '\t-t: do not use target position as function of mass (default true)'
-    print '\t-u: use unbiased zcut (default false)'
-    print '\t-d: use reco zcut (default false)'
-    print '\t-z: target z (default -4.3 mm)'
-    print '\t-s: scale factor (default 1)'
-    print '\t-b: number of mass and epsilon bins (default 50)'
-    print '\t-y: add title to plots'
-    print '\t-h: this help message'
-    print "\n"
+    print ("\nUsage: {0} <output basename> <input ROOT 2D histo file> <efficiency text file>".format(sys.argv[0]))
+    print ("Arguments: ")
+    print ('\t-n: ignore candidates past zcut (default false)')
+    print ('\t-t: do not use target position as function of mass (default true)')
+    print ('\t-u: use unbiased zcut (default false)')
+    print ('\t-d: use reco zcut (default false)')
+    print ('\t-z: target z (default -4.3 mm)')
+    print ('\t-s: scale factor (default 1)')
+    print ('\t-b: number of mass and epsilon bins (default 50)')
+    print ('\t-y: add title to plots')
+    print ('\t-h: this help message')
+    print ("\n")
 
 
 no_candidates = False
@@ -87,7 +88,7 @@ def getUnbiasedZcut(mass,masswindow,zcuthisto,n_massbins,minmass,maxmass,outfile
     histo = zcuthisto.Clone()
     for i in range(histo.GetNbinsX()):
         nbin = i + 1
-        m = zcuthisto.GetBinCenter(nbin) 
+        m = zcuthisto.GetBinCenter(nbin)
         if(abs(mass - m) < masswindow):
             histo.SetBinError(nbin,0)
     fit = TF1("fit","pol5")
@@ -233,9 +234,9 @@ radfracArr = array.array('d')
 candArrL1L1 = array.array('d')
 candArrL1L2 = array.array('d')
 candArrL2L2 = array.array('d')
-limitHistL1L1=TH2D("OIM Scaled Limit L1L1 {0}".format(label),"OIM Scaled Limit L1L1 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
-limitHistL1L2=TH2D("OIM Scaled Limit L1L2 {0}".format(label),"OIM Scaled limit L1L2 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
-limitHistL2L2=TH2D("OIM Scaled Limit L2L2 {0}".format(label),"OIM Scaled Limit L2L2 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
+limitHistL1L1=TH2D("OIM Limit L1L1 {0}".format(label),"OIM Limit L1L1 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
+limitHistL1L2=TH2D("OIM Limit L1L2 {0}".format(label),"OIM Limit L1L2 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
+limitHistL2L2=TH2D("OIM Limit L2L2 {0}".format(label),"OIM Limit L2L2 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
 limitHistcombined=TH2D("OIM Scaled Limit L1L1 L1L2 Combined {0}".format(label),"OIM Scaled Limit L1L1 L1L2 Combined {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
 detectableHistL1L1=TH2D("Expected A' Rate L1L1 {0}".format(label),"Expected A' Rate L1L1 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
 detectableHistL1L2=TH2D("Expected A' Rate L1L2 {0}".format(label),"Expected A' Rate L1L2 {0}".format(label),n_massbins,xedges,n_epsbins,yedges)
@@ -332,7 +333,7 @@ for i in range(0,n_massbins):
     massWindowArrL2L2.append(0.5*masscut_nsigma*mresL2L2)
     minMassArrL2L2.append(mass - 0.5*masscut_nsigma*mresL2L2)
     c.Clear()
-    
+
     deltaM = 0.001
     #eventsL1L1.Draw("{0}>>mass(100,{1}-{2},{1}+{2})".format(massVar,mass,0.5*deltaM),"abs({0}-{1})<{2}".format(massVar,mass,0.5*deltaM),"")
     #num_pairs = gDirectory.Get("mass").GetEntries()*scale_factor
@@ -340,12 +341,12 @@ for i in range(0,n_massbins):
     num_pairsArr.append(num_pairs)
     num_rad = radfrac*num_pairs
     ap_yield= 3*math.pi/(2*(1/137.0))*num_rad*(mass/deltaM)
-    print "{0} pairs, {1} radfrac, {2} rad, {3} A'".format(num_pairs,radfrac,num_rad,ap_yield)
+    print ("{0} pairs, {1} radfrac, {2} rad, {3} A'".format(num_pairs,radfrac,num_rad,ap_yield))
 
     dataInRangeL1L1 = datasetL1L1.reduce(obsL1L1,"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mresL1L1))
     dataInRangeL1L2 = datasetL1L2.reduce(obsL1L2,"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mresL1L2))
     dataInRangeL2L2 = datasetL2L2.reduce(obsL2L2,"abs({0}-{1})<{2}/2*{3}".format(massVar,mass,masscut_nsigma,mresL2L2))
-    
+
     zcutL1L1 = fzL1L1.Eval(mass)
     zcutL1L2 = fzL1L2.Eval(mass)
     zcutL2L2 = fzL2L2.Eval(mass)
@@ -364,11 +365,11 @@ for i in range(0,n_massbins):
     zcutunbiasedArrL1L1.append(zcutL1L1)
     zcutunbiasedArrL1L2.append(zcutL1L2)
     zcutunbiasedArrL2L2.append(zcutL2L2)
-    print "L1L1: zcut {0}  L1L2: zcut {1}  L2L2: zcut {2}".format(zcutL1L1,zcutL1L2,zcutL2L2)
+    print ("L1L1: zcut {0}  L1L2: zcut {1}  L2L2: zcut {2}".format(zcutL1L1,zcutL1L2,zcutL2L2))
     dataPastCutL1L1 = dataInRangeL1L1.reduce(wL1L1.set("obs_1dL1L1"),"uncVZ>{0}".format(zcutL1L1))
     dataPastCutL1L2 = dataInRangeL1L2.reduce(wL1L2.set("obs_1dL1L2"),"uncVZ>{0}".format(zcutL1L2))
     dataPastCutL2L2 = dataInRangeL2L2.reduce(wL2L2.set("obs_1dL2L2"),"uncVZ>{0}".format(zcutL2L2))
-    
+
     mResArrL1L1.append(mresL1L1)
     mResArrL1L2.append(mresL1L2)
     mResArrL2L2.append(mresL2L2)
@@ -404,7 +405,7 @@ for i in range(0,n_massbins):
         hbar_c = 1.973e-13
         ct = hbar_c*3.0/(mass*(1/137.036)*10**eps)
         gammact = hbar_c*3.0*2.3*gamma/(mass*mass*(1/137.036)*10**eps)
-       
+
         nBins = 1000
         effHistoL1L1 = TH1F("effHistoL1L1","effHistoL1L1",nBins,targetz,maxz)
         effHistoL1L2 = TH1F("effHistoL1L2","effHistoL1L2",nBins,targetz,maxz)
@@ -460,17 +461,17 @@ for i in range(0,n_massbins):
             dataArrayL1L2[0] = 0.0
             dataArrayL2L2=numpy.zeros(dataPastCutL2L2.numEntries()+2)
             dataArrayL2L2[0] = 0.0
-            for k in xrange(0,dataPastCutL1L1.numEntries()):
+            for k in range(0,dataPastCutL1L1.numEntries()):
                 thisX = dataPastCutL1L1.get(k).getRealValue("uncVZ")
                 wL1L1.var("uncVZ").setVal(thisX)
                 dataArrayL1L1[k+1]=(cdfAtZcutL1L1-effHistoL1L1.Integral(effHistoL1L1.GetXaxis().FindBin(thisX),effHistoL1L1.GetXaxis().FindBin(maxz),"width"))
             dataArrayL1L1[dataPastCutL1L1.numEntries()+1] = cdfAtZcutL1L1
-            for k in xrange(0,dataPastCutL1L2.numEntries()):
+            for k in range(0,dataPastCutL1L2.numEntries()):
                 thisX = dataPastCutL1L2.get(k).getRealValue("uncVZ")
                 wL1L2.var("uncVZ").setVal(thisX)
                 dataArrayL1L2[k+1]=(cdfAtZcutL1L2-effHistoL1L2.Integral(effHistoL1L2.GetXaxis().FindBin(thisX),effHistoL1L2.GetXaxis().FindBin(maxz),"width"))
             dataArrayL1L2[dataPastCutL1L2.numEntries()+1] = cdfAtZcutL1L2
-            for k in xrange(0,dataPastCutL2L2.numEntries()):
+            for k in range(0,dataPastCutL2L2.numEntries()):
                 thisX = dataPastCutL2L2.get(k).getRealValue("uncVZ")
                 wL2L2.var("uncVZ").setVal(thisX)
                 #dataArrayL2L2[k+1]=(cdfAtZcutL2L2-effHistoL2L2.Integral(effHistoL2L2.GetXaxis().FindBin(thisX),effHistoL2L2.GetXaxis().FindBin(maxzL2L2),"width"))
@@ -502,7 +503,7 @@ for i in range(0,n_massbins):
         limit_productionL1L1 = limit_allzL1L1/sig_integralL1L1 # limit on number of produced A'
         limit_epsL1L1 = limit_productionL1L1/ap_yield
         limit_scaledL1L1 = limit_epsL1L1/10**eps
-        print "{0} {1} {2} {3} {4}".format(limit_detectableL1L1,limit_allzL1L1,limit_productionL1L1,limit_epsL1L1,limit_scaledL1L1)
+        print ("{0} {1} {2} {3} {4}".format(limit_detectableL1L1,limit_allzL1L1,limit_productionL1L1,limit_epsL1L1,limit_scaledL1L1))
         limitHistL1L1.Fill(mass*1000,10**eps,limit_scaledL1L1)
         fcLowerHistL1L1.Fill(mass*1000,10**eps,fcLowerL1L1/cdfAtZcutL1L1/masscut_eff/ap_yield/10**eps)
         fcUpperHistL1L1.Fill(mass*1000,10**eps,fcUpperL1L1/cdfAtZcutL1L1/masscut_eff/ap_yield/10**eps)
@@ -515,7 +516,7 @@ for i in range(0,n_massbins):
         limit_productionL1L2 = limit_allzL1L2/sig_integralL1L2 # limit on number of produced A'
         limit_epsL1L2 = limit_productionL1L2/ap_yield
         limit_scaledL1L2 = limit_epsL1L2/10**eps
-        print "{0} {1} {2} {3} {4}".format(limit_detectableL1L2,limit_allzL1L2,limit_productionL1L2,limit_epsL1L2,limit_scaledL1L2)
+        print ("{0} {1} {2} {3} {4}".format(limit_detectableL1L2,limit_allzL1L2,limit_productionL1L2,limit_epsL1L2,limit_scaledL1L2))
         limitHistL1L2.Fill(mass*1000,10**eps,limit_scaledL1L2)
         fcLowerHistL1L2.Fill(mass*1000,10**eps,fcLowerL1L2/cdfAtZcutL1L2/masscut_eff/ap_yield/10**eps)
         fcUpperHistL1L2.Fill(mass*1000,10**eps,fcUpperL1L2/cdfAtZcutL1L2/masscut_eff/ap_yield/10**eps)
@@ -528,7 +529,7 @@ for i in range(0,n_massbins):
         limit_productionL2L2 = limit_allzL2L2/sig_integralL2L2 # limit on number of produced A'
         limit_epsL2L2 = limit_productionL2L2/ap_yield
         limit_scaledL2L2 = limit_epsL2L2/10**eps
-        print "{0} {1} {2} {3} {4}".format(limit_detectableL2L2,limit_allzL2L2,limit_productionL2L2,limit_epsL2L2,limit_scaledL2L2)
+        print ("{0} {1} {2} {3} {4}".format(limit_detectableL2L2,limit_allzL2L2,limit_productionL2L2,limit_epsL2L2,limit_scaledL2L2))
         limitHistL2L2.Fill(mass*1000,10**eps,limit_scaledL2L2)
         fcLowerHistL2L2.Fill(mass*1000,10**eps,fcLowerL2L2/cdfAtZcutL2L2/masscut_eff/ap_yield/10**eps)
         fcUpperHistL2L2.Fill(mass*1000,10**eps,fcUpperL2L2/cdfAtZcutL2L2/masscut_eff/ap_yield/10**eps)
@@ -555,13 +556,13 @@ poiBkgArrL1L1 = array.array('d')
 c.SetLogy(0)
 pvalmin = 1.0
 pvalminm = 0.0
-for i in xrange(0,len(massArr)):
+for i in range(0,len(massArr)):
     mass = massArr[i]
     sigMassArr = array.array('d')
     sigCandArr = array.array('d')
     hasLowSide = False
     hasHighSide = False
-    for j in xrange(0,len(massArr)):
+    for j in range(0,len(massArr)):
         if abs(mass-massArr[j])>massWindowArrL1L1[i]+massWindowArrL1L1[j]:
             if j<i:
                 hasLowSide = True
@@ -576,7 +577,7 @@ for i in xrange(0,len(massArr)):
         graph=TGraph(len(sigMassArr),sigMassArr,sigCandArr)
         graph.SetTitle("background L1L1")
         graph.Draw("A*")
-        exp = TF1("exp","[0]*exp((x-[1])/[2])",60,150)
+        exp = TF1("exp","[0]*exp((x-[1])/[2])",0.050,0.160)
         exp.SetParameters(7,0.060,-0.030)
         graph.Fit("exp")
         graph.GetXaxis().SetMoreLogLabels()
@@ -602,13 +603,13 @@ poiBkgArrL1L2 = array.array('d')
 c.Clear()
 
 c.SetLogy(0)
-for i in xrange(0,len(massArr)):
+for i in range(0,len(massArr)):
     mass = massArr[i]
     sigMassArr = array.array('d')
     sigCandArr = array.array('d')
     hasLowSide = False
     hasHighSide = False
-    for j in xrange(0,len(massArr)):
+    for j in range(0,len(massArr)):
         if abs(mass-massArr[j])>massWindowArrL1L2[i]+massWindowArrL1L2[j]:
             if j<i:
                 hasLowSide = True
@@ -642,13 +643,13 @@ poiBkgArrL2L2 = array.array('d')
 c.Clear()
 
 c.SetLogy(0)
-for i in xrange(0,len(massArr)):
+for i in range(0,len(massArr)):
     mass = massArr[i]
     sigMassArr = array.array('d')
     sigCandArr = array.array('d')
     hasLowSide = False
     hasHighSide = False
-    for j in xrange(0,len(massArr)):
+    for j in range(0,len(massArr)):
         if abs(mass-massArr[j])>massWindowArrL2L2[i]+massWindowArrL2L2[j]:
             if j<i:
                 hasLowSide = True
@@ -688,6 +689,12 @@ def drawGraph(xdata,ydata,title,drawopt):
     graph.Draw(drawopt)
     graph.GetXaxis().SetMoreLogLabels()
     graph.GetXaxis().SetTitle("mass [MeV]")
+    graph.GetXaxis().SetLabelSize(0.05)
+    graph.GetYaxis().SetLabelSize(0.05)
+    graph.GetXaxis().SetTitleOffset(0.8)
+    graph.GetXaxis().SetTitleSize(0.06)
+    graph.GetYaxis().SetTitleOffset(0.8)
+    graph.GetYaxis().SetTitleSize(0.06)
     return graph
 
 def drawGraph2(xdata,ydata,ydata2,title,c):
@@ -891,6 +898,11 @@ eventsL2L2.Draw("{0}>>hnew(100,0,0.2)".format(massVar),"highzcutunbiased","colz"
 c.Print(remainder[0]+"_output.pdf","Title:test")
 #c.SetLogx(1)
 
+prelim = TLatex()
+prelim.SetNDC(1)
+prelim.SetTextFont(32)
+prelim.SetTextAlign(31)
+
 graphCand = drawGraph(massArrMeV,candArrL1L1,"Candidate Events L1L1","A*")
 graphCand.GetYaxis().SetTitle("counts")
 c.Print(remainder[0]+"_output.pdf","Title:test")
@@ -921,14 +933,15 @@ if(graphCand.GetMaximum() > maximum):
 graph.Write("poiSigL1L1")
 graphCand.SetLineColor(2)
 graphCand.SetMarkerColor(2)
-graph.GetYaxis().SetRangeUser(0,12)
+graph.GetYaxis().SetRangeUser(0,10)
 graphCand.Draw("* same")
-legend2 = TLegend(.60,.80,.85,.90)
+prelim.DrawLatex(0.85,0.55,"HPS Preliminary")
+legend2 = TLegend(.50,.70,.75,.80)
 legend2.SetBorderSize(0)
 legend2.SetFillColor(0)
 legend2.SetFillStyle(0)
 legend2.SetTextFont(42)
-legend2.SetTextSize(0.035)
+legend2.SetTextSize(0.05)
 legend2.AddEntry(graph,"Estimated Background","LP")
 legend2.AddEntry(graphCand,"Candidate Events","LP")
 legend2.Draw("same")
@@ -950,6 +963,8 @@ line2.SetLineWidth(3)
 #line3.SetLineWidth(3)
 c.SetLogy(1)
 graph = drawGraph(poiMassArrL1L1,poiPvalArrL1L1,"cut-and-count p-value L1L1","A*")
+graph.GetYaxis().SetTitle("local p-value")
+graph.GetYaxis().SetLabelSize(0.03)
 pt = TPaveText(0.55,0.1,0.9,0.2,"NDC")
 pt.AddText("Minimum Local P-Value of {0:0.2e} at {1:0.1f} MeV".format(pvalmin,pvalminm*1000))
 pt.AddText("Local Significance = {0:0.1f}#sigma; Global Significance = {1:0.1f}#sigma".format(TMath.NormQuantile(1.0-pvalmin),TMath.NormQuantile(1.0-pvalmin*local_to_global)))
@@ -960,6 +975,7 @@ line1.Draw("same")
 line2.Draw("same")
 #line3.Draw("same")
 pt.Draw()
+prelim.DrawLatex(0.45,0.2,"HPS Preliminary")
 c.Print(remainder[0]+"_output.pdf","Title:test")
 c.Write()
 
@@ -1019,28 +1035,31 @@ c.Write()
 
 def GetMaximum(hist):
     maxbin = hist.GetMaximumBin()
-    maxx,maxy,maxz = ROOT.Long(0), ROOT.Long(0), ROOT.Long(0)
+    #maxx,maxy,maxz = ROOT.Long(0), ROOT.Long(0), ROOT.Long(0)
+    maxx,maxy,maxz = ctypes.c_int(), ctypes.c_int(), ctypes.c_int()
     hist.GetBinXYZ(maxbin,maxx,maxy,maxz)
     print("{0} {1} {2} {3}".format(maxbin,maxx,maxy,maxz))
-    mass = hist.GetXaxis().GetBinCenter(maxx)
-    eps = hist.GetYaxis().GetBinCenter(maxy)
+    mass = hist.GetXaxis().GetBinCenter(maxx.value)
+    eps = hist.GetYaxis().GetBinCenter(maxy.value)
     maximum = hist.GetBinContent(maxbin)
     print("{0} {1} {2}".format(mass,eps,maximum))
     return maximum, mass, eps
 
 def GetMinimum(hist):
     minbin = hist.GetMinimumBin()
-    minx,miny,minz = ROOT.Long(0), ROOT.Long(0), ROOT.Long(0)
+    #minx,miny,minz = ROOT.Long(0), ROOT.Long(0), ROOT.Long(0)
+    minx,miny,minz = ctypes.c_int(), ctypes.c_int(), ctypes.c_int()
     hist.GetBinXYZ(minbin,minx,miny,minz)
-    print("{0} {1} {2} {3}".format(minbin,minx,miny,minz))
-    mass = hist.GetXaxis().GetBinCenter(minx)
-    eps = hist.GetYaxis().GetBinCenter(miny)
+    #print("{0} {1} {2} {3}".format(minbin,ctypes.c_int(minx).value(),int(ctypes.c_int(miny).value()),int(ctypes.c_int(minx))))
+    mass = hist.GetXaxis().GetBinCenter(minx.value)
+    eps = hist.GetYaxis().GetBinCenter(miny.value)
     minimum = hist.GetBinContent(minbin)
     print("{0} {1} {2}".format(mass,eps,minimum))
     return minimum, mass, eps
 
 def drawContour(hist,nlevels):
-    minValue = hist.GetMinimum(0)
+    #minValue = hist.GetMinimum(0)
+    minValue = 1
     bottom = int(math.floor(math.log10(minValue)))
     limitLevels = array.array('d')
     for i in range(bottom,bottom+nlevels):
@@ -1051,8 +1070,9 @@ def drawContour(hist,nlevels):
     hist.GetXaxis().SetTitle("mass [MeV]")
     hist.GetYaxis().SetTitle("#epsilon^{2}")
     hist.SetStats(0)
-    hist.Draw("cont1z")
-    hist.GetZaxis().SetRangeUser(10**bottom,10**(bottom+nlevels))
+    #hist.Draw("cont1z")
+    hist.Draw("COLZ")
+    #hist.GetZaxis().SetRangeUser(10**bottom,10**(bottom+nlevels))
 
 def drawMaxContour(hist,nlevels):
     maxValue = hist.GetBinContent(hist.GetMaximumBin())
@@ -1142,7 +1162,7 @@ c.Write()
 #c.Print(remainder[0]+"_output.pdf","Title:tada")
 #c.Write()
 
-limitHistL1L1copy = limitHistL1L1.Clone()
+#limitHistL1L1copy = limitHistL1L1.Clone()
 limitHistL1L1.SetContour(20)
 limitHistL1L1.SetStats(0)
 minimum, mass, eps = GetMinimum(limitHistL1L1)
@@ -1153,12 +1173,20 @@ limitLevel = array.array('d')
 limitLevel.append(10)
 #limitHistL1L1copy.SetContourLevel(0,10)
 limitHistL1L1.Draw("cont4z")
-limitHistL1L1copy.SetContour(1,limitLevel)
-limitHistL1L1copy.Draw("same cont2")
+#limitHistL1L1copy.SetContour(1,limitLevel)
+#limitHistL1L1copy.Draw("same cont2")
 pt.Draw()
+prelim.DrawLatex(0.85,0.2,"HPS Preliminary")
 limitHistL1L1.GetXaxis().SetMoreLogLabels()
 limitHistL1L1.GetXaxis().SetTitle("mass [MeV]")
 limitHistL1L1.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL1L1.GetXaxis().SetLabelSize(0.05)
+limitHistL1L1.GetYaxis().SetLabelSize(0.05)
+#limitHistL1L1.GetZaxis().SetLabelSize(0.05)
+limitHistL1L1.GetXaxis().SetTitleOffset(0.8)
+limitHistL1L1.GetXaxis().SetTitleSize(0.06)
+limitHistL1L1.GetYaxis().SetTitleOffset(0.8)
+limitHistL1L1.GetYaxis().SetTitleSize(0.06)
 limitHistL1L1.GetZaxis().SetRangeUser(1,1e4)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
@@ -1171,9 +1199,17 @@ pt1.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
 pt1.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 limitHistL1L2.Draw("cont4z")
 pt1.Draw()
+prelim.DrawLatex(0.85,0.2,"HPS Preliminary")
 limitHistL1L2.GetXaxis().SetMoreLogLabels()
 limitHistL1L2.GetXaxis().SetTitle("mass [MeV]")
 limitHistL1L2.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL1L2.GetXaxis().SetLabelSize(0.05)
+limitHistL1L2.GetYaxis().SetLabelSize(0.05)
+#limitHistL1L2.GetZaxis().SetLabelSize(0.05)
+limitHistL1L2.GetXaxis().SetTitleOffset(0.8)
+limitHistL1L2.GetXaxis().SetTitleSize(0.06)
+limitHistL1L2.GetYaxis().SetTitleOffset(0.8)
+limitHistL1L2.GetYaxis().SetTitleSize(0.06)
 limitHistL1L2.GetZaxis().SetRangeUser(1,1e4)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
@@ -1186,9 +1222,17 @@ pt2.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
 pt2.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 limitHistL2L2.Draw("cont4z")
 pt2.Draw()
+prelim.DrawLatex(0.85,0.2,"HPS Preliminary")
 limitHistL2L2.GetXaxis().SetMoreLogLabels()
 limitHistL2L2.GetXaxis().SetTitle("mass [MeV]")
 limitHistL2L2.GetYaxis().SetTitle("#epsilon^{2}")
+limitHistL2L2.GetXaxis().SetLabelSize(0.05)
+limitHistL2L2.GetYaxis().SetLabelSize(0.05)
+#limitHistL2L2.GetZaxis().SetLabelSize(0.05)
+limitHistL2L2.GetXaxis().SetTitleOffset(0.8)
+limitHistL2L2.GetXaxis().SetTitleSize(0.06)
+limitHistL2L2.GetYaxis().SetTitleOffset(0.8)
+limitHistL2L2.GetYaxis().SetTitleSize(0.06)
 limitHistL2L2.GetZaxis().SetRangeUser(1,1e4)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
@@ -1204,10 +1248,11 @@ pt3.AddText("Minimum Limit is {0:0.2f} #times A' Cross Section".format(minimum))
 pt3.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 limitHistcombined.Draw("cont4z")
 pt3.Draw()
+prelim.DrawLatex(0.85,0.2,"HPS Preliminary")
 limitHistcombined.GetXaxis().SetMoreLogLabels()
 limitHistcombined.GetXaxis().SetTitle("mass [MeV]")
 limitHistcombined.GetYaxis().SetTitle("#epsilon^{2}")
-limitHistcombined.GetZaxis().SetRangeUser(1,1e4)
+limitHistcombined.GetZaxis().SetRangeUser(100,1e4)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
@@ -1222,8 +1267,16 @@ pt4.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
 pt4.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 detectableHistL1L1.Draw("cont4z")
 pt4.Draw("")
+prelim.DrawLatex(0.85,0.2,"#color[0]{HPS Preliminary}")
 detectableHistL1L1.GetXaxis().SetTitle("mass [MeV]")
 detectableHistL1L1.GetYaxis().SetTitle("#epsilon^{2}")
+detectableHistL1L1.GetXaxis().SetLabelSize(0.05)
+detectableHistL1L1.GetYaxis().SetLabelSize(0.05)
+#detectableHistL1L1.GetZaxis().SetLabelSize(0.05)
+detectableHistL1L1.GetXaxis().SetTitleOffset(0.8)
+detectableHistL1L1.GetXaxis().SetTitleSize(0.06)
+detectableHistL1L1.GetYaxis().SetTitleOffset(0.8)
+detectableHistL1L1.GetYaxis().SetTitleSize(0.06)
 #detectableHistL1L1.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
 detectableHistL1L1.GetZaxis().SetRangeUser(0,0.5*scale_factor)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
@@ -1239,10 +1292,18 @@ pt5.AddText("Maximum Detectable is {0:0.3f} events".format(maximum))
 pt5.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 detectableHistL1L2.Draw("cont4z")
 pt5.Draw("")
+prelim.DrawLatex(0.85,0.2,"#color[0]{HPS Preliminary}")
 detectableHistL1L2.GetXaxis().SetTitle("mass [MeV]")
 detectableHistL1L2.GetYaxis().SetTitle("#epsilon^{2}")
-#detectableHistL1L2.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
-detectableHistL1L2.GetZaxis().SetRangeUser(0,0.03)
+detectableHistL1L2.GetXaxis().SetLabelSize(0.05)
+detectableHistL1L2.GetYaxis().SetLabelSize(0.05)
+#detectableHistL1L2.GetZaxis().SetLabelSize(0.05)
+detectableHistL1L2.GetXaxis().SetTitleOffset(0.8)
+detectableHistL1L2.GetXaxis().SetTitleSize(0.06)
+detectableHistL1L2.GetYaxis().SetTitleOffset(0.8)
+detectableHistL1L2.GetYaxis().SetTitleSize(0.06)
+detectableHistL1L2.GetZaxis().SetRangeUser(0,0.5*scale_factor/9.77)
+#detectableHistL1L2.GetZaxis().SetRangeUser(0,0.03)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
@@ -1256,9 +1317,17 @@ pt6.AddText("Maximum Detectable is {0:0.2f} events".format(maximum))
 pt6.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}".format(eps))
 detectableHistL2L2.Draw("cont4z")
 pt6.Draw("")
+prelim.DrawLatex(0.85,0.2,"#color[0]{HPS Preliminary}")
 detectableHistL2L2.GetXaxis().SetTitle("mass [MeV]")
 detectableHistL2L2.GetYaxis().SetTitle("#epsilon^{2}")
-detectableHistL2L2.GetZaxis().SetRangeUser(0,1.0*scale_factor/9.77)
+detectableHistL2L2.GetXaxis().SetLabelSize(0.05)
+detectableHistL2L2.GetYaxis().SetLabelSize(0.05)
+#detectableHistL2L2.GetZaxis().SetLabelSize(0.05)
+detectableHistL2L2.GetXaxis().SetTitleOffset(0.8)
+detectableHistL2L2.GetXaxis().SetTitleSize(0.06)
+detectableHistL2L2.GetYaxis().SetTitleOffset(0.8)
+detectableHistL2L2.GetYaxis().SetTitleSize(0.06)
+detectableHistL2L2.GetZaxis().SetRangeUser(0,0.1*scale_factor/9.77)
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
@@ -1277,6 +1346,7 @@ pt7.AddText("at Mass {0:0.1f} MeV and ".format(mass)+"#epsilon^{2} = "+"{0:0.2e}
 detectableHistcombined.GetZaxis().SetRangeUser(0,0.5*scale_factor)
 detectableHistcombined.Draw("cont4z")
 pt7.Draw("")
+prelim.DrawLatex(0.85,0.2,"#color[0]{HPS Preliminary}")
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
@@ -1319,6 +1389,14 @@ c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
 drawHist(prodHist,20,1e-2,1e2)
+prodHist.GetXaxis().SetLabelSize(0.05)
+prodHist.GetYaxis().SetLabelSize(0.05)
+#prodHist.GetZaxis().SetLabelSize(0.05)
+prodHist.GetXaxis().SetTitleOffset(0.8)
+prodHist.GetXaxis().SetTitleSize(0.06)
+prodHist.GetYaxis().SetTitleOffset(0.8)
+prodHist.GetYaxis().SetTitleSize(0.06)
+prelim.DrawLatex(0.85,0.2,"#color[0]{HPS Preliminary}")
 c.Print(remainder[0]+"_output.pdf","Title:tada")
 c.Write()
 
@@ -1326,4 +1404,3 @@ c.Print(remainder[0]+"_output.pdf]")
 outfile.Write()
 outfile.Close()
 sys.exit(0)
-
